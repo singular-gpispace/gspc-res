@@ -427,20 +427,7 @@ proc liftTree(ideal f, vector s) {
     poly lm_s = leadmonomial(s);  // leading monomial of s
      int a = leadexp(s)[nvars(basering) + 1];
 
-    //  for (i = 1; i <= r; i++) {
-    //     if (s == lc_s * lm_s * gen(i)) {
-    //         h = lc_s * lm_s * f[i];  // Map to m * f[i]
-    //         break;  // Once found, break the loop early
-    //     }
-    // }
-
-
-    //    for (i = 1; i <= r; i++) {
-    //     if (a == i) {
-    //         h = lc_s * lm_s * f[i];  // Map to m * f[i]
-    //         break;  // Once found, break the loop early
-    //     }
-    // }
+ 
    
    g = lc_s * lm_s * f[a]; 
    poly T0 = g - LOT(g, f);
@@ -565,20 +552,7 @@ proc oneSublift(ideal f, vector s) {
     poly lm_s = leadmonomial(s);  // leading monomial of s
      int a = leadexp(s)[nvars(basering) + 1];
 
-    //  for (i = 1; i <= r; i++) {
-    //     if (s == lc_s * lm_s * gen(i)) {
-    //         h = lc_s * lm_s * f[i];  // Map to m * f[i]
-    //         break;  // Once found, break the loop early
-    //     }
-    // }
-
-
-    //    for (i = 1; i <= r; i++) {
-    //     if (a == i) {
-    //         h = lc_s * lm_s * f[i];  // Map to m * f[i]
-    //         break;  // Once found, break the loop early
-    //     }
-    // }
+  
 
 
     h = lc_s * lm_s * f[a];  // Map to m * f[i]
