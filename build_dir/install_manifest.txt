@@ -1,0 +1,10 @@
+/home/santosh/gspc-res/install_dir/lib/libSINGULAR-template-installation.so
+/home/santosh/gspc-res/install_dir/libSINGULAR-template-module.so
+/home/santosh/gspc-res/install_dir/libexec/workflow/libtemplate_implementation.so
+/home/santosh/gspc-res/install_dir/templategspc.lib
+/home/santosh/gspc-res/install_dir/libexec/workflow/template.pnet
+/home/santosh/gspc-res/install_dir/libexec/workflow/libsingular_template.so
+/home/santosh/gspc-res/install_dir/share/examples/all_lead_syz.cpp
+/home/santosh/gspc-res/install_dir/share/examples/templategp.lib
+/home/santosh/gspc-res/install_dir/share/examples/oneSublift_kernel.cpp
+/home/santosh/gspc-res/install_dir/share/examples/Trygp.lib

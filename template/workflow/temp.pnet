@@ -1,0 +1,322 @@
+22 serialization::archive 14 0 0 0 0 8 template 0 0 3 0 0 0 0
+
+BwAAAAAAAAA=
+0 0 7 13 0 0 0
+
+BgAAAAAAAAA=
+0 0 9 place_Tau 0 0 1 0 0 7 Lifting 0 0 3 0 0 0 0 0 0 8 lead_Syz 6 string 0 4 lift 6 string 0 13 leadsyz_count 3 int 0 0 0 0 0 0 0 15 0 0 0 0
+
+BQAAAAAAAAA=
+15 place_output_GB 0 6 string 0 15 0 0
+
+BAAAAAAAAAA=
+21 place_leadsyz_counter 0 13 unsigned long 0 15 0 0
+
+AwAAAAAAAAA=
+18 place_library_name 0 6 string 0 15 0 0
+
+AgAAAAAAAAA=
+10 place_lead 0 6 string 0 15 0 0
+
+AQAAAAAAAAA=
+19 place_base_filename 0 6 string 0 15 0 0
+
+AAAAAAAAAAA=
+14 place_input_GB 0 6 string 0 15 0 0 0 0 7 13 0 0 0 9 place_Tau
+
+BgAAAAAAAAA=
+15 place_output_GB
+
+BQAAAAAAAAA=
+21 place_leadsyz_counter
+
+BAAAAAAAAAA=
+18 place_library_name
+
+AwAAAAAAAAA=
+10 place_lead
+
+AgAAAAAAAAA=
+19 place_base_filename
+
+AQAAAAAAAAA=
+14 place_input_GB
+
+AAAAAAAAAAA=
+0 0
+
+AwAAAAAAAAA=
+0 0 3 13 0 0 0
+
+AgAAAAAAAAA=
+7 compute 0 0 0 17 singular_template 8 stdBasis 0 0 0 1 0 0 0 0 0 0 0 0 1 0 0 0 0 0 3 13 0 0 0 0 0
+
+AgAAAAAAAAA=
+0 0 14 place_sum_port 0 0 0 0 0 0 6 string 0 0 0 15 0 0
+
+AQAAAAAAAAA=
+13 base_filename 0 0 6 string 0 15 0 0
+
+AAAAAAAAAAA=
+12 library_name 0 0 6 string 0 15 0 0 1 13 0
+
+AwAAAAAAAAA=
+6 output 1 0 0 0 6 string 0 15 0 0 0 1 0
+
+BAAAAAAAAAA=
+15 0 0 0 0 1 0 0 0 6 worker 0 0 0 0 0 0
+
+AAA=
+0 0 0
+
+AQAAAAAAAAA=
+7 LEADSYZ 0 17 singular_template 7 leadsyz 0 1 0 0 0 0 0 0 1 0 3 13 0
+
+AgAAAAAAAAA=
+14 place_sum_port 0 0 6 string 0 15 0 0
+
+AQAAAAAAAAA=
+13 base_filename 0 0 6 string 0 15 0 0
+
+AAAAAAAAAAA=
+12 library_name 0 0 6 string 0 15 0 0 2 13 0
+
+BAAAAAAAAAA=
+15 leadsyz_counter 1 0 13 unsigned long 0 15 0 0
+
+AwAAAAAAAAA=
+3 OUT 1 0 4 list 0 15 0 0 0 1 0
+
+BQAAAAAAAAA=
+15 0 0 1 0 6 worker 0 0
+
+AAA=
+0
+
+AAAAAAAAAAA=
+4 LIFT 0 17 singular_template 4 LIFT 0 1 0 0 0 0 0 0 1 0 4 13 0
+
+AwAAAAAAAAA=
+10 input_name 0 0 6 string 0 15 0 0
+
+AgAAAAAAAAA=
+4 lead 0 0 6 string 0 15 0 0
+
+AQAAAAAAAAA=
+13 base_filename 0 0 6 string 0 15 0 0
+
+AAAAAAAAAAA=
+14 needed_library 0 0 6 string 0 15 0 0 2 13 0
+
+BQAAAAAAAAA=
+3 OUT 1 0 4 list 0 15 0 0
+
+BAAAAAAAAAA=
+9 place_Tau 1 1 7 Lifting 3 0 0 8 lead_Syz 6 string 0 4 lift 6 string 0 13 leadsyz_count 3 int 0 15 0 0 0 1 0
+
+BgAAAAAAAAA=
+15 0 0 1 0 6 worker 0 0
+
+AAA=
+0 0 0 0 2 2 0 0 0 0
+
+AAAAAAAAAAA=
+
+AgAAAAAAAAA=
+0 0
+
+AgAAAAAAAAA=
+
+AAAAAAAAAAA=
+0 0 8
+
+AQAAAAAAAAA=
+
+AAAAAAAAAAA=
+
+AQAAAAAAAAA=
+
+AQAAAAAAAAA=
+
+AQAAAAAAAAA=
+
+AgAAAAAAAAA=
+
+AwAAAAAAAAA=
+
+AAAAAAAAAAA=
+
+AwAAAAAAAAA=
+
+AQAAAAAAAAA=
+
+AwAAAAAAAAA=
+
+AgAAAAAAAAA=
+
+BQAAAAAAAAA=
+
+AAAAAAAAAAA=
+
+BQAAAAAAAAA=
+
+AQAAAAAAAAA=
+0 0 4 13 0 0 0
+
+BQAAAAAAAAA=
+
+AgAAAAAAAAA=
+
+AgAAAAAAAAA=
+
+AQAAAAAAAAA=
+
+BAAAAAAAAAA=
+
+AQAAAAAAAAA=
+
+BgAAAAAAAAA=
+
+AAAAAAAAAAA=
+0 0 2 13 0 0 0
+
+AgAAAAAAAAA=
+0 0 1 13 0 0 0
+
+AwAAAAAAAAA=
+0 0
+
+BQAAAAAAAAA=
+15 0 0
+
+AQAAAAAAAAA=
+1 13 0
+
+BAAAAAAAAAA=
+
+BAAAAAAAAAA=
+15 0 0 2 13 0
+
+AQAAAAAAAAA=
+1 13 0
+
+AwAAAAAAAAA=
+
+AgAAAAAAAAA=
+15 0 0
+
+AAAAAAAAAAA=
+1 13 0
+
+BQAAAAAAAAA=
+
+BgAAAAAAAAA=
+15 0 0 0 0 0 1 0 0 0 0 1 0 0 0 3 13 0 0 0
+
+AgAAAAAAAAA=
+0 0 3 13 0 0 0
+
+AwAAAAAAAAA=
+0 0
+
+AAAAAAAAAAA=
+15 0 0
+
+AQAAAAAAAAA=
+
+AQAAAAAAAAA=
+15 0 0
+
+AAAAAAAAAAA=
+
+AgAAAAAAAAA=
+15 0 0
+
+AQAAAAAAAAA=
+3 13 0
+
+AwAAAAAAAAA=
+
+AAAAAAAAAAA=
+15 0 0
+
+AQAAAAAAAAA=
+
+AQAAAAAAAAA=
+15 0 0
+
+BQAAAAAAAAA=
+
+AgAAAAAAAAA=
+15 0 0
+
+AAAAAAAAAAA=
+4 13 0
+
+AwAAAAAAAAA=
+
+AAAAAAAAAAA=
+15 0 0
+
+AQAAAAAAAAA=
+
+AQAAAAAAAAA=
+15 0 0
+
+BQAAAAAAAAA=
+
+AwAAAAAAAAA=
+15 0 0
+
+AgAAAAAAAAA=
+
+AgAAAAAAAAA=
+15 0 0 0 0
+
+AAAAAAAAAAA=
+0 0 5 13 0 0 0
+
+AAAAAAAAAAA=
+0 0 0 1 0
+
+AwAAAAAAAAA=
+0 1 0
+
+AQAAAAAAAAA=
+0 1 0
+
+BQAAAAAAAAA=
+0 1 0
+
+AgAAAAAAAAA=
+0 1 0 0 0 0 0 0 0 0 1 0 0 3 13 0
+
+AgAAAAAAAAA=
+5 input 0 0 6 string 1 0
+
+AAAAAAAAAAA=
+15 0 0
+
+AQAAAAAAAAA=
+12 library_name 0 0 6 string 1 0
+
+AwAAAAAAAAA=
+15 0 0
+
+AAAAAAAAAAA=
+13 base_filename 0 0 6 string 1 0
+
+AQAAAAAAAAA=
+15 0 0 1 13 0
+
+AwAAAAAAAAA=
+3 Tau 1 1 7 Lifting 3 0 0 8 lead_Syz 6 string 0 4 lift 6 string 0 13 leadsyz_count 3 int 1 0
+
+BgAAAAAAAAA=
+15 0 0 0 1 0
+
+BAAAAAAAAAA=
+15 0 0 1 0 6 worker 0 0
+
+AAA=
+0 0 0 0 0 0 0 0 0 0 0 0

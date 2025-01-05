@@ -1,0 +1,70 @@
+digraph "template" {
+compound=true
+rankdir=LR
+  subgraph cluster_0 {
+    n0_condition [shape = "record", label = "template", style = "filled", fillcolor = "white"]
+    n0_port_0 [shape = "house", label = "base_filename\nstring", style = "filled", fillcolor = "white"]
+    n0_port_1 [shape = "house", label = "library_name\nstring", style = "filled", fillcolor = "white"]
+    n0_port_2 [shape = "house", label = "input\nstring", style = "filled", fillcolor = "white"]
+    n0_port_3 [shape = "invhouse", label = "Tau\nLifting :: [lead_Syz :: string, lift :: string, leadsyz_count :: int]", style = "filled", fillcolor = "white"]
+    subgraph cluster_net_0 {
+      n0_place_0 [shape = "ellipse", label = "place_input_GB\nstring", style = "filled", fillcolor = "white"]
+      n0_place_1 [shape = "ellipse", label = "place_base_filename\nstring", style = "filled", fillcolor = "white"]
+      n0_place_2 [shape = "ellipse", label = "place_lead\nstring", style = "filled", fillcolor = "white"]
+      n0_place_3 [shape = "ellipse", label = "place_library_name\nstring", style = "filled", fillcolor = "white"]
+      n0_place_4 [shape = "ellipse", label = "place_leadsyz_counter\nunsigned long", style = "filled", fillcolor = "white"]
+      n0_place_5 [shape = "ellipse", label = "place_output_GB\nstring", style = "filled", fillcolor = "white"]
+      n0_place_6 [shape = "ellipse", label = "place_Tau\nLifting :: [lead_Syz :: string, lift :: string, leadsyz_count :: int]", style = "filled", fillcolor = "white"]
+      subgraph cluster_1 {
+        n1_condition [shape = "record", label = "LIFT", style = "filled", fillcolor = "white"]
+        n1_port_0 [shape = "house", label = "needed_library\nstring", style = "filled", fillcolor = "white"]
+        n1_port_1 [shape = "house", label = "base_filename\nstring", style = "filled", fillcolor = "white"]
+        n1_port_2 [shape = "house", label = "lead\nstring", style = "filled", fillcolor = "white"]
+        n1_port_3 [shape = "house", label = "input_name\nstring", style = "filled", fillcolor = "white"]
+        n1_port_4 [shape = "invhouse", label = "place_Tau\nLifting :: [lead_Syz :: string, lift :: string, leadsyz_count :: int]", style = "filled", fillcolor = "white"]
+        n1_port_5 [shape = "invhouse", label = "OUT\nlist", style = "filled", fillcolor = "white"]
+        n1_modcall [shape = "box", label = "singular_template.LIFT", style = "filled", fillcolor = "white"]
+        bgcolor = "yellow"
+      } /* cluster_1 == LIFT */
+      n1_port_5 -> n0_place_6 [color = "black:invis:black"]
+      n0_place_2 -> n1_port_2
+      n0_place_5 -> n1_port_3 [style = "dashed"]
+      n0_place_1 -> n1_port_1 [style = "dashed"]
+      n0_place_3 -> n1_port_0 [style = "dashed"]
+      subgraph cluster_2 {
+        n2_condition [shape = "record", label = "LEADSYZ", style = "filled", fillcolor = "white"]
+        n2_port_0 [shape = "house", label = "library_name\nstring", style = "filled", fillcolor = "white"]
+        n2_port_1 [shape = "house", label = "base_filename\nstring", style = "filled", fillcolor = "white"]
+        n2_port_2 [shape = "house", label = "place_sum_port\nstring", style = "filled", fillcolor = "white"]
+        n2_port_3 [shape = "invhouse", label = "OUT\nlist", style = "filled", fillcolor = "white"]
+        n2_port_4 [shape = "invhouse", label = "leadsyz_counter\nunsigned long", style = "filled", fillcolor = "white"]
+        n2_modcall [shape = "box", label = "singular_template.leadsyz", style = "filled", fillcolor = "white"]
+        bgcolor = "yellow"
+      } /* cluster_2 == LEADSYZ */
+      n2_port_4 -> n0_place_4
+      n2_port_3 -> n0_place_2 [color = "black:invis:black"]
+      n0_place_5 -> n2_port_2 [style = "dashed"]
+      n0_place_1 -> n2_port_1 [style = "dashed"]
+      n0_place_3 -> n2_port_0 [style = "dashed"]
+      subgraph cluster_3 {
+        n3_condition [shape = "record", label = "compute", style = "filled", fillcolor = "white"]
+        n3_port_0 [shape = "house", label = "library_name\nstring", style = "filled", fillcolor = "white"]
+        n3_port_1 [shape = "house", label = "base_filename\nstring", style = "filled", fillcolor = "white"]
+        n3_port_2 [shape = "house", label = "place_sum_port\nstring", style = "filled", fillcolor = "white"]
+        n3_port_3 [shape = "invhouse", label = "output\nstring", style = "filled", fillcolor = "white"]
+        n3_modcall [shape = "box", label = "singular_template.stdBasis", style = "filled", fillcolor = "white"]
+        bgcolor = "yellow"
+      } /* cluster_3 == compute */
+      n3_port_3 -> n0_place_5
+      n0_place_0 -> n3_port_2
+      n0_place_1 -> n3_port_1 [style = "dashed"]
+      n0_place_3 -> n3_port_0 [style = "dashed"]
+      bgcolor = "white"
+    } /* cluster_net_0 */
+    n0_port_0 -> n0_place_1 [style = "dotted", dir = "none"]
+    n0_port_1 -> n0_place_3 [style = "dotted", dir = "none"]
+    n0_port_2 -> n0_place_0 [style = "dotted", dir = "none"]
+    n0_port_3 -> n0_place_6 [style = "dotted", dir = "none"]
+    bgcolor = "dimgray"
+  } /* cluster_0 == template */
+} /* template */
