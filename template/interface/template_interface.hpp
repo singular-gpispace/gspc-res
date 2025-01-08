@@ -23,7 +23,8 @@ std::string singular_template_compute_StdBasis ( std::string const&
                                       );
 
 
-
+NO_NAME_MANGLING
+std::string singular_template_Init( std::string const& );
 
 NO_NAME_MANGLING
 std::pair<std::vector<std::string>, int> singular_template_leadSyzGPI( std::string const&

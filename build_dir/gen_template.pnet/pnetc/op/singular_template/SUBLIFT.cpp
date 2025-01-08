@@ -28,9 +28,9 @@ namespace pnetc
         , int& E
         )
       {
-#line 250 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 342 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
-                   //std::cout << "in singular _PetriNet_.._SubLIFT" << std::endl;
+                  // std::cout << "in singular _PetriNet_.._SubLIFT" << std::endl;
                            
                    std::pair<std::vector<std::string>, int> out = RESOLVE_INTERFACE_FUNCTION(singular_template_SUBLIFT)
                  (input_name,place_Tau, needed_library, base_filename);

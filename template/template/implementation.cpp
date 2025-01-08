@@ -39,7 +39,11 @@ std::string  singular_template_compute_StdBasis(  std::string const& input_filen
 }
 
 
+NO_NAME_MANGLING
+std::string singular_template_Init( std::string const& input) {
 
+    return input;
+}
 
 
 
@@ -139,7 +143,7 @@ std::pair<std::vector<std::string>, int>  singular_template_all_leadsyz_GpI(cons
     input = deserialize(input_filename, ids);
 
     // Debugging: Print input data
-    //std::cout << "Input Data:" << input.second << std::endl;
+    // std::cout << "Input Data:" << input.second << std::endl;
 
     // Prepare arguments
     ScopedLeftv args(input.first, lCopy(input.second));
@@ -338,12 +342,12 @@ std::pair<int, lists> reduce_GPI(leftv arg1) {
        lists tmpL = (lists)(Tok->m[3].Data()); // Tok.data
       
   
-    matrix A;
-    matrix B;
+    // matrix A;
+    // matrix B;
     //leftv L2=(ideal)tmpL1->m[1];
     lists tmpl=(lists)(tok->m[3].Data()); //tok.data
     //leftv l=(ideal)(tmpl->m[1]);
-    A = (matrix)tmpL->m[1].Data(); // Tok.data[2]
+    matrix A= (matrix)tmpL->m[1].Data(); // Tok.data[2]
 
     // if (tmpL->m[0].Typ() == SMATRIX_CMD){
       
@@ -353,7 +357,7 @@ std::pair<int, lists> reduce_GPI(leftv arg1) {
       // std::cout << "Colum of A:="<< MATCOLS(A) << std::endl;
       // std::cout << "Row of A:="<< MATROWS(A) << std::endl;
     //std::cout << "column of A:" << c<<std::endl;
-     B = (matrix)tmpl->m[1].Data(); // tok.data[2]
+    matrix B= (matrix)tmpl->m[1].Data(); // tok.data[2]
   //  std::cout << "Colum of B:="<< MATCOLS(B) << std::endl;
   //  std::cout << "Row of B:="<< MATROWS(B) << std::endl;
     // Perform the matrix addition using Singular's API function
@@ -376,7 +380,7 @@ std::pair<int, lists> reduce_GPI(leftv arg1) {
     t=(lists)omAlloc0Bin(slists_bin);
     t->Init(2);
     t->m[0].rtyp = tmpL->m[0].rtyp;t->m[0].data=tmpL->m[0].CopyD(); // copy Tok.data[1]
-    t->m[1].rtyp=SMATRIX_CMD; t->m[1].data=C;
+    t->m[1].rtyp=MATRIX_CMD; t->m[1].data=C;
   
     output->m[3].rtyp=LIST_CMD; output->m[3].data=t;//data is in postion 4
     

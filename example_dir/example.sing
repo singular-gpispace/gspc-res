@@ -146,7 +146,7 @@ def re =gspc_template_SchRes(J, gc);
 re;
 
 rtimer-t;
-print("timer");
+// print("timer");
 
 
 // Should Try

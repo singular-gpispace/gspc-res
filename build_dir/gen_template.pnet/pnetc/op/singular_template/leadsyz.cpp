@@ -29,7 +29,7 @@ namespace pnetc
         , int& nleads
         )
       {
-#line 77 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 169 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
                    
                    std::pair<std::vector<std::string>, int> out = RESOLVE_INTERFACE_FUNCTION(singular_template_leadSyzGPI)
