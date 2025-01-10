@@ -15,13 +15,15 @@ namespace pnetc
       void SUBLIFT
         ( const std::string& input_name
         , const std::string& place_Tau
+        , const std::string& all_lead
         , const std::string& needed_library
         , const std::string& base_filename
-        , std::list<pnet::type::value::value_type>& LIFT
-        , std::string& SUBLIFT
-        , we::type::literal::control& lift_count
         , int& N
         , int& E
+        , std::list<pnet::type::value::value_type>& LIFT
+        , long& runtime
+        , we::type::literal::control& lift_count
+        , std::string& SUBLIFT
         );
     }
   }

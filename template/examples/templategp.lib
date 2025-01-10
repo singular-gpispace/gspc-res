@@ -10,7 +10,7 @@ OVERVIEW:
     The newstruct types token  must be defined.
 
     PROCEDURES:
-    stdBasis(token input)   computes a standard basis
+    stdBasis(token,token)    computes a standard basis
                           
 ";
   LIB "general.lib";
@@ -20,9 +20,9 @@ OVERVIEW:
   LIB "polylib.lib";
   LIB "zeroset.lib";
   LIB "modules.lib";
-
+  
 proc stdBasis(token input)
-"USAGE: stdmodp(input); input token
+"USAGE: stdBasis(input); input token
 RETURN: an token output containing a standard basis 
 output.generators of the ideal input.generators in a ring
 with prescribed characteristic input.modulus
@@ -90,7 +90,126 @@ proc leadmonomial(def s) {
 }
 
 
+proc pOLY_List(poly f0) {
+  int r = size(f0);
+  int k;
+  list S;
+  for (k = 1; k <= r; k++) {
+    S[k] = f0[k];
+  }
+  return (S);
+}
 
+//for vectors
+proc vector_List(vector f0){
+    int r= nrows(f0);
+    
+    int k,j;
+    list S;
+    int cc=1;
+    vector term;
+    for(k=1; k<=r; k++){
+       for(j=1; j<=size(f0[k]); j++){
+        term =f0[k][j]*gen(k); 
+      if(term!=0){
+         S[cc]=term;
+        cc++;
+
+     }
+
+       }
+    
+        
+    }
+    
+    return(S);
+}
+
+
+
+
+// all leadsyz
+proc allLeadSyz(ideal f) {
+   
+    module F = leadSyz(f);
+    
+    int level = 2;
+    def temp;
+    int t;
+    list J;
+    J[1]=f;
+    J[2]=F;
+   
+    int n= nvars(basering);
+    for(t=1; t<=n; t++) {
+       
+        
+        temp = Sec_leadSyz(F);
+        
+      
+        
+        if ((nrows(temp) !=0) && (ncols(temp) != 0)) {
+           
+             F = temp;
+        }
+        if(F==vector(0)){
+         break;
+        }
+        
+       
+       
+        
+        
+        J[level+1] = F;
+        level++;
+    }  
+    
+    return (J);
+}
+
+
+
+proc all_leadsyz_GpI(token Token) 
+"USAGE: all_leadsyz_GpI(Token); Token token
+RETURN: a token LLT containing a list of leading syzygies
+NOTE: The types token are defined . This procedure is 
+intended to be called as a transition procedure inside the
+worker process (that is, the "inner" instances of SINGULAR).
+"
+
+{
+  def f= Token.data[1];
+ 
+    list J=allLeadSyz(f);
+    int r = size(J);
+    token LLT;
+ 
+   int k;
+  
+  for (k = 1; k <=r; k++) {
+    token Ld;
+    Ld.fieldnames = list("generator", "SchFrame");  
+  
+    
+    Ld.data[1]= J;
+    //print(s_lift);
+    Ld.data[2]= r;
+    LLT.fieldnames[k] = "generator";  
+    LLT.data[k] =Ld; 
+
+  }
+      LLT.fieldnames[size(LLT.fieldnames) + 1] = "total_number_generator";  
+      LLT.data[size(LLT.data) + 1] = r;  
+    return (LLT);  
+}
+
+
+
+
+
+
+
+//First Level Leadsyz
 proc leadSyz(ideal f) {
 //timer=0;
 //system("--ticks-per-sec",1000); // set timer resolution to ms
@@ -119,20 +238,21 @@ proc leadSyz(ideal f) {
             // Check divisibility conditions and remove a generator if necessary
             for (k = 1; k <= size(L); k++) {
               
-               //print("i = "+string(i) + "j = "+string(j)  + "t = "+string(t) + "s = "+ //string(s)+" L ="+string(L));
+               
                  
-                 //print(s);
+                 
                     s = L[k];
                
-               
+               // attrib(s, "isSB", 1);
                 // Check if s divides t
-                 if (NF(t, s) == 0) {
+                 if (NF(t, s,1) == 0) {
                   
                     t = 0;
                     break;
                  } else {
+                  // attrib(t, "isSB", 1);
                     // Check if t divides s
-                    if (NF(s, t) == 0) {                  
+                    if (NF(s, t,1) == 0) {                  
                         
                          L = delete(L, k); 
                          k=k-1;
@@ -173,7 +293,8 @@ proc Sec_leadSyz(module f) {
 
     module f0 = f; // Use the input module directly as input is already previous leadsyz
 
-    matrix m = lcm_mod(f0);
+    matrix m[r][r];
+    m = lcm_mod(f0);
 
     int cc = 1;
 
@@ -186,11 +307,11 @@ proc Sec_leadSyz(module f) {
             for (k = 1; k <= size(L); k++) {
                 s = L[k];
 
-                if (NF(t, s) == 0) {
+                if (NF(t, s,1) == 0) {
                     t = 0;
                     break;
                 } else {
-                    if (NF(s, t) == 0) {
+                    if (NF(s, t,1) == 0) {
                         L = delete(L, k);
                         k = k - 1;
                         cc = cc - 1;
@@ -207,25 +328,54 @@ proc Sec_leadSyz(module f) {
     return (L);
 }
 
+// Leadysyz function for GPI-Space
 
-proc leadsyz_GpI(token Token) {
-  def f=  Token.data[1];
+proc leadsyz_GpI(token Token) 
+"USAGE: leadsyz_GpI(Token); Token token
+RETURN: a token LLT containing a list of leading syzygies
+NOTE: The types token are defined . This procedure is 
+intended to be called as a transition procedure inside the
+worker process (that is, the "inner" instances of SINGULAR).
+"
+{
+  
+  def f= Token.data[1];
+  int counter;
  
   token LLT;
   int k;
+ 
   def LT;
   if(typeof(f)=="ideal"){
    LT = leadSyz(f);
-  }else {
-    if(typeof(f)=="module"){
-   LT = Sec_leadSyz(f);
+   int ro=size(f);
+   counter=1;
   }
+   else { 
+     if(typeof(f)=="vector"){
+    def mM=Token.data[5];
+    int ro=size(mM);
+    LT = Sec_leadSyz(mM);
+    counter =Token.data[7];
+// string path = "/home/gnawali/gspc-syz/example_dir/temp/";  // Ensure the path ends with a "/"
+// string filename = "Leadsyz.ssi";
+// link l = "ssi:w " + path + filename;
+
+// write(l, LT, "SecondSyzModule");
+// close(l);
+   }
+   
+  //list J=tok.data[1];
+   //int level=size(J);
+
 }
-   int r = size(LT);
+ 
+
+  int r = size(LT);
   for (k = 1; k <=r; k++) {
     token Ld;
     Ld.fieldnames = list("generator", "Lead_Syz_Sparse_matrix");  
-    smatrix sM[size(f)][size(LT)];
+    smatrix sM[ro][size(LT)];
     vector s_lift = LT[k];
     
     int l_k = leadexp(s_lift)[nvars(basering) + 1];
@@ -246,81 +396,32 @@ proc leadsyz_GpI(token Token) {
 
     //print("q:column");
     Ld.data[4]= k;
-    //print(Ld.q);
-    Ld.data[5] = 1;
-   
+
+    Ld.data[5]=LT;
+    Ld.data[6]=counter;
+    Ld.data[7]=counter;
     LLT.fieldnames[k] = "generator";  
     LLT.data[k] = Ld; 
 
   }
+  
       LLT.fieldnames[size(LLT.fieldnames) + 1] = "total_number_generator";  
       LLT.data[size(LLT.data) + 1] = r;  
     return (LLT);  
 }
 
+//Extracts Smatrix 
 
+proc extractleadsyz_GPI(token input){
 
-
-
-
-
-// all leadsyz
-proc allLeadSyz(ideal f) {
-   
-    module F = leadSyz(f);
+  matrix A=input.data[2];
+    token output;
+    output.fieldnames = list("generators","FirstSyz_matrix");
     
-    int level = 1;
-    def temp;
-    int t;
-    list J;
-    J[1]=F;
+    output.data[1]=A;
    
-    int n= nvars(basering);
-    for(t=1; t<=n; t++) {
-       
-        
-        temp = Sec_leadSyz(F);
-        
-        if ((nrows(temp) !=0) && (ncols(temp) != 0)) {
-           
-             F = temp;
-        }
-        if(F==vector(0)){
-         break;
-        }
-        
-        J[level+1] = F;
-        level++;
-    }  
-    
-    return (J);
-}
-
-
-
-proc all_leadsyz_GpI(token Token) {
-  def f=  Token.data[1];
- 
-  token LLT;
-  int k;
-  def LT= allLeadSyz(f);
- 
-   int r = size(LT);
-  for (k = 1; k <=r; k++) {
-    token Ld;
-    Ld.fieldnames = list("generator", "All_Lead_Syz_Sparse_matrix");  
    
-    Ld.data[1]= LT;
-    Ld.data[2]=k;
-    
-   
-    LLT.fieldnames[k] = "generator";  
-    LLT.data[k] = Ld; 
-
-  }
-      LLT.fieldnames[size(LLT.fieldnames) + 1] = "total_number_generator";  
-      LLT.data[size(LLT.data) + 1] = r;  
-    return (LLT);  
+    return(output);
 }
 
 
@@ -328,64 +429,86 @@ proc all_leadsyz_GpI(token Token) {
 
 
 
-proc pOLY_List(poly f0) {
-  int r = size(f0);
-  int k;
-  list S;
-  for (k = 1; k <= r; k++) {
-    S[k] = f0[k];
-  }
-  return (S);
-}
-
-//for vectors
-proc vector_List(vector f0){
-    int r= nrows(f0);
-    
-    int k,j;
-    list S;
-    int cc=1;
-    vector term;
-    for(k=1; k<=r; k++){
-       for(j=1; j<=size(f0[k]); j++){
-        term =f0[k][j]*gen(k); 
-      if(term!=0){
-         S[cc]=term;
-        cc++;
-
-     }
-
-       }
-    
-        
-    }
-    
-    return(S);
-}
 
 
 
-proc LOT(poly g0, ideal S1) {
-  int r = size(S1);
-  int i, k, isDivisible;
-  poly LOT;
+proc LOT(poly g0, ideal S1)
+{
   poly t;
-
-  for (k = 1; k <= size(g0); k++) {
-    isDivisible = 0;
-    for (i = 1; i <= r; i++) {
-      if (S1[i] != poly(0) && NF(lead(g0[k]), lead(S1[i])) == poly(0)) {
-        isDivisible = 1;
+  int i;
+  //int isDivisible;
+  poly LOT;
+  LOT=g0;
+ ideal temp;
+  while(g0 != 0){
+    for(i=1; i<=size(S1); i++){
+      t = lead(g0);
+      temp = lead(S1[i]);
+      //attrib(temp, "isSB", 1);
+      if(NF(t, temp,1) == 0){
+        LOT = LOT-t;
         break;
       }
     }
-    if (!isDivisible) {
-      t = g0[k];
-      LOT = LOT + t;
-    }
+    g0 = g0 - t;
   }
-  return (LOT);
+  return(LOT);
 }
+
+
+
+
+
+
+
+
+proc LOT_2(vector g0, module S1, list J,int level) { 
+    int r = size(S1);
+    int i, k, j,isDivisible;
+    vector LOT;
+    vector  t;
+   vector term;
+  // ideal I_Gr=J[1];
+   // module F0= leadSyz(I_Gr);//leading terms
+   module F0=J[level];
+    for (k = 1; k <= nrows(g0); k++) {
+     for(j=1; j<=size(g0[k]); j++){
+
+          term=g0[k][j]*gen(k);
+        
+          isDivisible=0;
+
+        for (i = 1; i <= r; i++) {
+            if ((term != 0)&& (NF(term, module(F0[i]),1) == 0)) { //replacing leadmonom by lead
+                // g[k] is divisible by the generator S[i]
+                isDivisible = 1;
+                break;  //No need to check further generators for this 
+            }
+        }
+       
+        if (!isDivisible) {
+            t = term;
+            LOT = LOT + t;
+            
+        }
+     }
+       
+            
+           
+    }
+
+    return(LOT); 
+}
+
+
+
+
+
+
+
+
+
+//Schreyer Ordering for_ideal
 
 proc coM(ideal f, vector s, vector t) {
   int k, l;
@@ -407,6 +530,142 @@ proc coM(ideal f, vector s, vector t) {
   }
   return (isTrue);
 }
+
+
+
+
+// proc coM2(module f, vector s, vector t, list J, int level) {
+//     int k, l;
+//     int i,j;
+//     int isTrue=0;
+//       string path = "/home/gnawali/gspc-syz/example_dir/temp/";  // Ensure the path ends with a "/"
+//                      string filename = "SchFrame_coM2.ssi";
+//                      link l13 = "ssi:w " + path + filename;
+//                      write(l13,J,"Schreyer_Order");
+//                      close(l13);
+//     i=leadexp(s)[nvars(basering)+1];
+//     j=leadexp(t)[nvars(basering)+1];
+   
+//     poly s10 = leadmonomial(s);
+//     poly t10 = leadmonomial(t);
+//     // ideal I_Gr=J[1];
+//      //f = leadSyz(I_Gr);//changing to lead syz
+//      ideal I_Gr=J[1];
+//     f=J[level];
+   
+//     string path = "/home/gnawali/gspc-syz/example_dir/temp/";  // Ensure the path ends with a "/"
+//                      string filename = "input_coM2.ssi";
+//                      link l14 = "ssi:w " + path + filename;
+//                      write(l14,f,"Schreyer_Order");
+//                      close(l14);
+//     vector sfi=leadmonom(s10 * f[i]); //change it to the leading term;
+//     vector tfj=leadmonom(t10 * f[j]);
+    
+//     if (coM(I_Gr, sfi,tfj)==1){
+//         isTrue = 1;
+      
+//     } 
+//       else {
+//         if ((sfi == tfj) && (i > j)){  
+        
+//         isTrue = 1;
+//       } 
+
+
+//     }
+
+//     return (isTrue);
+// }
+
+
+//Schreyer Frame
+
+proc coM2(module f, vector s, vector t, list J, int k) {
+
+                            
+    // string path = "/home/gnawali/gspc-syz/example_dir/temp/";  // Ensure the path ends with a "/"
+    // string filename = "Vector_inside_coM2.ssi";
+    // link l2 = "ssi:w " + path + filename;
+    // write(l2, t , "x(2)*gen(3)");
+    int i, j;
+    int isTrue = 0;
+    vector f1, g1, F1, G1;  // Declare vectors for transformations
+    int l, i1, i2;  // Loop and index variables
+    
+                      
+
+
+    // Compute initial indices and monomials for the vectors s and t
+    i = leadexp(s)[nvars(basering) + 1];
+    j = leadexp(t)[nvars(basering) + 1];
+    poly s10 = leadmonomial(s);
+    poly t10 = leadmonomial(t);
+    f1 = leadmonomial(s) * J[k][i];
+    g1 = leadmonomial(t) * J[k][j];
+    
+    // Iterate from level k down to 2
+    for (l = k; l >= 2; l--) {
+        // Print current level for debugging
+       
+           i1 = leadexp(f1)[nvars(basering) + 1];
+           i2 = leadexp(g1)[nvars(basering) + 1];
+        // Compute indices for current level
+        if (l == k) {
+            // First iteration: use f1 and g1
+           
+        
+            // Update F1 and G1 based on f1 and g1
+            F1 = leadmonomial(f1) * J[l - 1][i1];
+            G1 = leadmonomial(g1) * J[l - 1][i2];
+        } else {
+            // Subsequent iterations: use F1 and G1 from the previous iteration
+            i1 = leadexp(F1)[nvars(basering) + 1];
+            i2 = leadexp(G1)[nvars(basering) + 1];
+            F1 = leadmonomial(F1) * J[l - 1][i1]; //chnage from f1 to F1
+            G1 = leadmonomial(G1) * J[l - 1][i2]; //change from g1 to G1
+            
+        
+           
+        }
+    }
+
+    // Perform final comparison using coM
+    if (k == 2) {
+        // Base case when k is 2: use f1 and g1 directly
+        if (coM(J[1], f1, g1) == 1) {
+            isTrue = 1;
+        } else {
+            if ((f1 == g1) && (i > j)) {  
+                isTrue = 1;
+            }
+        }
+    } else {
+        // General case: compare F1 and G1 after iteration
+        if (coM(J[1], F1, G1) == 1) {
+            isTrue = 1;
+        } else {
+            if ((F1 == G1) && (i > j)) {  //it was i1>i2
+                isTrue = 1;
+            }
+        //     else {
+        //     if ((i>j)) {  //previously((F1 == G1) && (i1 == i2) && (i>j))
+        //         isTrue = 1;
+        //     }
+        // }
+        }
+      
+    }
+  
+
+  
+    return (isTrue);
+}
+
+
+
+
+
+
 
 //First Level LiftTree
 proc liftTree(ideal f, vector s) {
@@ -438,7 +697,7 @@ proc liftTree(ideal f, vector s) {
     //     }
     // }
    
-   g = lc_s * lm_s * f[a]; 
+     g = lc_s * lm_s * f[a]; 
    poly T0 = g - LOT(g, f);
     //poly T0 =LOT(g, f);
     T = pOLY_List(T0);
@@ -496,35 +755,231 @@ proc liftTree(ideal f, vector s) {
        
     return(TT);
 }
-proc LIFT_GPI(token Token, token TT) {
-    ideal f = Token.data[1]; 
+
+
+
+
+//iterative liftTree
+
+proc liftTree2(module f, vector s, list J, int level) {
+
+
+    int r = size(f);
+    int i, k, lambda;
+
+  //vector  h, t;
+  vector t;
+ vector g;
+    list T;  
+    int c;
+   
+    number lc_s = leadcoef(s);  // leading coefficient of s
+    poly lm_s = leadmonomial(s);  // leading monomial of s
+     int a0 = leadexp(s)[nvars(basering) + 1];
+
+    //  for (i = 1; i <= r; i++) {
+    //     if (s == lc_s * lm_s * gen(i)) {
+    //         h = lc_s * lm_s * f[i];  // Map to m * f[i]
+    //         break;  // Once found, break the loop early
+    //     }
+    // }
+
+
+    //    for (i = 1; i <= r; i++) {
+    //     if (a0 == i) {
+    //         h = lc_s * lm_s * f[i];  // Map to m * f[i]
+    //         break;  // Once found, break the loop early
+    //     }
+    // }
+
+    g = lc_s * lm_s * f[a0]; 
+    //list S = f;
+     
+
+
+
+     //For debugging 
+// string path = "/home/gnawali/gspc-syz/example_dir/temp/";  // Ensure the path ends with a "/"
+// string filename = "LiftTree2_SchFrame.ssi";
+// link l8 = "ssi:w " + path + filename;
+//   write(l8,J,"Second_lift_SchFram");
+//            close(l8);
+    vector  T0 = g - LOT_2(g, f,J,level);
+ 
+
+
+    T = vector_List(T0);
+//   string path = "/home/gnawali/gspc-syz/example_dir/temp/";  // Ensure the path ends with a "/"
+//  string filename = "Third_LIFT.ssi";
+//  link l = "ssi:w " + path + filename;
+//             write(l, T, "x(2)*gen(3)");
+// close(l);  
+    //vector s_bar=s;//not used
+
+    poly m1, m;
+    int lambda1;
+    vector s_v;
+    int C;
+    int a,b; //for component
+    list T_lift;
+    int counter=1;
+    //ideal I_Gr=J[1];
+    //module f0= leadSyz(I_Gr);//changing to lead syz
+    module f0=J[level];
+    // string path = "/home/gnawali/gspc-syz/example_dir/temp/";  // Ensure the path ends with a "/"
+    // string filename = "Third_LIFT_module.ssi";
+    // link l0 = "ssi:w " + path + filename;
+    //         write(l0, f0, "module f0");
+
+
+
+    for(k=1; k<=size(T); k++){
+             t= T[k];
+        
+            
+          for (lambda = 1; lambda <= r; lambda++) {
+           
+             
+            a = leadexp(t)[nvars(basering) + 1]; 
+            b= leadexp(f0[lambda])[nvars(basering) + 1];
+            
     
+
+            if(a==b){
+                   
+              C=(NF(leadmonomial(t), leadmonomial(f0[lambda]),1) ==(poly(0)));
+            
+               if (C==1) {
+                  
+                m1 = (leadcoef(t)*leadmonomial(t))/(leadcoef(f0[lambda])*leadmonomial(f0[lambda]));
+               // print(t);
+                                s_v = m1 * gen(lambda);
+   
+                              c= coM2(f0, s, s_v, J,level);
+
+    
+                
+                  if (c==1) {
+                 
+
+                    lambda1 = lambda;
+                    m = m1;
+                     T_lift[counter]=m * gen(lambda1);
+                     counter++;
+  
+                    break;
+                }
+                
+              
+            } 
+        }
+        
+      }    
+                
+                
+    
+           
+
+          
+            
+            
+   }   
+     return(T_lift);
+
+}
+
+
+
+
+
+
+
+//LIFT tree function for GPI-Space
+
+proc LIFT_GPI(token Token,token tok, token TT) 
+"USAGE: LIFT_GPI(Toke, tok,TT); input token
+       RETURN: a token LLT containing a lift (first level tails) of the leading syz vector TT.data[1].
+       NOTE  : The types token are defined . This procedure is intended to
+               be called as a transition procedure inside the worker process
+               (that is, the "inner" instances of SINGULAR).
+"          
+
+
+{
+    def J=tok.data[1];
+    def f = Token.data[1]; 
+    int counter=TT.data[6];
     vector s = TT.data[1];
-    smatrix B= TT.data[2]; //smatrix
+   // matrix B= TT.data[2]; //smatrix
     int colmn = TT.data[4]; //column
     
-    int c_n = TT.data[5] ;//sign
-    module l = leadSyz(f);
-    int l_size = size(l); 
+    
+ 
 
-    def LL = liftTree(f,s);      
-    int r = size(LL);         
-    token LLT;               
+
+
+ 
+if(typeof(f)=="ideal"){
+     def l = leadSyz(f);
    
-  for (int k = 1; k <=r; k++) {
+      int l_size = size(l); 
+      int r0= size(f);
+      int c=l_size;
+    }else{
+      if(typeof(f)=="vector"){
+        int level=counter;
+        def l=J[level];
+         
+         int l_size = size(l); 
+    
+       int r0= size(l);
+
+     def LL=J[level+1];
+     int c=size(LL);
+ 
+      }
+    }
+    
+
+ 
+
+        
+
+
+if(typeof(f)=="ideal"){
+          def lL=liftTree(f,s);
+          int r=size(lL);
+        } else{
+          if(typeof(f)=="vector"){
+            smatrix A[r0][c] =Token.data[2];
+            module M=A;
+            int level=counter;
+           
+            def lL=liftTree2(M,s,J,level);
+            int r=size(lL);
+           
+          }
+        } 
+  token LLT;               
+ int k;
+
+  for (k = 1; k <=r; k++) {
      token Ld;
     Ld.fieldnames = list("generator", "Sparse_matrix_Lift");  
-    smatrix sM[size(f)][l_size];
-    vector s_lift = LL[k];
+    smatrix sM[r0][c];
     
+           
+    vector s_lift = lL[k];
+     
     int l_k = leadexp(s_lift)[nvars(basering) + 1];
-
+  
     sM[l_k, colmn] = (-1)*leadcoef(s_lift) * leadmonomial(s_lift);
     
     
     Ld.data[1]=(-1)* s_lift;
     //print(s_lift);
     Ld.data[2]= sM;
+     
      //print("Smatrix");
     
    
@@ -534,9 +989,21 @@ proc LIFT_GPI(token Token, token TT) {
    
     //print("q:column");
     Ld.data[4]=colmn;
-  //print("sign");
-    Ld.data[5] = -c_n;
    
+  
+   
+    if(typeof(f)=="ideal"){
+   Ld.data[5]=J[2];
+   
+   }else {
+    if(typeof(f)=="vector"){
+      int level=counter;
+      Ld.data[5]=J[level+1];
+     
+    }
+   }
+    Ld.data[6]=counter;
+    Ld.data[7] = counter;
     LLT.fieldnames[k] = "generator";  
     LLT.data[k] = Ld; 
 
@@ -547,6 +1014,7 @@ proc LIFT_GPI(token Token, token TT) {
 }
 
 
+//SubLIFT function for ideal
 
 proc oneSublift(ideal f, vector s) {
     
@@ -630,46 +1098,215 @@ proc oneSublift(ideal f, vector s) {
     return(TT);
 }
 
-proc SubLIFT_GPI(token Token, token TT) {
-    ideal f = Token.data[1]; 
+
+
+
+//iterative sublift
+proc subLiftTree2(module f, vector s, list J, int level) {
+ 
+    int r = size(f);
+    int i, k, lambda;
+
+    vector g, h, H;
+    list T;
+     //module f0= leadSyz(I_Gr);//changing to lead syz
+     //ideal I_Gr=J[1];
+     //module f0= leadSyz(I_Gr);
+     //ideal I_Gr=J[1];
+     module f0=J[level];
+
+
+
+
+
+
+     
+    number lc_s = leadcoef(s);  // leading coefficient of s
+    poly lm_s = leadmonomial(s);  // leading monomial of s
+     int a0 = leadexp(s)[nvars(basering) + 1];
+ 
+    // for (i = 1; i <= r; i++) {
+    //     if (s == lc_s * lm_s * gen(i)) { // replacing leadmonomial by lead
+    //         h = lc_s * lm_s * f[i]; // psi: R^r --> R^s; g := psi(s);
+    //         H=lc_s * lm_s * f0[i]; // psi: R^r --> R^s; g := psi(s);
+    //           break;
+    //     }
+    // }
+
+
+    //    for (i = 1; i <= r; i++) {
+    //     if (a0 == i) {
+    //         h = lc_s * lm_s * f[i];  // psi: R^r --> R^s; g := psi(s);
+    //          H=lc_s * lm_s * f0[i]; // psi: R^r --> R^s; g := psi(s);
+    //         break;  // Once found, break the loop early
+    //     }
+    // }
+
+     h = lc_s * lm_s * f[a0];  // psi: R^r --> R^s; h := psi(s);
+     H=lc_s * lm_s * f0[a0]; // psi: R^r --> R^s; H := LT(psi(s));
+ 
+    g = h - lead(H);
     
+    //list S= f;
+    vector T0 = g - LOT_2(g, f,J,level);
+    T = vector_List(T0);
+   list TT;
+   int counter=1;
+    //vector s_hat = s;  //not used
+   
+    vector t;
+    
+    poly m, m1;
+    int lambda1;
+    vector s_v;
+    int a, b; //for component
+
+   
+    //Continue as long as T is not equal to empty
+    int C;
+    for (k = 1; k <= size(T); k++) {
+    t = T[k];
+    
+
+    for (lambda = 1; lambda <= r; lambda++) {
+        a = leadexp(t)[nvars(basering) + 1];
+        b = leadexp(f0[lambda])[nvars(basering) + 1];
+
+        
+        //print("printing a and b");
+
+        if (a == b) {
+            C = (NF(t, lead(f0[lambda])) == 0);
+            if (C == 1) {
+                m1 = (leadcoef(t) * leadmonomial(t)) / (leadcoef(f0[lambda]) * leadmonomial(f0[lambda]));
+                s_v = m1 * gen(lambda);
+                lambda1 = lambda;
+                //print("lambda is found");
+               m = m1;
+               //print(m);
+                TT[counter]=m*gen(lambda1);
+                break;
+            }
+        }
+      }  
+   }
+    return(TT);
+  }
+
+
+
+//SubLIFT function for GPI-Space
+ 
+proc SubLIFT_GPI(token Token,token tok, token TT) 
+"USAGE: SubLIFT_GPI(Toke, tok,TT); 
+       RETURN: a token LLT containing a sublift (tails) of the first level tails(vector TT.data[1]).
+       NOTE  : The types token are defined . This procedure is intended to
+               be called as a transition procedure inside the worker process
+               (that is, the "inner" instances of SINGULAR).
+"  
+
+
+
+
+
+{
+    def J=tok.data[1];
+    def f = Token.data[1]; 
+    int counter=TT.data[6];
     vector s = TT.data[1];
-    smatrix B= TT.data[2]; //smatrix
+   // matrix B= TT.data[2]; //smatrix
     int colmn = TT.data[4]; //column
     
-    int c_n = TT.data[5] ;//sign
-    module l = leadSyz(f);
-    int l_size = size(l);  
-    def LL = oneSublift(f,s);      
-    int r = size(LL);         
+if(typeof(f)=="ideal"){
+     
+     def l=J[2]; // replace def l = leadSyz(f);
+   
+      int l_size = size(l); 
+      int r0= size(f);
+      int c=l_size;
+    }else{
+      if(typeof(f)=="vector"){
+        int level=counter;
+        def l=J[level];
+         
+        int l_size = size(l); 
+    
+        int r0= size(l);
+
+        def LL=J[level+1];
+        int c=size(LL);
+  
+      }
+    }
+    
+
+ 
+if(typeof(f)=="ideal"){
+          def lL=oneSublift(f,s);
+          int r=size(lL);
+        } else{
+          if(typeof(f)=="vector"){
+            smatrix A[r0][c] =Token.data[2];
+            module M=A;
+            int level=counter;
+           
+            def lL=subLiftTree2(M,s,J,level);
+            int r=size(lL);
+           
+          }
+        }
+
+
     token LLT;               
    
-  for (int k = 1; k <=r; k++) {
-     token Ld;
-    Ld.fieldnames = list("generator", "Sparse_matrix_SubLift");  
-    smatrix sM[size(f)][l_size];
-    vector s_lift =c_n* LL[k];
-    
-    int l_k = leadexp(s_lift)[nvars(basering) + 1];
 
-    sM[l_k, colmn] =leadcoef(s_lift) * leadmonomial(s_lift);
+   
+
+  int k;
+
+  for (k = 1; k <=r; k++) {
+     token Ld;
+    Ld.fieldnames = list("generator", "Sparse_matrix_subLift");  
+    smatrix sM[r0][c];
     
+           
+    vector s_lift =lL[k];//added c_n
+     
+    int l_k = leadexp(s_lift)[nvars(basering) + 1];
+  
+    sM[l_k, colmn] = (-1)*leadcoef(s_lift) * leadmonomial(s_lift);//removed_sign
     
-    Ld.data[1]=c_n* s_lift;
-    //print(s_lift);
+     //print(s_lift);
+    Ld.data[1]=(-1)*s_lift;
+   
+
+    //print("Smatrix");
     Ld.data[2]= sM;
-     //print("Smatrix");
+    
+    
     
    
     //print("row");
 
     Ld.data[3] = l_k;
-   
-    //print("q:column");
+    
+    //print("column");
     Ld.data[4]=colmn;
-  //print("sign");
-    Ld.data[5] = (-1)*c_n;
+    
+  
+    
+   if(typeof(f)=="ideal"){
+   Ld.data[5]=J[2];
    
+   }else {
+    if(typeof(f)=="vector"){
+      int level=counter;
+      Ld.data[5]=J[level+1];
+      
+    }
+   }
+    Ld.data[6]=counter;
+    Ld.data[7] = counter;
     LLT.fieldnames[k] = "generator";  
     LLT.data[k] = Ld; 
 
@@ -684,28 +1321,95 @@ proc SubLIFT_GPI(token Token, token TT) {
 
 
 
-proc reduce_GPI(token input, token Tok, token tok){
- 
- def f=input.data[1];
- int r= size(f);
- def L=leadSyz(f);
+
+//Summation function for GPI-Space
+
+proc reduce_GPI(token input, token Tok, token tok)
+"USAGE: reduce_GPI(input, Tok, tok);
+       RETURN: an token output containing a sum  of the two tokens Tok and tok.
+       NOTE  : The types token are defined . This procedure is intended to
+               be called as a transition procedure inside the worker process
+               (that is, the "inner" instances of SINGULAR).
+"          
+
+{
+ def f=input.data[1];;
+
+if(typeof(f)=="ideal"){
+int r= size(f);
+
+ def L=Tok.data[5];
  int c=size(L);
- smatrix A[r][c];
- smatrix B[r][c];
+}else {
+  if(typeof(f)=="vector"){
+    def L=input.data[5];
+    int r= size(L);
+
+ def LL=Tok.data[5];
+ int c=size(LL);
+  }
+}
+
+
+ int counter= Tok.data[6];
+ matrix A[r][c];
+ matrix B[r][c];
  def v=Tok.data[1];
  A=Tok.data[2];
- def w= tok.data[1];
+ 
  B= tok.data[2];
- smatrix C[r][c];
- C= A+B;
+ 
+  
+    // Perform the matrix addition using jjPLUS_MA
+    matrix C[r][c];
+    C=A+B;
+
+   
  
   
     token output;
     output.fieldnames = list("generators","FirstSyz_matrix");
     output.data[1] = v;
     output.data[2]=C;
-    output.data[3]=r;
+    output.data[3] = r;
+   
+    //print("q:column");
     output.data[4]=c;
-    output.data[5]=1;
+  
+   
+   if(typeof(f)=="ideal"){
+   output.data[5]=L;
+   }else {
+    if(typeof(f)=="vector"){
+      output.data[5]=LL;
+    }
+   }
+   
+   output.data[6]=counter;//counter
+   output.data[7]=counter+1;
+    return(output);
+}
+
+proc Generate_GPI(token input, token Tok){
+ def res=input.data[1];
+ def Syz=Tok.data[2];
+ list L=res;
+ list L1;
+ for(int i=1; i<=size(L); i++){
+  L1[i]=L[i];
+ }
+ L1[size(L)+1]=Syz;
+ 
+
+
+   
+ 
+  
+    token output;
+    output.fieldnames = list("generators","list_Syz_matrices");
+    output.data[1] = L1;
+    output.data[2]=size(L1);
+   
+  
     return(output);
 }

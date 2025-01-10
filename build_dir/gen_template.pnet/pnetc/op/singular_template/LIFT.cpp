@@ -9,6 +9,7 @@
 #include <iostream>
 #include <string>
 #include <list>
+#include <chrono>
 
 namespace pnetc
 {
@@ -19,34 +20,40 @@ namespace pnetc
       void LIFT
         ( const std::string& input_name
         , const std::string& lead
+        , const std::string& all_lead
         , const std::string& needed_library
         , const std::string& base_filename
-        , we::type::literal::control& D
-        , std::list<pnet::type::value::value_type>& LIFT
         , int& N
         , int& E
+        , we::type::literal::control& D
+        , long& runtime
+        , std::list<pnet::type::value::value_type>& LIFT
         )
       {
-#line 248 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 267 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
                    //std::cout << "in singular _PetriNet_.._LIFT" << std::endl;
-
-                   std::pair<std::vector<std::string>, int> out = RESOLVE_INTERFACE_FUNCTION(singular_template_LIFT)
-                 (input_name, lead, needed_library, base_filename);
+                   
+                   std::tuple<std::vector<std::string>, int, long> out = RESOLVE_INTERFACE_FUNCTION(singular_template_LIFT)
+                  (input_name,all_lead, lead, needed_library, base_filename);
                        
+
+                       std::vector<std::string> vec = std::get<0>(out);
+                      int total_generator = std::get<1>(out);
+                      runtime = std::get<2>(out);
                        //std::cout << "LIFT_COUNT:"<< lift_count << std::endl;
                         
-                         for(int i (0); i<out.first.size(); i++)
+                         for(int i (0); i<vec.size(); i++)
                                                                  {
                          //std::cout << "LIFT_Success:"<<out.first[i] << std::endl;
-                          LIFT.emplace_back(out.first[i]);
+                          LIFT.emplace_back(vec[i]);
                        
                          
                          
       
                     }
-                    int total_generator=out.second;
-                  if (total_generator>=1)
+               
+               if (total_generator>=1)
                 {
                    N=total_generator-1;
                    E=0;
@@ -56,8 +63,13 @@ namespace pnetc
                       N=0;
                   } 
                 }
-               //std::cout << "LIFT_Success:"<<lift_count << std::endl;
-                              
+              // std::cout << "LIFT_COUNT_Parent:"<< N << std::endl;
+              // std::cout << "LIFT_COUNT_Child:"<< E << std::endl;
+              
+
+
+//std::cout << "LIFT Duration: " << runtime << " milliseconds" << std::endl;
+              
 
             
       }

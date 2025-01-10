@@ -26,7 +26,7 @@ namespace pnetc
         , int& counter
         )
       {
-#line 105 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 119 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
           //std::cout <<"All_LeadSyz_Input:"<<init<< std::endl;
 					std::pair<std::vector<std::string>, int> out = RESOLVE_INTERFACE_FUNCTION( singular_template_all_leadsyz_GpI) (init,library_name, base_filename);
@@ -35,14 +35,14 @@ namespace pnetc
                     
                          for(int i (0); i<out.first.size(); i++)
                                                                  {
-                         std::cout << "All_Success:"<<out.first[i] << std::endl;
+                         //std::cout << "All_Success:"<<out.first[i] << std::endl;
                          OUTPUT.emplace_back(out.first[i]);
                        
                          
                          
       
                     }
-                    std::cout << "SchFrame"<<counter<< std::endl;
+                    // std::cout << "SchFrame"<<counter<< std::endl;
           
             		
       }

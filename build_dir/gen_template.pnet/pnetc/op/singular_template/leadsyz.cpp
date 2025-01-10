@@ -10,6 +10,7 @@
 #include <string>
 #include <list>
 #include <numeric>
+#include <chrono>
 
 namespace pnetc
 {
@@ -22,37 +23,43 @@ namespace pnetc
         , const we::type::literal::control& s
         , const std::string& library_name
         , const std::string& base_filename
+        , int& nleads
         , int& counter
         , int& N
         , std::list<pnet::type::value::value_type>& Sublift
+        , long& runtime
         , std::list<pnet::type::value::value_type>& OUT
-        , int& nleads
         )
       {
-#line 171 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 184 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
-                   
-                   std::pair<std::vector<std::string>, int> out = RESOLVE_INTERFACE_FUNCTION(singular_template_leadSyzGPI)
+            
+            
+                  std::tuple<std::vector<std::string>, int, long> out = RESOLVE_INTERFACE_FUNCTION(singular_template_leadSyzGPI)
                         (input, library_name, base_filename);
-                     
-                       // std::cout << "out.first:"<<out.first.size() << std::endl;
-                         for(int i (0); i<out.first.size(); i++)
+                      std::vector<std::string> vec = std::get<0>(out);
+                      int total_generator = std::get<1>(out);
+                      runtime = std::get<2>(out);
+                       N=total_generator;
+                      counter=total_generator;
+                      
+                         for(int i (0); i<vec.size(); i++)
                                                                  {
-                          //std::cout << "leadSyz_Success:"<<out.first[i] << std::endl;
-                          OUT.emplace_back(out.first[i]);
-                          Sublift.emplace_back(out.first[i]);
-                         // std::cout << "leadSyz_Success:"<<out.first[i] << std::endl;
-                          //std::cout << "SubliftleadSyz_Success:"<<out.first[i] << std::endl;
+                          //std::cout << "leadSyz_Success:"<<vec[i] << std::endl;
+                          OUT.emplace_back(vec[i]);
+                          Sublift.emplace_back(vec[i]);
+                         //std::cout << "leadSyz_Success:"<<vec[i] << std::endl;
+                          //std::cout << "SubliftleadSyz_Success:"<<vec[i] << std::endl;
                           
                           }
                       
-               
-                        nleads=out.second;   
+                      //  std::cout << "leadSyz_place_counter:"<<N << std::endl;
+                         nleads=total_generator; 
+                          // std::cout << "#leadSyz="<<nleads<< std::endl;
 
-                         counter=out.second; 
-                         N=out.second; 
-                              
-
+            
+                   
+            
             
       }
     }

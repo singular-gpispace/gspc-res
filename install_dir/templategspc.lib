@@ -186,14 +186,14 @@ proc gspc_template_SchRes(ideal I, configToken gc)
        setring resultRing;
     // Extract the data from resultToken
     def Result = resultToken.data;
-   print("beforeReturn");
-  print(Result);
+//    print("beforeReturn");
+//   print(Result);
     
 
 
     setring inputRing;
  def Result=fetch(resultRing,Result);
- print("After fetch");
-  print(Result);
+//  print("After fetch");
+//   print(Result);
     return(Result);
 }

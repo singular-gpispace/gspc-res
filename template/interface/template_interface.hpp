@@ -26,8 +26,9 @@ std::string singular_template_compute_StdBasis ( std::string const&
 NO_NAME_MANGLING
 std::string singular_template_Init( std::string const& );
 
+
 NO_NAME_MANGLING
-std::pair<std::vector<std::string>, int> singular_template_leadSyzGPI( std::string const&
+std::tuple<std::vector<std::string>, int,  long> singular_template_leadSyzGPI( std::string const&
                                                     
                                                          , std::string const&
 									  , std::string const&
@@ -37,7 +38,7 @@ std::pair<std::vector<std::string>, int> singular_template_leadSyzGPI( std::stri
 
 
 NO_NAME_MANGLING
-std::pair<std::vector<std::string>, int> singular_template_all_leadsyz_GpI( std::string const&
+std::pair<std::vector<std::string>, int>  singular_template_all_leadsyz_GpI( std::string const&
                                                     
                                                          , std::string const&
 									  , std::string const&
@@ -45,30 +46,44 @@ std::pair<std::vector<std::string>, int> singular_template_all_leadsyz_GpI( std:
 
 
 
+
 NO_NAME_MANGLING
-std::pair<std::vector<std::string>, int> singular_template_LIFT( std::string const&
-                                     , std::string const&
+std::tuple<std::vector<std::string>, int,  long> singular_template_LIFT( std::string const&
                                       , std::string const&
-						  , std::string const&
+                                     , std::string const&
+                                     ,std::string const&
+                                      , std::string const&
+						
                                       );
 
-
-           
+          
 NO_NAME_MANGLING
-std::pair<std::vector<std::string>, int> singular_template_SUBLIFT( std::string const&
-                                     , std::string const&
+std::tuple<std::vector<std::string>, int,  long> singular_template_SUBLIFT ( std::string const&
                                       , std::string const&
-						  , std::string const&
+                                     , std::string const&
+                                     ,std::string const&
+                                      , std::string const&
+						
                                       );
 
 NO_NAME_MANGLING
-std::string singular_template_reduce( std::string const&
+std::pair<std::string, long> singular_template_reduce( std::string const&
                                      , std::string const&
                                      , std::string const&
                                       , std::string const&
 						  , std::string const&
-                                      );                           
+                                      );   
 
+
+                                      
+NO_NAME_MANGLING
+std::string singular_template_Generate (std::string const&
+                                      , std::string const&
+                                      , std::string const&
+						  , std::string const&
+                                      );   
+
+                                      
                                       NO_NAME_MANGLING
 std::string  singular_template_removeFiles(const std::string&,
-                                      const std::string&);
+                                      const std::string&);                     

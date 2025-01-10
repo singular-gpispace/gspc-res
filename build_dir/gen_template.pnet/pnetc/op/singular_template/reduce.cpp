@@ -4,6 +4,7 @@
 #include <interface/template_interface.hpp>
 #include <util-generic/dynamic_linking.hpp>
 #include <iostream>
+#include <chrono>
 
 namespace pnetc
 {
@@ -17,26 +18,32 @@ namespace pnetc
         , const std::string& input
         , const std::string& l
         , const std::string& r
+        , long& runtime
         , std::string& LHS_delete
-        , we::type::literal::control& nsummand
         , std::string& RHS_delete
+        , we::type::literal::control& nsummand
         , std::string& s
         )
       {
-#line 551 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 661 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
-						s = RESOLVE_INTERFACE_FUNCTION(singular_template_reduce)(input,l,r,library_name, base_filename
+
+                
+                //std::cout << "Reduce_Input:" <<input << std::endl;
+                //std::cout << "Reduce_l:" <<l << std::endl;
+                //std::cout << "Reduce_r" <<r<< std::endl;
+						 auto result  = RESOLVE_INTERFACE_FUNCTION(singular_template_reduce)(input,l,r,library_name, base_filename
 							); 
-                  
-                         
-                        LHS_delete=l;
+                s = result.first;
+          runtime = result.second;
+            //std::cout << "Reduce:" << s << std::endl;
+     
+                       LHS_delete=l;
                           
                        RHS_delete=r;
-                          
-                          
-                       
-                   
-            // std::cout << "Reduce:" << s << std::endl;
+
+//std::cout << "Reduce Duration: " << runtime << " milliseconds" << std::endl;
+
             		
       }
     }

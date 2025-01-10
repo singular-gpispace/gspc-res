@@ -11,12 +11,17 @@ namespace pnetc
     namespace singular_template
     {
       void result
-        ( const std::string& s
+        ( const int& nleads
+        , const int& d_lift
         , const int& counter
         , const int& N
         , const int& E
+        , std::string& s
         , we::type::literal::control& ctrl
-        , std::string& OUTPUT
+        , int& n
+        , int& e
+        , we::type::literal::control& c_time
+        , int& d_back
         );
     }
   }

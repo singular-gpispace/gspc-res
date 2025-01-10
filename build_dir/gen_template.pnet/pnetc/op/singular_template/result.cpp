@@ -12,27 +12,33 @@ namespace pnetc
     namespace singular_template
     {
       void result
-        ( const std::string& s
+        ( const int& nleads
+        , const int& d_lift
         , const int& counter
         , const int& N
         , const int& E
+        , std::string& s
         , we::type::literal::control& ctrl
-        , std::string& OUTPUT
+        , int& n
+        , int& e
+        , we::type::literal::control& c_time
+        , int& d_back
         )
       {
-#line 702 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 864 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
         
-          OUTPUT=s;
-      std::cout << "Result_Success: " << OUTPUT<< std::endl;
+         
+      std::cout << "Result_Success: " << s<< std::endl;
         std::cout << "counter: " <<counter<< std::endl;
         std::cout << "place_E: " <<E<< std::endl;
         std::cout << "place_N: " <<N<< std::endl;
          
-        
+          e=0;
+          n=0;
+          d_back=0;
         //std::cout << "E_" <<e<< std::endl;
         //std::cout << "N_" <<n<< std::endl;
-       
       
       }
     }
