@@ -28,7 +28,7 @@ namespace pnetc
         , int& E
         )
       {
-#line 342 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 344 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
                   // std::cout << "in singular _PetriNet_.._SubLIFT" << std::endl;
                            

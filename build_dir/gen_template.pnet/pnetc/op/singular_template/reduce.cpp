@@ -23,7 +23,7 @@ namespace pnetc
         , std::string& s
         )
       {
-#line 549 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 551 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
 						s = RESOLVE_INTERFACE_FUNCTION(singular_template_reduce)(input,l,r,library_name, base_filename
 							); 

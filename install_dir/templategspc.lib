@@ -195,5 +195,5 @@ proc gspc_template_SchRes(ideal I, configToken gc)
  def Result=fetch(resultRing,Result);
  print("After fetch");
   print(Result);
-    return(0);
+    return(Result);
 }

@@ -82,14 +82,15 @@ namespace pnetc
         , std::map<std::string, void*> const&
         )
       {
+        const std::string & s (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "s"))));
         const int & counter (::boost::get< int > (_pnetc_input.value (std::list<std::string> (1, "counter"))));
         const int & N (::boost::get< int > (_pnetc_input.value (std::list<std::string> (1, "N"))));
         const int & E (::boost::get< int > (_pnetc_input.value (std::list<std::string> (1, "E"))));
-        std::string s (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "s"))));
         we::type::literal::control ctrl (::boost::get< we::type::literal::control > (_pnetc_input.value (std::list<std::string> (1, "ctrl"))));
-        ::pnetc::op::singular_template::result (counter, N, E, s, ctrl);
-        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "s"), s);
+        std::string OUTPUT;
+        ::pnetc::op::singular_template::result (s, counter, N, E, ctrl, OUTPUT);
         _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "ctrl"), ctrl);
+        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "OUTPUT"), OUTPUT);
       }
     }
   }
@@ -162,10 +163,10 @@ namespace pnetc
         const we::type::literal::control & C (::boost::get< we::type::literal::control > (_pnetc_input.value (std::list<std::string> (1, "C"))));
         const std::string & library_name (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "library_name"))));
         const std::string & base_filename (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "base_filename"))));
-        std::list<pnet::type::value::value_type> output;
+        std::list<pnet::type::value::value_type> OUTPUT;
         int counter;
-        ::pnetc::op::singular_template::All_Lead (init, C, library_name, base_filename, output, counter);
-        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "output"), output);
+        ::pnetc::op::singular_template::All_Lead (init, C, library_name, base_filename, OUTPUT, counter);
+        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "OUTPUT"), OUTPUT);
         _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "counter"), counter);
       }
     }
@@ -373,10 +374,12 @@ namespace pnetc
       {
         const std::string & input (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "input"))));
         we::type::literal::control c;
+        we::type::literal::control C;
         std::string init;
         std::string output;
-        ::pnetc::op::singular_template::Init (input, c, init, output);
+        ::pnetc::op::singular_template::Init (input, c, C, init, output);
         _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "c"), c);
+        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "C"), C);
         _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "init"), init);
         _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "output"), output);
       }

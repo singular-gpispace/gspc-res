@@ -22,11 +22,11 @@ namespace pnetc
         , const we::type::literal::control& C
         , const std::string& library_name
         , const std::string& base_filename
-        , std::list<pnet::type::value::value_type>& output
+        , std::list<pnet::type::value::value_type>& OUTPUT
         , int& counter
         )
       {
-#line 103 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 105 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
           //std::cout <<"All_LeadSyz_Input:"<<init<< std::endl;
 					std::pair<std::vector<std::string>, int> out = RESOLVE_INTERFACE_FUNCTION( singular_template_all_leadsyz_GpI) (init,library_name, base_filename);
@@ -36,7 +36,7 @@ namespace pnetc
                          for(int i (0); i<out.first.size(); i++)
                                                                  {
                          std::cout << "All_Success:"<<out.first[i] << std::endl;
-                         output.emplace_back(out.first[i]);
+                         OUTPUT.emplace_back(out.first[i]);
                        
                          
                          

@@ -227,7 +227,7 @@ proc greater_than_(vector s, vector v, module M)
   }
 }
 
-static proc lift_tree_with_order(vector s, module M, list LL)
+proc lift_tree_with_order(vector s, module M, list LL)
 {
   vector g = phi_(s, M);
   vector T = remove_LOT_(g, M);
