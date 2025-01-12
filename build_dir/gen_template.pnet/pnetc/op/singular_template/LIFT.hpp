@@ -21,7 +21,6 @@ namespace pnetc
         , int& N
         , int& E
         , we::type::literal::control& D
-        , long& runtime
         , std::list<pnet::type::value::value_type>& LIFT
         );
     }

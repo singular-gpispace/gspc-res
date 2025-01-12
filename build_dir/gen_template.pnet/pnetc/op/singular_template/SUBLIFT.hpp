@@ -21,7 +21,6 @@ namespace pnetc
         , int& N
         , int& E
         , std::list<pnet::type::value::value_type>& LIFT
-        , long& runtime
         , we::type::literal::control& lift_count
         , std::string& SUBLIFT
         );

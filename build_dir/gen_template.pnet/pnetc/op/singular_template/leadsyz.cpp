@@ -27,7 +27,6 @@ namespace pnetc
         , int& counter
         , int& N
         , std::list<pnet::type::value::value_type>& Sublift
-        , long& runtime
         , std::list<pnet::type::value::value_type>& OUT
         )
       {
@@ -39,7 +38,7 @@ namespace pnetc
                         (input, library_name, base_filename);
                       std::vector<std::string> vec = std::get<0>(out);
                       int total_generator = std::get<1>(out);
-                      runtime = std::get<2>(out);
+                      auto runtime = std::get<2>(out);
                        N=total_generator;
                       counter=total_generator;
                       

@@ -21,7 +21,6 @@ namespace pnetc
         , int& counter
         , int& N
         , std::list<pnet::type::value::value_type>& Sublift
-        , long& runtime
         , std::list<pnet::type::value::value_type>& OUT
         );
     }

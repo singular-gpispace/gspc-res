@@ -165,14 +165,14 @@
         <in name="input" type="string"/>
         <in name ="s" type ="control"/>
         <out name ="N" type ="int"/>
-        <out name="runtime" type ="long"/>
+       
         <out name="counter" type="int"/>
         <out name="OUT" type="list"/>
         <out name ="Sublift" type ="list"/>
         <out name="nleads" type="int"/>
       <module name="singular_template"
                 require_function_unloads_without_rest="false"
-                function="leadsyz(input,s,nleads,counter,N,Sublift,runtime,OUT,library_name,base_filename)">
+                function="leadsyz(input,s,nleads,counter,N,Sublift,OUT,library_name,base_filename)">
         <cinclude href="interface/template_interface.hpp" />
         <cinclude href="util-generic/dynamic_linking.hpp"/>
         <cinclude href="vector"/>
@@ -189,7 +189,7 @@
                         (input, library_name, base_filename);
                       std::vector<std::string> vec = std::get<0>(out);
                       int total_generator = std::get<1>(out);
-                      runtime = std::get<2>(out);
+                      auto runtime = std::get<2>(out);
                        N=total_generator;
                       counter=total_generator;
                       
@@ -221,7 +221,7 @@
       <connect-out-many port="Sublift" place="place_SubLift"/>
        <connect-out port ="N" place="place_N"/>
        <connect-out port="counter" place="place_counter"/>
-        <connect-out port ="runtime" place="place_LeadSyz_runtime"/>
+     
        <connect-out port="nleads" place="nleads"/>
     </transition>
 
@@ -249,13 +249,13 @@
       <out name="N" type="int"/>
      <out name="E" type ="int"/>
      <out name="D" type ="control"/>
-    <out name="runtime" type ="long"/>
+    
      <out name ="LIFT" type= "list"/>
     
 
              <module name="singular_template"
             require_function_unloads_without_rest="false"
-            function="LIFT(input_name,lead,N,E,all_lead,D, runtime,LIFT,needed_library,base_filename)">
+            function="LIFT(input_name,lead,N,E,all_lead,D,LIFT,needed_library,base_filename)">
             <cinclude href="interface/template_interface.hpp" />
            <cinclude href="util-generic/dynamic_linking.hpp"/>
             <cinclude href="vector"/>
@@ -274,7 +274,7 @@
 
                        std::vector<std::string> vec = std::get<0>(out);
                       int total_generator = std::get<1>(out);
-                      runtime = std::get<2>(out);
+                     auto runtime = std::get<2>(out);
                        //std::cout << "LIFT_COUNT:"<< lift_count << std::endl;
                         
                          for(int i (0); i<vec.size(); i++)
@@ -318,7 +318,7 @@
   <connect-out-many port="LIFT" place="place_Tau"/>
  <connect-out port="N" place="place_N"/>
   <connect-out port="E" place="place_E"/>
-<connect-out port ="runtime" place="place_LIFT_sum"/>
+
   <connect-out port="D" place="LIFT_init_Remove"/>
 
 
@@ -334,7 +334,7 @@
 
 
 <place name="place_LIFT_runtime" type="long">
-    <token><value>0L</value></token>
+   
 </place>
 
 
@@ -377,7 +377,7 @@
      <in name ="input_name" type= "string"/>
      <in name="place_Tau" type="string"/>
     <out name ="lift_count" type ="control"/>
-     <out name ="runtime" type="long"/>
+   
      <out name ="LIFT" type= "list"/>
      <out name ="SUBLIFT" type= "string"/>
       <out name="N" type="int"/>
@@ -385,7 +385,7 @@
 
              <module name="singular_template"
             require_function_unloads_without_rest="false"
-            function="SUBLIFT(input_name,place_Tau,N,E,LIFT,runtime,all_lead,lift_count,SUBLIFT,needed_library,base_filename)">
+            function="SUBLIFT(input_name,place_Tau,N,E,LIFT,all_lead,lift_count,SUBLIFT,needed_library,base_filename)">
             <cinclude href="interface/template_interface.hpp" />
            <cinclude href="util-generic/dynamic_linking.hpp"/>
             <cinclude href="vector"/>
@@ -408,7 +408,7 @@
                        
                      std::vector<std::string> vec = std::get<0>(out);
                       int total_generator = std::get<1>(out);
-                      runtime = std::get<2>(out);
+                     auto runtime = std::get<2>(out);
 
                         
                          for(int i (0); i<vec.size(); i++)
@@ -471,13 +471,13 @@
   <connect-out port="N" place="place_N"/>
   <connect-out port="E" place="place_E"/>
    <connect-out port ="lift_count" place="place_leadsyz_counter"/>
-  <connect-out port ="runtime" place="place_subLIFT_sum"/>
+ 
   
   
   </transition> 
 
 <place name="place_SubLIFT_runtime" type="long">
-    <token><value>0L</value></token>
+  
 </place>
 
 
@@ -648,12 +648,12 @@
         <in name="r" type="string"/>
         <in name="input" type="string"/>
         <out name ="nsummand" type ="control"/>
-        <out name ="runtime" type="long"/>
+        
          <out name="LHS_delete" type="string"/>
        <out name="RHS_delete" type="string"/>
      <module name="singular_template"
               		require_function_unloads_without_rest="false"
-              		function="reduce(library_name,runtime,LHS_delete,RHS_delete, base_filename,input,nsummand, s,l,r)">
+              		function="reduce(library_name,LHS_delete,RHS_delete, base_filename,input,nsummand, s,l,r)">
           		<cinclude href="interface/template_interface.hpp" />
           		<cinclude href="util-generic/dynamic_linking.hpp"/>
               <cinclude href="iostream"/>
@@ -668,8 +668,8 @@
 						 auto result  = RESOLVE_INTERFACE_FUNCTION(singular_template_reduce)(input,l,r,library_name, base_filename
 							); 
                 s = result.first;
-          runtime = result.second;
-            //std::cout << "Reduce:" << s << std::endl;
+           auto runtime = result.second;
+            // std::cout << "Reduce:runtime=" << runtime << std::endl;
      
                        LHS_delete=l;
                           
@@ -688,7 +688,7 @@
       <connect-in port="r" place="R"/>
       <connect-out port="s" place="place_SubLift"/>
       <connect-out port ="nsummand" place="place_nsummand"/>
-      <connect-out port ="runtime" place="place_Reduce_sum"/>
+      
        
        <connect-out port="LHS_delete" place="LHS_delete"/>
        <connect-out port="RHS_delete" place="RHS_delete"/>
@@ -787,7 +787,7 @@
 
 
 <place name="place_Reduce_runtime" type="long">
-    <token><value>0L</value></token>
+   
 </place>
 
 
@@ -854,11 +854,11 @@
    <out name="n" type ="int"/>
    <out name ="e" type ="int"/>
     <in name="E" type="int"/>
-    <out name ="c_time" type ="control"/>
+   
     <out name ="d_back" type ="int"/>
      <in name="nleads" type="int"/>
       <in name="d_lift" type="int"/>
-    <module name="singular_template" function="result(s,n,e,c_time,ctrl,d_back,nleads,d_lift,counter,N,E)">
+    <module name="singular_template" function="result(s,n,e,ctrl,d_back,nleads,d_lift,counter,N,E)">
       <cinclude href="interface/template_interface.hpp" />
       <cinclude href="util-generic/dynamic_linking.hpp"/>
        <cinclude href="iostream"/>
@@ -897,7 +897,7 @@
   <connect-in port="nleads" place="nleads"/>
   <connect-out port="e" place="E"/>
   <connect-out port="n" place="N"/>
-   <connect-out port="c_time" place="place_control_runtime"/>
+  
     <connect-out port="d_back" place="Count_LIFT"/>
 </transition>
 
@@ -967,12 +967,12 @@
     <in name="res" type="string"/>
     <out name="Res" type ="string"/>
     <in name="input" type="string"/>
-    <in name="sumTime" type="long"/>
+    
    
     <out name ="Input" type="string"/>
     <out name="c" type ="control"/>
     
-    <module name="singular_template" function="Generate(res,sumTime,library_name, base_filename, Res, input,Input,len, c,syz)">
+    <module name="singular_template" function="Generate(res,library_name, base_filename, Res, input,Input,len, c,syz)">
       <cinclude href="interface/template_interface.hpp" />
       <cinclude href="util-generic/dynamic_linking.hpp"/>
        <cinclude href="iostream"/>
@@ -1003,7 +1003,7 @@
   <connect-out port="c" place="place_control"/>
   <connect-out port="Res" place="place_Res"/>
   <connect-inout port="len" place="place_length_Res"/>
- <connect-in port="sumTime" place="place_sum_runtime"/>
+ 
   
 </transition>
 

@@ -12,7 +12,6 @@ namespace pnetc
     {
       void Generate
         ( const std::string& res
-        , const long& sumTime
         , const std::string& library_name
         , const std::string& base_filename
         , const std::string& input

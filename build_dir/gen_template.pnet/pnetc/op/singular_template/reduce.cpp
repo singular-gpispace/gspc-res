@@ -18,7 +18,6 @@ namespace pnetc
         , const std::string& input
         , const std::string& l
         , const std::string& r
-        , long& runtime
         , std::string& LHS_delete
         , std::string& RHS_delete
         , we::type::literal::control& nsummand
@@ -35,8 +34,8 @@ namespace pnetc
 						 auto result  = RESOLVE_INTERFACE_FUNCTION(singular_template_reduce)(input,l,r,library_name, base_filename
 							); 
                 s = result.first;
-          runtime = result.second;
-            //std::cout << "Reduce:" << s << std::endl;
+           auto runtime = result.second;
+            // std::cout << "Reduce:runtime=" << runtime << std::endl;
      
                        LHS_delete=l;
                           

@@ -21,7 +21,6 @@ namespace pnetc
         , we::type::literal::control& ctrl
         , int& n
         , int& e
-        , we::type::literal::control& c_time
         , int& d_back
         )
       {
