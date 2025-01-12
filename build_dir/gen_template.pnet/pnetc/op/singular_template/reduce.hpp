@@ -17,8 +17,8 @@ namespace pnetc
         , const std::string& l
         , const std::string& r
         , std::string& LHS_delete
-        , we::type::literal::control& nsummand
         , std::string& RHS_delete
+        , we::type::literal::control& nsummand
         , std::string& s
         );
     }

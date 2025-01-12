@@ -22,8 +22,7 @@ gspc_template(list,configToken,configToken)    interface of the template framewo
 proc mod_init()
 {
     //Singular does not support fieldname containing underscore
-    LIB "/home/santosh/gspc-syz/build_dir/src/libSINGULAR-template-module.so";
-
+    LIB "libSINGULAR-template-module.so";
     newstruct("configToken", "string tokentype, def options");
     newstruct("gspcConfigToken", "string tmpdir, string nodefile, int procspernode, string rifstrategy, string rifstrategyparameters, string loghost, int logport, string loghostfile");
     newstruct("templateConfigToken", " string neededLibrary, string functionName");
@@ -176,40 +175,25 @@ proc gspc_template_SchRes(ideal I, configToken gc)
         t.data[2] = r;
         inputlists[i] = t;
     }
-    rtimer=0;
- system("--ticks-per-sec",1000); // set timer resolution to ms
- int t0=rtimer;
     def re = gspc_template(inputlists, gc, ct);
     def inputRing = basering;
     // Access the first element in the list
     def resultToken = re[1];
-    print("Answer=");
-    print(resultToken);
-    // Print the structure and type of `resultToken`
-    //print("Structure of resultToken: "); print(resultToken);
-    //print("Type of resultToken: "); print(typeof(resultToken));
-
+    
    
 
-    // Print current ring context
-    //print("Current ring context before accessing data: "); print(basering);
-
-       def resultRing = resultToken.r_data;
+        def resultRing = resultToken.r_data;
        setring resultRing;
     // Extract the data from resultToken
-    list Result = resultToken.data;
-   print("beforeReturn");
-  print(Result);
-  rtimer-t0;
-print("timer");
-   
-
-//    // Restore the original ring context
-    setring inputRing;
-
-//     //Print restored ring context
-//     print("Ring context restored to: "); print(basering);
+    def Result = resultToken.data;
+//    print("beforeReturn");
+//   print(Result);
     
- return(imap(resultRing,Result));
 
+
+    setring inputRing;
+ def Result=fetch(resultRing,Result);
+//  print("After fetch");
+//   print(Result);
+    return(Result);
 }

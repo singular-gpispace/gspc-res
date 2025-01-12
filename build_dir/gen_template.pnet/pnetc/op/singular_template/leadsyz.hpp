@@ -17,11 +17,11 @@ namespace pnetc
         , const we::type::literal::control& s
         , const std::string& library_name
         , const std::string& base_filename
+        , int& nleads
         , int& counter
         , int& N
         , std::list<pnet::type::value::value_type>& Sublift
         , std::list<pnet::type::value::value_type>& OUT
-        , int& nleads
         );
     }
   }

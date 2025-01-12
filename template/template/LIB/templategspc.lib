@@ -180,30 +180,20 @@ proc gspc_template_SchRes(ideal I, configToken gc)
     // Access the first element in the list
     def resultToken = re[1];
     
-    // Print the structure and type of `resultToken`
-    //print("Structure of resultToken: "); print(resultToken);
-    //print("Type of resultToken: "); print(typeof(resultToken));
-
    
-
-    // Print current ring context
-    //print("Current ring context before accessing data: "); print(basering);
 
         def resultRing = resultToken.r_data;
        setring resultRing;
     // Extract the data from resultToken
-    list Result = resultToken.data;
-   print("beforeReturn");
-  print(Result);
-    // Print the extracted data for verification
-
-//    // Restore the original ring context
-    setring inputRing;
-
-//     //Print restored ring context
-//     print("Ring context restored to: "); print(basering);
+    def Result = resultToken.data;
+//    print("beforeReturn");
+//   print(Result);
     
-//     // Return the result
-  //list Result=imap(resultRing,Result);
-    return(fetch(resultRing,Result));
+
+
+    setring inputRing;
+ def Result=fetch(resultRing,Result);
+//  print("After fetch");
+//   print(Result);
+    return(Result);
 }

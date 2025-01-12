@@ -13,11 +13,11 @@ namespace pnetc
         ( int& s
         )
       {
-#line 576 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 827 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
        // std::cout << "Decrement Transition - Before: " << s << std::endl;
         s = s - 1;
-      std::cout << "Decrement Transition - After: " << s << std::endl;
+      //std::cout << "Decrement Transition - After: " << s << std::endl;
       
       }
     }
