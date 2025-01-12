@@ -30,8 +30,8 @@ gc.options.logport = 9876;
 // ideal J=f1,f2,f3;
 
 // Koszul Case
-// ring R=0,(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10),dp;
-// ideal rNC=x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10;
+ring R=0,(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10),dp;
+ideal J=x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10;
 //  ideal I=randomid(maxideal(1),8,2);
 // map f=R,I[1..8];
 // f;
@@ -39,16 +39,16 @@ gc.options.logport = 9876;
 // ideal J=std(RNC);
 // print("J=");
 // print(J);
-ring R=0,(x0,x1,x2,x3,x4),dp;
-matrix m[2][4]=x0,x1,x2,x3,x1,x2,x3,x4;
-ideal rNC=minor(m,2);
-ideal I=randomid(maxideal(1),5,23);
-map f=R,I[1..5];
-f;
-ideal RNC=f(rNC);
-ideal J=std(RNC);
-print("J=");
-print(J);
+// ring R=0,(x0,x1,x2,x3,x4),dp;
+// matrix m[2][4]=x0,x1,x2,x3,x1,x2,x3,x4;
+// ideal rNC=minor(m,2);
+// ideal I=randomid(maxideal(1),5,23);
+// map f=R,I[1..5];
+// f;
+// ideal RNC=f(rNC);
+// ideal J=std(RNC);
+// print("J=");
+// print(J);
  //Example 1:
  
 // ring R= 0, (w,x,y,z), (dp,c);
@@ -133,8 +133,6 @@ print(J);
 // poly f3 = x0*x2 + x1*x3;
 // poly f4 = x0*x3 + x1*x4 + x2*x5;
 // poly f5 = x0*x4 + x1*x5;
-
-
 // ideal J1 = f1, f2, f3, f4, f5;
 // ideal J=std(J1);
 
