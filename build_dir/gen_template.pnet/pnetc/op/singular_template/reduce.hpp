@@ -1,7 +1,6 @@
 #ifndef _PNETC_OP_singular_template_reduce
 #define _PNETC_OP_singular_template_reduce
 
-#include <we/type/literal/control.hpp>
 #include <string>
 
 namespace pnetc
@@ -18,7 +17,6 @@ namespace pnetc
         , const std::string& r
         , std::string& LHS_delete
         , std::string& RHS_delete
-        , we::type::literal::control& nsummand
         , std::string& s
         );
     }

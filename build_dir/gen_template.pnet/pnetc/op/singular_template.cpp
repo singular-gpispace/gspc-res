@@ -56,7 +56,6 @@ namespace pnetc
   }
 }
 #include <pnetc/op/singular_template/reduce.hpp>
-#include <we/type/literal/control.hpp>
 #include <string>
 
 namespace pnetc
@@ -79,19 +78,16 @@ namespace pnetc
         const std::string & r (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "r"))));
         std::string LHS_delete;
         std::string RHS_delete;
-        we::type::literal::control nsummand;
         std::string s;
-        ::pnetc::op::singular_template::reduce (library_name, base_filename, input, l, r, LHS_delete, RHS_delete, nsummand, s);
+        ::pnetc::op::singular_template::reduce (library_name, base_filename, input, l, r, LHS_delete, RHS_delete, s);
         _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "LHS_delete"), LHS_delete);
         _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "RHS_delete"), RHS_delete);
-        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "nsummand"), nsummand);
         _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "s"), s);
       }
     }
   }
 }
 #include <pnetc/op/singular_template/SUBLIFT.hpp>
-#include <we/type/literal/control.hpp>
 #include <list>
 #include <we/type/value.hpp>
 #include <string>
@@ -114,16 +110,10 @@ namespace pnetc
         const std::string & all_lead (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "all_lead"))));
         const std::string & needed_library (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "needed_library"))));
         const std::string & base_filename (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "base_filename"))));
-        int N;
-        int E;
         std::list<pnet::type::value::value_type> LIFT;
-        we::type::literal::control lift_count;
         std::string SUBLIFT;
-        ::pnetc::op::singular_template::SUBLIFT (input_name, place_Tau, all_lead, needed_library, base_filename, N, E, LIFT, lift_count, SUBLIFT);
-        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "N"), N);
-        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "E"), E);
+        ::pnetc::op::singular_template::SUBLIFT (input_name, place_Tau, all_lead, needed_library, base_filename, LIFT, SUBLIFT);
         _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "LIFT"), LIFT);
-        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "lift_count"), lift_count);
         _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "SUBLIFT"), SUBLIFT);
       }
     }
@@ -153,13 +143,9 @@ namespace pnetc
         const std::string & all_lead (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "all_lead"))));
         const std::string & needed_library (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "needed_library"))));
         const std::string & base_filename (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "base_filename"))));
-        int N;
-        int E;
         we::type::literal::control D;
         std::list<pnet::type::value::value_type> LIFT;
-        ::pnetc::op::singular_template::LIFT (input_name, lead, all_lead, needed_library, base_filename, N, E, D, LIFT);
-        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "N"), N);
-        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "E"), E);
+        ::pnetc::op::singular_template::LIFT (input_name, lead, all_lead, needed_library, base_filename, D, LIFT);
         _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "D"), D);
         _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "LIFT"), LIFT);
       }
@@ -451,14 +437,10 @@ namespace pnetc
         const std::string & library_name (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "library_name"))));
         const std::string & base_filename (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "base_filename"))));
         int nleads;
-        int counter;
-        int N;
         std::list<pnet::type::value::value_type> Sublift;
         std::list<pnet::type::value::value_type> OUT;
-        ::pnetc::op::singular_template::leadsyz (input, s, library_name, base_filename, nleads, counter, N, Sublift, OUT);
+        ::pnetc::op::singular_template::leadsyz (input, s, library_name, base_filename, nleads, Sublift, OUT);
         _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "nleads"), nleads);
-        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "counter"), counter);
-        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "N"), N);
         _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "Sublift"), Sublift);
         _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "OUT"), OUT);
       }

@@ -18,8 +18,6 @@ namespace pnetc
         , const std::string& all_lead
         , const std::string& needed_library
         , const std::string& base_filename
-        , int& N
-        , int& E
         , we::type::literal::control& D
         , std::list<pnet::type::value::value_type>& LIFT
         );

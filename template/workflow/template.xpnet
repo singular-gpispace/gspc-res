@@ -164,15 +164,13 @@
         <in name="base_filename" type="string"/>
         <in name="input" type="string"/>
         <in name ="s" type ="control"/>
-        <out name ="N" type ="int"/>
-       
-        <out name="counter" type="int"/>
+    
         <out name="OUT" type="list"/>
         <out name ="Sublift" type ="list"/>
         <out name="nleads" type="int"/>
       <module name="singular_template"
                 require_function_unloads_without_rest="false"
-                function="leadsyz(input,s,nleads,counter,N,Sublift,OUT,library_name,base_filename)">
+                function="leadsyz(input,s,nleads,Sublift,OUT,library_name,base_filename)">
         <cinclude href="interface/template_interface.hpp" />
         <cinclude href="util-generic/dynamic_linking.hpp"/>
         <cinclude href="vector"/>
@@ -190,8 +188,7 @@
                       std::vector<std::string> vec = std::get<0>(out);
                       int total_generator = std::get<1>(out);
                       auto runtime = std::get<2>(out);
-                       N=total_generator;
-                      counter=total_generator;
+                     
                       
                          for(int i (0); i<vec.size(); i++)
                                                                  {
@@ -219,8 +216,7 @@
       <connect-in port="s" place="place_control"/>
       <connect-out-many port="OUT" place="place_lead"/>
       <connect-out-many port="Sublift" place="place_SubLift"/>
-       <connect-out port ="N" place="place_N"/>
-       <connect-out port="counter" place="place_counter"/>
+     
      
        <connect-out port="nleads" place="nleads"/>
     </transition>
@@ -246,8 +242,7 @@
 
      <in name ="all_lead" type= "string"/>
      <in name ="input_name" type= "string"/>
-      <out name="N" type="int"/>
-     <out name="E" type ="int"/>
+     
      <out name="D" type ="control"/>
     
      <out name ="LIFT" type= "list"/>
@@ -255,7 +250,7 @@
 
              <module name="singular_template"
             require_function_unloads_without_rest="false"
-            function="LIFT(input_name,lead,N,E,all_lead,D,LIFT,needed_library,base_filename)">
+            function="LIFT(input_name,lead,all_lead,D,LIFT,needed_library,base_filename)">
             <cinclude href="interface/template_interface.hpp" />
            <cinclude href="util-generic/dynamic_linking.hpp"/>
             <cinclude href="vector"/>
@@ -286,17 +281,7 @@
                          
       
                     }
-               
-               if (total_generator>=1)
-                {
-                   N=total_generator-1;
-                   E=0;
-                } else{
-                    if(total_generator==0){
-                      E=1;
-                      N=0;
-                  } 
-                }
+          
               // std::cout << "LIFT_COUNT_Parent:"<< N << std::endl;
               // std::cout << "LIFT_COUNT_Child:"<< E << std::endl;
               
@@ -316,8 +301,7 @@
    <connect-read port="all_lead" place="place_All_Lead"/>
   <connect-in port="lead" place="place_lead"/>
   <connect-out-many port="LIFT" place="place_Tau"/>
- <connect-out port="N" place="place_N"/>
-  <connect-out port="E" place="place_E"/>
+
 
   <connect-out port="D" place="LIFT_init_Remove"/>
 
@@ -376,16 +360,15 @@
      <in name ="all_lead" type= "string"/>
      <in name ="input_name" type= "string"/>
      <in name="place_Tau" type="string"/>
-    <out name ="lift_count" type ="control"/>
+    
    
      <out name ="LIFT" type= "list"/>
      <out name ="SUBLIFT" type= "string"/>
-      <out name="N" type="int"/>
-     <out name="E" type ="int"/>
+    
 
              <module name="singular_template"
             require_function_unloads_without_rest="false"
-            function="SUBLIFT(input_name,place_Tau,N,E,LIFT,all_lead,lift_count,SUBLIFT,needed_library,base_filename)">
+            function="SUBLIFT(input_name,place_Tau,LIFT,all_lead,SUBLIFT,needed_library,base_filename)">
             <cinclude href="interface/template_interface.hpp" />
            <cinclude href="util-generic/dynamic_linking.hpp"/>
             <cinclude href="vector"/>
@@ -425,17 +408,7 @@
       
                     }
               
-                if (total_generator>=1)
-                {
-                   N=total_generator-1;
-                   E=0;
-                } else{
-                    if(total_generator==0){
-                      E=1;
-                      N=0;
-                  } 
-                }
-              
+            
               
                            
                 
@@ -468,9 +441,8 @@
   <connect-in port="place_Tau" place="place_Tau"/>
   <connect-out-many port="LIFT" place="place_Tau"/>
   <connect-out port="SUBLIFT" place="place_SubLift"/>
-  <connect-out port="N" place="place_N"/>
-  <connect-out port="E" place="place_E"/>
-   <connect-out port ="lift_count" place="place_leadsyz_counter"/>
+ 
+  
  
   
   
@@ -647,13 +619,13 @@
         <in name="l" type="string"/>
         <in name="r" type="string"/>
         <in name="input" type="string"/>
-        <out name ="nsummand" type ="control"/>
+       
         
          <out name="LHS_delete" type="string"/>
        <out name="RHS_delete" type="string"/>
      <module name="singular_template"
               		require_function_unloads_without_rest="false"
-              		function="reduce(library_name,LHS_delete,RHS_delete, base_filename,input,nsummand, s,l,r)">
+              		function="reduce(library_name,LHS_delete,RHS_delete, base_filename,input, s,l,r)">
           		<cinclude href="interface/template_interface.hpp" />
           		<cinclude href="util-generic/dynamic_linking.hpp"/>
               <cinclude href="iostream"/>
@@ -687,7 +659,7 @@
       <connect-in port="l" place="L"/>
       <connect-in port="r" place="R"/>
       <connect-out port="s" place="place_SubLift"/>
-      <connect-out port ="nsummand" place="place_nsummand"/>
+     
       
        
        <connect-out port="LHS_delete" place="LHS_delete"/>

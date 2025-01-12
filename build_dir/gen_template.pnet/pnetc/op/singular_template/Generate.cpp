@@ -23,7 +23,7 @@ namespace pnetc
         , we::type::literal::control& c
         )
       {
-#line 979 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 951 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
        //std::cout << "Generate_Input:"<<input<< std::endl;
        //std::cout << "Generate_Syz:"<<syz<< std::endl;

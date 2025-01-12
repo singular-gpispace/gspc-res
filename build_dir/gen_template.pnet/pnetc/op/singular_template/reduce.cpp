@@ -1,5 +1,4 @@
 #include <pnetc/op/singular_template/reduce.hpp>
-#include <we/type/literal/control.hpp>
 #include <string>
 #include <interface/template_interface.hpp>
 #include <util-generic/dynamic_linking.hpp>
@@ -20,11 +19,10 @@ namespace pnetc
         , const std::string& r
         , std::string& LHS_delete
         , std::string& RHS_delete
-        , we::type::literal::control& nsummand
         , std::string& s
         )
       {
-#line 662 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 634 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
 
                 
