@@ -74,7 +74,12 @@ std::pair<std::vector<std::string>, int> singular_template_all_leadsyz_GpI( std:
   
 	ScopedLeftv args( input.first, lCopy(input.second));
   std::string function_name = "all_leadsyz_GpI";
+ auto start_computation = std::chrono::high_resolution_clock::now();
+
 	out = call_user_proc(function_name, needed_library, args);
+  auto end_computation = std::chrono::high_resolution_clock::now();
+               auto computation_time =std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - start_computation).count();
+               std::cout << "SchFrame_Runtime:_implementation " << computation_time << " milliseconds" << std::endl;
     lists u = (lists)out.second->m[3].Data();
     // std::cout<<"m[3]:"<< out.second->m[3].Data()<< std::endl;
     // std::cout<<"ListOutside:"<<lSize(u)<< std::endl;

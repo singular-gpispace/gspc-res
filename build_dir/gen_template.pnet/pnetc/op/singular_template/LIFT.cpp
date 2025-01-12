@@ -30,7 +30,7 @@ namespace pnetc
         , std::list<pnet::type::value::value_type>& LIFT
         )
       {
-#line 267 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 268 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
                    //std::cout << "in singular _PetriNet_.._LIFT" << std::endl;
                    

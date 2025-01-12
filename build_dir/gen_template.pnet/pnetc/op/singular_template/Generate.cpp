@@ -24,7 +24,7 @@ namespace pnetc
         , we::type::literal::control& c
         )
       {
-#line 978 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 979 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
        //std::cout << "Generate_Input:"<<input<< std::endl;
        //std::cout << "Generate_Syz:"<<syz<< std::endl;
@@ -36,7 +36,7 @@ namespace pnetc
         c={};
       len=len-1;
       std::cout << "Iterative_level_syz: "<<len<< std::endl;
-      std::cout << "Generate_Syz:"<< Res<< std::endl;
+      // std::cout << "Generate_Syz:"<< Res<< std::endl;
       
       }
     }

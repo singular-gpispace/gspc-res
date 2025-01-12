@@ -12,10 +12,10 @@ namespace pnetc
         , long& currentSum
         )
       {
-#line 348 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 349 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
                 currentSum = currentSum + newLiftTime;
-                //std::cout << "TotalLIFT Runtime Sum: " << currentSum << " milliseconds" << std::endl;
+                // std::cout << "TotalLIFT Runtime Sum: " << currentSum << " milliseconds" << std::endl;
             
       }
     }

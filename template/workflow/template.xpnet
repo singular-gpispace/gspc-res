@@ -115,23 +115,24 @@
         <cinclude href ="string"/>
         <cinclude href="list"/>
         <cinclude href="numeric"/> 
-        
+         <cinclude href="chrono"/>
           			<code><![CDATA[
           //std::cout <<"All_LeadSyz_Input:"<<init<< std::endl;
+           auto start_computation = std::chrono::high_resolution_clock::now();
 					std::pair<std::vector<std::string>, int> out = RESOLVE_INTERFACE_FUNCTION( singular_template_all_leadsyz_GpI) (init,library_name, base_filename);
                counter=out.second;
-
+                auto end_computation = std::chrono::high_resolution_clock::now();
+               auto computation_time =std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - start_computation).count();
+              
                     
-                         for(int i (0); i<out.first.size(); i++)
+                for(int i (0); i<out.first.size(); i++)
                                                                  {
                          //std::cout << "All_Success:"<<out.first[i] << std::endl;
                          OUTPUT.emplace_back(out.first[i]);
-                       
-                         
-                         
-      
+
                     }
-                    // std::cout << "SchFrame"<<counter<< std::endl;
+                    std::cout << "SchFrame"<<counter<< std::endl;
+                     std::cout << "SchFrame_Runtime: " << computation_time << " milliseconds" << std::endl;
           
             		]]></code>
         		</module>
@@ -347,7 +348,7 @@
             <cinclude href="iostream"/>
             <code><![CDATA[
                 currentSum = currentSum + newLiftTime;
-                //std::cout << "TotalLIFT Runtime Sum: " << currentSum << " milliseconds" << std::endl;
+                // std::cout << "TotalLIFT Runtime Sum: " << currentSum << " milliseconds" << std::endl;
             ]]></code>
         </module>
     </defun>
@@ -865,9 +866,9 @@
         
          
       std::cout << "Result_Success: " << s<< std::endl;
-        std::cout << "counter: " <<counter<< std::endl;
-        std::cout << "place_E: " <<E<< std::endl;
-        std::cout << "place_N: " <<N<< std::endl;
+        // std::cout << "counter: " <<counter<< std::endl;
+        // std::cout << "place_E: " <<E<< std::endl;
+        // std::cout << "place_N: " <<N<< std::endl;
          
           e=0;
           n=0;
@@ -927,12 +928,12 @@
         <module name="singular_template" function="SumTimes(c,leadSyzTime, liftTime, subLiftTime, reduceTime, sumTime,liftTime_back, subLiftTime_back, reduceTime_back)">
             <cinclude href="iostream"/>
             <code><![CDATA[
-              std::cout << "LeadSyz_Runtime: " << leadSyzTime << "nanoseconds" << std::endl;
-              std::cout << "LIFT_Runtime: " << liftTime << "nanoseconds" << std::endl;
-              std::cout << "SubLIFT_Runtime: " << subLiftTime << "nanoseconds" << std::endl;
-               std::cout << "Reduce_Runtime: " << reduceTime << "nanoseconds" << std::endl;
+              // std::cout << "LeadSyz_Runtime: " << leadSyzTime << "nanoseconds" << std::endl;
+              // std::cout << "LIFT_Runtime: " << liftTime << "nanoseconds" << std::endl;
+              // std::cout << "SubLIFT_Runtime: " << subLiftTime << "nanoseconds" << std::endl;
+              //  std::cout << "Reduce_Runtime: " << reduceTime << "nanoseconds" << std::endl;
                 sumTime = leadSyzTime + liftTime + subLiftTime + reduceTime;
-                // std::cout << "Total Runtime: " << sumTime << "nanoseconds" << std::endl;
+                std::cout << "Total Runtime: " << sumTime << "nanoseconds" << std::endl;
 
                 liftTime_back=0L;
                 subLiftTime_back=0L;
@@ -986,7 +987,7 @@
         c={};
       len=len-1;
       std::cout << "Iterative_level_syz: "<<len<< std::endl;
-      std::cout << "Generate_Syz:"<< Res<< std::endl;
+      // std::cout << "Generate_Syz:"<< Res<< std::endl;
       ]]></code>
     </module>
     

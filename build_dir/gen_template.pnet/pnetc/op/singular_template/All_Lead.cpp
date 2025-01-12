@@ -10,6 +10,7 @@
 #include <string>
 #include <list>
 #include <numeric>
+#include <chrono>
 
 namespace pnetc
 {
@@ -29,20 +30,21 @@ namespace pnetc
 #line 119 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
           //std::cout <<"All_LeadSyz_Input:"<<init<< std::endl;
+           auto start_computation = std::chrono::high_resolution_clock::now();
 					std::pair<std::vector<std::string>, int> out = RESOLVE_INTERFACE_FUNCTION( singular_template_all_leadsyz_GpI) (init,library_name, base_filename);
                counter=out.second;
-
+                auto end_computation = std::chrono::high_resolution_clock::now();
+               auto computation_time =std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - start_computation).count();
+              
                     
-                         for(int i (0); i<out.first.size(); i++)
+                for(int i (0); i<out.first.size(); i++)
                                                                  {
                          //std::cout << "All_Success:"<<out.first[i] << std::endl;
                          OUTPUT.emplace_back(out.first[i]);
-                       
-                         
-                         
-      
+
                     }
-                    // std::cout << "SchFrame"<<counter<< std::endl;
+                    std::cout << "SchFrame"<<counter<< std::endl;
+                     std::cout << "SchFrame_Runtime: " << computation_time << " milliseconds" << std::endl;
           
             		
       }

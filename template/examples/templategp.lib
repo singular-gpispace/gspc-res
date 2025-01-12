@@ -237,22 +237,18 @@ proc leadSyz(ideal f) {
          
             // Check divisibility conditions and remove a generator if necessary
             for (k = 1; k <= size(L); k++) {
-              
-               
-                 
-                 
                     s = L[k];
                
                // attrib(s, "isSB", 1);
                 // Check if s divides t
-                 if (NF(t, s,1) == 0) {
+                 if (NF(t, s) == 0) {
                   
                     t = 0;
                     break;
                  } else {
                   // attrib(t, "isSB", 1);
                     // Check if t divides s
-                    if (NF(s, t,1) == 0) {                  
+                    if (NF(s, t) == 0) {                  
                         
                          L = delete(L, k); 
                          k=k-1;
@@ -307,11 +303,11 @@ proc Sec_leadSyz(module f) {
             for (k = 1; k <= size(L); k++) {
                 s = L[k];
 
-                if (NF(t, s,1) == 0) {
+                if (NF(t, s) == 0) {
                     t = 0;
                     break;
                 } else {
-                    if (NF(s, t,1) == 0) {
+                    if (NF(s, t) == 0) {
                         L = delete(L, k);
                         k = k - 1;
                         cc = cc - 1;
@@ -1400,11 +1396,6 @@ proc Generate_GPI(token input, token Tok){
  }
  L1[size(L)+1]=Syz;
  
-
-
-   
- 
-  
     token output;
     output.fieldnames = list("generators","list_Syz_matrices");
     output.data[1] = L1;
