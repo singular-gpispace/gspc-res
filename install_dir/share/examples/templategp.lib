@@ -370,8 +370,8 @@ worker process (that is, the "inner" instances of SINGULAR).
   int r = size(LT);
   for (k = 1; k <=r; k++) {
     token Ld;
-    Ld.fieldnames = list("generator", "Lead_Syz_Sparse_smatrix");  
-    smatrix sM[ro][size(LT)];
+    Ld.fieldnames = list("generator", "Lead_Syz_Sparse_matrix");  
+    matrix sM[ro][size(LT)];
     vector s_lift = LT[k];
     
     int l_k = leadexp(s_lift)[nvars(basering) + 1];
@@ -382,7 +382,7 @@ worker process (that is, the "inner" instances of SINGULAR).
     Ld.data[1]= s_lift;
     //print(s_lift);
     Ld.data[2]= sM;
-     //print("smatrix");
+     //print("matrix");
     //print(Ld.A);
 
     //print("row");
@@ -406,13 +406,13 @@ worker process (that is, the "inner" instances of SINGULAR).
     return (LLT);  
 }
 
-//Extracts smatrix 
+//Extracts matrix 
 
 proc extractleadsyz_GPI(token input){
 
-  smatrix A=input.data[2];
+  matrix A=input.data[2];
     token output;
-    output.fieldnames = list("generators","FirstSyz_smatrix");
+    output.fieldnames = list("generators","FirstSyz_matrix");
     
     output.data[1]=A;
    
@@ -906,7 +906,7 @@ proc LIFT_GPI(token Token,token tok, token TT)
     def f = Token.data[1]; 
     int counter=TT.data[6];
     vector s = TT.data[1];
-   // smatrix B= TT.data[2]; //smatrix
+   // matrix B= TT.data[2]; //matrix
     int colmn = TT.data[4]; //column
     
     
@@ -947,7 +947,7 @@ if(typeof(f)=="ideal"){
           int r=size(lL);
         } else{
           if(typeof(f)=="vector"){
-            smatrix A[r0][c] =Token.data[2];
+            matrix A[r0][c] =Token.data[2];
             module M=A;
             int level=counter;
            
@@ -961,8 +961,8 @@ if(typeof(f)=="ideal"){
 
   for (k = 1; k <=r; k++) {
      token Ld;
-    Ld.fieldnames = list("generator", "Sparse_smatrix_Lift");  
-    smatrix sM[r0][c];
+    Ld.fieldnames = list("generator", "Sparse_matrix_Lift");  
+    matrix sM[r0][c];
     
            
     vector s_lift = lL[k];
@@ -976,7 +976,7 @@ if(typeof(f)=="ideal"){
     //print(s_lift);
     Ld.data[2]= sM;
      
-     //print("smatrix");
+     //print("matrix");
     
    
     //print("row");
@@ -1210,7 +1210,7 @@ proc SubLIFT_GPI(token Token,token tok, token TT)
     def f = Token.data[1]; 
     int counter=TT.data[6];
     vector s = TT.data[1];
-   // smatrix B= TT.data[2]; //smatrix
+   // matrix B= TT.data[2]; //matrix
     int colmn = TT.data[4]; //column
     
 if(typeof(f)=="ideal"){
@@ -1242,7 +1242,7 @@ if(typeof(f)=="ideal"){
           int r=size(lL);
         } else{
           if(typeof(f)=="vector"){
-            smatrix A[r0][c] =Token.data[2];
+            matrix A[r0][c] =Token.data[2];
             module M=A;
             int level=counter;
            
@@ -1262,8 +1262,8 @@ if(typeof(f)=="ideal"){
 
   for (k = 1; k <=r; k++) {
      token Ld;
-    Ld.fieldnames = list("generator", "Sparse_smatrix_subLift");  
-    smatrix sM[r0][c];
+    Ld.fieldnames = list("generator", "Sparse_matrix_subLift");  
+    matrix sM[r0][c];
     
            
     vector s_lift =lL[k];//added c_n
@@ -1276,7 +1276,7 @@ if(typeof(f)=="ideal"){
     Ld.data[1]=(-1)*s_lift;
    
 
-    //print("smatrix");
+    //print("matrix");
     Ld.data[2]= sM;
     
     
@@ -1348,23 +1348,23 @@ int r= size(f);
 
 
  int counter= Tok.data[6];
- smatrix A[r][c];
- smatrix B[r][c];
+ matrix A[r][c];
+ matrix B[r][c];
  def v=Tok.data[1];
  A=Tok.data[2];
  
  B= tok.data[2];
  
   
-    // Perform the smatrix addition using jjPLUS_MA
-    smatrix C[r][c];
+    // Perform the matrix addition using jjPLUS_MA
+    matrix C[r][c];
     C=A+B;
 
    
  
   
     token output;
-    output.fieldnames = list("generators","FirstSyz_smatrix");
+    output.fieldnames = list("generators","FirstSyz_matrix");
     output.data[1] = v;
     output.data[2]=C;
     output.data[3] = r;
