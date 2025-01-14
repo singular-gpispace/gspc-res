@@ -17,7 +17,7 @@ namespace pnetc
         , std::string& output
         )
       {
-#line 72 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 73 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
 						 output = RESOLVE_INTERFACE_FUNCTION(singular_template_Init) (input);
               init=output;

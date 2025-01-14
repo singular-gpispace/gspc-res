@@ -12,6 +12,7 @@ namespace pnetc
       void SumTimes
         ( const we::type::literal::control& c
         , const long& leadSyzTime
+        , const long& schFrameTime
         , const long& liftTime
         , const long& subLiftTime
         , const long& reduceTime

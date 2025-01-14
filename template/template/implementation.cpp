@@ -58,7 +58,7 @@ std::string singular_template_Init( std::string const& input) {
 NO_NAME_MANGLING
 
 
-std::pair<std::vector<std::string>, int> singular_template_all_leadsyz_GpI( std::string const& input_filename 
+std::tuple<std::vector<std::string>, int, long>  singular_template_all_leadsyz_GpI( std::string const& input_filename 
 										, std::string const& needed_library
             							, std::string const& base_filename)
 {
@@ -79,7 +79,7 @@ std::pair<std::vector<std::string>, int> singular_template_all_leadsyz_GpI( std:
 	out = call_user_proc(function_name, needed_library, args);
   auto end_computation = std::chrono::high_resolution_clock::now();
   auto computation_time =std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - start_computation).count();
-               std::cout << "SchFrame_Runtime:_implementation " << computation_time << " milliseconds" << std::endl;
+  // std::cout << "SchFrame_Runtime:_implementation " << computation_time << " milliseconds" << std::endl;
     lists u = (lists)out.second->m[3].Data();
     // std::cout<<"m[3]:"<< out.second->m[3].Data()<< std::endl;
     // std::cout<<"ListOutside:"<<lSize(u)<< std::endl;
@@ -99,8 +99,9 @@ std::pair<std::vector<std::string>, int> singular_template_all_leadsyz_GpI( std:
     vec.push_back(Outname);
   } 
    total_generator = lSize(u); // Assuming u contains the computed generators
+   auto total_runtime=computation_time;
 
-  return {vec, total_generator};
+  return {vec, total_generator,total_runtime};
 }
 
 
