@@ -1,6 +1,6 @@
 #include <pnetc/op/singular_template/Init.hpp>
-#include <we/type/literal/control.hpp>
 #include <string>
+#include <we/type/literal/control.hpp>
 #include <interface/template_interface.hpp>
 #include <util-generic/dynamic_linking.hpp>
 
@@ -12,7 +12,6 @@ namespace pnetc
     {
       void Init
         ( const std::string& input
-        , std::string& res
         , we::type::literal::control& c
         , std::string& init
         , std::string& output
@@ -22,7 +21,7 @@ namespace pnetc
 
 						 output = RESOLVE_INTERFACE_FUNCTION(singular_template_Init) (input);
               init=output;
-              res=output;
+              
             		
       }
     }

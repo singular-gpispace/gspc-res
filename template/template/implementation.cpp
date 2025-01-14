@@ -78,7 +78,7 @@ std::pair<std::vector<std::string>, int> singular_template_all_leadsyz_GpI( std:
 
 	out = call_user_proc(function_name, needed_library, args);
   auto end_computation = std::chrono::high_resolution_clock::now();
-               auto computation_time =std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - start_computation).count();
+  auto computation_time =std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - start_computation).count();
                std::cout << "SchFrame_Runtime:_implementation " << computation_time << " milliseconds" << std::endl;
     lists u = (lists)out.second->m[3].Data();
     // std::cout<<"m[3]:"<< out.second->m[3].Data()<< std::endl;
@@ -111,8 +111,77 @@ std::pair<std::vector<std::string>, int> singular_template_all_leadsyz_GpI( std:
 
 
 NO_NAME_MANGLING
+std::tuple<std::vector<std::string>, int,  long> singular_template_leadSyzGPI(const std::string& input_filename,
+                                                     const std::string& needed_library,
+                                                     const std::string& base_filename)
+{
+    // Initialize Singular and load library
+    init_singular(config::singularLibrary().string());
+    load_singular_library(needed_library);
+    
+    // Debugging: Print out function parameters
+    // std::cout << "Function Parameters:" << std::endl;
+    // std::cout << "Input Filename: " << input_filename << std::endl;
+    // std::cout << "Needed Library: " << needed_library << std::endl;
+    // std::cout << "Base Filename: " << base_filename << std::endl;
 
+    // Debugging: Print worker ID
+    std::string ids = worker();
+    //std::cout << ids << " in singular_template_Leadvector" << std::endl;
 
+    // Deserialize input data
+    std::pair<int, lists> input;
+    //auto start_deserialize = std::chrono::high_resolution_clock::now();
+    input = deserialize(input_filename, ids);
+   
+  //auto end_deserialize = std::chrono::high_resolution_clock::now();
+  //auto computation_time_deserialize = std::chrono::duration_cast<std::chrono::milliseconds>( end_deserialize - start_deserialize).count();
+
+    // Debugging: Print input data
+    //std::cout << "Input Data:" << input.second << std::endl;
+
+    // Prepare arguments
+    ScopedLeftv args(input.first, lCopy(input.second));
+
+    // Call Singular procedure
+    std::pair<int, lists> out;
+    std::string function_name = "leadsyz_GpI";
+    auto start_computation = std::chrono::high_resolution_clock::now();
+    out = call_user_proc(function_name, needed_library, args);
+    //std::cout<<"ListOutside_proc:"<<function_name<< std:: endl;
+  auto end_computation = std::chrono::high_resolution_clock::now();
+  auto computation_time =std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - start_computation).count();
+  //std::cout << "LEADSYZ_Runtime: " << computation_time << " milliseconds" << std::endl;
+    // Extract list from the output
+    lists u = (lists)out.second->m[3].Data();
+    // std::cout<<"m[3]:"<< out.second->m[3].Data()<< std::endl;
+    // std::cout<<"ListOutside:"<<lSize(u)<< std::endl;
+    
+   
+     std::vector<std::string> vec;
+     int total_generator;
+
+    // // Iterate through each element of the outer list
+     //auto start_serialize = std::chrono::high_resolution_clock::now();
+    for(int i (0); i<lSize(u); i++)
+
+  {
+    //std::cout<<"checkMemory:"<<u->m[i].Data()<<std::endl;
+    auto  Outname=serialize((lists)u->m[i].Data(), base_filename);
+    
+    //std::cout<<"Check the output_LEADSYZ:"<<Outname<< std::endl;
+    vec.push_back(Outname);
+  } 
+  //auto end_serialize = std::chrono::high_resolution_clock::now();
+   //auto  serialization_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_serialize - start_serialize).count(); // Convert to milliseconds
+ //auto total_runtime= computation_time_deserialize+computation_time+ serialization_time;
+auto total_runtime=computation_time;
+
+   total_generator = lSize(u); // Assuming u contains the computed generators
+
+  return {vec, total_generator, total_runtime};
+
+}
 
 
 
@@ -167,7 +236,7 @@ std::tuple<std::vector<std::string>, int, long> singular_template_LIFT(const std
     out = call_user_proc(function_name, needed_library, args);
    
     auto end_computation = std::chrono::high_resolution_clock::now();
-    auto computation_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_computation - start_computation).count();
+   auto computation_time =std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - start_computation).count();
     
     // std::cout << "LIFT Runtime: " << computation_time << " milliseconds" << std::endl;
   //  lists Token = (lists)(args.leftV()->data);
@@ -229,7 +298,7 @@ std::tuple<std::vector<std::string>, int, long> singular_template_LIFT(const std
     for(int i = 0; i < lSize(u); i++) {
     
         auto Outname = serialize((lists)u->m[i].Data(), base_filename);
-        //  std::cout<<"LIFT_serialize:="<<Outname<< std::endl;
+        // std::cout << " Outname:LIFT2 " << Outname<< std::endl;
         vec.push_back(Outname);
     }
 
@@ -360,7 +429,7 @@ std::tuple<std::vector<std::string>, int, long> singular_template_SUBLIFT(const 
       {
         auto  Outname=serialize((lists)u->m[i].Data(), base_filename);
     
-      // std::cout<<"SubLIFT_serialize:="<<Outname<< std::endl;
+      // std::cout<<"serialized:"<<Outname<< std::endl;
         vec.push_back(Outname);
      }
    
@@ -381,7 +450,6 @@ std::tuple<std::vector<std::string>, int, long> singular_template_SUBLIFT(const 
   return {vec, total_generator, total_runtime};
 
 }
-
 
 
 
@@ -433,21 +501,23 @@ std::pair<int, lists> reduce_GPI(leftv arg1) {
     lists tmpL1 = (lists)(Tok->m[3].Data()); // Tok.data
     int counter=(int)(long)tmpL1->m[5].Data();//Tok.data[6]
   
-    matrix A;
-    matrix B;
+    // matrix A;
+    // matrix B;
     //leftv L2=(ideal)tmpL1->m[1];
     lists tmpl=(lists)(tok->m[3].Data()); //tok.data
     //leftv l=(ideal)(tmpl->m[1]);
-    A = (matrix)tmpL1->m[1].Data(); // Tok.data[2]
-    B = (matrix)tmpl->m[1].Data(); // tok.data[2]
+   ideal A0 = (ideal)tmpL1->m[1].Data(); // Tok.data[2]
+   ideal B0 = (ideal)tmpl->m[1].Data(); // tok.data[2]
     //smatrix A0=A;
-    ideal A0=id_Matrix2Module(mp_Copy(A,currRing),currRing);
-    //smatrix A0=A;
-    ideal B0=id_Matrix2Module(mp_Copy(B,currRing),currRing);
+    // matrix A=id_Module2Matrix(id_Copy(A0,currRing),currRing);
+    // //smatrix A0=A;
+    // matrix B=id_Module2Matrix(id_Copy(B0,currRing),currRing);
     // Perform the matrix addition using Singular's API function
-    ideal C0 = sm_Add(A0, B0, currRing);
-    idDelete(&A0);idDelete(&B0);
-    matrix C=id_Module2Matrix(C0,currRing);
+    // matrix C0 = mp_Add(A, B, currRing);
+    ideal C = sm_Add(A0, B0, currRing);
+    // mp_Delete(&A,currRing);mp_Delete(&B,currRing);
+    // ideal C=id_Matrix2Module(mp_Copy(C0,currRing),currRing);
+    // matrix C=id_Module2Matrix(C0,currRing);
 //     std::cout << "Final in ADD transition _Reduce=" << std::endl;
 // for(int k = 1; k <= MATROWS(C); k++) {
 //     for(int l = 1; l <= MATCOLS(C); l++) {
@@ -472,7 +542,7 @@ std::pair<int, lists> reduce_GPI(leftv arg1) {
     t=(lists)omAlloc0Bin(slists_bin);
     t->Init(7);
     t->m[0].rtyp = tmpL1->m[0].rtyp;t->m[0].data=tmpL1->m[0].CopyD(); // copy Tok.data[1]
-    t->m[1].rtyp=MATRIX_CMD; t->m[1].data=C;
+    t->m[1].rtyp=SMATRIX_CMD; t->m[1].data=C;
     t->m[2].rtyp=INT_CMD;  t->m[2].data = (void*)(long)r;
     t->m[3].rtyp=INT_CMD; t->m[3].data = (void*)(long)c;
     
@@ -544,7 +614,6 @@ std::pair<std::string, long> singular_template_reduce(const std::string& Red,
     auto end_computation = std::chrono::high_resolution_clock::now();
     auto computation_time = std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - start_computation).count();
     out_filename = serialize(out.second, base_filename);
-    //  std::cout<<"Reduce_serialize:="<< out_filename<< std::endl;
     auto total_runtime = computation_time;
     
    

@@ -1,5 +1,4 @@
 #include <pnetc/op/singular_template/Generate.hpp>
-#include <we/type/literal/control.hpp>
 #include <string>
 #include <interface/template_interface.hpp>
 #include <util-generic/dynamic_linking.hpp>
@@ -12,30 +11,19 @@ namespace pnetc
     namespace singular_template
     {
       void Generate
-        ( const std::string& res
-        , const std::string& library_name
-        , const std::string& base_filename
-        , const std::string& input
-        , const std::string& syz
-        , int& len
-        , std::string& Res
-        , std::string& Input
-        , we::type::literal::control& c
+        ( long& sumTime
+        , std::string& syz
         )
       {
-#line 951 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 965 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
-       //std::cout << "Generate_Input:"<<input<< std::endl;
-       //std::cout << "Generate_Syz:"<<syz<< std::endl;
-       //std::cout << "Generate_control:"<<c<< std::endl;
-        Res= RESOLVE_INTERFACE_FUNCTION(singular_template_Generate)(res,syz,library_name, base_filename
-							); 
-       Input=syz;
+      
+					
+     
        
-        c={};
-      len=len-1;
-      std::cout << "Iterative_level_syz: "<<len<< std::endl;
-      // std::cout << "Generate_Syz:"<< Res<< std::endl;
+       
+      std::cout << "Iterative_level_syz: "<<syz<< std::endl;
+      std::cout << "Generate_Syz-sumTime:"<< sumTime<< std::endl;
       
       }
     }

@@ -18,13 +18,10 @@ namespace pnetc
         , const int& N
         , const int& E
         , std::string& s
-        , we::type::literal::control& ctrl
-        , int& n
-        , int& e
-        , int& d_back
+        , we::type::literal::control& c_time
         )
       {
-#line 837 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 864 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
         
          
@@ -33,9 +30,7 @@ namespace pnetc
         // std::cout << "place_E: " <<E<< std::endl;
         // std::cout << "place_N: " <<N<< std::endl;
          
-          e=0;
-          n=0;
-          d_back=0;
+         
         //std::cout << "E_" <<e<< std::endl;
         //std::cout << "N_" <<n<< std::endl;
       

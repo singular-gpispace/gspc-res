@@ -1,4 +1,5 @@
 #include <pnetc/op/singular_template/reduce.hpp>
+#include <we/type/literal/control.hpp>
 #include <string>
 #include <interface/template_interface.hpp>
 #include <util-generic/dynamic_linking.hpp>
@@ -17,12 +18,14 @@ namespace pnetc
         , const std::string& input
         , const std::string& l
         , const std::string& r
+        , long& runtime
         , std::string& LHS_delete
         , std::string& RHS_delete
+        , we::type::literal::control& nsummand
         , std::string& s
         )
       {
-#line 634 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 662 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
 
                 
@@ -32,8 +35,8 @@ namespace pnetc
 						 auto result  = RESOLVE_INTERFACE_FUNCTION(singular_template_reduce)(input,l,r,library_name, base_filename
 							); 
                 s = result.first;
-           auto runtime = result.second;
-            // std::cout << "Reduce:runtime=" << runtime << std::endl;
+          runtime = result.second;
+            //std::cout << "Reduce:" << s << std::endl;
      
                        LHS_delete=l;
                           

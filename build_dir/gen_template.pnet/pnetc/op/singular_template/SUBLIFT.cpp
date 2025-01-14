@@ -1,4 +1,5 @@
 #include <pnetc/op/singular_template/SUBLIFT.hpp>
+#include <we/type/literal/control.hpp>
 #include <list>
 #include <we/type/value.hpp>
 #include <string>
@@ -22,11 +23,15 @@ namespace pnetc
         , const std::string& all_lead
         , const std::string& needed_library
         , const std::string& base_filename
+        , int& N
+        , int& E
         , std::list<pnet::type::value::value_type>& LIFT
+        , long& runtime
+        , we::type::literal::control& lift_count
         , std::string& SUBLIFT
         )
       {
-#line 384 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 401 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
 
              
@@ -37,7 +42,7 @@ namespace pnetc
                        
                      std::vector<std::string> vec = std::get<0>(out);
                       int total_generator = std::get<1>(out);
-                     auto runtime = std::get<2>(out);
+                      runtime = std::get<2>(out);
 
                         
                          for(int i (0); i<vec.size(); i++)
@@ -54,7 +59,17 @@ namespace pnetc
       
                     }
               
-            
+                if (total_generator>=1)
+                {
+                   N=total_generator-1;
+                   E=0;
+                } else{
+                    if(total_generator==0){
+                      E=1;
+                      N=0;
+                  } 
+                }
+              
               
                            
                 

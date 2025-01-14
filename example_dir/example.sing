@@ -37,8 +37,8 @@ gc.options.logport = 9876;
 // print(J);
  //Example 1:
  
-ring R= 0, (w,x,y,z), (dp,c);
-ideal J= w2-x*z, w*x- y*z, x2-w*y, x*y- z2, y2- w*z;
+// ring R= 0, (w,x,y,z), (dp,c);
+// ideal J= w2-x*z, w*x- y*z, x2-w*y, x*y- z2, y2- w*z;
 //module m;
 // vector s1=[-x,w,-z,0,0];
 // vector s2=[y,-x,w,0,0];
@@ -48,9 +48,8 @@ ideal J= w2-x*z, w*x- y*z, x2-w*y, x*y- z2, y2- w*z;
 // vector s6=[0,z,0,-y,x];
 // module m=s1,s2,s3,s4,s5,s6;
 
-  //Example2:
-// ring R= 0, (x(1..10)), dp;
-
+  // Example2:
+// ring R= 0, (x(1..10)), lp;
 // matrix mS[2][4]= x(4)+ x(6), x(6)+ x(3), x(8)+ x(3), x(1)-x(3), x(2)-x(4), x(5)-x(7), x(8)-x(7), 
 // x(2)+ x(3), x(5)- x(7), x(10)+ x(8), x(1) -x(2);
 // ideal I_minor= minor(mS,2);
@@ -118,8 +117,8 @@ ideal J= w2-x*z, w*x- y*z, x2-w*y, x*y- z2, y2- w*z;
 
 
 //Example 6 [Koszul Case ]
-// ring R=0,(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10),dp;
-// ideal J=x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10;
+ring R=0,(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10),dp;
+ideal J=x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10;
 
 // ring R=0, (w,x,y,z), dp;
 // matrix m[2][3]=w,x,y,x,y,z;

@@ -15,23 +15,18 @@ namespace pnetc
         , const long& subLiftTime
         , const long& reduceTime
         , long& sumTime
-        , long& liftTime_back
-        , long& subLiftTime_back
-        , long& reduceTime_back
         )
       {
-#line 902 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 922 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
-              // std::cout << "LeadSyz_Runtime: " << leadSyzTime << "nanoseconds" << std::endl;
-              // std::cout << "LIFT_Runtime: " << liftTime << "nanoseconds" << std::endl;
-              // std::cout << "SubLIFT_Runtime: " << subLiftTime << "nanoseconds" << std::endl;
-              //  std::cout << "Reduce_Runtime: " << reduceTime << "nanoseconds" << std::endl;
+              std::cout << "LeadSyz_Runtime: " << leadSyzTime << "nanoseconds" << std::endl;
+              std::cout << "LIFT_Runtime: " << liftTime << "nanoseconds" << std::endl;
+              std::cout << "SubLIFT_Runtime: " << subLiftTime << "nanoseconds" << std::endl;
+               std::cout << "Reduce_Runtime: " << reduceTime << "nanoseconds" << std::endl;
                 sumTime = leadSyzTime + liftTime + subLiftTime + reduceTime;
                 std::cout << "Total Runtime: " << sumTime << "nanoseconds" << std::endl;
 
-                liftTime_back=0L;
-                subLiftTime_back=0L;
-                reduceTime_back=0L;
+
             
       }
     }

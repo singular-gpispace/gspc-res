@@ -16,9 +16,6 @@ namespace pnetc
         , const long& subLiftTime
         , const long& reduceTime
         , long& sumTime
-        , long& liftTime_back
-        , long& subLiftTime_back
-        , long& reduceTime_back
         );
     }
   }

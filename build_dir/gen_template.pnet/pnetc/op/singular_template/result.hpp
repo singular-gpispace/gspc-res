@@ -17,10 +17,7 @@ namespace pnetc
         , const int& N
         , const int& E
         , std::string& s
-        , we::type::literal::control& ctrl
-        , int& n
-        , int& e
-        , int& d_back
+        , we::type::literal::control& c_time
         );
     }
   }
