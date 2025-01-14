@@ -37,8 +37,8 @@ gc.options.logport = 9876;
 // print(J);
  //Example 1:
  
-// ring R= 0, (w,x,y,z), (dp,c);
-// ideal J= w2-x*z, w*x- y*z, x2-w*y, x*y- z2, y2- w*z;
+ring R= 0, (w,x,y,z), (dp,c);
+ideal J= w2-x*z, w*x- y*z, x2-w*y, x*y- z2, y2- w*z;
 //module m;
 // vector s1=[-x,w,-z,0,0];
 // vector s2=[y,-x,w,0,0];
@@ -117,8 +117,8 @@ gc.options.logport = 9876;
 
 
 //Example 6 [Koszul Case ]
-ring R=0,(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10),dp;
-ideal J=x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10;
+// ring R=0,(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10),dp;
+// ideal J=x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10;
 
 // ring R=0, (w,x,y,z), dp;
 // matrix m[2][3]=w,x,y,x,y,z;

@@ -48,9 +48,11 @@ namespace pnetc
         const std::string & base_filename (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "base_filename"))));
         std::list<pnet::type::value::value_type> OUTPUT;
         int counter;
-        ::pnetc::op::singular_template::All_Lead (init, C, library_name, base_filename, OUTPUT, counter);
+        long runtime;
+        ::pnetc::op::singular_template::All_Lead (init, C, library_name, base_filename, OUTPUT, counter, runtime);
         _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "OUTPUT"), OUTPUT);
         _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "counter"), counter);
+        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "runtime"), runtime);
       }
     }
   }
@@ -262,11 +264,12 @@ namespace pnetc
       {
         const we::type::literal::control & c (::boost::get< we::type::literal::control > (_pnetc_input.value (std::list<std::string> (1, "c"))));
         const long & leadSyzTime (::boost::get< long > (_pnetc_input.value (std::list<std::string> (1, "leadSyzTime"))));
+        const long & schFrameTime (::boost::get< long > (_pnetc_input.value (std::list<std::string> (1, "schFrameTime"))));
         const long & liftTime (::boost::get< long > (_pnetc_input.value (std::list<std::string> (1, "liftTime"))));
         const long & subLiftTime (::boost::get< long > (_pnetc_input.value (std::list<std::string> (1, "subLiftTime"))));
         const long & reduceTime (::boost::get< long > (_pnetc_input.value (std::list<std::string> (1, "reduceTime"))));
         long sumTime;
-        ::pnetc::op::singular_template::SumTimes (c, leadSyzTime, liftTime, subLiftTime, reduceTime, sumTime);
+        ::pnetc::op::singular_template::SumTimes (c, leadSyzTime, schFrameTime, liftTime, subLiftTime, reduceTime, sumTime);
         _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "sumTime"), sumTime);
       }
     }

@@ -38,7 +38,7 @@ std::tuple<std::vector<std::string>, int,  long> singular_template_leadSyzGPI( s
 
 
 NO_NAME_MANGLING
-std::pair<std::vector<std::string>, int>  singular_template_all_leadsyz_GpI( std::string const&
+std::tuple<std::vector<std::string>, int,  long>   singular_template_all_leadsyz_GpI( std::string const&
                                                     
                                                          , std::string const&
 									  , std::string const&

@@ -47,6 +47,7 @@
       </token>
     </place>
   <place name ="place_LeadSyz_runtime" type ="long"/>
+   <place name ="place_SchFrame_runtime" type ="long"/>
   <place name ="place_LIFT_sum" type ="long"/> 
 <place name ="place_subLIFT_sum" type ="long"/>
 <place name ="place_Reduce_sum" type ="long"/>
@@ -100,14 +101,14 @@
         		
         <in name="library_name" type="string"/>
         <in name="base_filename" type="string"/>
-				    
+				    <out name="runtime" type ="long"/>
         		<out name="OUTPUT" type="list"/>
            <in name ="C" type="control"/>
            <out name ="counter" type="int"/>
            <in name ="init" type ="string"/>
         		<module name="singular_template"
               		require_function_unloads_without_rest="false"
-              		function="All_Lead(init, OUTPUT,C, counter,library_name, base_filename)">
+              		function="All_Lead(init, OUTPUT,C, counter,runtime,library_name, base_filename)">
           		<cinclude href="interface/template_interface.hpp" />
           		<cinclude href="util-generic/dynamic_linking.hpp"/>
         <cinclude href="vector"/>
@@ -119,20 +120,25 @@
           			<code><![CDATA[
           //std::cout <<"All_LeadSyz_Input:"<<init<< std::endl;
            auto start_computation = std::chrono::high_resolution_clock::now();
-					std::pair<std::vector<std::string>, int> out = RESOLVE_INTERFACE_FUNCTION( singular_template_all_leadsyz_GpI) (init,library_name, base_filename);
-               counter=out.second;
+				std::tuple<std::vector<std::string>, int, long> out = RESOLVE_INTERFACE_FUNCTION( singular_template_all_leadsyz_GpI) (init,library_name, base_filename);
+              
+
+                std::vector<std::string> vec = std::get<0>(out);
+                     counter = std::get<1>(out);
+                      runtime = std::get<2>(out);
                 auto end_computation = std::chrono::high_resolution_clock::now();
                auto computation_time =std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - start_computation).count();
               
                     
-                for(int i (0); i<out.first.size(); i++)
+                 for(int i (0); i<vec.size(); i++)
                                                                  {
-                         //std::cout << "All_Success:"<<out.first[i] << std::endl;
-                         OUTPUT.emplace_back(out.first[i]);
+                        std::cout << "SchFrame_Success:"<<vec[i] << std::endl;
+                       
+                          OUTPUT.emplace_back(vec[i]);
 
                     }
                     std::cout << "SchFrame"<<counter<< std::endl;
-                     std::cout << "SchFrame_Runtime: " << computation_time << " milliseconds" << std::endl;
+                    //  std::cout << "SchFrame_Runtime: " << computation_time << " milliseconds" << std::endl;
           
             		]]></code>
         		</module>
@@ -142,7 +148,7 @@
 			  <connect-in port="init" place="place_Init"/>
         <connect-in port="C" place="place_control_All_Lead"/>
 
-        
+         <connect-out port ="runtime" place="place_SchFrame_runtime"/>
        <connect-out port="counter" place="place_length_Res"/>
 			  <connect-out-many port="OUTPUT" place="place_All_Lead"/>
       
@@ -909,6 +915,7 @@
 </place>
 <transition name="SumRuntimes">
     <defun>
+     <in name="schFrameTime" type="long"/>
         <in name="leadSyzTime" type="long"/>
         <in name="liftTime" type="long"/>
         <in name="subLiftTime" type="long"/>
@@ -917,21 +924,22 @@
         <in name ="c" type ="control"/>
        
 
-        <module name="singular_template" function="SumTimes(c,leadSyzTime, liftTime, subLiftTime, reduceTime, sumTime)">
+        <module name="singular_template" function="SumTimes(c,leadSyzTime, schFrameTime,liftTime, subLiftTime, reduceTime, sumTime)">
             <cinclude href="iostream"/>
             <code><![CDATA[
-              std::cout << "LeadSyz_Runtime: " << leadSyzTime << "nanoseconds" << std::endl;
-              std::cout << "LIFT_Runtime: " << liftTime << "nanoseconds" << std::endl;
-              std::cout << "SubLIFT_Runtime: " << subLiftTime << "nanoseconds" << std::endl;
-               std::cout << "Reduce_Runtime: " << reduceTime << "nanoseconds" << std::endl;
-                sumTime = leadSyzTime + liftTime + subLiftTime + reduceTime;
-                std::cout << "Total Runtime: " << sumTime << "nanoseconds" << std::endl;
+              std::cout << "schFrameTime: " << schFrameTime<< " nanoseconds" << std::endl;
+              std::cout << "LeadSyz_Runtime: " << leadSyzTime << " nanoseconds" << std::endl;
+              std::cout << "LIFT_Runtime: " << liftTime << " nanoseconds" << std::endl;
+              std::cout << "SubLIFT_Runtime: " << subLiftTime << " nanoseconds" << std::endl;
+               std::cout << "Reduce_Runtime: " << reduceTime << " nanoseconds" << std::endl;
+                sumTime = schFrameTime+leadSyzTime + liftTime + subLiftTime + reduceTime;
+                std::cout << "Total Runtime: " << sumTime << " nanoseconds" << std::endl;
 
 
             ]]></code>
         </module>
     </defun>
-    
+     <connect-in port="schFrameTime" place="place_SchFrame_runtime"/>
     <connect-in port="leadSyzTime" place="place_LeadSyz_runtime"/>
     <connect-in port="liftTime" place="place_LIFT_runtime"/>
     <connect-in port="subLiftTime" place="place_SubLIFT_runtime"/>
@@ -986,14 +994,6 @@
 
   
 </transition>
-
-
-
-
-
-
-
-
 
 
 
