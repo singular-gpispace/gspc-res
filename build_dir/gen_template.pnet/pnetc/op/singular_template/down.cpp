@@ -14,7 +14,7 @@ namespace pnetc
         , we::type::literal::control& c
         )
       {
-#line 553 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 596 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
        //std::cout << "T2_e:" << e << std::endl;
         a = a + e;

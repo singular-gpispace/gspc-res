@@ -12,7 +12,7 @@ namespace pnetc
         , long& currentSum
         )
       {
-#line 808 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 894 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
                 currentSum = currentSum + newreduceTime;
                //std::cout << "TotalreduceRuntime Sum: " << currentSum << " milliseconds" << std::endl;

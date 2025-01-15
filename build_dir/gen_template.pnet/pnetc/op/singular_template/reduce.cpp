@@ -23,9 +23,10 @@ namespace pnetc
         , std::string& RHS_delete
         , we::type::literal::control& nsummand
         , std::string& s
+        , we::type::literal::control& Count_Reduce
         )
       {
-#line 668 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 713 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
 
                 

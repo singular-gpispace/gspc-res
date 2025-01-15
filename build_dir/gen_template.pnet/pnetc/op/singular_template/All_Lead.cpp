@@ -44,12 +44,12 @@ namespace pnetc
                     
                  for(int i (0); i<vec.size(); i++)
                                                                  {
-                        std::cout << "SchFrame_Success:"<<vec[i] << std::endl;
+                        // std::cout << "SchFrame_Success:"<<vec[i] << std::endl;
                        
                           OUTPUT.emplace_back(vec[i]);
 
                     }
-                    std::cout << "SchFrame"<<counter<< std::endl;
+                    // std::cout << "SchFrame"<<counter<< std::endl;
                     //  std::cout << "SchFrame_Runtime: " << computation_time << " milliseconds" << std::endl;
           
             		

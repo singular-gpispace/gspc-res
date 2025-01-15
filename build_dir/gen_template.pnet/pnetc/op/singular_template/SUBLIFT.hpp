@@ -24,6 +24,7 @@ namespace pnetc
         , long& runtime
         , we::type::literal::control& lift_count
         , std::string& SUBLIFT
+        , we::type::literal::control& count_subLift
         );
     }
   }

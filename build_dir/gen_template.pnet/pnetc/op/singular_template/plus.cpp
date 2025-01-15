@@ -12,7 +12,7 @@ namespace pnetc
         ( std::string& a
         )
       {
-#line 632 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 675 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
        //std::cout << "RHS: " << a << std::endl;
         

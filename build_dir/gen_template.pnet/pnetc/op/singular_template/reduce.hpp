@@ -21,6 +21,7 @@ namespace pnetc
         , std::string& RHS_delete
         , we::type::literal::control& nsummand
         , std::string& s
+        , we::type::literal::control& Count_Reduce
         );
     }
   }

@@ -1,4 +1,4 @@
-#include <pnetc/op/singular_template/count_LIFT.hpp>
+#include <pnetc/op/singular_template/count_Reduce.hpp>
 #include <we/type/literal/control.hpp>
 #include <iostream>
 
@@ -8,15 +8,15 @@ namespace pnetc
   {
     namespace singular_template
     {
-      void count_LIFT
+      void count_Reduce
         ( const we::type::literal::control& s
         , int& a
         )
       {
-#line 807 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 771 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
           a=a+1;
-      //  std::cout <<"Count_LIFT: " << a << std::endl;
+      //  std::cout <<"Count_Reduce: " << a << std::endl;
         
       }
     }

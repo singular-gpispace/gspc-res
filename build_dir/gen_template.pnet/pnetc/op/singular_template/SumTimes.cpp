@@ -18,7 +18,7 @@ namespace pnetc
         , long& sumTime
         )
       {
-#line 929 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 1015 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
               std::cout << "schFrameTime: " << schFrameTime<< " nanoseconds" << std::endl;
               std::cout << "LeadSyz_Runtime: " << leadSyzTime << " nanoseconds" << std::endl;
@@ -26,7 +26,7 @@ namespace pnetc
               std::cout << "SubLIFT_Runtime: " << subLiftTime << " nanoseconds" << std::endl;
                std::cout << "Reduce_Runtime: " << reduceTime << " nanoseconds" << std::endl;
                 sumTime = schFrameTime+leadSyzTime + liftTime + subLiftTime + reduceTime;
-                std::cout << "Total Runtime: " << sumTime << " nanoseconds" << std::endl;
+                // std::cout << "Total Runtime: " << sumTime << " nanoseconds" << std::endl;
 
 
             

@@ -132,12 +132,12 @@
                     
                  for(int i (0); i<vec.size(); i++)
                                                                  {
-                        std::cout << "SchFrame_Success:"<<vec[i] << std::endl;
+                        // std::cout << "SchFrame_Success:"<<vec[i] << std::endl;
                        
                           OUTPUT.emplace_back(vec[i]);
 
                     }
-                    std::cout << "SchFrame"<<counter<< std::endl;
+                    // std::cout << "SchFrame"<<counter<< std::endl;
                     //  std::cout << "SchFrame_Runtime: " << computation_time << " milliseconds" << std::endl;
           
             		]]></code>
@@ -388,10 +388,10 @@
      <out name ="SUBLIFT" type= "string"/>
       <out name="N" type="int"/>
      <out name="E" type ="int"/>
-
+      <out name="count_subLift" type ="control"/>
              <module name="singular_template"
             require_function_unloads_without_rest="false"
-            function="SUBLIFT(input_name,place_Tau,N,E,LIFT,runtime,all_lead,lift_count,SUBLIFT,needed_library,base_filename)">
+            function="SUBLIFT(input_name,place_Tau,N,E,LIFT,runtime,all_lead,lift_count,SUBLIFT,count_subLift,needed_library,base_filename)">
             <cinclude href="interface/template_interface.hpp" />
            <cinclude href="util-generic/dynamic_linking.hpp"/>
             <cinclude href="vector"/>
@@ -478,13 +478,56 @@
   <connect-out port="E" place="place_E"/>
    <connect-out port ="lift_count" place="place_leadsyz_counter"/>
   <connect-out port ="runtime" place="place_subLIFT_sum"/>
-  
+   <connect-out port ="count_subLift" place="SubLIFT_count_control"/>
   
   </transition> 
+
+
+
+
+
 
 <place name="place_SubLIFT_runtime" type="long">
     <token><value>0L</value></token>
 </place>
+
+
+
+<place name="Count_SubLIFT" type="int">
+ <token>
+        <value>0</value>
+      </token>
+    
+</place>
+
+<place name="SubLIFT_count_control" type="control">
+
+     
+    
+</place>
+
+
+<transition name="Count_SubLIFT">
+      <defun>
+        <inout name="a" type="int"/>
+        <in name="s" type="control"/>
+        <module name="singular_template" function="count_SubLIFT(a,s)">
+        <cinclude href="iostream"/>
+        <code><![CDATA[
+          a=a+1;
+      //  std::cout <<"Count_SubLIFT: " << a << std::endl;
+        ]]></code>
+        </module>
+        
+      </defun>
+      <connect-inout port="a" place="Count_SubLIFT"/>
+      <connect-in port="s" place="SubLIFT_count_control"/>
+     
+
+    </transition>
+
+
+
 
 
 <transition name="SubLIFT_sum">
@@ -657,9 +700,11 @@
         <out name ="runtime" type="long"/>
          <out name="LHS_delete" type="string"/>
        <out name="RHS_delete" type="string"/>
+ <out name="Count_Reduce" type="control"/>
+       
      <module name="singular_template"
               		require_function_unloads_without_rest="false"
-              		function="reduce(library_name,runtime,LHS_delete,RHS_delete, base_filename,input,nsummand, s,l,r)">
+              		function="reduce(library_name,runtime,LHS_delete,RHS_delete, base_filename,input,nsummand, s,l,r,Count_Reduce)">
           		<cinclude href="interface/template_interface.hpp" />
           		<cinclude href="util-generic/dynamic_linking.hpp"/>
               <cinclude href="iostream"/>
@@ -695,10 +740,51 @@
       <connect-out port="s" place="place_SubLift"/>
       <connect-out port ="nsummand" place="place_nsummand"/>
       <connect-out port ="runtime" place="place_Reduce_sum"/>
-       
+       <connect-out port ="Count_Reduce" place="Reduce_count_control"/>
        <connect-out port="LHS_delete" place="LHS_delete"/>
        <connect-out port="RHS_delete" place="RHS_delete"/>
     </transition> 
+
+
+
+
+    <place name="Count_Reduce" type="int">
+ <token>
+        <value>0</value>
+      </token>
+    
+</place>
+
+<place name="Reduce_count_control" type="control">
+
+     
+    
+</place>
+
+
+<transition name="Count_Reduce">
+      <defun>
+        <inout name="a" type="int"/>
+        <in name="s" type="control"/>
+        <module name="singular_template" function="count_Reduce(a,s)">
+        <cinclude href="iostream"/>
+        <code><![CDATA[
+          a=a+1;
+      //  std::cout <<"Count_Reduce: " << a << std::endl;
+        ]]></code>
+        </module>
+        
+      </defun>
+      <connect-inout port="a" place="Count_Reduce"/>
+      <connect-in port="s" place="Reduce_count_control"/>
+     
+
+    </transition>
+
+
+
+
+
 
 
 
@@ -895,7 +981,7 @@
   <connect-out port="s" place="place_Syz"/>
   <connect-in port="E" place="E"/>
   <connect-in port="N" place="N"/>
- <connect-in port="d_lift" place="Count_LIFT"/>
+ <connect-read port="d_lift" place="Count_LIFT"/>
   <connect-in port="nleads" place="nleads"/>
 
    <connect-out port="c_time" place="place_control_runtime"/>
@@ -933,7 +1019,7 @@
               std::cout << "SubLIFT_Runtime: " << subLiftTime << " nanoseconds" << std::endl;
                std::cout << "Reduce_Runtime: " << reduceTime << " nanoseconds" << std::endl;
                 sumTime = schFrameTime+leadSyzTime + liftTime + subLiftTime + reduceTime;
-                std::cout << "Total Runtime: " << sumTime << " nanoseconds" << std::endl;
+                // std::cout << "Total Runtime: " << sumTime << " nanoseconds" << std::endl;
 
 
             ]]></code>
@@ -960,13 +1046,16 @@
 
   
     <inout name="syz" type="string"/>
-    
+    <in name="count_LIFT" type="int"/>
+     <in name="count_SubLIFT" type="int"/>
+      <in name="count_Reduce" type="int"/>
+       <out name="count_all_transition" type="int"/>
     <inout name="sumTime" type="long"/>
    
    
  
     
-    <module name="singular_template" function="Generate(sumTime, syz)">
+    <module name="singular_template" function="Generate(sumTime,count_all_transition, syz,count_LIFT,count_SubLIFT,count_Reduce)">
       <cinclude href="interface/template_interface.hpp" />
       <cinclude href="util-generic/dynamic_linking.hpp"/>
        <cinclude href="iostream"/>
@@ -974,8 +1063,11 @@
       
 					
      
-       
-       
+          
+              // std::cout << "#LIFT: " << count_LIFT<< std::endl;
+              // std::cout << "#SubLIFT: " << count_SubLIFT<< std::endl;
+              //  std::cout << "#Reduce: " << count_Reduce << std::endl;
+        count_all_transition=count_LIFT+count_SubLIFT+count_Reduce;
       std::cout << "Iterative_level_syz: "<<syz<< std::endl;
       std::cout << "Generate_Syz-sumTime:"<< sumTime<< std::endl;
       ]]></code>
@@ -984,18 +1076,21 @@
      
 
   </defun>
-  
-
+   <connect-read port="count_LIFT" place="Count_LIFT"/>
+  <connect-read port="count_SubLIFT" place="Count_SubLIFT"/>
+<connect-read port="count_Reduce" place="Count_Reduce"/>
   <connect-in port="syz" place="place_Syz"/>
   <connect-in port="sumTime" place="place_sum_runtime"/>
  <connect-out port="sumTime" place="place_FirstSyz_runtime"/>
   <connect-out port="syz" place="place_Res"/>
   
-
-  
+  <connect-out port="count_all_transition" place="Count_All_Transition"/>
+   
 </transition>
 
-
+<place name="Count_All_Transition" type="int">
+  
+</place>
 
 
 
