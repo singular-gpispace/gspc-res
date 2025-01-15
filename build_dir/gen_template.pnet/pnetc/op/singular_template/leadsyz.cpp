@@ -24,14 +24,11 @@ namespace pnetc
         , const std::string& library_name
         , const std::string& base_filename
         , int& nleads
-        , int& counter
-        , int& N
         , std::list<pnet::type::value::value_type>& Sublift
-        , long& runtime
         , std::list<pnet::type::value::value_type>& OUT
         )
       {
-#line 191 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 170 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
             
             
@@ -39,9 +36,8 @@ namespace pnetc
                         (input, library_name, base_filename);
                       std::vector<std::string> vec = std::get<0>(out);
                       int total_generator = std::get<1>(out);
-                      runtime = std::get<2>(out);
-                       N=total_generator;
-                      counter=total_generator;
+                      
+                   
                       
                          for(int i (0); i<vec.size(); i++)
                                                                  {

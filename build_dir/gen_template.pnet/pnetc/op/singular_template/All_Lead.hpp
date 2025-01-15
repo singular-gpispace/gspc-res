@@ -19,7 +19,6 @@ namespace pnetc
         , const std::string& base_filename
         , std::list<pnet::type::value::value_type>& OUTPUT
         , int& counter
-        , long& runtime
         );
     }
   }

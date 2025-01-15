@@ -27,30 +27,10 @@
     <place name="place_Tau" type="string"/>
    
     <place name ="place_SubLift" type ="string"/>
-    <place name ="place_Syz" type ="string"/>
-    <place name ="place_Res" type="string"/>
-     <place name="place_leadsyz_counter" type="control"/>
-    <place name="place_counter" type="int"/>
-    <place name ="place_nsummand" type ="control"/>
-  <place name ="place_E" type ="int"/>
-    <place name ="place_N" type ="int"/>
-
    
-    <place name="E" type="int">
-      <token>
-        <value>0</value>
-      </token>
-    </place>
-    <place name="N" type="int">
-      <token>
-        <value>0</value>
-      </token>
-    </place>
-  <place name ="place_LeadSyz_runtime" type ="long"/>
-   <place name ="place_SchFrame_runtime" type ="long"/>
-  <place name ="place_LIFT_sum" type ="long"/> 
-<place name ="place_subLIFT_sum" type ="long"/>
-<place name ="place_Reduce_sum" type ="long"/>
+   
+ 
+
 <place name="place_Init" type="string">
  
 </place>
@@ -101,14 +81,14 @@
         		
         <in name="library_name" type="string"/>
         <in name="base_filename" type="string"/>
-				    <out name="runtime" type ="long"/>
+				   
         		<out name="OUTPUT" type="list"/>
            <in name ="C" type="control"/>
            <out name ="counter" type="int"/>
            <in name ="init" type ="string"/>
         		<module name="singular_template"
               		require_function_unloads_without_rest="false"
-              		function="All_Lead(init, OUTPUT,C, counter,runtime,library_name, base_filename)">
+              		function="All_Lead(init, OUTPUT,C, counter,library_name, base_filename)">
           		<cinclude href="interface/template_interface.hpp" />
           		<cinclude href="util-generic/dynamic_linking.hpp"/>
         <cinclude href="vector"/>
@@ -119,15 +99,14 @@
          <cinclude href="chrono"/>
           			<code><![CDATA[
           //std::cout <<"All_LeadSyz_Input:"<<init<< std::endl;
-           auto start_computation = std::chrono::high_resolution_clock::now();
+         
 				std::tuple<std::vector<std::string>, int, long> out = RESOLVE_INTERFACE_FUNCTION( singular_template_all_leadsyz_GpI) (init,library_name, base_filename);
               
 
                 std::vector<std::string> vec = std::get<0>(out);
                      counter = std::get<1>(out);
-                      runtime = std::get<2>(out);
-                auto end_computation = std::chrono::high_resolution_clock::now();
-               auto computation_time =std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - start_computation).count();
+                     
+               
               
                     
                  for(int i (0); i<vec.size(); i++)
@@ -148,7 +127,7 @@
 			  <connect-in port="init" place="place_Init"/>
         <connect-in port="C" place="place_control_All_Lead"/>
 
-         <connect-out port ="runtime" place="place_SchFrame_runtime"/>
+       
        <connect-out port="counter" place="place_length_Res"/>
 			  <connect-out-many port="OUTPUT" place="place_All_Lead"/>
       
@@ -170,15 +149,15 @@
         <in name="base_filename" type="string"/>
         <in name="input" type="string"/>
         <in name ="s" type ="control"/>
-        <out name ="N" type ="int"/>
-        <out name="runtime" type ="long"/>
-        <out name="counter" type="int"/>
+       
+        
+        
         <out name="OUT" type="list"/>
         <out name ="Sublift" type ="list"/>
         <out name="nleads" type="int"/>
       <module name="singular_template"
                 require_function_unloads_without_rest="false"
-                function="leadsyz(input,s,nleads,counter,N,Sublift,runtime,OUT,library_name,base_filename)">
+                function="leadsyz(input,s,nleads,Sublift,OUT,library_name,base_filename)">
         <cinclude href="interface/template_interface.hpp" />
         <cinclude href="util-generic/dynamic_linking.hpp"/>
         <cinclude href="vector"/>
@@ -195,9 +174,8 @@
                         (input, library_name, base_filename);
                       std::vector<std::string> vec = std::get<0>(out);
                       int total_generator = std::get<1>(out);
-                      runtime = std::get<2>(out);
-                       N=total_generator;
-                      counter=total_generator;
+                      
+                   
                       
                          for(int i (0); i<vec.size(); i++)
                                                                  {
@@ -225,9 +203,9 @@
       <connect-in port="s" place="place_control"/>
       <connect-out-many port="OUT" place="place_lead"/>
       <connect-out-many port="Sublift" place="place_SubLift"/>
-       <connect-out port ="N" place="place_N"/>
-       <connect-out port="counter" place="place_counter"/>
-        <connect-out port ="runtime" place="place_LeadSyz_runtime"/>
+     
+   
+      
        <connect-out port="nleads" place="nleads"/>
     </transition>
 
@@ -252,16 +230,15 @@
 
      <in name ="all_lead" type= "string"/>
      <in name ="input_name" type= "string"/>
-      <out name="N" type="int"/>
-     <out name="E" type ="int"/>
+    
      <out name="D" type ="control"/>
-    <out name="runtime" type ="long"/>
+   
      <out name ="LIFT" type= "list"/>
     
 
              <module name="singular_template"
             require_function_unloads_without_rest="false"
-            function="LIFT(input_name,lead,N,E,all_lead,D, runtime,LIFT,needed_library,base_filename)">
+            function="LIFT(input_name,lead,all_lead,D,LIFT,needed_library,base_filename)">
             <cinclude href="interface/template_interface.hpp" />
            <cinclude href="util-generic/dynamic_linking.hpp"/>
             <cinclude href="vector"/>
@@ -279,8 +256,7 @@
                        
 
                        std::vector<std::string> vec = std::get<0>(out);
-                      int total_generator = std::get<1>(out);
-                      runtime = std::get<2>(out);
+                  
                        //std::cout << "LIFT_COUNT:"<< lift_count << std::endl;
                         
                          for(int i (0); i<vec.size(); i++)
@@ -293,16 +269,7 @@
       
                     }
                
-               if (total_generator>=1)
-                {
-                   N=total_generator-1;
-                   E=0;
-                } else{
-                    if(total_generator==0){
-                      E=1;
-                      N=0;
-                  } 
-                }
+           
               // std::cout << "LIFT_COUNT_Parent:"<< N << std::endl;
               // std::cout << "LIFT_COUNT_Child:"<< E << std::endl;
               
@@ -322,9 +289,7 @@
    <connect-read port="all_lead" place="place_All_Lead"/>
   <connect-in port="lead" place="place_lead"/>
   <connect-out-many port="LIFT" place="place_Tau"/>
- <connect-out port="N" place="place_N"/>
-  <connect-out port="E" place="place_E"/>
-<connect-out port ="runtime" place="place_LIFT_sum"/>
+ 
   <connect-out port="D" place="LIFT_init_Remove"/>
 
 
@@ -339,32 +304,9 @@
 
 
 
-<place name="place_LIFT_runtime" type="long">
-    <token><value>0L</value></token>
-</place>
 
 
-<transition name="LIFT_sum">
-    <defun>
-        <inout name="currentSum" type="long"/>
-        <in name="newLiftTime" type="long"/>
-        
 
-        <module name="singular_template" function="SumLIFTRuntimes(currentSum, newLiftTime)">
-            <cinclude href="iostream"/>
-            <code><![CDATA[
-                currentSum = currentSum + newLiftTime;
-                // std::cout << "TotalLIFT Runtime Sum: " << currentSum << " milliseconds" << std::endl;
-            ]]></code>
-        </module>
-    </defun>
-    
-    
-    <connect-inout port="currentSum" place="place_LIFT_runtime"/>
-   
-    <connect-in port="newLiftTime" place="place_LIFT_sum"/>
-   
-</transition>
 
 
 
@@ -382,16 +324,15 @@
      <in name ="all_lead" type= "string"/>
      <in name ="input_name" type= "string"/>
      <in name="place_Tau" type="string"/>
-    <out name ="lift_count" type ="control"/>
-     <out name ="runtime" type="long"/>
+   
+   
      <out name ="LIFT" type= "list"/>
      <out name ="SUBLIFT" type= "string"/>
-      <out name="N" type="int"/>
-     <out name="E" type ="int"/>
+    
 
              <module name="singular_template"
             require_function_unloads_without_rest="false"
-            function="SUBLIFT(input_name,place_Tau,N,E,LIFT,runtime,all_lead,lift_count,SUBLIFT,needed_library,base_filename)">
+            function="SUBLIFT(input_name,place_Tau,LIFT,all_lead,SUBLIFT,needed_library,base_filename)">
             <cinclude href="interface/template_interface.hpp" />
            <cinclude href="util-generic/dynamic_linking.hpp"/>
             <cinclude href="vector"/>
@@ -414,7 +355,7 @@
                        
                      std::vector<std::string> vec = std::get<0>(out);
                       int total_generator = std::get<1>(out);
-                      runtime = std::get<2>(out);
+                     
 
                         
                          for(int i (0); i<vec.size(); i++)
@@ -431,17 +372,7 @@
       
                     }
               
-                if (total_generator>=1)
-                {
-                   N=total_generator-1;
-                   E=0;
-                } else{
-                    if(total_generator==0){
-                      E=1;
-                      N=0;
-                  } 
-                }
-              
+           
               
                            
                 
@@ -474,123 +405,29 @@
   <connect-in port="place_Tau" place="place_Tau"/>
   <connect-out-many port="LIFT" place="place_Tau"/>
   <connect-out port="SUBLIFT" place="place_SubLift"/>
-  <connect-out port="N" place="place_N"/>
-  <connect-out port="E" place="place_E"/>
-   <connect-out port ="lift_count" place="place_leadsyz_counter"/>
-  <connect-out port ="runtime" place="place_subLIFT_sum"/>
+
+  
+
   
   
   </transition> 
 
-<place name="place_SubLIFT_runtime" type="long">
-    <token><value>0L</value></token>
-</place>
-
-
-<transition name="SubLIFT_sum">
-    <defun>
-        <inout name="currentSum" type="long"/>
-        <in name="newsubLiftTime" type="long"/>
-        
-
-        <module name="singular_template" function="SumSubLIFTRuntimes(currentSum, newsubLiftTime)">
-            <cinclude href="iostream"/>
-            <code><![CDATA[
-                currentSum = currentSum + newsubLiftTime;
-                //std::cout << "TotalsubLIFT Runtime Sum: " << currentSum << " milliseconds" << std::endl;
-            ]]></code>
-        </module>
-    </defun>
-    
-    
-    <connect-inout port="currentSum" place="place_SubLIFT_runtime"/>
-   
-    <connect-in port="newsubLiftTime" place="place_subLIFT_sum"/>
-   
-</transition>
 
 
 
 
 
-    <transition name="T1" priority="1">
-      <defun>
-        <inout name="a" type="int"/>
-       
-        <in name="n" type="int"/>
-        <inout name="c" type="control"/>
-        <module name="singular_template" function="Up(a,c, n)">
-        <cinclude href="iostream"/>
-        <code><![CDATA[
-        //std::cout << "T1 _n: " << n << std::endl;
-        a = a + n;
-       //std::cout << "T1_sum: " << a<< std::endl;
-        ]]></code>
-        </module>
-      </defun>
-     
-      <connect-in port="n" place="place_N"/>
-      <connect-inout port="a" place="N"/>
-     
-      <connect-inout port="c" place="control_T2"/>
-    </transition>
 
 
 
-   
-<place name="control_T2" type="control">
-  <token><value>[]</value></token>
-</place>
-
-    <transition name="T2" priority="0">
-      <defun>
-        <inout name="a" type="int"/>
-        
-        <in name="e" type="int"/>
-       <inout name="c" type="control"/>
-        <module name="singular_template" function="down(a, e, c)">
-        <cinclude href="iostream"/>
-        <code><![CDATA[
-       //std::cout << "T2_e:" << e << std::endl;
-        a = a + e;
-        //std::cout << "T2_sum:" << a << std::endl;
-        ]]></code>
-        </module>
-      </defun>
-     
-      <connect-in port="e" place="place_E"/>
-      <connect-inout port="a" place="E"/>
-    
-      <connect-inout port="c" place="control_T2"/>
-
-    </transition>
 
 
 
-<!-- Increment Transition5 -->
-<transition name="Increment" priority ="1">
-  <defun>
-    <inout name="s" type="int"/>
-    <in name="lift_count" type="control"/>
-    
-    <module name="singular_template" function="Increment(s)">
-      <cinclude href="interface/template_interface.hpp" />
-      <cinclude href="util-generic/dynamic_linking.hpp"/>
-      <cinclude href="iostream"/>
-      <code><![CDATA[
-       
-        //std::cout << "Increment Transition - Before: " << s << std::endl;
-        s = s + 1;
-      //std::cout << "Increment Transition - After: " << s << std::endl;
-       
-      ]]></code>
-    </module>
-  </defun>
-  <connect-in port="lift_count" place="place_leadsyz_counter"/>
-  <connect-inout port="s" place="place_counter"/>
+
+
   
  
-</transition>
+
   
 <place name="left_init" type="control">
   <token><value>[]</value></token>
@@ -653,13 +490,13 @@
         <in name="l" type="string"/>
         <in name="r" type="string"/>
         <in name="input" type="string"/>
-        <out name ="nsummand" type ="control"/>
-        <out name ="runtime" type="long"/>
+       
+       
          <out name="LHS_delete" type="string"/>
        <out name="RHS_delete" type="string"/>
      <module name="singular_template"
               		require_function_unloads_without_rest="false"
-              		function="reduce(library_name,runtime,LHS_delete,RHS_delete, base_filename,input,nsummand, s,l,r)">
+              		function="reduce(library_name,LHS_delete,RHS_delete, base_filename,input, s,l,r)">
           		<cinclude href="interface/template_interface.hpp" />
           		<cinclude href="util-generic/dynamic_linking.hpp"/>
               <cinclude href="iostream"/>
@@ -674,7 +511,7 @@
 						 auto result  = RESOLVE_INTERFACE_FUNCTION(singular_template_reduce)(input,l,r,library_name, base_filename
 							); 
                 s = result.first;
-          runtime = result.second;
+         
             //std::cout << "Reduce:" << s << std::endl;
      
                        LHS_delete=l;
@@ -693,8 +530,8 @@
       <connect-in port="l" place="L"/>
       <connect-in port="r" place="R"/>
       <connect-out port="s" place="place_SubLift"/>
-      <connect-out port ="nsummand" place="place_nsummand"/>
-      <connect-out port ="runtime" place="place_Reduce_sum"/>
+      
+     
        
        <connect-out port="LHS_delete" place="LHS_delete"/>
        <connect-out port="RHS_delete" place="RHS_delete"/>
@@ -792,115 +629,6 @@
 
 
 
-<place name="place_Reduce_runtime" type="long">
-    <token><value>0L</value></token>
-</place>
-
-
-<transition name="Reduce_sum">
-    <defun>
-        <inout name="currentSum" type="long"/>
-        <in name="newreduceTime" type="long"/>
-        
-
-        <module name="singular_template" function="SumreduceRuntimes(currentSum, newreduceTime)">
-            <cinclude href="iostream"/>
-            <code><![CDATA[
-                currentSum = currentSum + newreduceTime;
-               //std::cout << "TotalreduceRuntime Sum: " << currentSum << " milliseconds" << std::endl;
-            ]]></code>
-        </module>
-    </defun>
-    
-    
-    <connect-inout port="currentSum" place="place_Reduce_runtime"/>
-   
-    <connect-in port="newreduceTime" place="place_Reduce_sum"/>
-   
-</transition>
-
-         
-<!-- Decrement Transition -->
-<transition name="Decrement" priority ="0">
-  <defun>
-    <inout name="s" type="int"/>
-    
-    <in name="g" type ="control"/>
-    <module name="singular_template" function="Decrement(s)">
-      <cinclude href="interface/template_interface.hpp" />
-      <cinclude href="util-generic/dynamic_linking.hpp"/>
-      <cinclude href="iostream"/>
-      <code><![CDATA[
-       // std::cout << "Decrement Transition - Before: " << s << std::endl;
-        s = s - 1;
-      //std::cout << "Decrement Transition - After: " << s << std::endl;
-      ]]></code>
-    </module>
-  </defun>
- 
-  <connect-inout port="s" place="place_counter"/>
-  
-   <connect-in port ="g" place="place_nsummand"/>
- 
-</transition>
-
-
-<place name="place_control_runtime" type="control">
-  
-</place>
-
-<transition name="Result">
-  <defun>
-   
-    
-     <inout name="s" type="string"/>
-    
-    <in name="counter" type="int"/>
-    <in name="N" type="int"/>
-  
-    <in name="E" type="int"/>
-    <out name ="c_time" type ="control"/>
-    
-     <in name="nleads" type="int"/>
-      <in name="d_lift" type="int"/>
-    <module name="singular_template" function="result(s,c_time,nleads,d_lift,counter,N,E)">
-      <cinclude href="interface/template_interface.hpp" />
-      <cinclude href="util-generic/dynamic_linking.hpp"/>
-       <cinclude href="iostream"/>
-      <code><![CDATA[
-        
-         
-      std::cout << "Result_Success: " << s<< std::endl;
-        // std::cout << "counter: " <<counter<< std::endl;
-        // std::cout << "place_E: " <<E<< std::endl;
-        // std::cout << "place_N: " <<N<< std::endl;
-         
-         
-        //std::cout << "E_" <<e<< std::endl;
-        //std::cout << "N_" <<n<< std::endl;
-      ]]></code>
-    </module>
-       <condition>
-      ${counter}:eq:1 :and: ${N}:eq:${E}
-    </condition>
-   
-   
-   
-
-  </defun>
-  <connect-in port="counter" place="place_counter"/>
-  <connect-in port="s" place="L"/>
-
- 
-  <connect-out port="s" place="place_Syz"/>
-  <connect-in port="E" place="E"/>
-  <connect-in port="N" place="N"/>
- <connect-in port="d_lift" place="Count_LIFT"/>
-  <connect-in port="nleads" place="nleads"/>
-
-   <connect-out port="c_time" place="place_control_runtime"/>
-   
-</transition>
 
 
 
@@ -910,90 +638,6 @@
 
 
 
- <place name="place_sum_runtime" type="long">
-  
-</place>
-<transition name="SumRuntimes">
-    <defun>
-     <in name="schFrameTime" type="long"/>
-        <in name="leadSyzTime" type="long"/>
-        <in name="liftTime" type="long"/>
-        <in name="subLiftTime" type="long"/>
-        <in name="reduceTime" type="long"/>
-        <out name="sumTime" type="long"/>
-        <in name ="c" type ="control"/>
-       
-
-        <module name="singular_template" function="SumTimes(c,leadSyzTime, schFrameTime,liftTime, subLiftTime, reduceTime, sumTime)">
-            <cinclude href="iostream"/>
-            <code><![CDATA[
-              std::cout << "schFrameTime: " << schFrameTime<< " nanoseconds" << std::endl;
-              std::cout << "LeadSyz_Runtime: " << leadSyzTime << " nanoseconds" << std::endl;
-              std::cout << "LIFT_Runtime: " << liftTime << " nanoseconds" << std::endl;
-              std::cout << "SubLIFT_Runtime: " << subLiftTime << " nanoseconds" << std::endl;
-               std::cout << "Reduce_Runtime: " << reduceTime << " nanoseconds" << std::endl;
-                sumTime = schFrameTime+leadSyzTime + liftTime + subLiftTime + reduceTime;
-                std::cout << "Total Runtime: " << sumTime << " nanoseconds" << std::endl;
-
-
-            ]]></code>
-        </module>
-    </defun>
-     <connect-in port="schFrameTime" place="place_SchFrame_runtime"/>
-    <connect-in port="leadSyzTime" place="place_LeadSyz_runtime"/>
-    <connect-in port="liftTime" place="place_LIFT_runtime"/>
-    <connect-in port="subLiftTime" place="place_SubLIFT_runtime"/>
-    <connect-in port="reduceTime" place="place_Reduce_runtime"/>
-    <connect-in port="c" place="place_control_runtime"/>
-    <connect-out port="sumTime" place="place_sum_runtime"/>
-   
-</transition>
-
-
-<place name="place_FirstSyz_runtime" type="long">
-  
-</place>
-
-<!-- Transition 11: Generate-->
-<transition name="Generate">
-  <defun>
-
-  
-    <inout name="syz" type="string"/>
-    
-    <inout name="sumTime" type="long"/>
-   
-   
- 
-    
-    <module name="singular_template" function="Generate(sumTime, syz)">
-      <cinclude href="interface/template_interface.hpp" />
-      <cinclude href="util-generic/dynamic_linking.hpp"/>
-       <cinclude href="iostream"/>
-      <code><![CDATA[
-      
-					
-     
-       
-       
-      std::cout << "Iterative_level_syz: "<<syz<< std::endl;
-      std::cout << "Generate_Syz-sumTime:"<< sumTime<< std::endl;
-      ]]></code>
-    </module>
-    
-     
-
-  </defun>
-  
-
-  <connect-in port="syz" place="place_Syz"/>
-  <connect-in port="sumTime" place="place_sum_runtime"/>
- <connect-out port="sumTime" place="place_FirstSyz_runtime"/>
-  <connect-out port="syz" place="place_Res"/>
-  
-
-  
-</transition>
 
 
 
