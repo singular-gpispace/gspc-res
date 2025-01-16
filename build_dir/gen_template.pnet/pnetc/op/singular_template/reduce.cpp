@@ -22,7 +22,7 @@ namespace pnetc
         , std::string& s
         )
       {
-#line 505 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 496 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
 
                 

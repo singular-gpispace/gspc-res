@@ -1,15 +1,6 @@
 
 <defun name="template">
-<!-- Struct definitions -->
-    <struct name="Std_basis">
-        <field name="InputGB" type="string"/>
-        <field name="ngen" type="int"/>
-    </struct>
-      <struct name="lifting">
-        <field name="lead_Syz" type="string"/>
-        <field name="lift" type="string"/>
-        <field name="leadsyz_count" type="int"/>
-    </struct>
+
 
 	<in name="base_filename" type="string" place="place_base_filename"/>
 	<in name="library_name" type="string" place="place_library_name"/>
@@ -111,7 +102,7 @@
                     
                  for(int i (0); i<vec.size(); i++)
                                                                  {
-                        std::cout << "SchFrame_Success:"<<vec[i] << std::endl;
+                        // std::cout << "SchFrame_Success:"<<vec[i] << std::endl;
                        
                           OUTPUT.emplace_back(vec[i]);
 
@@ -599,6 +590,7 @@
       <code><![CDATA[
         // std::cout <<"LIFT: " << LIFT << std::endl;
         // std::cout <<"LeadSyz: " << nleads << std::endl;
+           std::cout << "Delete:"<< std::endl;
         s = RESOLVE_INTERFACE_FUNCTION(singular_template_removeFiles)(l, r);
         // std::cout << "Delete:" << s << std::endl;
       ]]></code>
@@ -616,29 +608,6 @@
     
   <connect-out port="s" place="place_temp"/>
 </transition>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

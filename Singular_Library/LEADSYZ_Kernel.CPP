@@ -58,51 +58,6 @@ std::string singular_template_Init( std::string const& input) {
 NO_NAME_MANGLING
 
 
-std::pair<std::vector<std::string>, int> singular_template_all_leadsyz_GpI( std::string const& input_filename 
-										, std::string const& needed_library
-            							, std::string const& base_filename)
-{
-	init_singular (config::singularLibrary().string());
-	load_singular_library(needed_library);
-	std::pair<int,lists> input;
-	std::pair<int, lists> out;
-	std::string ids;
-	std::string out_filename;
-	ids = worker();
-	//std::cout << ids << " in singular_..._compute" << std::endl;
-	input = deserialize(input_filename,ids);
-  
-	ScopedLeftv args( input.first, lCopy(input.second));
-  std::string function_name = "all_leadsyz_GpI";
- auto start_computation = std::chrono::high_resolution_clock::now();
-
-	out = call_user_proc(function_name, needed_library, args);
-  auto end_computation = std::chrono::high_resolution_clock::now();
-               auto computation_time =std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - start_computation).count();
-               std::cout << "SchFrame_Runtime:_implementation " << computation_time << " milliseconds" << std::endl;
-    lists u = (lists)out.second->m[3].Data();
-    // std::cout<<"m[3]:"<< out.second->m[3].Data()<< std::endl;
-    // std::cout<<"ListOutside:"<<lSize(u)<< std::endl;
-    
-   
-     std::vector<std::string> vec;
-     int total_generator;
-
-    // // Iterate through each element of the outer list
-    for(int i (0); i<lSize(u); i++)
-
-  {
-    //std::cout<<"checkMemory:"<<u->m[i].Data()<<std::endl;
-    auto  Outname=serialize((lists)u->m[i].Data(), base_filename);
-    
-    //std::cout<<"Check the output:"<<Outname<< std::endl;
-    vec.push_back(Outname);
-  } 
-   total_generator = lSize(u); // Assuming u contains the computed generators
-
-  return {vec, total_generator};
-}
-
 
 
 
@@ -247,7 +202,7 @@ ideal leadSyz(ideal f) {
     // for (int k = 0; k < cc; k++) {
     //     std::cout << "Generator " << k << ": " << pString((poly)L->m[k]) << std::endl;
     // }
-   std::cout << "size of ideal in leadSyz: " << IDELEMS(L) << std::endl;
+  //  std::cout << "size of ideal in leadSyz: " << IDELEMS(L) << std::endl;
 
     return L;  // Return the ideal L
 }
@@ -416,147 +371,120 @@ std::pair<int, lists> leadSyz_GpI(leftv args) {
         counter = (int)(long)tmp->m[6].Data();
     }
 
-   //int r = IDELEMS(LT); 
-     std::cout << "#LEADSYZ_GPI tokens:" << r<< std::endl;
-       // Prepare the LLT token
-    lists LLT=(lists)omAlloc0Bin(slists_bin);
-    LLT->Init(4);// type token
+
+    // Prepare the LLT token
+    lists LLT = (lists)omAlloc0Bin(slists_bin);
+    LLT->Init(4); // Initialize with 4 fields
     lists temp = (lists)omAlloc0Bin(slists_bin);
     temp->Init(r);
-    //std::cout << "SubLIFT_GPI_token: "<< std::endl;
-    int k=0;
 
-    for (k = 0; k < r; k++) {
-       // Create a new token Ld
-      lists Ld=(lists)omAlloc0Bin(slists_bin);
-      Ld->Init(4);// type token 
+    // Iterate to fill in data
+    for (int k = 0; k < r; k++) {
+        // Create a new token Ld
+        lists Ld = (lists)omAlloc0Bin(slists_bin);
+        Ld->Init(4); // Initialize with 4 fields
 
-      
-      lists t=(lists)omAlloc0Bin(slists_bin);
-      t->Init(2);
-      t->m[0].rtyp=STRING_CMD; t->m[0].data=strdup("generators");
-      t->m[1].rtyp=STRING_CMD; t->m[1].data=strdup("Sparse_matrix_LeadSyz");
-    
-      Ld->m[1].rtyp=LIST_CMD; Ld->m[1].data=t;
-      Ld->m[0].rtyp=RING_CMD; Ld->m[0].data=currRing;
-      Ld->m[2].rtyp=RING_CMD; Ld->m[2].data=currRing;
+        lists t = (lists)omAlloc0Bin(slists_bin);
+        t->Init(2);
+        t->m[0].rtyp = STRING_CMD; t->m[0].data = strdup("generators");
+        t->m[1].rtyp = STRING_CMD; t->m[1].data = strdup("Sparse_matrix_Leadsyz");
 
-        // Create the matrix sM
-        matrix sM = mpNew(r0, r);
-        poly s_lift = LT->m[k];
-         poly lm = pHead(s_lift);
-         pSetComp(lm,0);
-         pSetmComp(lm);
-        // Extract the lead exponent l_k
+        Ld->m[1].rtyp = LIST_CMD; Ld->m[1].data = t;
+        Ld->m[0].rtyp = RING_CMD; Ld->m[0].data = currRing;
+        Ld->m[2].rtyp = RING_CMD; Ld->m[2].data = currRing;
+
+        matrix sM = mpNew(r0, c);
+        poly s_lift = (poly)LT->m[k]; // Retrieve the lifted polynomial
         int l_k = p_GetComp(s_lift, currRing);
 
-        // sM[l_k, k] = leadcoef(s_lift) * leadmonomial(s_lift);
-        MATELEM(sM, l_k,k+1) = pCopy(lm);
+        poly lm = pHead(s_lift);
+        pSetComp(lm, 0);
+        pSetmComp(lm);
 
-        //data  Ld.data
-     t=(lists)omAlloc0Bin(slists_bin);
-     t->Init(7);
-      t->m[0].rtyp=VECTOR_CMD;  t->m[0].data=pCopy(s_lift);
-      //Ld.data[2]= sM;
-     t->m[1].rtyp=MATRIX_CMD; t->m[1].data=sM;
-       //Ld.data[3] = l_k;
-     t->m[2].rtyp=INT_CMD;  t->m[2].data = (void*)(long)l_k;
-      // Ld.data[4]=colmn;
-     t->m[3].rtyp=INT_CMD;  t->m[3].data = (void*)(long)(k+1);
-          std::cout << "#LEADSYZ_GPI column:" <<k+1<< std::endl;
-     t->m[4].rtyp=LIST_CMD;  t->m[4].data = LT;  
-      std::cout << "LT in token:" << IDELEMS(LT) << std::endl;
-        // Ld.data[6]=counter;
-    t->m[5].rtyp=INT_CMD;  t->m[5].data = (void*)(long)(counter);
-    
-   //Ld.data[7] = counter;
-    t->m[6].rtyp=INT_CMD; t->m[6].data = (void*)(long)(counter);
-    
-     //Ld.data //data is in postion 4
-    Ld->m[3].rtyp=LIST_CMD; Ld->m[3].data=t;
-        
+        MATELEM(sM, l_k, colmn) = pCopy(lm);
+
+        // Prepare Ld data
+        t = (lists)omAlloc0Bin(slists_bin);
+        t->Init(7);
+        t->m[0].rtyp = VECTOR_CMD; 
+        t->m[0].data = pCopy(s_lift);
+        t->m[1].rtyp = MATRIX_CMD; 
+        t->m[1].data = sM;
+        t->m[2].rtyp = INT_CMD; 
+        t->m[2].data = (void*)(long)l_k;
+        t->m[3].rtyp = INT_CMD; 
+        t->m[3].data = (void*)(long)(k+1);
+
       
-    // Set fieldnames[k] to "generator"
-   lists field_names = (lists)omAlloc0Bin(slists_bin);
-   field_names->Init(r);
- for (int s = 0; s < r; s++) 
- {
-    field_names->m[s].rtyp = STRING_CMD;
-    field_names->m[s].data = strdup("generator"); 
-   // std::cout << "LLT[k]:generator "<<k<< std::endl;
- }
-     LLT->m[0].rtyp=RING_CMD; LLT->m[0].data=currRing;
- // Assign fieldnames to LLT
-  LLT->m[1].rtyp = LIST_CMD;
-  LLT->m[1].data = field_names;
-  
-  
-  LLT->m[2].rtyp=RING_CMD; LLT->m[2].data=currRing;
+            t->m[4].rtyp = MODUL_CMD; 
+            t->m[4].data = idCopy(LT); // J[2]
+       
 
-     //LLT.data[k] = Ld; 
-     
-    
-   // Set data for LLT
-  lists t0 = (lists)omAlloc0Bin(slists_bin);
-  t0->Init(r);
-  for (int s = 0; s < r; s++) 
-  {
-    t0->m[s].rtyp = LIST_CMD;
-    t0->m[s].data = lCopy(Ld);  
-  }
+        t->m[5].rtyp = INT_CMD;  
+        t->m[5].data = (void*)(long)counter;
+        t->m[6].rtyp = INT_CMD; 
+        t->m[6].data = (void*)(long)(counter);
 
-  // LLT->m[3].rtyp = LIST_CMD;
-  // LLT->m[3].data = t0;
- 
-    temp->m[k].rtyp = LIST_CMD;
-    temp->m[k].data = lCopy(Ld); 
- 
+        Ld->m[3].rtyp = LIST_CMD; 
+        Ld->m[3].data = t;
+
+        // Set fieldnames[k] to "generator"
+        lists field_names = (lists)omAlloc0Bin(slists_bin);
+        field_names->Init(r);
+        for (int s = 0; s < r; s++) {
+            field_names->m[s].rtyp = STRING_CMD;
+            field_names->m[s].data = strdup("generator");
+        }
+
+        LLT->m[0].rtyp = RING_CMD; 
+        LLT->m[0].data = currRing;
+
+        // Assign fieldnames to LLT
+        LLT->m[1].rtyp = LIST_CMD;
+        LLT->m[1].data = field_names;
+        LLT->m[2].rtyp = RING_CMD; 
+        LLT->m[2].data = currRing;
+
+        // Set data for LLT
+        lists t0 = (lists)omAlloc0Bin(slists_bin);
+        t0->Init(r);
+        for (int s = 0; s < r; s++) {
+            t0->m[s].rtyp = LIST_CMD;
+            t0->m[s].data = lCopy(Ld);
+        }
+        temp->m[k].rtyp = LIST_CMD;
+        temp->m[k].data = lCopy(Ld);
     }
 
-   
-lists field_names = (lists)omAlloc0Bin(slists_bin);
-field_names->Init(r + 1);  
+    // Prepare the final field names
+    lists final_field_names = (lists)omAlloc0Bin(slists_bin);
+    final_field_names->Init(r + 1);
+    for (int s = 0; s < r; s++) {
+        final_field_names->m[s].rtyp = STRING_CMD;
+        final_field_names->m[s].data = omStrDup((const char*)LLT->m[1].data);
+    }
 
-// Copy existing "generator" field names
-for (int s = 0; s < r; s++) 
-{
-    field_names->m[s].rtyp = STRING_CMD;
-    field_names->m[s].data =omStrDup((const char*)LLT->m[1].data);  // Add existing field names
-}
+    // Append "total_number_generator"
+    final_field_names->m[r].rtyp = STRING_CMD;
+    final_field_names->m[r].data = strdup("total_number_generator");
+    LLT->m[1].rtyp = LIST_CMD;  
+    LLT->m[1].data = final_field_names;
 
-// Append "total_number_generator" at position r
-field_names->m[r].rtyp = STRING_CMD;
-field_names->m[r].data = strdup("total_number_generator");
-
-// Set field names in LLT
-LLT->m[1].rtyp = LIST_CMD;  
-LLT->m[1].data = field_names;
-
-
-
-     // Append "total_number_generator" at the end
+    // Final data preparation
     lists final_data = (lists)omAlloc0Bin(slists_bin);
     final_data->Init(r + 1);
-
-    // Copy generator data into final_data
-    for (int s = 0; s < r; s++) {
-        final_data->m[s].rtyp = LIST_CMD;
-        final_data->m[s].data = lCopy(static_cast<lists>(temp->m[s].data));
-        
+    for (int k = 0; k < r; k++) {
+        final_data->m[k].rtyp = LIST_CMD;
+        final_data->m[k].data = temp->m[k].data;  // Transfer data from temp
     }
 
-    // Append total_number_generator
     final_data->m[r].rtyp = INT_CMD;
-    final_data->m[r].data = (void*)(long)r;
+    final_data->m[r].data = (void*)(long)(r + 1); // Set total count
 
-    // Set final_data as LLT->m[3] (LLT.data)
     LLT->m[3].rtyp = LIST_CMD;
     LLT->m[3].data = final_data;
 
-
-
-
-    return {r, LLT};  // Return r (number of generators) and LLT
+    return {r, LLT};  // Return success state and LLT
 }
 
 
@@ -1118,4 +1046,263 @@ std::string singular_template_removeFiles(const std::string& Red, const std::str
         std::cerr << "Error deleting file: " << e.what() << std::endl;
     }
     return {};
+}
+
+
+
+
+lists allLeadSyz(ideal f) {
+    // Allocate memory for the lists structure
+    lists J = (lists)omAlloc0Bin(slists_bin);
+
+    
+    J->m[0].rtyp = IDEAL_CMD;  
+    J->m[0].data = f;          
+
+    
+    ideal F = leadSyz(f);
+
+    
+    J->m[1].rtyp = MODUL_CMD;  
+    J->m[1].data = F;
+
+    int n=nvars(currRing);
+    int level = 1;
+    for(int t=0;t<n;t++) {
+        // Compute the next syzygy ideal using Sec_leadSyz
+        ideal temp = Sec_leadSyz(F);
+
+        // Check if the result is empty
+        if (nrows(temp)!=0 && IDELEMS(temp)!= 0) {
+          F=idCopy(temp);
+        }
+          if(F==poly(0)){
+            break;
+          }
+       J->m[level+1].rtyp==MODUL_CMD;
+       J->m[level+1].data=idCopy(F);
+       level++;
+
+    // Return the list of syzygy ideals
+   
+}
+ return J;
+}
+
+ 
+proc all_leadsyz_GpI(token Token) 
+"USAGE: all_leadsyz_GpI(Token); Token token
+RETURN: a token LLT containing a list of leading syzygies
+NOTE: The types token are defined . This procedure is 
+intended to be called as a transition procedure inside the
+worker process (that is, the "inner" instances of SINGULAR).
+"
+
+{
+  def f= Token.data[1];
+ 
+    list J=allLeadSyz(f);
+    int r = size(J);
+    token LLT;
+ 
+   int k;
+  
+  for (k = 1; k <=r; k++) {
+    token Ld;
+    Ld.fieldnames = list("generator", "SchFrame");  
+  
+    
+    Ld.data[1]= J;
+    //print(s_lift);
+    Ld.data[2]= r;
+    LLT.fieldnames[k] = "generator";  
+    LLT.data[k] =Ld; 
+
+  }
+      LLT.fieldnames[size(LLT.fieldnames) + 1] = "total_number_generator";  
+      LLT.data[size(LLT.data) + 1] = r;  
+    return (LLT);  
+}
+
+
+
+lists allLeadSyz(ideal f) {
+    // Allocate memory for the lists structure
+    lists J = (lists)omAlloc0Bin(slists_bin);
+    J->Init(2); // Initialize the list with two elements
+
+    // Initialize the first two elements
+    J->m[0].rtyp = IDEAL_CMD;  
+    J->m[0].data = f;          
+
+    ideal F = leadSyz(f);
+
+    J->m[1].rtyp = MODUL_CMD;  
+    J->m[1].data = F;
+
+    int cc = 2; // Current count of elements in the list
+
+    while (TRUE) {
+        // Compute the next syzygy ideal using Sec_leadSyz
+        ideal temp = Sec_leadSyz(F);
+
+        // Check if the result is empty
+        if (temp == NULL || IDELEMS(temp) == 0) {
+            break; // Terminate if the ideal is empty
+        }
+
+        // Update F with the new ideal
+        F = idCopy(temp);
+
+        // Resize the list if necessary
+        if (cc >= lSize(J)) {
+            // Allocate a new list with additional space
+            int newSize = cc + 1; // Increase size by 1
+            lists tmpL = (lists)omAlloc0Bin(slists_bin);
+            tmpL->Init(newSize);
+
+            // Copy elements from J to tmpL
+            for (int i = 0; i < cc; i++) {
+                tmpL->m[i].rtyp = J->m[i].rtyp;
+                tmpL->m[i].data = J->m[i].data;
+            }
+
+          
+            omFreeBin(J, slists_bin);
+
+            // Assign the resized list
+            J = tmpL;
+        }
+
+        // Append the new ideal to the list
+        J->m[cc].rtyp = MODUL_CMD;
+        J->m[cc].data = F;
+        cc++; // Increment the count of elements
+    }
+
+    // Return the list of syzygy ideals
+    return J;
+}
+
+
+
+
+ std::pair<int, lists> all_leadsyz_GpI(leftv args) {
+    // Extract Token
+    lists Token = (lists)(args->Data());
+    
+    // Extract Token.data
+     lists tmp = (lists)(Token->m[3].Data());
+     //Extract def f=Token.data[1]
+    ideal f=(ideal)tmp->m[0].Data();
+    ideal f_copy=idCopy(f);
+    lists J=allLeadSyz(f_copy);
+    idDelete(&f_copy);
+    int r=lSize(J)+1;
+    int k=0;
+     lists LLT=(lists)omAlloc0Bin(slists_bin);
+    LLT->Init(4);// type token
+    lists temp = (lists)omAlloc0Bin(slists_bin);
+    temp->Init(r);
+
+    for (k = 0; k < r; k++) {
+       // Create a new token Ld
+      lists Ld=(lists)omAlloc0Bin(slists_bin);
+      Ld->Init(4);// type token 
+
+      
+      lists t=(lists)omAlloc0Bin(slists_bin);
+      t->Init(2);
+      t->m[0].rtyp=STRING_CMD; t->m[0].data=strdup("generators");
+      t->m[1].rtyp=STRING_CMD; t->m[1].data=strdup("SchFrame");
+    
+      Ld->m[1].rtyp=LIST_CMD; Ld->m[1].data=t;
+      Ld->m[0].rtyp=RING_CMD; Ld->m[0].data=currRing;
+      Ld->m[2].rtyp=RING_CMD; Ld->m[2].data=currRing;
+        t=(lists)omAlloc0Bin(slists_bin);
+     t->Init(2);
+     t->m[0].rtyp=LIST_CMD;  t->m[0].data=lCopy(J);
+     t->m[2].rtyp=INT_CMD;  t->m[2].data = (void*)(long)r;
+     Ld->m[3].rtyp=LIST_CMD; Ld->m[3].data=t;   
+    // Set fieldnames[k] to "generator"
+   lists field_names = (lists)omAlloc0Bin(slists_bin);
+   field_names->Init(r);
+ for (int s = 0; s < r; s++) 
+ {
+    field_names->m[s].rtyp = STRING_CMD;
+    field_names->m[s].data = strdup("generator"); 
+   // std::cout << "LLT[k]:generator "<<k<< std::endl;
+ }
+     LLT->m[0].rtyp=RING_CMD; LLT->m[0].data=currRing;
+ // Assign fieldnames to LLT
+  LLT->m[1].rtyp = LIST_CMD;
+  LLT->m[1].data = field_names;
+  
+  
+  LLT->m[2].rtyp=RING_CMD; LLT->m[2].data=currRing;
+
+     //LLT.data[k] = Ld; 
+     
+    
+   // Set data for LLT
+  lists t0 = (lists)omAlloc0Bin(slists_bin);
+  t0->Init(r);
+  for (int s = 0; s < r; s++) 
+  {
+    t0->m[s].rtyp = LIST_CMD;
+    t0->m[s].data = lCopy(Ld);  
+  }
+
+  // LLT->m[3].rtyp = LIST_CMD;
+  // LLT->m[3].data = t0;
+ 
+    temp->m[k].rtyp = LIST_CMD;
+    temp->m[k].data = lCopy(Ld); 
+ 
+    }
+
+   
+lists field_names = (lists)omAlloc0Bin(slists_bin);
+field_names->Init(r + 1);  
+
+// Copy existing "generator" field names
+for (int s = 0; s < r; s++) 
+{
+    field_names->m[s].rtyp = STRING_CMD;
+    field_names->m[s].data =omStrDup((const char*)LLT->m[1].data);  // Add existing field names
+}
+
+// Append "total_number_generator" at position r
+field_names->m[r].rtyp = STRING_CMD;
+field_names->m[r].data = strdup("total_number_generator");
+
+// Set field names in LLT
+LLT->m[1].rtyp = LIST_CMD;  
+LLT->m[1].data = field_names;
+
+
+
+     // Append "total_number_generator" at the end
+    lists final_data = (lists)omAlloc0Bin(slists_bin);
+    final_data->Init(r + 1);
+
+    // Copy generator data into final_data
+    for (int s = 0; s < r; s++) {
+        final_data->m[s].rtyp = LIST_CMD;
+        final_data->m[s].data = lCopy(static_cast<lists>(temp->m[s].data));
+        
+    }
+
+    // Append total_number_generator
+    final_data->m[r].rtyp = INT_CMD;
+    final_data->m[r].data = (void*)(long)(r+1);
+
+    // Set final_data as LLT->m[3] (LLT.data)
+    LLT->m[3].rtyp = LIST_CMD;
+    LLT->m[3].data = final_data;
+
+
+
+
+    return {r, LLT};  // Return r (number of generators) and LLT
 }

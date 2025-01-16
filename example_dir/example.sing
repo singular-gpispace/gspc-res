@@ -18,7 +18,7 @@ gc.options.logport = 9876;
 
 
  //Example from Singular book
-//  ring S=0, (x,y,z), (c,dp);
+//  ring S=0, (x,y,z), (dp);
 //  ideal J1=y*z+z^2,y^2 + x*z,x*y+z^2,z^3,x*z^2,x^2*z;
 //  ideal J=std(J1);
 
@@ -30,9 +30,9 @@ gc.options.logport = 9876;
 // ideal J=f1,f2,f3;
 
 //Koszul
-// ring R=0, (x(1..4)),dp;
-//  ideal I=randomid(maxideal(1),4,3);
-//  ideal J=std(I);
+// ring R=0, (x1,x2,x3,x4),dp;
+
+//  ideal J=x1,x2,x3,x4;
 // print("ideal J=");
 // print(J);
  //Example 1:
@@ -49,12 +49,12 @@ gc.options.logport = 9876;
 // module m=s1,s2,s3,s4,s5,s6;
 
   // Example2:
-// ring R= 0, (x(1..10)), lp;
-// matrix mS[2][4]= x(4)+ x(6), x(6)+ x(3), x(8)+ x(3), x(1)-x(3), x(2)-x(4), x(5)-x(7), x(8)-x(7), 
-// x(2)+ x(3), x(5)- x(7), x(10)+ x(8), x(1) -x(2);
-// ideal I_minor= minor(mS,2);
-// I_minor;
-// ideal J = std(I_minor);
+ring R= 0, (x(1..10)), (lp,c);
+matrix mS[2][4]= x(4)+ x(6), x(6)+ x(3), x(8)+ x(3), x(1)-x(3), x(2)-x(4), x(5)-x(7), x(8)-x(7), 
+x(2)+ x(3), x(5)- x(7), x(10)+ x(8), x(1) -x(2);
+ideal I_minor= minor(mS,2);
+I_minor;
+ideal J = std(I_minor);
 
 
 
@@ -83,7 +83,7 @@ gc.options.logport = 9876;
 // J1;
 // print("GB");
 // ideal J=std(J1);
-
+// print(size(J));
 //  //Example4
 //  ring R = 0, (x0, x1, x2, x3, x4), (dp,c); // Example for n+1 = 5 variables
 // // Step 2: Generate a regular sequence
@@ -117,8 +117,8 @@ gc.options.logport = 9876;
 
 
 //Example 6 [Koszul Case ]
-ring R=0,(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10),dp;
-ideal J=x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10;
+// ring R=0,(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10),dp;
+// ideal J=x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10;
 
 // ring R=0, (w,x,y,z), dp;
 // matrix m[2][3]=w,x,y,x,y,z;

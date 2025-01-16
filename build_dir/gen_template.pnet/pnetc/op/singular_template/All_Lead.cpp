@@ -27,7 +27,7 @@ namespace pnetc
         , int& counter
         )
       {
-#line 100 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 91 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
           //std::cout <<"All_LeadSyz_Input:"<<init<< std::endl;
          
@@ -42,7 +42,7 @@ namespace pnetc
                     
                  for(int i (0); i<vec.size(); i++)
                                                                  {
-                        std::cout << "SchFrame_Success:"<<vec[i] << std::endl;
+                        // std::cout << "SchFrame_Success:"<<vec[i] << std::endl;
                        
                           OUTPUT.emplace_back(vec[i]);
 
