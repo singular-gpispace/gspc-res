@@ -22,7 +22,7 @@ namespace pnetc
 
         // std::cout <<"LIFT: " << LIFT << std::endl;
         // std::cout <<"LeadSyz: " << nleads << std::endl;
-           std::cout << "Delete:"<< std::endl;
+          //  std::cout << "Delete:"<< std::endl;
         s = RESOLVE_INTERFACE_FUNCTION(singular_template_removeFiles)(l, r);
         // std::cout << "Delete:" << s << std::endl;
       

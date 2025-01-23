@@ -12,13 +12,13 @@ LIB "random.lib";
 configToken gc = configure_gspc();
 gc.options.tmpdir = "/home/santosh/gspc-res/example_dir/temp";
 gc.options.nodefile = "nodefile";
-gc.options.procspernode = 6;
+gc.options.procspernode = 4;
 gc.options.loghost = "schipp";
 gc.options.logport = 9876;
 
 
  //Example from Singular book
-//  ring S=0, (x,y,z), (dp);
+//  ring R=0, (x,y,z), dp;
 //  ideal J1=y*z+z^2,y^2 + x*z,x*y+z^2,z^3,x*z^2,x^2*z;
 //  ideal J=std(J1);
 
@@ -31,7 +31,6 @@ gc.options.logport = 9876;
 
 //Koszul
 // ring R=0, (x1,x2,x3,x4),dp;
-
 //  ideal J=x1,x2,x3,x4;
 // print("ideal J=");
 // print(J);
@@ -49,12 +48,11 @@ gc.options.logport = 9876;
 // module m=s1,s2,s3,s4,s5,s6;
 
   // Example2:
-ring R= 0, (x(1..10)), (lp,c);
-matrix mS[2][4]= x(4)+ x(6), x(6)+ x(3), x(8)+ x(3), x(1)-x(3), x(2)-x(4), x(5)-x(7), x(8)-x(7), 
-x(2)+ x(3), x(5)- x(7), x(10)+ x(8), x(1) -x(2);
-ideal I_minor= minor(mS,2);
-I_minor;
-ideal J = std(I_minor);
+// ring R= 0, (x(1),x(2),x(3),x(4),x(5),x(6),x(7),x(8)), (lp,c);
+// matrix mS[2][4]= x(4)+ x(6), x(6)+ x(3), x(8)+ x(3), x(1)-x(3), x(2)-x(4), x(5)-x(7), x(8)-x(7), x(2)+ x(3);
+// ideal I_minor= minor(mS,2);
+// I_minor;
+// ideal J = std(I_minor);
 
 
 
@@ -84,6 +82,7 @@ ideal J = std(I_minor);
 // print("GB");
 // ideal J=std(J1);
 // print(size(J));
+
 //  //Example4
 //  ring R = 0, (x0, x1, x2, x3, x4), (dp,c); // Example for n+1 = 5 variables
 // // Step 2: Generate a regular sequence
@@ -101,18 +100,18 @@ ideal J = std(I_minor);
 
 //Example 5
 
-// ring R = 0, (x0, x1, x2, x3, x4, x5), (dp,c);
+ring R = 0, (x0, x1, x2, x3, x4, x5), (dp,c);
 
-// // Step 2: Generate a regular sequence with 5 polynomials
-// poly f1 = x0 + x1 + x2 + x3;
-// poly f2 = x0*x1 + x2*x3 + x4*x5;
-// poly f3 = x0*x2 + x1*x3;
-// poly f4 = x0*x3 + x1*x4 + x2*x5;
-// poly f5 = x0*x4 + x1*x5;
+// Step 2: Generate a regular sequence with 5 polynomials
+poly f1 = x0 + x1 + x2 + x3;
+poly f2 = x0*x1 + x2*x3 + x4*x5;
+poly f3 = x0*x2 + x1*x3;
+poly f4 = x0*x3 + x1*x4 + x2*x5;
+poly f5 = x0*x4 + x1*x5;
 
 
-// ideal J1 = f1, f2, f3, f4, f5;
-//  ideal J=std(J1);
+ideal J1 = f1, f2, f3, f4, f5;
+ ideal J=std(J1);
 
 
 

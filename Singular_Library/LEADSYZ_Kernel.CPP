@@ -67,6 +67,8 @@ NO_NAME_MANGLING
 
 NO_NAME_MANGLING
 
+NO_NAME_MANGLING
+
 
 matrix lcm_mod(ideal G) { //ideal G is Singular module
 
@@ -315,7 +317,7 @@ ideal Sec_leadSyz(ideal f0) {
 
 
 
-
+NO_NAME_MANGLING
 
 std::pair<int, lists> leadSyz_GpI(leftv args) {
     // Extract Token
@@ -377,7 +379,7 @@ std::pair<int, lists> leadSyz_GpI(leftv args) {
     LLT->Init(4); // Initialize with 4 fields
     lists temp = (lists)omAlloc0Bin(slists_bin);
     temp->Init(r);
-
+  
     // Iterate to fill in data
     for (int k = 0; k < r; k++) {
         // Create a new token Ld
@@ -393,7 +395,8 @@ std::pair<int, lists> leadSyz_GpI(leftv args) {
         Ld->m[0].rtyp = RING_CMD; Ld->m[0].data = currRing;
         Ld->m[2].rtyp = RING_CMD; Ld->m[2].data = currRing;
 
-        matrix sM = mpNew(r0, c);
+        matrix sM = mpNew(r0, r);
+        //  std::cout << "leadSyz_Matrix_row:" << r0<<""<<"column"<<r<< std::endl;
         poly s_lift = (poly)LT->m[k]; // Retrieve the lifted polynomial
         int l_k = p_GetComp(s_lift, currRing);
 
@@ -401,8 +404,8 @@ std::pair<int, lists> leadSyz_GpI(leftv args) {
         pSetComp(lm, 0);
         pSetmComp(lm);
 
-        MATELEM(sM, l_k, colmn) = pCopy(lm);
-
+        MATELEM(sM, l_k, k+1) = pCopy(lm);
+            //  std::cout << "leadSyz_vetor:" <<pString(lm)<< std::endl;
         // Prepare Ld data
         t = (lists)omAlloc0Bin(slists_bin);
         t->Init(7);
@@ -411,7 +414,7 @@ std::pair<int, lists> leadSyz_GpI(leftv args) {
         t->m[1].rtyp = MATRIX_CMD; 
         t->m[1].data = sM;
         t->m[2].rtyp = INT_CMD; 
-        t->m[2].data = (void*)(long)l_k;
+        t->m[2].data = (void*)(long)(l_k);
         t->m[3].rtyp = INT_CMD; 
         t->m[3].data = (void*)(long)(k+1);
 
@@ -421,7 +424,7 @@ std::pair<int, lists> leadSyz_GpI(leftv args) {
        
 
         t->m[5].rtyp = INT_CMD;  
-        t->m[5].data = (void*)(long)counter;
+        t->m[5].data = (void*)(long)(counter);
         t->m[6].rtyp = INT_CMD; 
         t->m[6].data = (void*)(long)(counter);
 
@@ -446,12 +449,12 @@ std::pair<int, lists> leadSyz_GpI(leftv args) {
         LLT->m[2].data = currRing;
 
         // Set data for LLT
-        lists t0 = (lists)omAlloc0Bin(slists_bin);
-        t0->Init(r);
-        for (int s = 0; s < r; s++) {
-            t0->m[s].rtyp = LIST_CMD;
-            t0->m[s].data = lCopy(Ld);
-        }
+        // lists t0 = (lists)omAlloc0Bin(slists_bin);
+        // t0->Init(r);
+        // for (int s = 0; s < r; s++) {
+        //     t0->m[s].rtyp = LIST_CMD;
+        //     t0->m[s].data = lCopy(Ld);
+        // }
         temp->m[k].rtyp = LIST_CMD;
         temp->m[k].data = lCopy(Ld);
     }
@@ -486,88 +489,6 @@ std::pair<int, lists> leadSyz_GpI(leftv args) {
 
     return {r, LLT};  // Return success state and LLT
 }
-
-
-
-
-
-NO_NAME_MANGLING
-std::tuple<std::vector<std::string>, int,  long> singular_template_leadSyzGPI(const std::string& input_filename,
-                                                     const std::string& needed_library,
-                                                     const std::string& base_filename)
-{
-    // Initialize Singular and load library
-    init_singular(config::singularLibrary().string());
-    load_singular_library(needed_library);
-    
-    // Debugging: Print out function parameters
-    // std::cout << "Function Parameters:" << std::endl;
-    // std::cout << "Input Filename: " << input_filename << std::endl;
-    // std::cout << "Needed Library: " << needed_library << std::endl;
-    // std::cout << "Base Filename: " << base_filename << std::endl;
-
-    // Debugging: Print worker ID
-    std::string ids = worker();
-    //std::cout << ids << " in singular_template_Leadvector" << std::endl;
-
-    // Deserialize input data
-    std::pair<int, lists> input;
-    //auto start_deserialize = std::chrono::high_resolution_clock::now();
-    input = deserialize(input_filename, ids);
-   
-  //auto end_deserialize = std::chrono::high_resolution_clock::now();
-  //auto computation_time_deserialize = std::chrono::duration_cast<std::chrono::milliseconds>( end_deserialize - start_deserialize).count();
-
-    // Debugging: Print input data
-    //std::cout << "Input Data:" << input.second << std::endl;
-
-    // Prepare arguments
-    ScopedLeftv args(input.first, lCopy(input.second));
-
-    // Call Singular procedure
-    std::pair<int, lists> out;
-  
-    auto start_computation = std::chrono::high_resolution_clock::now();
-    out =  leadSyz_GpI(args.leftV());
-    //std::cout<<"ListOutside_proc:"<<function_name<< std:: endl;
-  auto end_computation = std::chrono::high_resolution_clock::now();
-  auto computation_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_computation - start_computation).count();
-  //std::cout << "LEADSYZ_Runtime: " << computation_time << " milliseconds" << std::endl;
-    // Extract list from the output
-    lists u = (lists)out.second->m[3].Data();
-    // std::cout<<"m[3]:"<< out.second->m[3].Data()<< std::endl;
-    // std::cout<<"ListOutside:"<<lSize(u)<< std::endl;
-    
-   
-     std::vector<std::string> vec;
-     int total_generator;
-
-    // // Iterate through each element of the outer list
-     //auto start_serialize = std::chrono::high_resolution_clock::now();
-      std::cout<<"GPI_LEADSYZ_tokens="<<lSize(u)<< std::endl;
-     
-    for(int i (0); i<lSize(u); i++)
-
-  { 
-    //std::cout<<"size of u:"<<lSize(u)+1<<std::endl;
-    auto  Outname=serialize((lists)u->m[i].Data(), base_filename);
-    
-    //std::cout<<"LEADSYZ:="<<Outname<< std::endl;
-    vec.push_back(Outname);
-  } 
-  //auto end_serialize = std::chrono::high_resolution_clock::now();
-   //auto  serialization_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_serialize - start_serialize).count(); // Convert to milliseconds
- //auto total_runtime= computation_time_deserialize+computation_time+ serialization_time;
-auto total_runtime=computation_time;
-
-   total_generator = lSize(u); // Assuming u contains the computed generators
-
-  return {vec, total_generator, total_runtime};
-
-}
-
-
-
 
 
 
@@ -1125,64 +1046,83 @@ worker process (that is, the "inner" instances of SINGULAR).
 }
 
 
-
 lists allLeadSyz(ideal f) {
     // Allocate memory for the lists structure
     lists J = (lists)omAlloc0Bin(slists_bin);
     J->Init(2); // Initialize the list with two elements
-
+    ideal f_copy = idCopy(f);
+    
     // Initialize the first two elements
     J->m[0].rtyp = IDEAL_CMD;  
-    J->m[0].data = f;          
-
-    ideal F = leadSyz(f);
-
+    J->m[0].data = f_copy;          
+    
+    int n = rVar(currRing); // Get the number of variables in the current ring
+    ideal F = leadSyz(f_copy);
+    int g=IDELEMS(F);
+   
+    for(int k=0; k<g;k++){
+      std::cout << "First_LeadSyz :at" <<""<<k << ": " << pString((poly)F->m[k]) << std::endl;
+    }
+    ideal F_copy = idCopy(F);
     J->m[1].rtyp = MODUL_CMD;  
-    J->m[1].data = F;
+    J->m[1].data = F_copy;
 
     int cc = 2; // Current count of elements in the list
 
-    while (TRUE) {
-        // Compute the next syzygy ideal using Sec_leadSyz
-        ideal temp = Sec_leadSyz(F);
+    // Debugging output to print the number of variables
+    std::cout << "Number of variables: " << n << std::endl;
 
-        // Check if the result is empty
-        if (temp == NULL || IDELEMS(temp) == 0) {
-            break; // Terminate if the ideal is empty
+    // Iterate through the variables in the ring to compute subsequent syzygy ideals
+    for (int t = 0; t < n; t++) {
+        std::cout << "Processing variable: " << t + 1 << std::endl;
+
+        // Compute the next syzygy ideal using Sec_leadSyz
+        ideal temp = Sec_leadSyz(F_copy);
+
+             if (temp->nrows == 0 || temp->ncols == 0) {
+            std::cout << "In break: the syzygy ideal is zero or empty." << std::endl;
+            break;  // Exit the loop
         }
 
-        // Update F with the new ideal
-        F = idCopy(temp);
+     
+            F_copy = idCopy(temp); // Update `F_copy` with the new syzygy ideal
+     
 
-        // Resize the list if necessary
+        // Resize the list if necessary to accommodate new elements
         if (cc >= lSize(J)) {
-            // Allocate a new list with additional space
             int newSize = cc + 1; // Increase size by 1
-            lists tmpL = (lists)omAlloc0Bin(slists_bin);
-            tmpL->Init(newSize);
+            lists tmpL = (lists)omAlloc0Bin(slists_bin); // Allocate a new list
+            tmpL->Init(newSize); // Initialize the new list with the updated size
 
-            // Copy elements from J to tmpL
+            // Copy elements from the old list `J` to the new list `tmpL`
             for (int i = 0; i < cc; i++) {
                 tmpL->m[i].rtyp = J->m[i].rtyp;
                 tmpL->m[i].data = J->m[i].data;
             }
 
-          
+            // Free memory associated with the old list
             omFreeBin(J, slists_bin);
 
-            // Assign the resized list
-            J = tmpL;
+            // Assign the resized list to `J`
+            J = lCopy(tmpL);
         }
-
-        // Append the new ideal to the list
+     std::cout << "Counter in the loop:= " << cc << std::endl;
+        // Append the new syzygy ideal to the list
         J->m[cc].rtyp = MODUL_CMD;
-        J->m[cc].data = F;
-        cc++; // Increment the count of elements
+        J->m[cc].data = F_copy;
+        for (int k=0;k<lSize(J)+1; k++){
+          ideal l=(ideal)J->m[k].Data();
+          for(int i=0;i<IDELEMS(l);i++)
+         std::cout << "Updated J[" << k << "]: "<< pString((poly)l->m[i])<<std::endl;
+        }
+        
+        cc++; // Increment the count of elements in the list
     }
 
     // Return the list of syzygy ideals
     return J;
 }
+
 
 
 
@@ -1194,17 +1134,29 @@ lists allLeadSyz(ideal f) {
     // Extract Token.data
      lists tmp = (lists)(Token->m[3].Data());
      //Extract def f=Token.data[1]
-    ideal f=(ideal)tmp->m[0].Data();
-    ideal f_copy=idCopy(f);
+    ideal f_copy=idCopy((ideal)tmp->m[0].Data());
+    // ideal f_copy=idCopy(f);
+//     for(int k=0;k<IDELEMS(f_copy);k++){
+//  std::cout << "Generator " << k << ": " << pString((poly)f_copy->m[k]) << std::endl;
+//     }
+   
     lists J=allLeadSyz(f_copy);
-    idDelete(&f_copy);
-    int r=lSize(J)+1;
+     int r=lSize(J)+1;
+    // idDelete(&f_copy);
+    //  for(int k=0;k<r;k++){
+    //   ideal l=(ideal)J->m[k].Data();
+    //   for(int s=0; s<IDELEMS(l);s++){
+    //   std::cout << "Generator " << k << ": " << pString((poly)l->m[s]) << std::endl;
+    //   }
+ 
+    // }
     int k=0;
+    int counter=r;
      lists LLT=(lists)omAlloc0Bin(slists_bin);
     LLT->Init(4);// type token
     lists temp = (lists)omAlloc0Bin(slists_bin);
     temp->Init(r);
-
+  std::cout << "size of Sch frame: " << "" << r << std::endl;
     for (k = 0; k < r; k++) {
        // Create a new token Ld
       lists Ld=(lists)omAlloc0Bin(slists_bin);
@@ -1216,13 +1168,15 @@ lists allLeadSyz(ideal f) {
       t->m[0].rtyp=STRING_CMD; t->m[0].data=strdup("generators");
       t->m[1].rtyp=STRING_CMD; t->m[1].data=strdup("SchFrame");
     
-      Ld->m[1].rtyp=LIST_CMD; Ld->m[1].data=t;
       Ld->m[0].rtyp=RING_CMD; Ld->m[0].data=currRing;
+      Ld->m[1].rtyp=LIST_CMD; Ld->m[1].data=t;
+    
       Ld->m[2].rtyp=RING_CMD; Ld->m[2].data=currRing;
-        t=(lists)omAlloc0Bin(slists_bin);
+
+     t=(lists)omAlloc0Bin(slists_bin);
      t->Init(2);
      t->m[0].rtyp=LIST_CMD;  t->m[0].data=lCopy(J);
-     t->m[2].rtyp=INT_CMD;  t->m[2].data = (void*)(long)r;
+     t->m[2].rtyp=INT_CMD;  t->m[2].data = (void*)(long)(counter);
      Ld->m[3].rtyp=LIST_CMD; Ld->m[3].data=t;   
     // Set fieldnames[k] to "generator"
    lists field_names = (lists)omAlloc0Bin(slists_bin);
@@ -1253,8 +1207,8 @@ lists allLeadSyz(ideal f) {
     t0->m[s].data = lCopy(Ld);  
   }
 
-  // LLT->m[3].rtyp = LIST_CMD;
-  // LLT->m[3].data = t0;
+  LLT->m[3].rtyp = LIST_CMD;
+  LLT->m[3].data = t0;
  
     temp->m[k].rtyp = LIST_CMD;
     temp->m[k].data = lCopy(Ld); 
@@ -1295,7 +1249,7 @@ LLT->m[1].data = field_names;
 
     // Append total_number_generator
     final_data->m[r].rtyp = INT_CMD;
-    final_data->m[r].data = (void*)(long)(r+1);
+    final_data->m[r].data = (void*)(long)(counter+1);
 
     // Set final_data as LLT->m[3] (LLT.data)
     LLT->m[3].rtyp = LIST_CMD;

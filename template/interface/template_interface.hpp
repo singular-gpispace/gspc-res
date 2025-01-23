@@ -33,7 +33,7 @@ std::string singular_template_Init( std::string const& );
 
 
 NO_NAME_MANGLING
-std::tuple<std::vector<std::string>, int,  long>   singular_template_all_leadsyz_GpI( std::string const&
+std::tuple<std::vector<std::string>, int,  long>  singular_template_ALL_LEAD( std::string const&
                                                     
                                                          , std::string const&
 									  , std::string const&
@@ -41,7 +41,7 @@ std::tuple<std::vector<std::string>, int,  long>   singular_template_all_leadsyz
 
 
 NO_NAME_MANGLING
-std::tuple<std::vector<std::string>, int,  long> singular_template_leadSyzGPI( std::string const&
+std::tuple<std::vector<std::string>, int,  long> singular_template_LEAD( std::string const&
                                                     
                                                          , std::string const&
 									  , std::string const&

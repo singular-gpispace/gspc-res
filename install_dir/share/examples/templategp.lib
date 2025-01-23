@@ -183,7 +183,7 @@ worker process (that is, the "inner" instances of SINGULAR).
     list J=allLeadSyz(f);
     int r = size(J);
     token LLT;
- 
+   
    int k;
   
   for (k = 1; k <=r; k++) {
@@ -999,7 +999,7 @@ if(typeof(f)=="ideal"){
     }
    }
     Ld.data[6]=counter;
-    Ld.data[7] = counter;
+    Ld.data[7] = counter+1;
     LLT.fieldnames[k] = "generator";  
     LLT.data[k] = Ld; 
 
@@ -1110,12 +1110,6 @@ proc subLiftTree2(module f, vector s, list J, int level) {
      //module f0= leadSyz(I_Gr);
      //ideal I_Gr=J[1];
      module f0=J[level];
-
-
-
-
-
-
      
     number lc_s = leadcoef(s);  // leading coefficient of s
     poly lm_s = leadmonomial(s);  // leading monomial of s
@@ -1205,14 +1199,30 @@ proc SubLIFT_GPI(token Token,token tok, token TT)
 
 
 
-{
+{    
+
+   
     def J=tok.data[1];
     def f = Token.data[1]; 
-    int counter=TT.data[6];
     vector s = TT.data[1];
-   // matrix B= TT.data[2]; //matrix
+    int counter=TT.data[6];
+    
+  //  matrix Bl= TT.data[2]; //matrix
+   def Lb=TT.data[5]; //Error here?
     int colmn = TT.data[4]; //column
     
+    string path = "/home/santosh/gspc-res/example_dir/temp/";  // Ensure the path ends with a "/"
+    string filename = "SubLIFT.ssi";
+     link l0 = "ssi:w " + path + filename;
+            // write(l0, Bl, "matrix");
+             write(l0, J, "SchFrame");
+              write(l0, f, "INPUT");
+              write(l0, Lb, "LeadSyz");
+             close(l0);
+
+
+
+
 if(typeof(f)=="ideal"){
      
      def l=J[2]; // replace def l = leadSyz(f);
@@ -1329,13 +1339,20 @@ proc reduce_GPI(token input, token Tok, token tok)
 "          
 
 {
- def f=input.data[1];;
+    string path = "/home/santosh/gspc-res/example_dir/temp/";  // Ensure the path ends with a "/"
+    string filename = "Reduce.ssi";
+     link l0 = "ssi:w " + path + filename;
+ def f=input.data[1];
 
 if(typeof(f)=="ideal"){
 int r= size(f);
 
  def L=Tok.data[5];
  int c=size(L);
+  write(l0, f, "input");
+            
+  write(l0, L, "LeadSyz");
+            
 }else {
   if(typeof(f)=="vector"){
     def L=input.data[5];
@@ -1348,14 +1365,21 @@ int r= size(f);
 
 
  int counter= Tok.data[6];
+  write(l0, counter, "counter");
  matrix A[r][c];
  matrix B[r][c];
  def v=Tok.data[1];
  A=Tok.data[2];
  
  B= tok.data[2];
- 
+  write(l0, v, "vector");
+            
+   write(l0, A, "matrix A");
+    write(l0, B, "matrix B");
+             close(l0);
   
+            // write(l0, Bl, "matrix");
+            
     // Perform the matrix addition using jjPLUS_MA
     matrix C[r][c];
     C=A+B;

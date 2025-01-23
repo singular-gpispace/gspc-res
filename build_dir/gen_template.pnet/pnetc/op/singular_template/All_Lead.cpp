@@ -31,7 +31,7 @@ namespace pnetc
 
           //std::cout <<"All_LeadSyz_Input:"<<init<< std::endl;
          
-				std::tuple<std::vector<std::string>, int, long> out = RESOLVE_INTERFACE_FUNCTION( singular_template_all_leadsyz_GpI) (init,library_name, base_filename);
+				std::tuple<std::vector<std::string>, int, long> out = RESOLVE_INTERFACE_FUNCTION( singular_template_ALL_LEAD) (init,library_name, base_filename);
               
 
                 std::vector<std::string> vec = std::get<0>(out);
