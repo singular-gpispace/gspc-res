@@ -484,7 +484,7 @@ std::tuple<std::vector<std::string>, int, long> singular_template_ALL_LEAD(std::
   } 
    total_generator = lSize(u); // Assuming u contains the computed generators
    auto total_runtime=computation_time;
-
+ std::cout<<"ALL_LEADSYZ:="<<computation_time<< std::endl;
   return {vec, total_generator,total_runtime};
 }
 
