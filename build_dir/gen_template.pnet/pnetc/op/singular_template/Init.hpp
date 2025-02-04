@@ -2,7 +2,6 @@
 #define _PNETC_OP_singular_template_Init
 
 #include <string>
-#include <we/type/literal/control.hpp>
 
 namespace pnetc
 {
@@ -12,8 +11,6 @@ namespace pnetc
     {
       void Init
         ( const std::string& input
-        , we::type::literal::control& c
-        , std::string& init
         , std::string& output
         );
     }
