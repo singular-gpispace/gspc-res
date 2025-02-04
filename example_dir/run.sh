@@ -51,3 +51,9 @@ spack env activate -p gpispace
 
 # Run Singular with the example script
 Singular example.sing
+
+
+
+
+
+

@@ -66,325 +66,225 @@ std::string singular_template_Init( std::string const& input) {
 
 
 
-
 NO_NAME_MANGLING
-matrix lcm_mod(ideal G) { //ideal G is Singular module
 
-    int a=0;
-    int b=0;
-    int i=0;
-    int j=0;
-    ideal G_copy=idCopy(G);
+matrix lcm_mod(ideal G) {
+    int a = 0, b = 0, i = 0, j = 0;
+    ideal G_copy = idCopy(G);
     int r = IDELEMS(G_copy);
-    matrix l=mpNew(r,r);
-    poly s10=NULL;
-    poly t10=NULL;
-    for (a = 0; a < r; a++) {
-        for (b = 0; b < r; b++) {
-             //std::cout << "G->m[a]>: " << pString(G->m[a]) << std::endl;
-             //std::cout << "G->m[b]>: " << pString(G->m[b]) << std::endl;
-           
-            //i = leadexp(G[a])[nvars(basering) + 1];
-            i= p_GetComp(G->m[a],currRing);
-            //j = leadexp(G[b])[nvars(basering) + 1];
-            j= p_GetComp(G->m[b],currRing);
-            
-   
-            s10 = pHead(G->m[a]); //Should be leadmonomial
-            pSetComp(s10,0);
+    for (int k = 0; k < r; k++) {
+        std::cout << "ideal G: " << pString((poly)G->m[k]) << std::endl;
+    }
+    std::cout << "r in lcm_mod:= " << r << std::endl;
+    omUpdateInfo();
+    std::cout << "used mem: " << om_Info.UsedBytes << std::endl;
+
+    matrix l = mpNew(r, r);
+    std::cout << "pointer l: " << (long)l << std::endl;
+    std::cout << "Row of l: " << MATROWS(l) << std::endl;
+    std::cout << "Cols of l: " << MATCOLS(l) << std::endl;
+
+    poly s10 = NULL;
+    poly t10 = NULL;
+
+    for (a = 1; a < r+1; a++) {
+        for (b = 1; b < r+1; b++) {
+            i = p_GetComp(G->m[a-1], currRing);
+            j = p_GetComp(G->m[b-1], currRing);
+
+            s10 = pHead(G->m[a-1]);
+            pSetComp(s10, 0);
             pSetmComp(s10);
-            t10 = pHead(G->m[b]);//Should be leadmonomial
-            pSetComp(t10,0);
+
+            t10 = pHead(G->m[b-1]);
+            pSetComp(t10, 0);
             pSetmComp(t10);
-            poly lcm_poly =  p_Lcm(s10, t10, currRing);
-            pSetCoeff0(lcm_poly,nInit(1));
+
+            poly lcm_poly = p_Lcm(s10, t10, currRing);
+            pSetCoeff0(lcm_poly, nInit(1));
 
             if (i == j) {
-               // l[a, b] = lcm(leadmonomial(G[a]), leadmonomial(G[b])) / lead(t10);
-                
                 MATELEM(l, a, b) = pp_Divide(lcm_poly, t10, currRing);
-                //  std::cout << "m[a.b] in lcm_mod: " << pString(MATELEM(l, a, b)) << std::endl;
-
             } else {
-                // If i is not equal to j, set l[a, b] to 0
-                MATELEM(l,a,b)= NULL;
+                MATELEM(l, a, b) = NULL;
             }
         }
     }
-    
+
+    p_Delete(&s10, currRing);
+    p_Delete(&t10, currRing);
 
     return l;
 }
 
-
-
-
-NO_NAME_MANGLING
 ideal leadSyz(ideal f) {
-    int a = 0, b = 0, j = 0, k = 0;  // Loop variables
-    poly s = NULL;  // Temporary polynomial to store elements of L
-    poly t = NULL;  // Temporary polynomial to store the current syzygy candidate
-    ideal f_copy = idCopy(f);  // Copy the input ideal to avoid modifying it
-    int r = IDELEMS(f_copy);  // Number of elements in the ideal
-    ideal L = idInit(0, 1);  // Initialize an empty ideal (syzygy module)
-    matrix M = mpNew(r, r);  // Matrix to store LCM-based computations
+    int a = 0, b = 0, j = 0, k = 0;
+    poly s = NULL, t = NULL;
+    ideal f_copy = idCopy(f);
+    int r = IDELEMS(f_copy);
+    ideal L = idInit(0, 1);
+    matrix M = mpNew(r, r);
 
-    // Fill the matrix M with LCM computations
-    for (a = 0; a < r; a++) {
-        for (b = 0; b < r; b++) {
-            // Compute LCM of leading monomials of f[a] and f[b]
-            poly lcm = p_Lcm(pHead(f_copy->m[b]), pHead(f_copy->m[a]), currRing);
-            pSetCoeff0(lcm, nInit(1));  // Normalize the LCM (set coefficient to 1)
-            MATELEM(M, a, b) = pp_Divide(lcm, pHead(f_copy->m[b]), currRing); // Store the quotient
+    for (a = 1; a < r+1; a++) {
+        for (b = 1; b < r+1; b++) {
+            poly lcm = p_Lcm(pHead(f_copy->m[b-1]), pHead(f_copy->m[a-1]), currRing);
+            pSetCoeff0(lcm, nInit(1));
+            MATELEM(M, a, b) = pp_Divide(lcm, pHead(f_copy->m[b-1]), currRing);
         }
     }
 
-    int cc = 0;  // Counter for the number of generators in L
-
-    // Iterate through pairs of indices to construct syzygies
-    for (int i = 1; i < r; i++) {
-        for (j = 0; j < i; j++) {
-            // Generate the initial syzygy candidate from matrix M
+    int cc = 0;
+    for (int i = 2; i < r+1; i++) {
+        for (j = 1; j < i; j++) {
             poly t0 = pCopy(MATELEM(M, j, i));
-            p_SetComp(t0, i + 1, currRing);  // Assign the component index
-            p_SetmComp(t0, currRing);       // Normalize the component
-            t = pCopy(t0);  // Copy t0 to t as the current syzygy candidate
+            p_SetComp(t0, i, currRing);
+            p_SetmComp(t0, currRing);
+            t = pCopy(t0);
 
-            // Check divisibility conditions for t against the elements in L
             for (k = 0; k < IDELEMS(L); k++) {
-                s = (poly)L->m[k];  // Retrieve the k-th generator of L
-                bool c = p_DivisibleBy(pHead(s), t, currRing);  // Check if s divides t
+                s = (poly)L->m[k];
+                bool c = p_DivisibleBy(pHead(s), t, currRing);
                 if (c == TRUE) {
-                    // If s divides t, discard t
                     t = NULL;
                     break;
                 } else {
-                    // Check if t divides s
                     bool d = p_DivisibleBy(pHead(t), s, currRing);
                     if (d == TRUE) {
-                        // If t divides s, remove s from L
-                        // std::cout << "t divides L[" << k << "], removing L[" << k << "]." << std::endl;
-                        ideal tmp = id_Delete_Pos(L, k, currRing);  // Remove s from L
-                        L = NULL;  // Set L to NULL before reassigning
-                        idDelete(&L);  // Free the old L
-                        L = tmp;  // Assign the updated L
-                        k--;  // Adjust index to account for the removed element
-                        cc--;  // Decrease the counter
-                    }
-                }
-            }
-
-            // If t survives all checks, add it to L
-            if (t != NULL) {
-                if (cc >= IDELEMS(L)) {
-                    // Resize L if necessary
-                    ideal tmpL = idInit(cc + 1, 1);
-                    for (int i = 0; i < cc; i++) {
-                        tmpL->m[i] = pCopy(L->m[i]);  // Copy elements from L to tmpL
-                        L->m[i] = NULL;  // Clear the old L
-                    }
-                    idDelete(&L);  // Free the old L
-                    L = tmpL;  // Update L to point to the resized ideal
-                }
-                L->m[cc] = pCopy(t);  // Add t to L
-                cc++;  // Increment the counter
-                p_Delete(&t, currRing);  // Free t after adding it to L
-            }
-        }
-    }
-
-    // Debug output: Print the final size and contents of L
-    // std::cout << "Final first leadsyz size: " << IDELEMS(L) << std::endl;
-    // for (int k = 0; k < cc; k++) {
-    //     std::cout << "Generator " << k << ": " << pString((poly)L->m[k]) << std::endl;
-    // }
-
- 
-
-    return L;  // Return the computed syzygy module
-}
-
-
-
-
-
-
-NO_NAME_MANGLING
-ideal Sec_leadSyz(ideal f0) {
-    int r = IDELEMS(f0);  // Get the number of elements in the ideal f0
-    poly s = NULL;  // Polynomial s is a singular vector
-    poly t = NULL;  // Polynomial t is a singular vector
-    int cc = 0; // Counter for elements in L
-    
-    // Initialize ideal L with initial size 0
-    ideal L = idInit(0, 1);
-    ideal f_copy=idCopy(f0);
-    // Create a matrix M using lcm_mod for the input ideal f0
-    matrix M = lcm_mod(f_copy);  // Ensure lcm_mod returns a valid matrix
-
-    // Loop through pairs (i, j) in the matrix
-    for (int i = 1; i < r; i++) {
-        for (int j = 0; j < i; j++) {
-            // Fetch the matrix element at (j, i)
-            poly t0 = pCopy(MATELEM(M, j, i));
-
-            if (t0 != NULL) {
-                // Set the component and multigrade component for t0
-                p_SetComp(t0, i + 1, currRing);
-                p_SetmComp(t0, currRing);
-
-                // Copy t0 into t
-                t = pCopy(t0);  
-            }
-
-            // Ensure L is not NULL before accessing it
-            for (int k = 0; k < IDELEMS(L); k++) { 
-                // Fetch the k-th element of L (s = L[k])
-                s = (poly)L->m[k];  
-
-                // Ensure both s and t are not NULL before checking divisibility
-                if (s != NULL && t != NULL) {
-                    // Check if s divides t
-                    if (p_DivisibleBy(pHead(s), t, currRing)) {
-                        // If s divides t, set t to NULL and break out of the loop
-                        t = NULL; 
-                        break;
-                    } 
-                    // Check if t divides s
-                    else if (p_DivisibleBy(t, pHead(s), currRing)) {
-                        // Log the removal for debugging purposes
-                        // std::cout << "Removing s =: " << pString(s) << ": t=" << pString(t) << std::endl;
-
-                        // Remove s from L using id_Delete_Pos
                         ideal tmp = id_Delete_Pos(L, k, currRing);
-                        
-                        // Set L to NULL, delete the old L, and assign the new ideal
-                        idDelete(&L);  // Delete old L
-                        L = tmp;  // Assign new ideal
-
-                        // Adjust indexing and counter after deletion
-                        k--;  // Reindex to avoid skipping elements
-                        cc--; // Decrement the counter after the deletion
+                        idDelete(&L);
+                        L = tmp;
+                        k--;
+                        cc--;
                     }
                 }
             }
 
-            // If t is not NULL, add it to L
             if (t != NULL) {
-                // Resize L if necessary
                 if (cc >= IDELEMS(L)) {
-                    // Create a temporary ideal tmpL with space for one more element
                     ideal tmpL = idInit(cc + 1, 1);
-
-                    // Copy elements from L to tmpL
                     for (int i = 0; i < cc; i++) {
-                        tmpL->m[i] = pCopy(L->m[i]);  // Copy elements
-                        L->m[i] = NULL;  // Clear L after copying
+                        tmpL->m[i] = pCopy(L->m[i]);
+                        L->m[i] = NULL;
                     }
-
-                    // Delete old L and assign the resized tmpL to L
-                    idDelete(&L);  // Delete old L
-                    L = tmpL;  // Assign resized tmpL to L
+                    idDelete(&L);
+                    L = tmpL;
                 }
-
-                // Add t to L at the next available position
-                L->m[cc] = t;
-                cc++;  // Increment counter after adding t
-            } 
+                L->m[cc] = pCopy(t);
+                cc++;
+                p_Delete(&t, currRing);
+            }
         }
     }
 
-      //  Debug output
-    // std::cout << "Final second-Leadsyz  size: " << IDELEMS(L) << std::endl;
-    // for (int k = 0; k < cc; k++) {
-    //     std::cout << "Generator " << k << ": " << pString((poly)L->m[k]) << std::endl;
-    // }
+    std::cout << "Final first leadsyz size: " << IDELEMS(L) << std::endl;
 
-    // // return (L);
     return L;
 }
 
+ideal Sec_leadSyz(ideal f0) {
+    int r = IDELEMS(f0);
+    poly s = NULL, t = NULL;
+    int cc = 0;
+    ideal L = idInit(0, 1);
+    ideal f_copy = idCopy(f0);
+    matrix M = lcm_mod(f_copy);
 
+    for (int i = 2; i < r+1; i++) {
+        for (int j = 1; j < i; j++) {
+            poly t0 = MATELEM(M, j, i);
+            if (t0 != NULL) {
+                p_SetComp(t0, i, currRing);
+                p_SetmComp(t0, currRing);
+                t = pCopy(t0);
+            }
 
-NO_NAME_MANGLING
-lists aLL_LEAD(ideal f) {
-    // Allocate memory for the lists structure
-    lists J = (lists)omAlloc0Bin(slists_bin);
-    J->Init(2); // Initialize the list with two elements
-    ideal f_copy = f;
-    
-    // Initialize the first two elements
-    J->m[0].rtyp = IDEAL_CMD;  
-    J->m[0].data = f_copy;          
-    
-    int n = rVar(currRing); // Get the number of variables in the current ring
-    ideal F = leadSyz(f_copy);
-    // int g=IDELEMS(F);
-   
-    // for(int k=0; k<g;k++){
-    //   std::cout << "First_LeadSyz :at" <<""<<k << ": " << pString((poly)F->m[k]) << std::endl;
-    // }
-    ideal F_copy =F;
-   
-    J->m[1].rtyp = MODUL_CMD;  
-    J->m[1].data = F_copy;
+            for (int k = 0; k < IDELEMS(L); k++) {
+                s = (poly)L->m[k];
+                if (s != NULL && t != NULL) {
+                    if (p_DivisibleBy(pHead(s), t, currRing)) {
+                        t = NULL;
+                        break;
+                    } else if (p_DivisibleBy(t, pHead(s), currRing)) {
+                        ideal tmp = id_Delete_Pos(L, k, currRing);
+                        idDelete(&L);
+                        L = tmp;
+                        k--;
+                        cc--;
+                    }
+                }
+            }
 
-    int cc = 2; // Current count of elements in the list
-
-    // Debugging output to print the number of variables
-    // std::cout << "Number of variables: " << n << std::endl;
-
-    // Iterate through the variables in the ring to compute subsequent syzygy ideals
-    for (int t = 0; t < n; t++) {
-        // std::cout << "Processing variable: " << t + 1 << std::endl;
-
-        
-        ideal temp = Sec_leadSyz(F_copy);
-        bool b=idIs0(temp);
-       if(b==FALSE){
-        // idDelete(&F_copy);
-         F_copy = temp; 
-         temp=NULL;
-       }
-    else
-    {
-            std::cout << "In break: the syzygy ideal is zero or empty." << std::endl;
-            break;  // Exit the loop
+            if (t != NULL) {
+                if (cc >= IDELEMS(L)) {
+                    ideal tmpL = idInit(cc + 1, 1);
+                    for (int i = 0; i < cc; i++) {
+                        tmpL->m[i] = pCopy(L->m[i]);
+                        L->m[i] = NULL;
+                    }
+                    idDelete(&L);
+                    L = tmpL;
+                }
+                L->m[cc] = t;
+                cc++;
+            }
+        }
     }
 
-        // Resize the list if necessary to accommodate new elements
-        if (cc >= lSize(J)+1) {
-            int newSize = cc+1; // Increase size by 1
-            lists tmpL = (lists)omAlloc0Bin(slists_bin); // Allocate a new list
-            tmpL->Init(newSize); // Initialize the new list with the updated size
+    idDelete((ideal*)&M);
 
-            // Copy elements from the old list `J` to the new list `tmpL`
+    std::cout << "Final second-Leadsyz size: " << IDELEMS(L) << std::endl;
+
+    return L;
+}
+
+lists aLL_LEAD(ideal f) {
+    lists J = (lists)omAlloc0Bin(slists_bin);
+    J->Init(2);
+    ideal f_copy = idCopy(f);
+    int n = rVar(currRing);
+    ideal F = leadSyz(f_copy);
+    // int g = IDELEMS(F);
+    // idDelete(&f);
+    ideal F_copy = idCopy(F);
+
+    J->m[0].rtyp = IDEAL_CMD;
+    J->m[0].data = f_copy;
+
+    J->m[1].rtyp = MODUL_CMD;
+    J->m[1].data = F_copy;
+
+    int cc = 2;
+
+    for (int t = 0; t < n; t++) {
+        ideal temp = Sec_leadSyz(F_copy);
+
+        bool b = idIs0(temp);
+        if (b == FALSE) {
+            F_copy = idCopy(temp);
+            temp = NULL;
+        } else {
+            break;
+        }
+
+        if (cc >= lSize(J) + 1) {
+            int newSize = cc + 1;
+            lists tmpL = (lists)omAlloc0Bin(slists_bin);
+            tmpL->Init(newSize);
+
             for (int i = 0; i < cc; i++) {
-                //  std::cout << "variable:i " << i<< std::endl;
                 tmpL->m[i].rtyp = J->m[i].rtyp;
                 tmpL->m[i].data = J->m[i].data;
             }
 
-            // Free memory associated with the old list
             omFreeBin(J, slists_bin);
-
-            // Assign the resized list to `J`
             J = tmpL;
         }
-     std::cout << "Counter in the loop:= " << cc << std::endl;
-        // Append the new syzygy ideal to the list
+
         J->m[cc].rtyp = MODUL_CMD;
         J->m[cc].data = F_copy;
-            cc++;
-        
+        cc++;
     }
-       for(int k=0;k<cc;k++){
-      ideal l=(ideal)J->m[k].Data();
-      for(int s=0; s <IDELEMS(l);s++){
-      std::cout << "Sch FRame as list " << k << ": " << pString((poly)l->m[s]) << std::endl;
-      }
- 
-    }
+
     return J;
 }
 
@@ -396,146 +296,133 @@ lists aLL_LEAD(ideal f) {
 
 
 NO_NAME_MANGLING
- std::pair<int, lists> ALL_LEAD_GPI(leftv args) {
+std::pair<int, lists> ALL_LEAD_GPI(leftv args) {
     // Extract Token
     lists Token = (lists)(args->Data());
     
     // Extract Token.data
-     lists tmp = (lists)(Token->m[3].Data());
-     //Extract def f=Token.data[1]
-    ideal f=(ideal)tmp->m[0].Data();
-    ideal f_copy=idCopy(f);
+    lists tmp = (lists)(Token->m[3].Data());
+    // Extract def f=Token.data[1]
+    ideal f = (ideal)tmp->m[0].Data();
+    ideal f_copy = idCopy(f);
    
+    // for(int k = 0; k < IDELEMS(f_copy); k++) {
+    //     std::cout << "Generator input aLL_LEAD" << k << ": " << pString((poly)f_copy->m[k]) << std::endl;
+    // }
    
-    for(int k=0;k<IDELEMS(f_copy);k++){
- std::cout << "Generator input" << k << ": " << pString((poly)f_copy->m[k]) << std::endl;
-    }
-   
-    lists J=aLL_LEAD(f_copy);
-       
-    for(int k=0;k<IDELEMS(f_copy);k++){
- std::cout << "aLL_LEAD input" << k << ": " << pString((poly)f_copy->m[k]) << std::endl;
-    }
-     int r=lSize(J)+1;
-       std::cout << "lSize(J):="<<r<< std::endl;
-    // idDelete(&f_copy);
-     for(int k=0;k<r;k++){
-      ideal l=(ideal)J->m[k].Data();
-      for(int s=0; s <IDELEMS(l);s++){
-      std::cout << "Generator in all_lead " << k << ": " << pString((poly)l->m[s]) << std::endl;
-      }
- 
+    lists J = aLL_LEAD(f_copy);
+    int r = lSize(J) + 1;
+    std::cout << "lSize(J):=" << r << std::endl;
+
+    for(int k = 0; k < r; k++) {
+        ideal l = (ideal)J->m[k].Data();
+        for(int s = 0; s < IDELEMS(l); s++) {
+            std::cout << "Generator in all_lead " << k << ": " << pString((poly)l->m[s]) << std::endl;
+        }
     }
 
+    lists LLT = (lists)omAlloc0Bin(slists_bin);
+   
+    LLT->Init(4); // type token
     
-    int counter=r;
-     lists LLT=(lists)omAlloc0Bin(slists_bin);
-    LLT->Init(4);// type token
     lists temp = (lists)omAlloc0Bin(slists_bin);
-    temp->Init(r);
-  std::cout << "size of Sch frame: " << "" << r << std::endl;
-    for (int k = 0; k < r; k++) {
-       // Create a new token Ld
-      lists Ld=(lists)omAlloc0Bin(slists_bin);
-      Ld->Init(4);// type token 
-
-      
-      lists t=(lists)omAlloc0Bin(slists_bin);
-      t->Init(2);
-      t->m[0].rtyp=STRING_CMD; t->m[0].data=strdup("generators");
-      t->m[1].rtyp=STRING_CMD; t->m[1].data=strdup("SchFrame");
-    
-      Ld->m[0].rtyp=RING_CMD; Ld->m[0].data=currRing;
-      Ld->m[1].rtyp=LIST_CMD; Ld->m[1].data=t;
-    
-      Ld->m[2].rtyp=RING_CMD; Ld->m[2].data=currRing;
-
-     t=(lists)omAlloc0Bin(slists_bin);
-     t->Init(2);
-     t->m[0].rtyp=LIST_CMD;  t->m[0].data=lCopy(J);
-     t->m[1].rtyp=INT_CMD;  t->m[1].data = (void*)(long)(counter);
-     Ld->m[3].rtyp=LIST_CMD; Ld->m[3].data=t;   
-    // Set fieldnames[k] to "generator"
-   lists field_names = (lists)omAlloc0Bin(slists_bin);
-   field_names->Init(r);
- for (int s = 0; s < r; s++) 
- {
-    field_names->m[s].rtyp = STRING_CMD;
-    field_names->m[s].data = strdup("generator"); 
-   // std::cout << "LLT[k]:generator "<<k<< std::endl;
- }
-     LLT->m[0].rtyp=RING_CMD; LLT->m[0].data=currRing;
- // Assign fieldnames to LLT
-  LLT->m[1].rtyp = LIST_CMD;
-  LLT->m[1].data = field_names;
-  
-  
-  LLT->m[2].rtyp=RING_CMD; LLT->m[2].data=currRing;
-
-     //LLT.data[k] = Ld; 
-     
-    
-   // Set data for LLT
-  lists t0 = (lists)omAlloc0Bin(slists_bin);
-  t0->Init(r);
-  for (int s = 0; s < r; s++) 
-  {
-    t0->m[s].rtyp = LIST_CMD;
-    t0->m[s].data = lCopy(Ld);  
-  }
-
-  LLT->m[3].rtyp = LIST_CMD;
-  LLT->m[3].data = t0;
- 
-    temp->m[k].rtyp = LIST_CMD;
-    temp->m[k].data = lCopy(Ld); 
- 
-    }
-
    
-lists field_names = (lists)omAlloc0Bin(slists_bin);
-field_names->Init(r + 1);  
+    temp->Init(r);
 
-// Copy existing "generator" field names
-for (int s = 0; s < r; s++) 
-{
-    field_names->m[s].rtyp = STRING_CMD;
-    field_names->m[s].data =omStrDup((const char*)LLT->m[1].data);  // Add existing field names
-}
-
-// Append "total_number_generator" at position r
-field_names->m[r].rtyp = STRING_CMD;
-field_names->m[r].data = strdup("total_number_generator");
-
-// Set field names in LLT
-LLT->m[1].rtyp = LIST_CMD;  
-LLT->m[1].data = field_names;
-
-
-
-     // Append "total_number_generator" at the end
-    lists final_data = (lists)omAlloc0Bin(slists_bin);
-    final_data->Init(r + 1);
-
-    // Copy generator data into final_data
-    for (int s = 0; s < r; s++) {
-        final_data->m[s].rtyp = LIST_CMD;
-        final_data->m[s].data = lCopy(static_cast<lists>(temp->m[s].data));
+    for(int k = 0; k < r; k++) {
+        lists Ld = (lists)omAlloc0Bin(slists_bin);
+       
+        Ld->Init(4); // type token
         
+        lists t = (lists)omAlloc0Bin(slists_bin);
+      
+        t->Init(2);
+        t->m[0].rtyp = STRING_CMD; t->m[0].data = strdup("generators");
+        t->m[1].rtyp = STRING_CMD; t->m[1].data = strdup("SchFrame");
+
+        Ld->m[0].rtyp = RING_CMD; Ld->m[0].data = currRing;
+        Ld->m[1].rtyp = LIST_CMD; Ld->m[1].data = t;
+
+        Ld->m[2].rtyp = RING_CMD; Ld->m[2].data = currRing;
+
+        t = (lists)omAlloc0Bin(slists_bin);
+      
+        t->Init(2);
+        t->m[0].rtyp = LIST_CMD; t->m[0].data = lCopy(J);
+        t->m[1].rtyp = INT_CMD; t->m[1].data = (void*)(long)(r);
+        Ld->m[3].rtyp = LIST_CMD; Ld->m[3].data = t;
+
+        lists field_names = (lists)omAlloc0Bin(slists_bin);
+      
+        field_names->Init(r);
+        for (int s = 0; s < r; s++) {
+            field_names->m[s].rtyp = STRING_CMD;
+            field_names->m[s].data = strdup("generator");
+           
+        }
+
+        LLT->m[0].rtyp = RING_CMD; LLT->m[0].data = currRing;
+
+        // Assign fieldnames to LLT
+        LLT->m[1].rtyp = LIST_CMD;
+        LLT->m[1].data = field_names;
+
+        LLT->m[2].rtyp = RING_CMD; LLT->m[2].data = currRing;
+
+        lists t0 = (lists)omAlloc0Bin(slists_bin);
+      
+        t0->Init(r);
+        for (int s = 0; s < r; s++) {
+            t0->m[s].rtyp = LIST_CMD;
+            t0->m[s].data = lCopy(Ld);
+        }
+
+        LLT->m[3].rtyp = LIST_CMD;
+        LLT->m[3].data = t0;
+
+        temp->m[k].rtyp = LIST_CMD;
+        temp->m[k].data = lCopy(Ld);
     }
 
-    // Append total_number_generator
-    final_data->m[r].rtyp = INT_CMD;
-    final_data->m[r].data = (void*)(long)(counter+1);
+    std::cout << "size of token Sch frame: After loop" << r << std::endl;
+    std::cout << "Allocating memory for final_field_names with size: " << r + 1 << std::endl;
 
-    // Set final_data as LLT->m[3] (LLT.data)
+    // Prepare the final field names
+    lists t= (lists)omAlloc0Bin(slists_bin);
+  std::cout << "Before Init: r = " << r << std::endl;
+t->Init(r+1);
+std::cout << "After Init: r = " << r << std::endl;
+
+
+    for (int s = 0; s < r; s++) {
+        t->m[s].rtyp = STRING_CMD;
+       t->m[s].data = omStrDup((const char*)LLT->m[1].data);
+       
+    }
+
+    // Append "total_number_generator"
+   t->m[r].rtyp = STRING_CMD;
+   t->m[r].data = strdup("total_number_generator");
+ 
+    LLT->m[1].rtyp = LIST_CMD;  
+    LLT->m[1].data =t;
+
+    // Final data preparation
+    lists final_data = (lists)omAlloc0Bin(slists_bin);
+  
+    final_data->Init(r + 1);
+    for (int k = 0; k < r; k++) {
+        final_data->m[k].rtyp = LIST_CMD;
+        final_data->m[k].data = temp->m[k].data;  // Transfer data from temp
+    }
+
+    final_data->m[r].rtyp = INT_CMD;
+    final_data->m[r].data = (void*)(long)(r + 1); // Set total count
+
     LLT->m[3].rtyp = LIST_CMD;
     LLT->m[3].data = final_data;
 
-
-
-
-    return {r, LLT};  // Return r (number of generators) and LLT
+    return {r, LLT};  // Return success state and LLT
 }
 
 
@@ -569,10 +456,11 @@ std::tuple<std::vector<std::string>, int, long> singular_template_ALL_LEAD(std::
 	input = deserialize(input_filename,ids);
   
 	ScopedLeftv args( input.first, lCopy(input.second));
-  std::string function_name = "all_leadsyz_GpI";
+//   std::string function_name = "all_leadsyz_GpI";
  auto start_computation = std::chrono::high_resolution_clock::now();
 
-	out = call_user_proc(function_name, needed_library, args);
+	// out = call_user_proc(function_name, needed_library, args);
+     out =  ALL_LEAD_GPI(args.leftV());
   auto end_computation = std::chrono::high_resolution_clock::now();
   auto computation_time =std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - start_computation).count();
   // std::cout << "SchFrame_Runtime:_implementation " << computation_time << " milliseconds" << std::endl;
@@ -602,7 +490,6 @@ std::tuple<std::vector<std::string>, int, long> singular_template_ALL_LEAD(std::
 
 
 NO_NAME_MANGLING
-
 std::pair<int, lists> LEAD_GPI(leftv args) {
     // Extract Token
     lists Token = (lists)(args->Data());
@@ -813,7 +700,7 @@ std::tuple<std::vector<std::string>, int,  long> singular_template_LEAD(const st
 
     // Call Singular procedure
     std::pair<int, lists> out;
-  //  std::string function_name = "leadsyz_GpI";
+//    std::string function_name = "leadsyz_GpI";
  auto start_computation = std::chrono::high_resolution_clock::now();
 
 	// out = call_user_proc(function_name, needed_library, args);
