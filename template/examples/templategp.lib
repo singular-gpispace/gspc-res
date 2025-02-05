@@ -21,6 +21,28 @@ OVERVIEW:
   LIB "zeroset.lib";
   LIB "modules.lib";
   
+
+
+proc StartTiming(token input)
+
+{
+   rtimer=0;
+ system("--ticks-per-sec",1000); // set timer resolution to ms
+ int t=rtimer;
+   
+   
+   
+    return(input);
+
+
+}
+
+
+
+
+
+
+
 proc stdBasis(token input)
 "USAGE: stdBasis(input); input token
 RETURN: an token output containing a standard basis 
@@ -1427,4 +1449,21 @@ proc Generate_GPI(token input, token Tok){
    
   
     return(output);
+}
+proc EndTiming(token input)
+
+{
+   int t=input.data[1];
+  int t0= rtimer-t;
+
+   
+     token output;
+    output.fieldnames = list("generators","timing");
+    output.data[1] = t0;
+   
+   
+  
+    return(output);
+
+
 }

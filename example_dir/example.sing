@@ -84,17 +84,17 @@ gc.options.logport = 9876;
 // print(size(J));
 
 //  //Example4
-//  ring R = 0, (x0, x1, x2, x3, x4), (dp,c); // Example for n+1 = 5 variables
-// // Step 2: Generate a regular sequence
-// poly f1 = x0^2 + x1^2 + x2^2 + x3^2 + x4^2;
-// poly f2 = x0*x1 + x2*x3 + x4^2;
-// poly f3 = x0*x2 + x1*x3 + x4*x0;
-// poly f4 = x0*x3 + x1*x4 + x2*x0;
-// poly f5 = x0*x4 + x1*x2 + x3*x1;
-// ideal J1= f1,f2,f3,f4,f5;
-// J1;
-// print("GB");
-// ideal J= std(J1);
+ ring R = 0, (x0, x1, x2, x3, x4), (dp,c); // Example for n+1 = 5 variables
+// Step 2: Generate a regular sequence
+poly f1 = x0^2 + x1^2 + x2^2 + x3^2 + x4^2;
+poly f2 = x0*x1 + x2*x3 + x4^2;
+poly f3 = x0*x2 + x1*x3 + x4*x0;
+poly f4 = x0*x3 + x1*x4 + x2*x0;
+poly f5 = x0*x4 + x1*x2 + x3*x1;
+ideal J1= f1,f2,f3,f4,f5;
+J1;
+print("GB");
+ideal J= std(J1);
 
 
 
@@ -113,15 +113,15 @@ gc.options.logport = 9876;
 
 
 //Example 6
-ring R=0, (x0,x1,x2,x3,x4,x5,x6,x7,x8),dp;
-matrix m[2][8]=x0,x1,x2,x3,x4,x5,x6,x7,x1,x2,x3,x4,x5,x6,x7,x8;
-ideal rNC=minor(m,2);
-ideal I=randomid(maxideal(1),7,3);
- map f=R,I[1..7];
-ideal RNC=f(rNC);
-ideal J=std(RNC);
-print("ideal J=");
-print(J);
+// ring R=0, (x0,x1,x2,x3,x4,x5,x6,x7,x8),dp;
+// matrix m[2][8]=x0,x1,x2,x3,x4,x5,x6,x7,x1,x2,x3,x4,x5,x6,x7,x8;
+// ideal rNC=minor(m,2);
+// ideal I=randomid(maxideal(1),7,3);
+//  map f=R,I[1..7];
+// ideal RNC=f(rNC);
+// ideal J=std(RNC);
+// print("ideal J=");
+// print(J);
 
 //Example 7 [Koszul Case ]
 // ring R=0,(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10),dp;
