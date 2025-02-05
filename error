@@ -1,5 +1,19 @@
-[2025-02-05 11:18:47] schipp: pid 90880 tid90885: E: task failed: schipp.job.90854.1: call to 'log_start::log_start_function' failed: module '"liblog_start.so"' not found in '"/home/santosh/gspc-res/install_dir/libexec/workflow"'
-[2025-02-05 11:18:47] schipp: pid 90880 tid90883: T: worker-schipp 39293 90844-4 is shutting down
-[2025-02-05 11:18:47] schipp: pid 90874 tid90877: T: worker-schipp 39293 90844-3 is shutting down
-[2025-02-05 11:18:47] schipp: pid 90868 tid90871: T: worker-schipp 39293 90844-2 is shutting down
-[2025-02-05 11:18:47] schipp: pid 90862 tid90865: T: worker-schipp 39293 90844-1 is shutting down
+[2025-02-05 20:31:27] schipp: pid 148982 tid148988: T: task finished: schipp.job.148959.1
+[2025-02-05 20:31:27] schipp: pid 148974 tid148981: I: SchFrame_control:
+[2025-02-05 20:31:27] schipp: pid 148974 tid148981: I: Final first leadsyz size: 6
+[2025-02-05 20:31:27] schipp: pid 148974 tid148981: I: used mem: 273952
+[2025-02-05 20:31:27] schipp: pid 148974 tid148981: I: pointer l: 138487531587096
+[2025-02-05 20:31:27] schipp: pid 148974 tid148981: I: Final second-Leadsyz size: 2
+[2025-02-05 20:31:27] schipp: pid 148974 tid148981: I: used mem: 279024
+[2025-02-05 20:31:27] schipp: pid 148974 tid148981: I: pointer l: 138487531588176
+[2025-02-05 20:31:27] schipp: pid 148974 tid148981: I: Final second-Leadsyz size: 0
+[2025-02-05 20:31:27] schipp: pid 148974 tid148981: I: total_runtime_SchFrame:=926146 nanoseconds
+[2025-02-05 20:31:27] schipp: pid 148974 tid148981: I: place_SchFrame_counter: 3
+[2025-02-05 20:31:27] schipp: pid 148974 tid148981: I: total_runtime_SchFrame = 926146 nanoseconds
+[2025-02-05 20:31:27] schipp: pid 148974 tid148981: T: task finished: schipp.job.148959.2
+[2025-02-05 20:31:27] schipp: pid 148982 tid148988: I: Calculate elapsed time = 27024187 nanoseconds
+[2025-02-05 20:31:27] schipp: pid 148982 tid148988: T: task finished: schipp.job.148959.3
+[2025-02-05 20:31:27] schipp: pid 148982 tid148986: T: worker-schipp 46481 148949-3 is shutting down
+[2025-02-05 20:31:27] schipp: pid 148967 tid148971: T: worker-schipp 46481 148949-1 is shutting down
+[2025-02-05 20:31:27] schipp: pid 148989 tid148995: T: worker-schipp 46481 148949-4 is shutting down
+[2025-02-05 20:31:27] schipp: pid 148974 tid148979: T: worker-schipp 46481 148949-2 is shutting down

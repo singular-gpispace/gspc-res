@@ -26,10 +26,8 @@ std::string singular_template_compute_StdBasis ( std::string const&
 
 
 NO_NAME_MANGLING
-std::string singular_template_Start_timing( std::string const&
-                                                    
-                                                         , std::string const&
-									  , std::string const&
+long singular_template_Start_timing( std::string const&
+  
                                       );
 
 NO_NAME_MANGLING
@@ -101,8 +99,6 @@ std::string  singular_template_removeFiles(const std::string&,
 
 
                                       NO_NAME_MANGLING
-std::string singular_template_End_timing( std::string const&
-                                                    
-                                                         , std::string const&
-									  , std::string const&
+long singular_template_End_timing( std::string const&
+                     
                                       );

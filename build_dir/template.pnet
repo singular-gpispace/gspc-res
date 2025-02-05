@@ -1,10 +1,19 @@
 22 serialization::archive 14 0 0 0 0 8 template 0 0 3 0 0 0 0
 
+CgAAAAAAAAA=
+0 0 10 13 0 0 0
+
+CQAAAAAAAAA=
+0 0 13 place_EndTime 0 0 0 4 long 0 0 0 0 0 0 0 15 0 0 0 0
+
+CAAAAAAAAAA=
+20 Final_place_SchFrame 0 6 string 0 15 0 0
+
 BwAAAAAAAAA=
-0 0 7 13 0 0 0
+15 place_StartTime 0 4 long 0 15 0 0
 
 BgAAAAAAAAA=
-0 0 22 place_SchFrame_counter 0 0 0 3 int 0 0 0 0 0 0 0 15 0 0 0 0
+22 place_SchFrame_counter 0 3 int 0 15 0 0
 
 BQAAAAAAAAA=
 14 place_SchFrame 0 6 string 0 15 0 0
@@ -22,7 +31,16 @@ AQAAAAAAAAA=
 19 place_base_filename 0 6 string 0 15 0 0
 
 AAAAAAAAAAA=
-11 place_input 0 6 string 0 15 0 0 0 0 7 13 0 0 0 22 place_SchFrame_counter
+11 place_input 0 6 string 0 15 0 0 0 0 10 13 0 0 0 13 place_EndTime
+
+CQAAAAAAAAA=
+20 Final_place_SchFrame
+
+CAAAAAAAAAA=
+15 place_StartTime
+
+BwAAAAAAAAA=
+22 place_SchFrame_counter
 
 BgAAAAAAAAA=
 14 place_SchFrame
@@ -45,25 +63,28 @@ AQAAAAAAAAA=
 AAAAAAAAAAA=
 0 0
 
-AgAAAAAAAAA=
-0 0 2 13 0 0 0
+AwAAAAAAAAA=
+0 0 3 13 0 0 0
 
-AQAAAAAAAAA=
-8 Initiate 0 0 0 17 singular_template 4 Init 0 0 0 1 0 0 0 0 0 0 0 0 1 0 0 0 0 0 1 13 0 0 0 0 0
+AgAAAAAAAAA=
+9 StartTime 0 0 0 17 singular_template 9 StartTime 0 0 0 1 0 0 0 0 0 0 0 1 1 0 0 0 0 0 1 13 0 0 0 0 0
 
 AAAAAAAAAAA=
-0 0 5 input 0 0 0 0 0 0 6 string 0 0 0 15 0 0 1 13 0
-
-AQAAAAAAAAA=
-6 output 1 0 0 0 6 string 0 15 0 0 0 1 0
+0 0 5 input 0 0 0 0 0 0 6 string 0 0 0 15 0 0 2 13 0
 
 AgAAAAAAAAA=
-15 0 0 0 0 1 0 0 0 6 worker 0 0 0 0 0 0
+10 start_time 1 0 0 0 4 long 0 15 0 0
+
+AQAAAAAAAAA=
+6 output 1 0 6 string 0 15 0 0 0 1 0
+
+AwAAAAAAAAA=
+15 0 0 0 0 0 0 0 0 0 0 0 0
 
 AAA=
 0 0 0
 
-AAAAAAAAAAA=
+AQAAAAAAAAA=
 8 SchFrame 0 17 singular_template 11 All_leadsyz 0 1 0 0 0 0 0 0 1 0 3 13 0
 
 AgAAAAAAAAA=
@@ -85,29 +106,36 @@ AwAAAAAAAAA=
 3 OUT 1 0 4 list 0 15 0 0 0 1 0
 
 BgAAAAAAAAA=
-15 0 0 1 0 6 worker 0 0
+15 0 0 1 0 0 0 6 worker 0 0
 
 AAA=
-0 0 0 0 2 2 0 0 0 0
+0
 
 AAAAAAAAAAA=
+7 EndTime 0 17 singular_template 7 EndTime 0 1 0 0 0 0 0 1 1 0 2 13 0
 
 AQAAAAAAAAA=
-0 0
+15 computed_output 0 0 6 string 0 15 0 0
+
+AAAAAAAAAAA=
+10 start_time 0 0 4 long 0 15 0 0 2 13 0
+
+AwAAAAAAAAA=
+9 end_timer 1 0 4 long 0 15 0 0
 
 AgAAAAAAAAA=
-
-AAAAAAAAAAA=
-0 0 2
-
-AQAAAAAAAAA=
-
-AAAAAAAAAAA=
+6 output 1 0 6 string 0 15 0 0 0 1 0
 
 BAAAAAAAAAA=
+15 0 0 0 0 0 0
+
+AAA=
+0 0 0 0 2 4 0 0 0 0
 
 AAAAAAAAAAA=
-0 0 4 13 0 0 0
+
+AgAAAAAAAAA=
+0 0
 
 AgAAAAAAAAA=
 
@@ -117,25 +145,64 @@ BQAAAAAAAAA=
 
 AAAAAAAAAAA=
 
-AwAAAAAAAAA=
+BwAAAAAAAAA=
 
 AAAAAAAAAAA=
+0 0 2
+
+AQAAAAAAAAA=
+
+AQAAAAAAAAA=
+
+BAAAAAAAAAA=
+
+AQAAAAAAAAA=
+0 0 7 13 0 0 0
+
+BwAAAAAAAAA=
+
+AgAAAAAAAAA=
+
+AgAAAAAAAAA=
+
+AgAAAAAAAAA=
+
+BQAAAAAAAAA=
+
+AQAAAAAAAAA=
+
+AwAAAAAAAAA=
+
+AQAAAAAAAAA=
 
 BgAAAAAAAAA=
 
+AQAAAAAAAAA=
+
+CQAAAAAAAAA=
+
 AAAAAAAAAAA=
+
+CAAAAAAAAAA=
+
+AAAAAAAAAAA=
+0 0 3 13 0 0 0
+
+AgAAAAAAAAA=
 0 0 2 13 0 0 0
 
-AQAAAAAAAAA=
-0 0 1 13 0 0 0
+AgAAAAAAAAA=
+0 0
+
+BwAAAAAAAAA=
+15 0 0
 
 AQAAAAAAAAA=
-0 0
 
 AgAAAAAAAAA=
 15 0 0
 
-AAAAAAAAAAA=
+AQAAAAAAAAA=
 2 13 0
 
 BAAAAAAAAAA=
@@ -146,17 +213,30 @@ AwAAAAAAAAA=
 BQAAAAAAAAA=
 
 BgAAAAAAAAA=
-15 0 0 1 13 0
+15 0 0
 
 AAAAAAAAAAA=
+2 13 0
+
+AwAAAAAAAAA=
+
+CQAAAAAAAAA=
+15 0 0
+
+AgAAAAAAAAA=
+
+CAAAAAAAAAA=
+15 0 0 1 13 0
+
+AQAAAAAAAAA=
 1 13 0
 
 AwAAAAAAAAA=
 
 BQAAAAAAAAA=
-15 0 0 0 0 0 1 0 0 0 0 1 0 0 0 2 13 0 0 0
+15 0 0 0 0 0 1 0 0 0 0 1 0 0 0 3 13 0 0 0
 
-AQAAAAAAAAA=
+AgAAAAAAAAA=
 0 0 1 13 0 0 0
 
 AAAAAAAAAAA=
@@ -165,7 +245,7 @@ AAAAAAAAAAA=
 AAAAAAAAAAA=
 15 0 0
 
-AAAAAAAAAAA=
+AQAAAAAAAAA=
 3 13 0
 
 BAAAAAAAAAA=
@@ -181,15 +261,34 @@ AQAAAAAAAAA=
 AgAAAAAAAAA=
 
 AgAAAAAAAAA=
+15 0 0
+
+AAAAAAAAAAA=
+2 13 0
+
+BwAAAAAAAAA=
+
+AAAAAAAAAAA=
+15 0 0
+
+BQAAAAAAAAA=
+
+AQAAAAAAAAA=
 15 0 0 0 0
 
 AAAAAAAAAAA=
-0 0 2 13 0 0 0
+0 0 4 13 0 0 0
 
 AAAAAAAAAAA=
 0 0 0 1 0
 
 AgAAAAAAAAA=
+0 1 0
+
+BwAAAAAAAAA=
+0 1 0
+
+BQAAAAAAAAA=
 0 1 0 0 0 0 0 0 0 0 1 0 0 3 13 0
 
 AgAAAAAAAAA=

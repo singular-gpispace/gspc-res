@@ -48,27 +48,11 @@ std::string singular_template_compute_StdBasis(std::string const& input_filename
 
 
 NO_NAME_MANGLING
-std::string singular_template_Start_timing( std::string const& input_filename 
-                                             , std::string const& needed_library
-                                             , std::string const& base_filename) {
-
-    init_singular(config::singularLibrary().string());
-    load_singular_library(needed_library);
-    std::pair<int, lists> input;
-    std::pair<int, lists> out;
-    std::string ids;
-    std::string out_filename;
-
-    ids = worker();
-    // std::cout << ids << " in singular_..._compute" << std::endl;
-    input = deserialize(input_filename, ids);
-
-    ScopedLeftv args(input.first, lCopy(input.second));
-    std::string function_name = "StartTiming";
-    out = call_user_proc(function_name, needed_library, args);
-    out_filename = serialize(out.second, base_filename);
-
-    return out_filename;
+long singular_template_Start_timing([[maybe_unused]] std::string const& input_filename) {
+    auto computation_time = std::chrono::high_resolution_clock::now();
+    auto duration = computation_time.time_since_epoch();
+ auto start_timer= std::chrono::duration_cast<std::chrono::nanoseconds>(duration).count();
+    return start_timer;
 }
 
 
@@ -101,17 +85,17 @@ matrix lcm_mod(ideal G) {
     int a = 0, b = 0, i = 0, j = 0;
     ideal G_copy = idCopy(G);
     int r = IDELEMS(G_copy);
-    for (int k = 0; k < r; k++) {
-        std::cout << "ideal G: " << pString((poly)G->m[k]) << std::endl;
-    }
-    std::cout << "r in lcm_mod:= " << r << std::endl;
+    // for (int k = 0; k < r; k++) {
+    //     std::cout << "ideal G: " << pString((poly)G->m[k]) << std::endl;
+    // }
+    // std::cout << "r in lcm_mod:= " << r << std::endl;
     omUpdateInfo();
     std::cout << "used mem: " << om_Info.UsedBytes << std::endl;
 
     matrix l = mpNew(r, r);
     std::cout << "pointer l: " << (long)l << std::endl;
-    std::cout << "Row of l: " << MATROWS(l) << std::endl;
-    std::cout << "Cols of l: " << MATCOLS(l) << std::endl;
+    // std::cout << "Row of l: " << MATROWS(l) << std::endl;
+    // std::cout << "Cols of l: " << MATCOLS(l) << std::endl;
 
     poly s10 = NULL;
     poly t10 = NULL;
@@ -341,14 +325,14 @@ std::pair<int, lists> ALL_LEAD_GPI(leftv args) {
    
     lists J = aLL_LEAD(f_copy);
     int r = lSize(J) + 1;
-    std::cout << "lSize(J):=" << r << std::endl;
+    // std::cout << "lSize(J):=" << r << std::endl;
 
-    for(int k = 0; k < r; k++) {
-        ideal l = (ideal)J->m[k].Data();
-        for(int s = 0; s < IDELEMS(l); s++) {
-            std::cout << "Generator in all_lead " << k << ": " << pString((poly)l->m[s]) << std::endl;
-        }
-    }
+    // for(int k = 0; k < r; k++) {
+    //     ideal l = (ideal)J->m[k].Data();
+    //     for(int s = 0; s < IDELEMS(l); s++) {
+    //         std::cout << "Generator in all_lead " << k << ": " << pString((poly)l->m[s]) << std::endl;
+    //     }
+    // }
 
     lists LLT = (lists)omAlloc0Bin(slists_bin);
    
@@ -413,14 +397,14 @@ std::pair<int, lists> ALL_LEAD_GPI(leftv args) {
         temp->m[k].data = lCopy(Ld);
     }
 
-    std::cout << "size of token Sch frame: After loop" << r << std::endl;
-    std::cout << "Allocating memory for final_field_names with size: " << r + 1 << std::endl;
+    // std::cout << "size of token Sch frame: After loop" << r << std::endl;
+    // std::cout << "Allocating memory for final_field_names with size: " << r + 1 << std::endl;
 
     // Prepare the final field names
     lists t= (lists)omAlloc0Bin(slists_bin);
-  std::cout << "Before Init: r = " << r << std::endl;
+//   std::cout << "Before Init: r = " << r << std::endl;
 t->Init(r+1);
-std::cout << "After Init: r = " << r << std::endl;
+// std::cout << "After Init: r = " << r << std::endl;
 
 
     for (int s = 0; s < r; s++) {
@@ -490,8 +474,7 @@ std::tuple<std::vector<std::string>, int, long> singular_template_ALL_LEAD(std::
 
 	// out = call_user_proc(function_name, needed_library, args);
      out =  ALL_LEAD_GPI(args.leftV());
-  auto end_computation = std::chrono::high_resolution_clock::now();
-  auto computation_time =std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - start_computation).count();
+
   // std::cout << "SchFrame_Runtime:_implementation " << computation_time << " milliseconds" << std::endl;
     lists u = (lists)out.second->m[3].Data();
     // std::cout<<"m[3]:"<< out.second->m[3].Data()<< std::endl;
@@ -511,6 +494,8 @@ std::tuple<std::vector<std::string>, int, long> singular_template_ALL_LEAD(std::
     //std::cout<<"Check the output:"<<Outname<< std::endl;
     vec.push_back(Outname);
   } 
+    auto end_computation = std::chrono::high_resolution_clock::now();
+  auto computation_time =std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - start_computation).count();
    total_generator = lSize(u); // Assuming u contains the computed generators
    auto total_runtime=computation_time;
     std::cout << "total_runtime_SchFrame:=" << total_runtime<<" "<<"nanoseconds"<< std::endl;
@@ -2040,27 +2025,15 @@ std::string singular_template_removeFiles(const std::string& Red, const std::str
 }
 
 
+
+
+
+
 NO_NAME_MANGLING
-std::string singular_template_End_timing( std::string const& input_filename 
-                                             , std::string const& needed_library
-                                             , std::string const& base_filename) {
+long singular_template_End_timing([[maybe_unused]] std::string const& input_filename) {
+    auto computation_time = std::chrono::high_resolution_clock::now();
+    auto duration = computation_time.time_since_epoch();
 
-    init_singular(config::singularLibrary().string());
-    load_singular_library(needed_library);
-    std::pair<int, lists> input;
-    std::pair<int, lists> out;
-    std::string ids;
-    std::string out_filename;
-
-    ids = worker();
-    // std::cout << ids << " in singular_..._compute" << std::endl;
-    input = deserialize(input_filename, ids);
-
-    ScopedLeftv args(input.first, lCopy(input.second));
-    std::string function_name = "EndTiming";
-    out = call_user_proc(function_name, needed_library, args);
-    out_filename = serialize(out.second, base_filename);
-
-    return out_filename;
+    auto end_timer= std::chrono::duration_cast<std::chrono::nanoseconds>(duration).count();
+    return end_timer;
 }
-

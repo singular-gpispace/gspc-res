@@ -1,4 +1,3 @@
-
 <defun name="template">
 <!-- Struct definitions -->
     <struct name="Std_basis">
@@ -21,141 +20,123 @@
     <place name ="place_input_GB" type ="string"/>
 		<place name="place_base_filename" type="string"/>
 		<place name="place_library_name" type="string"/>
-   
-   
-   
-<place name="place_SchFrame" type="string"/>
-  
-  
-
-     <place name="place_SchFrame_counter" type="int"/>
-  
-  
-
-   
-   
-  <place name ="place_SchFrame_runtime" type ="long"/>
-
-      
-
- 
-
-    <!-- transition_Init-->
-  
-     <transition name="Initiate">
-      <defun>
-        		<require key="worker" mandatory="true"/>
-        		
-				    <in name="input" type="string"/>
-        		<out name="output" type="string"/>
-            
-           
-          
-        		<module name="singular_template"
-              		require_function_unloads_without_rest="false"
-              		function="Init(input,output)">
-          		<cinclude href="interface/template_interface.hpp" />
-          		<cinclude href="util-generic/dynamic_linking.hpp"/>
-                 <cinclude href="iostream"/>
-          			<code><![CDATA[
-                     std::cout <<"Initiate:"<< std::endl;
-						 output = RESOLVE_INTERFACE_FUNCTION(singular_template_Init) (input);
-          
-              
-            		]]></code>
-        		</module>
-      		</defun>
-      	
-			  <connect-in port="input" place="place_input"/>
-			  <connect-out port="output" place="place_input_GB"/>
-      
     
-        
-  		  </transition>
+    <place name="place_SchFrame" type="string"/>
+    <place name="place_SchFrame_counter" type="int"/>
+    <place name ="place_SchFrame_runtime" type ="long"/>
+    <place name ="place_StartTime" type ="long"/>
+    <place name ="place_EndTime" type ="long"/>
+    <place name="Final_place_SchFrame" type="string"/>
 
+    <!-- Transition: StartTime -->
+    <transition name="StartTime">
+      <defun>
+      
+      <in name="input" type="string"/>
+        <out name="output" type="string"/>
+        <out name="start_time" type="long"/>
+        <module name="singular_template" function="StartTime(start_time,input,output)">
+         <cinclude href="interface/template_interface.hpp" />
+      <cinclude href="util-generic/dynamic_linking.hpp"/>
+      <cinclude href="iostream"/>
+      <cinclude href="chrono"/>
+        <code><![CDATA[
+         auto computation_time = std::chrono::high_resolution_clock::now();
+    auto duration = computation_time.time_since_epoch();
 
-
-
-        <!-- Transition 1: SchFrame -->
+    start_time= std::chrono::duration_cast<std::chrono::nanoseconds>(duration).count();
+     output=input;
+    ]]></code>
+     </module>
+     
+  
+    
+    
+      </defun>
+      <connect-in port="input" place="place_input"/>
+      <connect-out port="start_time" place="place_StartTime"/>
+       <connect-out port="output" place="place_input_GB"/>
+    </transition>
+    
+    
+    <!-- Transition: SchFrame -->
     <transition name="SchFrame">
-     <defun>
+      <defun>
         <require key="worker" mandatory="true"/>
         <in name="library_name" type="string"/>
         <in name="base_filename" type="string"/>
         <in name="input" type="string"/>
-      
-      
         <out name="runtime" type ="long"/>
         <out name="counter" type="int"/>
         <out name="OUT" type="list"/>
-       
-      <module name="singular_template"
-                require_function_unloads_without_rest="false"
-                function="All_leadsyz(input,counter,runtime,OUT,library_name,base_filename)">
-        <cinclude href="interface/template_interface.hpp" />
-        <cinclude href="util-generic/dynamic_linking.hpp"/>
-        <cinclude href="vector"/>
-        <cinclude href="iostream"/>
-        <cinclude href ="string"/>
-        <cinclude href="list"/>
-        <cinclude href="numeric"/> 
-        <cinclude href="chrono"/>
-
-            <code><![CDATA[
-           
-             std::cout <<"SchFrame_control:"<<std::endl;
-                  std::tuple<std::vector<std::string>, int, long> out = RESOLVE_INTERFACE_FUNCTION(singular_template_ALL_LEAD)
-                        (input, library_name, base_filename);
-                      std::vector<std::string> vec = std::get<0>(out);
-                      int total_generator = std::get<1>(out);
-                      runtime = std::get<2>(out);
-                     
-                      counter=total_generator;
-                      
-                         for(int i (0); i<vec.size(); i++)
-                                                                 {
-                          //std::cout << "leadSyz_Success:"<<vec[i] << std::endl;
-                          OUT.emplace_back(vec[i]);
-                       
-                         //std::cout << "leadSyz_Success:"<<vec[i] << std::endl;
-                          //std::cout << "SubliftleadSyz_Success:"<<vec[i] << std::endl;
-                          
-                          }
-                      
-                       std::cout << "place_SchFrame_counter:"<<counter << std::endl;
-                      
-                         std::cout << "total_runtime_SchFrame=" << runtime<<" "<<"nanoseconds"<< std::endl;
-
-            
-                   
-            
-            ]]></code>
+        <module name="singular_template" require_function_unloads_without_rest="false" function="All_leadsyz(input,counter,runtime,OUT,library_name,base_filename)">
+          <cinclude href="interface/template_interface.hpp" />
+          <cinclude href="util-generic/dynamic_linking.hpp"/>
+          <cinclude href="vector"/>
+          <cinclude href="iostream"/>
+          <cinclude href="string"/>
+          <cinclude href="list"/>
+          <cinclude href="numeric"/> 
+          <cinclude href="chrono"/>
+          <code><![CDATA[
+            std::cout << "SchFrame_control:" << std::endl;
+            std::tuple<std::vector<std::string>, int, long> out = RESOLVE_INTERFACE_FUNCTION(singular_template_ALL_LEAD)(input, library_name, base_filename);
+            std::vector<std::string> vec = std::get<0>(out);
+            int total_generator = std::get<1>(out);
+            runtime = std::get<2>(out);
+            counter = total_generator;
+            for (int i = 0; i < vec.size(); i++) {
+              OUT.emplace_back(vec[i]);
+            }
+            std::cout << "place_SchFrame_counter: " << counter << std::endl;
+            std::cout << "total_runtime_SchFrame = " << runtime << " nanoseconds" << std::endl;
+          ]]></code>
         </module>
-    
       </defun>
       <connect-read port="library_name" place="place_library_name"/>
       <connect-read port="base_filename" place="place_base_filename"/>
       <connect-in port="input" place="place_input_GB"/>
-      
       <connect-out-many port="OUT" place="place_SchFrame"/>
-   
-       <connect-out port="counter" place="place_SchFrame_counter"/>
-        <connect-out port ="runtime" place="place_SchFrame_runtime"/>
-       
-      
+      <connect-out port="counter" place="place_SchFrame_counter"/>
+      <connect-out port ="runtime" place="place_SchFrame_runtime"/>
     </transition>
 
 
-   
 
 
-
-
- 
+ <!-- Transition: EndTime -->
+<transition name="EndTime">
+    <defun>
+        <in name="start_time" type="long"/>
+        <in name="computed_output" type="string"/>
+        <out name="output" type="string"/>
+        <out name="end_timer" type="long"/>
+         <module name="singular_template" function="EndTime(start_time,computed_output,output,end_timer)">
+         <cinclude href="interface/template_interface.hpp" />
+      <cinclude href="util-generic/dynamic_linking.hpp"/>
+      <cinclude href="iostream"/>
+      <cinclude href="chrono"/>
+        <code><![CDATA[
+                auto computation_time = std::chrono::high_resolution_clock::now();
+                auto duration = computation_time.time_since_epoch();
+                long current_time = std::chrono::duration_cast<std::chrono::nanoseconds>(duration).count();
+                end_timer = current_time - start_time; // Calculate elapsed time
+                output=computed_output;
+                std::cout << "Calculate elapsed time = " << end_timer << " nanoseconds" << std::endl;
+            ]]></code>
+         </module>
      
-
-
+    </defun>
+    
+    <connect-in port="start_time" place="place_StartTime"/>
+    <connect-in port="computed_output" place="place_SchFrame"/>
+    <connect-out port="end_timer" place="place_EndTime"/>
+    <connect-out port="output" place="Final_place_SchFrame"/>
+</transition>
 
 
   </net>
 </defun>
+
+
+

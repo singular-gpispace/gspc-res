@@ -36,8 +36,8 @@ gc.options.logport = 9876;
 // print(J);
  //Example 1:
  
-// ring R= 0, (w,x,y,z), (dp,c);
-// ideal J= w2-x*z, w*x- y*z, x2-w*y, x*y- z2, y2- w*z;
+ring R= 0, (w,x,y,z), (dp,c);
+ideal J= w2-x*z, w*x- y*z, x2-w*y, x*y- z2, y2- w*z;
 //module m;
 // vector s1=[-x,w,-z,0,0];
 // vector s2=[y,-x,w,0,0];
@@ -113,15 +113,15 @@ gc.options.logport = 9876;
 
 
 //Example 6
-ring R=0, (x0,x1,x2,x3,x4,x5,x6,x7,x8),dp;
-matrix m[2][8]=x0,x1,x2,x3,x4,x5,x6,x7,x1,x2,x3,x4,x5,x6,x7,x8;
-ideal rNC=minor(m,2);
-ideal I=randomid(maxideal(1),7,3);
- map f=R,I[1..7];
-ideal RNC=f(rNC);
-ideal J=std(RNC);
-print("ideal J=");
-print(J);
+// ring R=0, (x0,x1,x2,x3,x4,x5,x6,x7,x8),dp;
+// matrix m[2][8]=x0,x1,x2,x3,x4,x5,x6,x7,x1,x2,x3,x4,x5,x6,x7,x8;
+// ideal rNC=minor(m,2);
+// ideal I=randomid(maxideal(1),7,3);
+//  map f=R,I[1..7];
+// ideal RNC=f(rNC);
+// ideal J=std(RNC);
+// print("ideal J=");
+// print(J);
 
 //Example 7 [Koszul Case ]
 // ring R=0,(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10),dp;
