@@ -26,10 +26,10 @@ namespace pnetc
         , std::list<pnet::type::value::value_type>& OUT
         )
       {
-#line 103 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 104 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
            
-             std::cout <<"LeadSyz_control:"<<std::endl;
+             std::cout <<"SchFrame_control:"<<std::endl;
                   std::tuple<std::vector<std::string>, int, long> out = RESOLVE_INTERFACE_FUNCTION(singular_template_ALL_LEAD)
                         (input, library_name, base_filename);
                       std::vector<std::string> vec = std::get<0>(out);
@@ -48,9 +48,9 @@ namespace pnetc
                           
                           }
                       
-                       std::cout << "leadSyz_place_counter:"<<counter << std::endl;
+                       std::cout << "place_SchFrame_counter:"<<counter << std::endl;
                       
-                         std::cout << "total_runtime_LeadSYZ:=" << runtime<<" "<<"nanoseconds"<< std::endl;
+                         std::cout << "total_runtime_SchFrame=" << runtime<<" "<<"nanoseconds"<< std::endl;
 
             
                    

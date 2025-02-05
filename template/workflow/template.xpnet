@@ -14,7 +14,7 @@
 	<in name="base_filename" type="string" place="place_base_filename"/>
 	<in name="library_name" type="string" place="place_library_name"/>
   <in name="input" type="string" place="place_input"/>
-  <out name ="OUTPUT" type ="string" place ="place_lead"/>
+  <out name ="OUTPUT" type ="string" place ="place_SchFrame"/>
   
 	<net>
     <place name ="place_input" type ="string"/>
@@ -24,18 +24,19 @@
    
    
    
-<place name="place_lead" type="string"/>
+<place name="place_SchFrame" type="string"/>
   
   
 
-     <place name="place_leadsyz_counter" type="int"/>
+     <place name="place_SchFrame_counter" type="int"/>
   
   
 
    
    
-  <place name ="place_LeadSyz_runtime" type ="long"/>
+  <place name ="place_SchFrame_runtime" type ="long"/>
 
+      
 
  
 
@@ -102,7 +103,7 @@
 
             <code><![CDATA[
            
-             std::cout <<"LeadSyz_control:"<<std::endl;
+             std::cout <<"SchFrame_control:"<<std::endl;
                   std::tuple<std::vector<std::string>, int, long> out = RESOLVE_INTERFACE_FUNCTION(singular_template_ALL_LEAD)
                         (input, library_name, base_filename);
                       std::vector<std::string> vec = std::get<0>(out);
@@ -121,9 +122,9 @@
                           
                           }
                       
-                       std::cout << "leadSyz_place_counter:"<<counter << std::endl;
+                       std::cout << "place_SchFrame_counter:"<<counter << std::endl;
                       
-                         std::cout << "total_runtime_LeadSYZ:=" << runtime<<" "<<"nanoseconds"<< std::endl;
+                         std::cout << "total_runtime_SchFrame=" << runtime<<" "<<"nanoseconds"<< std::endl;
 
             
                    
@@ -136,10 +137,10 @@
       <connect-read port="base_filename" place="place_base_filename"/>
       <connect-in port="input" place="place_input_GB"/>
       
-      <connect-out-many port="OUT" place="place_lead"/>
+      <connect-out-many port="OUT" place="place_SchFrame"/>
    
-       <connect-out port="counter" place="place_leadsyz_counter"/>
-        <connect-out port ="runtime" place="place_LeadSyz_runtime"/>
+       <connect-out port="counter" place="place_SchFrame_counter"/>
+        <connect-out port ="runtime" place="place_SchFrame_runtime"/>
        
       
     </transition>
