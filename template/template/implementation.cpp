@@ -46,6 +46,35 @@ std::string singular_template_compute_StdBasis(std::string const& input_filename
 
 
 
+
+NO_NAME_MANGLING
+std::string singular_template_Start_timing( std::string const& input_filename 
+                                             , std::string const& needed_library
+                                             , std::string const& base_filename) {
+
+    init_singular(config::singularLibrary().string());
+    load_singular_library(needed_library);
+    std::pair<int, lists> input;
+    std::pair<int, lists> out;
+    std::string ids;
+    std::string out_filename;
+
+    ids = worker();
+    // std::cout << ids << " in singular_..._compute" << std::endl;
+    input = deserialize(input_filename, ids);
+
+    ScopedLeftv args(input.first, lCopy(input.second));
+    std::string function_name = "StartTiming";
+    out = call_user_proc(function_name, needed_library, args);
+    out_filename = serialize(out.second, base_filename);
+
+    return out_filename;
+}
+
+
+
+
+
 NO_NAME_MANGLING
 std::string singular_template_Init( std::string const& input) {
 
@@ -2009,3 +2038,29 @@ std::string singular_template_removeFiles(const std::string& Red, const std::str
     }
     return {};
 }
+
+
+NO_NAME_MANGLING
+std::string singular_template_End_timing( std::string const& input_filename 
+                                             , std::string const& needed_library
+                                             , std::string const& base_filename) {
+
+    init_singular(config::singularLibrary().string());
+    load_singular_library(needed_library);
+    std::pair<int, lists> input;
+    std::pair<int, lists> out;
+    std::string ids;
+    std::string out_filename;
+
+    ids = worker();
+    // std::cout << ids << " in singular_..._compute" << std::endl;
+    input = deserialize(input_filename, ids);
+
+    ScopedLeftv args(input.first, lCopy(input.second));
+    std::string function_name = "EndTiming";
+    out = call_user_proc(function_name, needed_library, args);
+    out_filename = serialize(out.second, base_filename);
+
+    return out_filename;
+}
+
