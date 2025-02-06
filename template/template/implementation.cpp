@@ -47,14 +47,6 @@ std::string singular_template_compute_StdBasis(std::string const& input_filename
 
 
 
-NO_NAME_MANGLING
-long singular_template_Start_timing([[maybe_unused]] std::string const& input_filename) {
-    auto computation_time = std::chrono::high_resolution_clock::now();
-    auto duration = computation_time.time_since_epoch();
- auto start_timer= std::chrono::duration_cast<std::chrono::nanoseconds>(duration).count();
-    return start_timer;
-}
-
 
 
 
@@ -89,11 +81,11 @@ matrix lcm_mod(ideal G) {
     //     std::cout << "ideal G: " << pString((poly)G->m[k]) << std::endl;
     // }
     // std::cout << "r in lcm_mod:= " << r << std::endl;
-    omUpdateInfo();
-    std::cout << "used mem: " << om_Info.UsedBytes << std::endl;
+    // omUpdateInfo();
+    // std::cout << "used mem: " << om_Info.UsedBytes << std::endl;
 
     matrix l = mpNew(r, r);
-    std::cout << "pointer l: " << (long)l << std::endl;
+    // std::cout << "pointer l: " << (long)l << std::endl;
     // std::cout << "Row of l: " << MATROWS(l) << std::endl;
     // std::cout << "Cols of l: " << MATCOLS(l) << std::endl;
 
@@ -2027,13 +2019,3 @@ std::string singular_template_removeFiles(const std::string& Red, const std::str
 
 
 
-
-
-NO_NAME_MANGLING
-long singular_template_End_timing([[maybe_unused]] std::string const& input_filename) {
-    auto computation_time = std::chrono::high_resolution_clock::now();
-    auto duration = computation_time.time_since_epoch();
-
-    auto end_timer= std::chrono::duration_cast<std::chrono::nanoseconds>(duration).count();
-    return end_timer;
-}
