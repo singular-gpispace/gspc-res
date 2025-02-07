@@ -471,8 +471,8 @@
 <!-- n1_condition -->
 <g id="node20" class="node">
 <title>n1_condition</title>
-<polygon fill="white" stroke="black" points="1999.11,-1369 1999.11,-1405 2085.11,-1405 2085.11,-1369 1999.11,-1369"/>
-<text text-anchor="middle" x="2042.11" y="-1383.3" font-family="Times,serif" font-size="14.00">LIFT_sum</text>
+<polygon fill="white" stroke="black" points="1985.11,-1369 1985.11,-1405 2099.11,-1405 2099.11,-1369 1985.11,-1369"/>
+<text text-anchor="middle" x="2042.11" y="-1383.3" font-family="Times,serif" font-size="14.00">SubLIFT_sum</text>
 </g>
 <!-- n1_port_1 -->
 <g id="node23" class="node">

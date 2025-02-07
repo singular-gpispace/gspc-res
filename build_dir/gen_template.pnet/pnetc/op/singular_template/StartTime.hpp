@@ -1,8 +1,8 @@
-#ifndef _PNETC_OP_singular_template_Init
-#define _PNETC_OP_singular_template_Init
+#ifndef _PNETC_OP_singular_template_StartTime
+#define _PNETC_OP_singular_template_StartTime
 
-#include <string>
 #include <we/type/literal/control.hpp>
+#include <string>
 
 namespace pnetc
 {
@@ -10,8 +10,9 @@ namespace pnetc
   {
     namespace singular_template
     {
-      void Init
+      void StartTime
         ( const std::string& input
+        , long& start_time
         , we::type::literal::control& c
         , std::string& output
         );

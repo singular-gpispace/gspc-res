@@ -1,4 +1,5 @@
 #include <pnetc/op/singular_template/LIFT.hpp>
+#include <we/type/literal/control.hpp>
 #include <list>
 #include <we/type/value.hpp>
 #include <string>
@@ -23,10 +24,10 @@ namespace pnetc
         , const std::string& needed_library
         , const std::string& base_filename
         , std::list<pnet::type::value::value_type>& LIFT
-        , long& runtime
+        , we::type::literal::control& D
         )
       {
-#line 243 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 286 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
                   //  std::cout << "in singular _PetriNet_.._LIFT" << std::endl;
                    
@@ -35,7 +36,7 @@ namespace pnetc
                        
 
                        std::vector<std::string> vec = std::get<0>(out);
-                       runtime = std::get<2>(out);
+                      
                        //std::cout << "LIFT_COUNT:"<< lift_count << std::endl;
                         
                          for(int i (0); i<vec.size(); i++)
