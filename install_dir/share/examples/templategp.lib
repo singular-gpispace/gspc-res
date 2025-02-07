@@ -23,19 +23,7 @@ OVERVIEW:
   
 
 
-proc StartTiming(token input)
 
-{
-   rtimer=0;
- system("--ticks-per-sec",1000); // set timer resolution to ms
- int t=rtimer;
-   
-   
-   
-    return(input);
-
-
-}
 
 
 
@@ -1021,7 +1009,7 @@ if(typeof(f)=="ideal"){
     }
    }
     Ld.data[6]=counter;
-    Ld.data[7] = counter+1;
+    Ld.data[7] = counter;
     LLT.fieldnames[k] = "generator";  
     LLT.data[k] = Ld; 
 

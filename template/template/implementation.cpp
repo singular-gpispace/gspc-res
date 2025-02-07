@@ -181,7 +181,7 @@ ideal leadSyz(ideal f) {
         }
     }
 
-    std::cout << "Final first leadsyz size: " << IDELEMS(L) << std::endl;
+    // std::cout << "Final first leadsyz size: " << IDELEMS(L) << std::endl;
 
     return L;
 }
@@ -237,7 +237,7 @@ ideal Sec_leadSyz(ideal f0) {
 
     idDelete((ideal*)&M);
 
-    std::cout << "Final second-Leadsyz size: " << IDELEMS(L) << std::endl;
+    // std::cout << "Final second-Leadsyz size: " << IDELEMS(L) << std::endl;
 
     return L;
 }
@@ -490,7 +490,7 @@ std::tuple<std::vector<std::string>, int, long> singular_template_ALL_LEAD(std::
   auto computation_time =std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - start_computation).count();
    total_generator = lSize(u); // Assuming u contains the computed generators
    auto total_runtime=computation_time;
-    std::cout << "total_runtime_SchFrame:=" << total_runtime<<" "<<"nanoseconds"<< std::endl;
+    // std::cout << "total_runtime_SchFrame:=" << total_runtime<<" "<<"nanoseconds"<< std::endl;
   return {vec, total_generator,total_runtime};
 }
 
@@ -552,7 +552,7 @@ std::pair<int, lists> LEAD_GPI(leftv args) {
         counter = (int)(long)tmp->m[6].Data();
     }
     
- std::cout << "#LeadSyz_GPI:=" <<r<< std::endl;
+//  std::cout << "#LeadSyz_GPI:=" <<r<< std::endl;
     // Prepare the LLT token
     lists LLT = (lists)omAlloc0Bin(slists_bin);
     LLT->Init(4); // Initialize with 4 fields
@@ -747,7 +747,7 @@ auto total_runtime=computation_time;
 
 
 
- std::cout << "total_runtime_LeadSYZ:=" << total_runtime<<" "<<"nanoseconds"<< std::endl;
+//  std::cout << "total_runtime_LeadSYZ:=" << total_runtime<<" "<<"nanoseconds"<< std::endl;
    total_generator = lSize(u); // Assuming u contains the computed generators
 
   return {vec, total_generator, total_runtime};
@@ -1597,11 +1597,11 @@ std::tuple<std::vector<std::string>, int, long> singular_template_LIFT(const std
     // Measure Computation Time
     auto start_computation = std::chrono::high_resolution_clock::now();
      // Direct call to LIFT_GPI 
-  // std::string function_name = "LIFT_GPI";
+  std::string function_name = "LIFT_GPI";
   //    //std::cout<<"function_name_LIFT:"<<function_name<< std:: endl;
-    // out = call_user_proc(function_name, needed_library, args);
+    out = call_user_proc(function_name, needed_library, args);
    
-   out = LIFT_GPI(args.leftV()); 
+//    out = LIFT_GPI(args.leftV()); 
   
 
     // Extract the result list from the output
@@ -1624,7 +1624,7 @@ std::tuple<std::vector<std::string>, int, long> singular_template_LIFT(const std
     auto computation_time =std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - start_computation).count();
     auto total_runtime=computation_time;
 // std::cout << " total gen " << total_generator<< std::endl;
-// std::cout << " total time " << total_runtime<< std::endl;
+// std::cout << " total time_LIFT:= " << total_runtime<< std::endl;
   //std::cout << arg1.leftV()->String() <<std::endl;
 
     return {vec, total_generator, total_runtime};

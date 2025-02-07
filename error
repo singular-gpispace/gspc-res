@@ -1,12 +1,27 @@
-[2025-02-05 21:02:52] schipp: pid 157672 tid157677: T: task finished: schipp.job.157652.1
-[2025-02-05 21:02:52] schipp: pid 157666 tid157671: I: SchFrame_control:
-[2025-02-05 21:02:52] schipp: pid 157666 tid157671: I: total_runtime_SchFrame:=16552083 nanoseconds
-[2025-02-05 21:02:52] schipp: pid 157666 tid157671: I: place_SchFrame_counter: 3
-[2025-02-05 21:02:52] schipp: pid 157666 tid157671: I: total_runtime_SchFrame = 16552083 nanoseconds
-[2025-02-05 21:02:52] schipp: pid 157666 tid157671: T: task finished: schipp.job.157652.2
-[2025-02-05 21:02:52] schipp: pid 157660 tid157665: I: Calculate elapsed time = 42831647 nanoseconds
-[2025-02-05 21:02:52] schipp: pid 157660 tid157665: T: task finished: schipp.job.157652.3
-[2025-02-05 21:02:52] schipp: pid 157672 tid157675: T: worker-schipp 36375 157642-3 is shutting down
-[2025-02-05 21:02:52] schipp: pid 157666 tid157669: T: worker-schipp 36375 157642-2 is shutting down
-[2025-02-05 21:02:52] schipp: pid 157678 tid157681: T: worker-schipp 36375 157642-4 is shutting down
-[2025-02-05 21:02:52] schipp: pid 157660 tid157663: T: worker-schipp 36375 157642-1 is shutting down
+[2025-02-06 19:45:37] schipp: pid 14507 tid14512: T: task finished: schipp.job.14470.1
+[2025-02-06 19:45:37] schipp: pid 14478 tid14484: I: place_SchFrame_counter: 3
+[2025-02-06 19:45:37] schipp: pid 14494 tid14505: I: #leadSyz=6
+[2025-02-06 19:45:37] schipp: pid 14478 tid14484: T: task finished: schipp.job.14470.3
+[2025-02-06 19:45:37] schipp: pid 14494 tid14505: T: task finished: schipp.job.14470.2
+[2025-02-06 19:45:37] schipp: pid 14494 tid14505: T: task finished: schipp.job.14470.7
+[2025-02-06 19:45:37] schipp: pid 14478 tid14484: T: task finished: schipp.job.14470.5
+[2025-02-06 19:45:37] schipp: pid 14478 tid14484: I: TotalLIFT Runtime Sum: 10492286 nanosecond
+[2025-02-06 19:45:37] schipp: pid 14478 tid14484: T: task finished: schipp.job.14470.10
+[2025-02-06 19:45:37] schipp: pid 14494 tid14505: T: task finished: schipp.job.14470.8
+[2025-02-06 19:45:37] schipp: pid 14494 tid14505: I: TotalLIFT Runtime Sum: 22008147 nanosecond
+[2025-02-06 19:45:37] schipp: pid 14494 tid14505: T: task finished: schipp.job.14470.11
+[2025-02-06 19:45:37] schipp: pid 14478 tid14484: T: task finished: schipp.job.14470.9
+[2025-02-06 19:45:37] schipp: pid 14494 tid14505: I: TotalLIFT Runtime Sum: 32224565 nanosecond
+[2025-02-06 19:45:37] schipp: pid 14494 tid14505: T: task finished: schipp.job.14470.12
+[2025-02-06 19:45:37] schipp: pid 14478 tid14484: I: TotalLIFT Runtime Sum: 42589610 nanosecond
+[2025-02-06 19:45:37] schipp: pid 14478 tid14484: T: task finished: schipp.job.14470.13
+[2025-02-06 19:45:37] schipp: pid 14507 tid14512: T: task finished: schipp.job.14470.6
+[2025-02-06 19:45:37] schipp: pid 14494 tid14505: I: TotalLIFT Runtime Sum: 53529687 nanosecond
+[2025-02-06 19:45:37] schipp: pid 14494 tid14505: T: task finished: schipp.job.14470.14
+[2025-02-06 19:45:37] schipp: pid 14485 tid14493: T: task finished: schipp.job.14470.4
+[2025-02-06 19:45:37] schipp: pid 14478 tid14484: I: TotalLIFT Runtime Sum: 64058819 nanosecond
+[2025-02-06 19:45:37] schipp: pid 14478 tid14484: T: task finished: schipp.job.14470.15
+[2025-02-06 19:45:37] schipp: pid 14507 tid14510: T: worker-schipp 38223 14460-4 is shutting down
+[2025-02-06 19:45:37] schipp: pid 14494 tid14502: T: worker-schipp 38223 14460-3 is shutting down
+[2025-02-06 19:45:37] schipp: pid 14485 tid14491: T: worker-schipp 38223 14460-2 is shutting down
+[2025-02-06 19:45:37] schipp: pid 14478 tid14481: T: worker-schipp 38223 14460-1 is shutting down
