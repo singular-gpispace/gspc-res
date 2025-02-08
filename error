@@ -1,158 +1,99 @@
-[2025-02-07 17:11:00] schipp: pid 10872 tid10877: T: task finished: schipp.job.10845.1
-[2025-02-07 17:11:01] schipp: pid 10860 tid10865: I: place_SchFrame_counter: 6
-[2025-02-07 17:11:01] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.3
-[2025-02-07 17:11:01] schipp: pid 10872 tid10877: I: #leadSyz=70
-[2025-02-07 17:11:01] schipp: pid 10872 tid10877: T: task finished: schipp.job.10845.2
-[2025-02-07 17:11:01] schipp: pid 10878 tid10883: I: Calculate elapsed time_SchFrame: = 79969989 nanoseconds
-[2025-02-07 17:11:01] schipp: pid 10878 tid10883: T: task finished: schipp.job.10845.5
-[2025-02-07 17:11:01] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.10
-[2025-02-07 17:11:01] schipp: pid 10872 tid10877: T: task finished: schipp.job.10845.8
-[2025-02-07 17:11:01] schipp: pid 10866 tid10871: T: task finished: schipp.job.10845.4
-[2025-02-07 17:11:01] schipp: pid 10878 tid10883: T: task finished: schipp.job.10845.14
-[2025-02-07 17:11:01] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.11
-[2025-02-07 17:11:01] schipp: pid 10872 tid10877: T: task finished: schipp.job.10845.15
-[2025-02-07 17:11:01] schipp: pid 10866 tid10871: T: task finished: schipp.job.10845.13
-[2025-02-07 17:11:01] schipp: pid 10878 tid10883: T: task finished: schipp.job.10845.24
-[2025-02-07 17:11:01] schipp: pid 10872 tid10877: T: task finished: schipp.job.10845.18
-[2025-02-07 17:11:01] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.12
-[2025-02-07 17:11:01] schipp: pid 10866 tid10871: T: task finished: schipp.job.10845.16
-[2025-02-07 17:11:01] schipp: pid 10878 tid10883: T: task finished: schipp.job.10845.26
-[2025-02-07 17:11:02] schipp: pid 10872 tid10877: T: task finished: schipp.job.10845.19
-[2025-02-07 17:11:02] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.17
-[2025-02-07 17:11:02] schipp: pid 10878 tid10883: T: task finished: schipp.job.10845.27
-[2025-02-07 17:11:02] schipp: pid 10866 tid10871: T: task finished: schipp.job.10845.22
-[2025-02-07 17:11:02] schipp: pid 10872 tid10877: T: task finished: schipp.job.10845.23
-[2025-02-07 17:11:02] schipp: pid 10878 tid10883: T: task finished: schipp.job.10845.30
-[2025-02-07 17:11:02] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.20
-[2025-02-07 17:11:02] schipp: pid 10866 tid10871: T: task finished: schipp.job.10845.25
-[2025-02-07 17:11:02] schipp: pid 10872 tid10877: T: task finished: schipp.job.10845.28
-[2025-02-07 17:11:02] schipp: pid 10878 tid10883: T: task finished: schipp.job.10845.31
-[2025-02-07 17:11:02] schipp: pid 10866 tid10871: T: task finished: schipp.job.10845.29
-[2025-02-07 17:11:02] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.21
-[2025-02-07 17:11:03] schipp: pid 10872 tid10877: T: task finished: schipp.job.10845.35
-[2025-02-07 17:11:03] schipp: pid 10878 tid10883: T: task finished: schipp.job.10845.33
-[2025-02-07 17:11:03] schipp: pid 10866 tid10871: T: task finished: schipp.job.10845.32
-[2025-02-07 17:11:03] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.39
-[2025-02-07 17:11:03] schipp: pid 10872 tid10877: T: task finished: schipp.job.10845.37
-[2025-02-07 17:11:03] schipp: pid 10878 tid10883: T: task finished: schipp.job.10845.34
-[2025-02-07 17:11:03] schipp: pid 10866 tid10871: T: task finished: schipp.job.10845.36
-[2025-02-07 17:11:03] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.43
-[2025-02-07 17:11:03] schipp: pid 10872 tid10877: T: task finished: schipp.job.10845.41
-[2025-02-07 17:11:03] schipp: pid 10878 tid10883: T: task finished: schipp.job.10845.38
-[2025-02-07 17:11:03] schipp: pid 10866 tid10871: T: task finished: schipp.job.10845.54
-[2025-02-07 17:11:03] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.46
-[2025-02-07 17:11:03] schipp: pid 10872 tid10877: T: task finished: schipp.job.10845.45
-[2025-02-07 17:11:03] schipp: pid 10878 tid10883: T: task finished: schipp.job.10845.40
-[2025-02-07 17:11:04] schipp: pid 10866 tid10871: T: task finished: schipp.job.10845.55
-[2025-02-07 17:11:04] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.47
-[2025-02-07 17:11:04] schipp: pid 10872 tid10877: T: task finished: schipp.job.10845.52
-[2025-02-07 17:11:04] schipp: pid 10878 tid10883: T: task finished: schipp.job.10845.42
-[2025-02-07 17:11:04] schipp: pid 10866 tid10871: T: task finished: schipp.job.10845.57
-[2025-02-07 17:11:04] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.50
-[2025-02-07 17:11:04] schipp: pid 10872 tid10877: T: task finished: schipp.job.10845.59
-[2025-02-07 17:11:04] schipp: pid 10878 tid10883: T: task finished: schipp.job.10845.44
-[2025-02-07 17:11:04] schipp: pid 10866 tid10871: T: task finished: schipp.job.10845.58
-[2025-02-07 17:11:04] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.51
-[2025-02-07 17:11:04] schipp: pid 10872 tid10877: T: task finished: schipp.job.10845.62
-[2025-02-07 17:11:04] schipp: pid 10878 tid10883: T: task finished: schipp.job.10845.48
-[2025-02-07 17:11:04] schipp: pid 10866 tid10871: T: task finished: schipp.job.10845.6
-[2025-02-07 17:11:04] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.56
-[2025-02-07 17:11:05] schipp: pid 10878 tid10883: T: task finished: schipp.job.10845.49
-[2025-02-07 17:11:05] schipp: pid 10872 tid10877: T: task finished: schipp.job.10845.64
-[2025-02-07 17:11:05] schipp: pid 10866 tid10871: T: task finished: schipp.job.10845.63
-[2025-02-07 17:11:05] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.60
-[2025-02-07 17:11:05] schipp: pid 10878 tid10883: T: task finished: schipp.job.10845.53
-[2025-02-07 17:11:05] schipp: pid 10872 tid10877: T: task finished: schipp.job.10845.66
-[2025-02-07 17:11:05] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.61
-[2025-02-07 17:11:05] schipp: pid 10866 tid10871: T: task finished: schipp.job.10845.65
-[2025-02-07 17:11:05] schipp: pid 10878 tid10883: T: task finished: schipp.job.10845.68
-[2025-02-07 17:11:05] schipp: pid 10872 tid10877: T: task finished: schipp.job.10845.74
-[2025-02-07 17:11:05] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.67
-[2025-02-07 17:11:05] schipp: pid 10866 tid10871: T: task finished: schipp.job.10845.69
-[2025-02-07 17:11:05] schipp: pid 10878 tid10883: T: task finished: schipp.job.10845.7
-[2025-02-07 17:11:05] schipp: pid 10878 tid10883: T: task finished: schipp.job.10845.75
-[2025-02-07 17:11:05] schipp: pid 10872 tid10877: T: task finished: schipp.job.10845.70
-[2025-02-07 17:11:05] schipp: pid 10872 tid10877: T: task finished: schipp.job.10845.76
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.71
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.77
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.78
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.79
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.80
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.81
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.82
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.83
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.84
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.85
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.86
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.87
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.88
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.89
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.90
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.91
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.92
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.93
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.94
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.95
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.96
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.97
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.98
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.99
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.100
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.101
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.102
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.103
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.104
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.105
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.106
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.107
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.108
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.109
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.110
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.111
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.112
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.113
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.114
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.115
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.116
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.117
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.118
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.119
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.120
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.121
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.122
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.123
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.124
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.125
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.126
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.127
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.128
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.129
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.130
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.131
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.132
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.133
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.134
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.135
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.136
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.137
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.138
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.139
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.140
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.141
-[2025-02-07 17:11:06] schipp: pid 10866 tid10871: T: task finished: schipp.job.10845.72
-[2025-02-07 17:11:06] schipp: pid 10860 tid10865: T: task finished: schipp.job.10845.142
-[2025-02-07 17:11:06] schipp: pid 10878 tid10883: T: task finished: schipp.job.10845.73
-[2025-02-07 17:11:06] schipp: pid 10866 tid10871: T: task finished: schipp.job.10845.143
-[2025-02-07 17:11:06] schipp: pid 10872 tid10877: T: task finished: schipp.job.10845.9
-[2025-02-07 17:11:06] schipp: pid 10872 tid10877: T: task finished: schipp.job.10845.144
-[2025-02-07 17:11:06] schipp: pid 10878 tid10883: I: LIFT: 70
-[2025-02-07 17:11:06] schipp: pid 10878 tid10883: I: LeadSyz: 70
-[2025-02-07 17:11:06] schipp: pid 10878 tid10883: T: task finished: schipp.job.10845.145
-[2025-02-07 17:11:06] schipp: pid 10878 tid10883: I: Calculate elapsed time:SchFrame = 79969989 nanoseconds
-[2025-02-07 17:11:06] schipp: pid 10878 tid10883: I:  elapsed time_LIFT: = 5288439527 nanoseconds
-[2025-02-07 17:11:06] schipp: pid 10878 tid10883: I: only elapsed time_LIFT:= 5208469538 nanoseconds
-[2025-02-07 17:11:06] schipp: pid 10878 tid10883: T: task finished: schipp.job.10845.146
-[2025-02-07 17:11:06] schipp: pid 10878 tid10881: T: worker-schipp 45421 10833-4 is shutting down
-[2025-02-07 17:11:06] schipp: pid 10872 tid10875: T: worker-schipp 45421 10833-3 is shutting down
-[2025-02-07 17:11:06] schipp: pid 10866 tid10869: T: worker-schipp 45421 10833-2 is shutting down
-[2025-02-07 17:11:06] schipp: pid 10860 tid10863: T: worker-schipp 45421 10833-1 is shutting down
+[2025-02-08 12:30:56] schipp: pid 92961 tid92966: T: task finished: schipp.job.92953.1
+[2025-02-08 12:30:56] schipp: pid 92979 tid92984: I: #leadSyz=6
+[2025-02-08 12:30:56] schipp: pid 92973 tid92978: I: place_SchFrame_counter: 3
+[2025-02-08 12:30:56] schipp: pid 92973 tid92978: T: task finished: schipp.job.92953.3
+[2025-02-08 12:30:56] schipp: pid 92979 tid92984: T: task finished: schipp.job.92953.2
+[2025-02-08 12:30:56] schipp: pid 92973 tid92978: T: task finished: schipp.job.92953.4
+[2025-02-08 12:30:56] schipp: pid 92979 tid92984: T: task finished: schipp.job.92953.9
+[2025-02-08 12:30:56] schipp: pid 92973 tid92978: T: task finished: schipp.job.92953.6
+[2025-02-08 12:30:56] schipp: pid 92979 tid92984: T: task finished: schipp.job.92953.7
+[2025-02-08 12:30:56] schipp: pid 92973 tid92978: T: task finished: schipp.job.92953.12
+[2025-02-08 12:30:56] schipp: pid 92979 tid92984: I:  total time_SubLIFT:= 62179
+[2025-02-08 12:30:56] schipp: pid 92979 tid92984: T: task finished: schipp.job.92953.13
+[2025-02-08 12:30:56] schipp: pid 92973 tid92978: I:  total time_SubLIFT:= 70330
+[2025-02-08 12:30:56] schipp: pid 92973 tid92978: T: task finished: schipp.job.92953.16
+[2025-02-08 12:30:56] schipp: pid 92979 tid92984: T: task finished: schipp.job.92953.10
+[2025-02-08 12:30:56] schipp: pid 92973 tid92978: I:  total time_SubLIFT:= 57021
+[2025-02-08 12:30:56] schipp: pid 92979 tid92984: T: task finished: schipp.job.92953.11
+[2025-02-08 12:30:56] schipp: pid 92973 tid92978: T: task finished: schipp.job.92953.17
+[2025-02-08 12:30:56] schipp: pid 92973 tid92978: T: task finished: schipp.job.92953.23
+[2025-02-08 12:30:56] schipp: pid 92979 tid92984: I:  total time_SubLIFT:= 55547
+[2025-02-08 12:30:56] schipp: pid 92979 tid92984: T: task finished: schipp.job.92953.22
+[2025-02-08 12:30:56] schipp: pid 92973 tid92978: T: task finished: schipp.job.92953.14
+[2025-02-08 12:30:56] schipp: pid 92979 tid92984: T: task finished: schipp.job.92953.15
+[2025-02-08 12:30:56] schipp: pid 92973 tid92978: I:  total time_SubLIFT:= 73380
+[2025-02-08 12:30:56] schipp: pid 92979 tid92984: T: task finished: schipp.job.92953.26
+[2025-02-08 12:30:56] schipp: pid 92973 tid92978: T: task finished: schipp.job.92953.19
+[2025-02-08 12:30:56] schipp: pid 92979 tid92984: T: task finished: schipp.job.92953.18
+[2025-02-08 12:30:56] schipp: pid 92973 tid92978: I:  total time_SubLIFT:= 57856
+[2025-02-08 12:30:56] schipp: pid 92973 tid92978: T: task finished: schipp.job.92953.21
+[2025-02-08 12:30:56] schipp: pid 92979 tid92984: T: task finished: schipp.job.92953.20
+[2025-02-08 12:30:56] schipp: pid 92973 tid92978: T: task finished: schipp.job.92953.27
+[2025-02-08 12:30:56] schipp: pid 92979 tid92984: T: task finished: schipp.job.92953.28
+[2025-02-08 12:30:56] schipp: pid 92973 tid92978: T: task finished: schipp.job.92953.25
+[2025-02-08 12:30:56] schipp: pid 92979 tid92984: T: task finished: schipp.job.92953.24
+[2025-02-08 12:30:56] schipp: pid 92973 tid92978: T: task finished: schipp.job.92953.30
+[2025-02-08 12:30:56] schipp: pid 92979 tid92984: T: task finished: schipp.job.92953.29
+[2025-02-08 12:30:56] schipp: pid 92973 tid92978: T: task finished: schipp.job.92953.31
+[2025-02-08 12:30:56] schipp: pid 92979 tid92984: T: task finished: schipp.job.92953.32
+[2025-02-08 12:30:56] schipp: pid 92979 tid92984: T: task finished: schipp.job.92953.33
+[2025-02-08 12:30:56] schipp: pid 92973 tid92978: T: task finished: schipp.job.92953.34
+[2025-02-08 12:30:56] schipp: pid 92979 tid92984: T: task finished: schipp.job.92953.35
+[2025-02-08 12:30:56] schipp: pid 92979 tid92984: T: task finished: schipp.job.92953.36
+[2025-02-08 12:30:56] schipp: pid 92979 tid92984: T: task finished: schipp.job.92953.37
+[2025-02-08 12:30:56] schipp: pid 92973 tid92978: T: task finished: schipp.job.92953.38
+[2025-02-08 12:30:56] schipp: pid 92979 tid92984: T: task finished: schipp.job.92953.39
+[2025-02-08 12:30:56] schipp: pid 92979 tid92984: T: task finished: schipp.job.92953.40
+[2025-02-08 12:30:56] schipp: pid 92973 tid92978: T: task finished: schipp.job.92953.41
+[2025-02-08 12:30:56] schipp: pid 92979 tid92984: T: task finished: schipp.job.92953.42
+[2025-02-08 12:30:56] schipp: pid 92973 tid92978: T: task finished: schipp.job.92953.43
+[2025-02-08 12:30:56] schipp: pid 92973 tid92978: T: task finished: schipp.job.92953.44
+[2025-02-08 12:30:56] schipp: pid 92979 tid92984: T: task finished: schipp.job.92953.45
+[2025-02-08 12:30:56] schipp: pid 92979 tid92984: T: task finished: schipp.job.92953.46
+[2025-02-08 12:30:56] schipp: pid 92979 tid92984: T: task finished: schipp.job.92953.47
+[2025-02-08 12:30:56] schipp: pid 92973 tid92978: T: task finished: schipp.job.92953.48
+[2025-02-08 12:30:56] schipp: pid 92979 tid92984: T: task finished: schipp.job.92953.49
+[2025-02-08 12:30:56] schipp: pid 92979 tid92984: T: task finished: schipp.job.92953.50
+[2025-02-08 12:30:56] schipp: pid 92973 tid92978: T: task finished: schipp.job.92953.51
+[2025-02-08 12:30:56] schipp: pid 92979 tid92984: T: task finished: schipp.job.92953.52
+[2025-02-08 12:30:56] schipp: pid 92973 tid92978: T: task finished: schipp.job.92953.53
+[2025-02-08 12:30:56] schipp: pid 92979 tid92984: T: task finished: schipp.job.92953.54
+[2025-02-08 12:30:56] schipp: pid 92973 tid92978: T: task finished: schipp.job.92953.55
+[2025-02-08 12:30:56] schipp: pid 92979 tid92984: T: task finished: schipp.job.92953.56
+[2025-02-08 12:30:56] schipp: pid 92973 tid92978: T: task finished: schipp.job.92953.57
+[2025-02-08 12:30:56] schipp: pid 92973 tid92978: T: task finished: schipp.job.92953.58
+[2025-02-08 12:30:56] schipp: pid 92979 tid92984: T: task finished: schipp.job.92953.59
+[2025-02-08 12:30:56] schipp: pid 92973 tid92978: T: task finished: schipp.job.92953.60
+[2025-02-08 12:30:56] schipp: pid 92961 tid92966: T: task finished: schipp.job.92953.8
+[2025-02-08 12:30:56] schipp: pid 92967 tid92972: T: task finished: schipp.job.92953.5
+[2025-02-08 12:30:56] schipp: pid 92979 tid92984: T: task finished: schipp.job.92953.61
+[2025-02-08 12:30:56] schipp: pid 92979 tid92984: T: task finished: schipp.job.92953.62
+[2025-02-08 12:30:56] schipp: pid 92973 tid92978: T: task finished: schipp.job.92953.64
+[2025-02-08 12:30:56] schipp: pid 92961 tid92966: I:  total time_SubLIFT:= 68333
+[2025-02-08 12:30:56] schipp: pid 92967 tid92972: I:  total time_SubLIFT:= 49214
+[2025-02-08 12:30:56] schipp: pid 92961 tid92966: T: task finished: schipp.job.92953.63
+[2025-02-08 12:30:56] schipp: pid 92967 tid92972: T: task finished: schipp.job.92953.65
+[2025-02-08 12:30:56] schipp: pid 92979 tid92984: T: task finished: schipp.job.92953.66
+[2025-02-08 12:30:56] schipp: pid 92973 tid92978: T: task finished: schipp.job.92953.67
+[2025-02-08 12:30:56] schipp: pid 92961 tid92966: T: task finished: schipp.job.92953.68
+[2025-02-08 12:30:56] schipp: pid 92967 tid92972: T: task finished: schipp.job.92953.69
+[2025-02-08 12:30:56] schipp: pid 92979 tid92984: T: task finished: schipp.job.92953.70
+[2025-02-08 12:30:56] schipp: pid 92973 tid92978: I: LIFT: 6
+[2025-02-08 12:30:56] schipp: pid 92973 tid92978: I: LeadSyz: 6
+[2025-02-08 12:30:56] schipp: pid 92973 tid92978: T: task finished: schipp.job.92953.71
+[2025-02-08 12:30:56] schipp: pid 92961 tid92966: T: task finished: schipp.job.92953.72
+[2025-02-08 12:30:56] schipp: pid 92967 tid92972: T: task finished: schipp.job.92953.73
+[2025-02-08 12:30:56] schipp: pid 92979 tid92984: T: task finished: schipp.job.92953.74
+[2025-02-08 12:30:56] schipp: pid 92967 tid92972: T: task finished: schipp.job.92953.75
+[2025-02-08 12:30:56] schipp: pid 92961 tid92966: T: task finished: schipp.job.92953.76
+[2025-02-08 12:30:56] schipp: pid 92979 tid92984: T: task finished: schipp.job.92953.77
+[2025-02-08 12:30:56] schipp: pid 92967 tid92972: I: Result_Success: /home/santosh/gspc-res/example_dir/temp/schipp_92961_1739014256333320404
+[2025-02-08 12:30:56] schipp: pid 92967 tid92972: T: task finished: schipp.job.92953.78
+[2025-02-08 12:30:56] schipp: pid 92961 tid92966: I: Calculate elapsed time:LIFT = 59918416 nanoseconds
+[2025-02-08 12:30:56] schipp: pid 92961 tid92966: I: elapsed time_SubLIFT: = 62744540 nanoseconds
+[2025-02-08 12:30:56] schipp: pid 92961 tid92966: I: only elapsed time_SubLIFT:= 2826124 nanoseconds
+[2025-02-08 12:30:56] schipp: pid 92961 tid92966: T: task finished: schipp.job.92953.79
+[2025-02-08 12:30:56] schipp: pid 92979 tid92982: T: worker-schipp 40133 92943-4 is shutting down
+[2025-02-08 12:30:56] schipp: pid 92973 tid92976: T: worker-schipp 40133 92943-3 is shutting down
+[2025-02-08 12:30:56] schipp: pid 92967 tid92970: T: worker-schipp 40133 92943-2 is shutting down
+[2025-02-08 12:30:56] schipp: pid 92961 tid92964: T: worker-schipp 40133 92943-1 is shutting down

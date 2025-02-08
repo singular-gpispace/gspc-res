@@ -23,11 +23,12 @@ namespace pnetc
         , const we::type::literal::control& s
         , const std::string& library_name
         , const std::string& base_filename
+        , int& N
         , int& counter
         , std::list<pnet::type::value::value_type>& OUT
         )
       {
-#line 175 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 188 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
             
             
@@ -35,7 +36,7 @@ namespace pnetc
                         (input, library_name, base_filename);
                       std::vector<std::string> vec = std::get<0>(out);
                       int total_generator = std::get<1>(out);
-                     
+                       N=total_generator;
                     
                       counter=total_generator;
                       

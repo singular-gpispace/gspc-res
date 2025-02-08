@@ -1,7 +1,6 @@
-#ifndef _PNETC_OP_singular_template_LIFT
-#define _PNETC_OP_singular_template_LIFT
+#ifndef _PNETC_OP_singular_template_SUBLIFT
+#define _PNETC_OP_singular_template_SUBLIFT
 
-#include <we/type/literal/control.hpp>
 #include <list>
 #include <we/type/value.hpp>
 #include <string>
@@ -12,16 +11,16 @@ namespace pnetc
   {
     namespace singular_template
     {
-      void LIFT
+      void SUBLIFT
         ( const std::string& input_name
-        , const std::string& lead
+        , const std::string& place_Tau
         , const std::string& all_lead
         , const std::string& needed_library
         , const std::string& base_filename
         , int& N
         , int& E
         , std::list<pnet::type::value::value_type>& LIFT
-        , we::type::literal::control& D
+        , std::string& SUBLIFT
         );
     }
   }

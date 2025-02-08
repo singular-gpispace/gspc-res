@@ -1597,12 +1597,12 @@ std::tuple<std::vector<std::string>, int, long> singular_template_LIFT(const std
     // Measure Computation Time
     auto start_computation = std::chrono::high_resolution_clock::now();
    
-  std::string function_name = "LIFT_GPI";
+//   std::string function_name = "LIFT_GPI";
   //    //std::cout<<"function_name_LIFT:"<<function_name<< std:: endl;
-    out = call_user_proc(function_name, needed_library, args);
+    // out = call_user_proc(function_name, needed_library, args);
    
     // Direct call to LIFT_GPI 
-//    out = LIFT_GPI(args.leftV());  
+   out = LIFT_GPI(args.leftV());  
   
 
     // Extract the result list from the output
@@ -1964,7 +1964,7 @@ std::pair<int, lists> SubLIFT_GPI(leftv args) {
         lists t = (lists)omAlloc0Bin(slists_bin);
         t->Init(2);
         t->m[0].rtyp = STRING_CMD; t->m[0].data = strdup("generators");
-        t->m[1].rtyp = STRING_CMD; t->m[1].data = strdup("Sparse_matrix_Lift");
+        t->m[1].rtyp = STRING_CMD; t->m[1].data = strdup("Sparse_matrix_SubLIFT");
 
         Ld->m[1].rtyp = LIST_CMD; Ld->m[1].data = t;
         Ld->m[0].rtyp = RING_CMD; Ld->m[0].data = currRing;
@@ -2119,10 +2119,10 @@ std::tuple<std::vector<std::string>, int, long> singular_template_SUBLIFT(const 
      // Measure Computation Time
     auto start_computation = std::chrono::high_resolution_clock::now();
      
-    std::string function_name = "SubLIFT_GPI";
+    // std::string function_name = "SubLIFT_GPI";
      //std::cout<<"function_name_LIFT:"<<function_name<< std:: endl;
-    out = call_user_proc(function_name, needed_library, args);
-    //  out = SubLIFT_GPI(args.leftV());  // Call  SubLIFT_GPI with the raw pointer
+    // out = call_user_proc(function_name, needed_library, args);
+     out = SubLIFT_GPI(args.leftV());  // Call  SubLIFT_GPI with the raw pointer
   //std::cout << "SubLIFT_Runtime: " << computation_time << " milliseconds" << std::endl;
     //std::cout<<"ListOutside_proc:"<<function_name<< std:: endl;
   //   lists Token = (lists)(args.leftV()->data);

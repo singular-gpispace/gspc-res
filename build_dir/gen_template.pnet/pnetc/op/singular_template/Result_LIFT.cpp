@@ -1,5 +1,5 @@
 #include <pnetc/op/singular_template/Result_LIFT.hpp>
-#include <string>
+#include <we/type/literal/control.hpp>
 #include <interface/template_interface.hpp>
 #include <util-generic/dynamic_linking.hpp>
 #include <iostream>
@@ -12,18 +12,17 @@ namespace pnetc
     namespace singular_template
     {
       void Result_LIFT
-        ( const std::string& computed_output
-        , const int& counter
+        ( const int& counter
         , const int& lift_count
-        , std::string& output
+        , we::type::literal::control& output
         )
       {
-#line 390 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 381 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
           
-                output=computed_output;
+               
                  std::cout <<"LIFT: " << lift_count << std::endl;
-        std::cout <<"LeadSyz: " << counter << std::endl;
+                 std::cout <<"LeadSyz: " << counter << std::endl;
            
             
       }
