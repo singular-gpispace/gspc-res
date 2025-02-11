@@ -1,27 +1,115 @@
-//////////////////////////////////////////////////////////////////////////////
-version=" ";
-category="Noncommutative";
+///////////////////////////////////////
+version="version templategp.lib 0.2 Mar 2023 ";
+category="Commutative algebra";
 info="
-LIBRARY: sresforextalg.lib     Schreyer's algorithm for modules over the exterior algebra
-AUTHORS: Ramesh, L.,           ramesh@mathematik.uni-kl.de   
+LIBRARY: templategp.lib  demo procedures for template pattern
 
 OVERVIEW:
-Procedures for and involving computing Schreyer resolution of modules over the exterior algebra
+    This library contains SINGULAR procedures to demonstrate the
+    the Singular/GPI-Space framework.
+    The newstruct types token  must be defined.
 
-PROCEDURES:
-schreyerSyzExt(m);            (refined) Schreyer syzygy of a module over the exterior algebra 
-sresExt(m,p);                 free resolution of module m over the exterior algebra using refined Schreyer alg        
-mresExt(m,p);                 minimal free resolution of module m over the exterior algebra using refined Schreyer alg
-sheafCohBGGsres(M,l,h)        cohomology of twists of the coherent sheaf F on P^n
-                              associated to coker(M). The range of twists is determined by l,h.
+    PROCEDURES:
+    stdBasis(token,token)    computes a standard basis
+                          
 ";
+  LIB "general.lib";
+  LIB "monomialideal.lib";
+  LIB "homolog.lib";
+  LIB "matrix.lib";
+  LIB "polylib.lib";
+  LIB "zeroset.lib";
+  LIB "modules.lib";
+  LIB "sheafcoh.lib";
 
-LIB "nctools.lib"; // for ncalg
-LIB "matrix.lib"; // for submat
-LIB "sheafcoh.lib"; // for displayCohom
-//LIB "tst.lib"; tst_init(); tst_ignore("// ** loaded "); tst_ignore("// ** _ is no standard basis");
 
-///////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+proc stdBasis(token input)
+"USAGE: stdBasis(input); input token
+RETURN: an token output containing a standard basis 
+output.generators of the ideal input.generators in a ring
+with prescribed characteristic input.modulus
+NOTE: The types token are defined . This procedure is 
+intended to be called as a transition procedure inside the
+worker process (that is, the "inner" instances of SINGULAR).
+"
+{
+    int p = input.data[2];
+    def I = input.data[1];
+    
+    def J = std(I);
+    
+    token output;
+    output.fieldnames = list("generators","GroebnerBasis");
+    output.data[1] = J;
+    output.data[2] =size(J);
+   
+    return(output);
+
+
+}
+
+
+//lcm for vectors
+proc lcm_mod(module G) {
+
+    int a, b, i,j;
+    int r = size(G);
+    matrix l[r][r];
+     poly s10;
+     poly t10;
+    for (a = 1; a <= r; a++) {
+        for (b = 1; b <= r; b++) {
+            i = leadexp(G[a])[nvars(basering) + 1];
+            j = leadexp(G[b])[nvars(basering) + 1];
+            s10 = leadmonomial(G[a]);
+            t10 = leadmonomial(G[b]);
+
+            if (i == j) {
+                l[a, b] = lcm(leadmonomial(G[a]), leadmonomial(G[b])) / lead(t10);
+            } else {
+                // If i is not equal to j, set l[a, b] to 0
+                l[a, b] = 0;
+            }
+        }
+    }
+    
+
+    return(l);
+}
+
+proc leadmonomial(def s) {
+  int e;
+  poly m;
+  if(typeof(s) == "vector"){
+    e=leadexp(s)[nvars(basering)+1];
+    m=leadmonom(s)[e,1];
+  }
+  if(typeof(s) == "poly"){
+    m=leadmonom(s);
+   }
+   
+  return(m);
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 proc leadmonomial_nc(def s) 
 {
@@ -130,15 +218,24 @@ proc lcm_(poly v, poly w)
 
 proc lead_syz_(module m)
 {
+
+    string path = "/home/santosh/gspc-syz-ext/example_dir/temp/";  // Ensure the path ends with a "/"
+string filename = "lead_syz_extr.ssi";
+link l = "ssi:w " + path + filename;
+write(l,m, "lead_syz_extra");
+
+
+  close(l);
   int r = size(m);
   int n = nvars(basering);
   module M = std(freemodule(r));
+
   vector pi, pj, t, s;
   poly Li, Lj, mji;
   int i, j, k, expi, expj;
   module temp_mod_1, temp_mod_2;
   module lead_mod; //this is what we will return
-
+ int cc=1;
   for(i=2; i<=r; i++){
     pi = m[i];
     for(j=1; j<i; j++){
@@ -146,10 +243,15 @@ proc lead_syz_(module m)
       expi = leadexp(pi)[n+1];
       expj = leadexp(pj)[n+1];
       if(expi == expj){
+      
         Li = leadmonomial_nc(pi);
         Lj = leadmonomial_nc(pj);
+        print(Li);
+        print(Lj);
         mji = lcm_(Lj,Li)/leadterm(pi);
         t = mji*M[i];
+
+       
         for (k=1;k<=size(lead_mod);k++){
           temp_mod_1 = lead_mod[k];
           attrib(temp_mod_1, "isSB", 1);
@@ -163,11 +265,13 @@ proc lead_syz_(module m)
             if(NF(lead_mod[k], temp_mod_2)==0){
               lead_mod = delete(lead_mod, k);
               k = k-1;
+              cc=cc-1;
             }
           }
         }
         if(t != 0){
-          lead_mod[size(lead_mod)+1] = t;
+          lead_mod[cc] = t;
+          cc++;
         }
       }
     }
@@ -191,26 +295,27 @@ intended to be called as a transition procedure inside the
 worker process (that is, the "inner" instances of SINGULAR).
 "
 {
-  
+  string path = "/home/santosh/gspc-syz-ext/example_dir/temp/";  // Ensure the path ends with a "/"
+string filename = "Leadsyz.ssi";
+link l = "ssi:w " + path + filename;
   def f= Token.data[1];
   int counter;
- 
+ write(l,f, "Module");
+
   token LLT;
   int k;
  
   def LT;
  
-   LT = lealead_syz_dSyz(f);
+   LT = lead_syz_(f);
    int ro=size(f);
    counter=1;
  
    
-// string path = "/home/gnawali/gspc-syz/example_dir/temp/";  // Ensure the path ends with a "/"
-// string filename = "Leadsyz.ssi";
-// link l = "ssi:w " + path + filename;
 
-// write(l, LT, "SecondSyzModule");
-// close(l);
+
+write(l, LT, "SecondSyzModule");
+close(l);
    
    
   //list J=tok.data[1];
@@ -228,7 +333,7 @@ worker process (that is, the "inner" instances of SINGULAR).
     
     int l_k = leadexp(s_lift)[nvars(basering) + 1];
 
-    sM[l_k, k] = leadcoef(s_lift) * leadmonomial(s_lift);
+    sM[l_k, k] =leadterm(s_lift);
     
     //print(sM);
     Ld.data[1]= s_lift;
@@ -259,3 +364,371 @@ worker process (that is, the "inner" instances of SINGULAR).
 }
 
 
+//for vectors
+proc vector_List(vector f0){
+
+    int r= nrows(f0);
+   
+    
+        int k,j;
+    list S;
+    int cc=1;
+    vector term;
+    for(k=1; k<=r; k++){
+       for(j=1; j<=size(f0[k]); j++){
+        term =f0[k][j]*gen(k); 
+       
+       
+      
+         S[cc]=term;
+       
+        cc++;
+
+    
+
+       }
+    
+        
+    }
+    
+    return(S);
+}
+
+
+proc phi_(vector s, module m)
+{
+  int n = nvars(basering);
+  int i = leadexp(s)[n+1];
+  //s is a term
+  poly t = leadterm(s);
+  return(t*m[i]);
+}
+
+proc remove_LOT_(vector g, module m)
+{
+  vector L;
+  int i;
+  vector LOT;
+  module temp_I;
+  while(g != 0){
+    for(i=1; i<=size(m); i++){
+      L = lead(g);
+      temp_I = leadmonom(m[i]);
+      attrib(temp_I, "isSB", 1);
+      if(NF(L, temp_I) == 0){
+        LOT = LOT+L;
+        break;
+      }
+    }
+    g = g - L;
+  }
+  return(LOT);
+}
+
+proc greater_than_(vector s, vector v, module M)
+{
+  int n = nvars(basering);
+  int i = leadexp(s)[n+1];
+  int j = leadexp(v)[n+1];
+  poly mi = leadterm(s);
+  poly mj = leadterm(v);
+  if (lead(mi*M[i]) > lead(mj*M[j])){
+    return(1);
+  }
+  else{
+    if(lead(mi*M[i]) == lead(mj*M[j]) && i>j){
+      return(1);
+    }
+    return(0);
+  }
+}
+
+
+
+
+
+
+ proc gr_than_for_res(vector s, vector v, list L)
+{
+  if (size(L) == 1){
+    return(greater_than_(s,v,L[1]));
+  }
+  int n = nvars(basering);
+  poly m1 = leadterm(s); poly m2 = leadterm(v);
+  int e1 = leadexp(s)[n+1]; int e2 = leadexp(v)[n+1];
+  if(e1 == e2){
+    return(m1>m2);
+  }
+  s = m1*L[size(L)][e1]; v = m2*L[size(L)][e2];
+  if (s == v || s == -v){
+    if(e1 > e2){
+      return(1);
+    }
+    else{
+      return(0);
+    }
+  }
+  L = delete(L, size(L));
+  return(gr_than_for_res(s,v,L));
+}
+
+
+
+ proc lift_tree_with_order(vector s, module M)
+{
+//     string path = "/home/santosh/gspc-syz-ext/example_dir/temp/";  // Ensure the path ends with a "/"
+// string filename = "LIFT.ssi";
+// link l = "ssi:w " + path + filename;
+ 
+  vector g = phi_(s, M);
+ 
+  
+  vector T0 = remove_LOT_(g, M);
+  
+ 
+  vector L;
+   list T =  vector_List(T0);
+
+  
+  int i,k;
+  poly m;
+  module temp_I;
+  
+  list TT;
+   int cl = 1;
+ for(k=1; k<=size(T); k++){
+    L =  T[k];
+  // write(l,L,"L=T[k]");
+  // close(l);
+    for(i=1; i<=size(M); i++){
+      temp_I = leadmonom(M[i]);
+      attrib(temp_I, "isSB", 1);
+      if(NF(L, temp_I)==0){
+        m = leadmonomial_nc(L)/leadterm(M[i]); 
+        
+        //check sign: 
+        if (m*leadterm(M[i])!= leadterm(L)){
+          m = -m;
+        } 
+        //schreyer order algorithm should be called here
+        if (greater_than_(s,m*gen(i),M)){
+
+                    TT[cl] = m*gen(i);
+
+                    cl++;
+
+
+        }
+      }
+    }
+   
+  }
+  return(TT);
+}
+
+
+
+proc LIFT_Ext_GPI(token Token, token vec) {
+
+//     string path = "/home/santosh/gspc-syz-ext/example_dir/temp/";  // Ensure the path ends with a "/"
+// string filename = "LIFT.ssi";
+// link l = "ssi:w " + path + filename;
+    def f = Token.data[1];  
+    //  write(l,f, "Module");
+    vector s = vec.data[1];   
+     int counter=vec.data[6]; 
+      int colmn = vec.data[4]; //column
+      def LT=vec.data[5]; //Lead_syz_ext
+    //  write(l,s, "LEADTerm");
+    list LL = lift_tree_with_order(s,f);  
+    //  write(l,LL, "LIFT");   
+    //  close(l); 
+
+     int ro=size(f);
+    int r = size(LL);         
+    token LLT;               
+    int k;
+  for (k = 1; k <=r; k++) {
+    token Ld;
+    Ld.fieldnames = list("generator", "LIFT_Syz_Sparse_matrix");  
+    matrix sM[ro][size(LT)];
+    vector s_lift =  LL[k];
+    
+    int l_k = leadexp(s_lift)[nvars(basering) + 1];
+
+     sM[l_k, colmn] =leadterm(s_lift);
+    
+    //print(sM);
+    Ld.data[1]= s_lift;
+    //print(s_lift);
+    Ld.data[2]= sM;
+     //print("matrix");
+    //print(Ld.A);
+
+    //print("row");
+
+    Ld.data[3] = l_k;
+    //print(Ld.p);
+
+    //print("q:column");
+    Ld.data[4]= colmn ;
+
+    Ld.data[5]=LT;
+    Ld.data[6]=counter;
+    Ld.data[7]=counter;
+    LLT.fieldnames[k] = "generator";  
+    LLT.data[k] = Ld; 
+
+  }
+  
+      LLT.fieldnames[size(LLT.fieldnames) + 1] = "total_number_generator";  
+      LLT.data[size(LLT.data) + 1] = r;  
+    return (LLT);   
+}
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+proc lift_subtree_(vector s, module M)
+{
+
+      string path = "/home/santosh/gspc-syz-ext/example_dir/temp/";  // Ensure the path ends with a "/"
+string filename = "SubLift_syz_extr.ssi";
+link l = "ssi:w " + path + filename;
+  vector h = phi_(s, M);
+  write(l,h,"phi");
+ vector g = h - lead(h);
+   write(l,g,"g=h-lead(h)");
+  vector T0 = remove_LOT_(g, M);
+   write(l,T0,"T0");
+   close(l);
+  poly m;
+  int i;
+  vector L;
+    list T =  vector_List(T0);
+  module temp_I;
+ list TT;
+   int cl = 1;
+ for(k=1; k<=size(T); k++){
+   
+    L =  T[k];
+    for(i=1; i<=size(M); i++){
+      temp_I = leadmonom(M[i]);
+      attrib(temp_I, "isSB", 1);
+      if(NF(L, temp_I)==0){
+        m = leadmonomial_nc(L)/leadmonomial_nc(M[i]); //TODO check sign!
+
+        //check sign: 
+        if (m*leadterm(M[i]) != leadterm(L)){
+          m = -m;
+        } 
+        TT[cl] = m*gen(i);
+
+          cl++;
+        break;
+      }
+    }
+   
+  }
+  return(TT);
+}
+
+
+
+
+proc SubLIFT_Ext_GPI(token Token, token vec) {
+
+//     string path = "/home/santosh/gspc-syz-ext/example_dir/temp/";  // Ensure the path ends with a "/"
+// string filename = "SubLift_syz_extr.ssi";
+// link l = "ssi:w " + path + filename;
+
+    def f = Token.data[1];  
+    //  write(l,f, "Module");
+    vector s = vec.data[1];  
+      //  write(l,s, "LIFT-Term");
+      //  close(l); 
+     int counter=vec.data[6]; 
+      int colmn = vec.data[4]; //column
+      def LT=vec.data[5]; //Lead_syz_ext
+  
+    list LL = lift_subtree_(s,f);  
+    //  write(l,LL, "LIFT");   
+    //  close(l); 
+
+     int ro=size(f);
+    int r = size(LL);         
+    token LLT;               
+    int k;
+  for (k = 1; k <=r; k++) {
+    token Ld;
+    Ld.fieldnames = list("generator", "SubLIFT_Syz_Sparse_matrix");  
+    matrix sM[ro][size(LT)];
+    vector s_lift =  LL[k];
+    
+    int l_k = leadexp(s_lift)[nvars(basering) + 1];
+
+     sM[l_k, colmn] =leadterm(s_lift);
+    
+    //print(sM);
+    Ld.data[1]= s_lift;
+    //print(s_lift);
+    Ld.data[2]= sM;
+     //print("matrix");
+    //print(Ld.A);
+
+    //print("row");
+
+    Ld.data[3] = l_k;
+    //print(Ld.p);
+
+    //print("q:column");
+    Ld.data[4]= colmn ;
+
+    Ld.data[5]=LT;
+    Ld.data[6]=counter;
+    Ld.data[7]=counter;
+    LLT.fieldnames[k] = "generator";  
+    LLT.data[k] = Ld; 
+
+  }
+  
+      LLT.fieldnames[size(LLT.fieldnames) + 1] = "total_number_generator";  
+      LLT.data[size(LLT.data) + 1] = r;  
+    return (LLT);   
+}
+
+
+
+
+
+
+
+
+proc Generate_GPI(token input, token Tok){
+ def res=input.data[1];
+ def Syz=Tok.data[2];
+ list L=res;
+ list L1;
+ for(int i=1; i<=size(L); i++){
+  L1[i]=L[i];
+ }
+ L1[size(L)+1]=Syz;
+ 
+    token output;
+    output.fieldnames = list("generators","list_Syz_matrices");
+    output.data[1] = L1;
+    output.data[2]=size(L1);
+   
+  
+    return(output);
+}
