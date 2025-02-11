@@ -120,7 +120,7 @@
           			<code><![CDATA[
           //std::cout <<"All_LeadSyz_Input:"<<init<< std::endl;
            auto start_computation = std::chrono::high_resolution_clock::now();
-				std::tuple<std::vector<std::string>, int, long> out = RESOLVE_INTERFACE_FUNCTION( singular_template_all_leadsyz_GpI) (init,library_name, base_filename);
+				std::tuple<std::vector<std::string>, int, long> out = RESOLVE_INTERFACE_FUNCTION( singular_template_ALL_LEAD) (init,library_name, base_filename);
               
 
                 std::vector<std::string> vec = std::get<0>(out);
@@ -191,7 +191,7 @@
             <code><![CDATA[
             
             
-                  std::tuple<std::vector<std::string>, int, long> out = RESOLVE_INTERFACE_FUNCTION(singular_template_leadSyzGPI)
+                  std::tuple<std::vector<std::string>, int, long> out = RESOLVE_INTERFACE_FUNCTION(singular_template_LEAD)
                         (input, library_name, base_filename);
                       std::vector<std::string> vec = std::get<0>(out);
                       int total_generator = std::get<1>(out);
