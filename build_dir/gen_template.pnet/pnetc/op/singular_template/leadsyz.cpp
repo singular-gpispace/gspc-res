@@ -30,11 +30,11 @@ namespace pnetc
         , std::list<pnet::type::value::value_type>& OUT
         )
       {
-#line 185 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 189 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
             
             
-                  std::tuple<std::vector<std::string>, int, long> out = RESOLVE_INTERFACE_FUNCTION(singular_template_leadSyzGPI)
+                  std::tuple<std::vector<std::string>, int, long> out = RESOLVE_INTERFACE_FUNCTION(singular_template_LEAD)
                         (input, library_name, base_filename);
                       std::vector<std::string> vec = std::get<0>(out);
                       int total_generator = std::get<1>(out);

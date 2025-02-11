@@ -48,9 +48,11 @@ namespace pnetc
         const std::string & base_filename (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "base_filename"))));
         std::list<pnet::type::value::value_type> OUTPUT;
         int counter;
-        ::pnetc::op::singular_template::All_Lead (init, C, library_name, base_filename, OUTPUT, counter);
+        long runtime;
+        ::pnetc::op::singular_template::All_Lead (init, C, library_name, base_filename, OUTPUT, counter, runtime);
         _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "OUTPUT"), OUTPUT);
         _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "counter"), counter);
+        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "runtime"), runtime);
       }
     }
   }
