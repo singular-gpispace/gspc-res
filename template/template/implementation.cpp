@@ -72,17 +72,17 @@ matrix lcm_mod(ideal G) {
     int a = 0, b = 0, i = 0, j = 0;
     ideal G_copy = idCopy(G);
     int r = IDELEMS(G_copy);
-    for (int k = 0; k < r; k++) {
-        std::cout << "ideal G: " << pString((poly)G->m[k]) << std::endl;
-    }
-    std::cout << "r in lcm_mod:= " << r << std::endl;
-    omUpdateInfo();
-    std::cout << "used mem: " << om_Info.UsedBytes << std::endl;
+    // for (int k = 0; k < r; k++) {
+    //     std::cout << "ideal G: " << pString((poly)G->m[k]) << std::endl;
+    // }
+    // std::cout << "r in lcm_mod:= " << r << std::endl;
+    // omUpdateInfo();
+    // std::cout << "used mem: " << om_Info.UsedBytes << std::endl;
 
     matrix l = mpNew(r, r);
-    std::cout << "pointer l: " << (long)l << std::endl;
-    std::cout << "Row of l: " << MATROWS(l) << std::endl;
-    std::cout << "Cols of l: " << MATCOLS(l) << std::endl;
+    // std::cout << "pointer l: " << (long)l << std::endl;
+    // std::cout << "Row of l: " << MATROWS(l) << std::endl;
+    // std::cout << "Cols of l: " << MATCOLS(l) << std::endl;
 
     poly s10 = NULL;
     poly t10 = NULL;
@@ -176,7 +176,7 @@ ideal leadSyz(ideal f) {
         }
     }
 
-    std::cout << "Final first leadsyz size: " << IDELEMS(L) << std::endl;
+    // std::cout << "Final first leadsyz size: " << IDELEMS(L) << std::endl;
 
     return L;
 }
@@ -232,7 +232,7 @@ ideal Sec_leadSyz(ideal f0) {
 
     idDelete((ideal*)&M);
 
-    std::cout << "Final second-Leadsyz size: " << IDELEMS(L) << std::endl;
+    // std::cout << "Final second-Leadsyz size: " << IDELEMS(L) << std::endl;
 
     return L;
 }
@@ -312,14 +312,14 @@ std::pair<int, lists> ALL_LEAD_GPI(leftv args) {
    
     lists J = aLL_LEAD(f_copy);
     int r = lSize(J) + 1;
-    std::cout << "lSize(J):=" << r << std::endl;
+    // std::cout << "lSize(J):=" << r << std::endl;
 
-    for(int k = 0; k < r; k++) {
-        ideal l = (ideal)J->m[k].Data();
-        for(int s = 0; s < IDELEMS(l); s++) {
-            std::cout << "Generator in all_lead " << k << ": " << pString((poly)l->m[s]) << std::endl;
-        }
-    }
+    // for(int k = 0; k < r; k++) {
+    //     ideal l = (ideal)J->m[k].Data();
+    //     for(int s = 0; s < IDELEMS(l); s++) {
+    //         std::cout << "Generator in all_lead " << k << ": " << pString((poly)l->m[s]) << std::endl;
+    //     }
+    // }
 
     lists LLT = (lists)omAlloc0Bin(slists_bin);
    
@@ -384,14 +384,14 @@ std::pair<int, lists> ALL_LEAD_GPI(leftv args) {
         temp->m[k].data = lCopy(Ld);
     }
 
-    std::cout << "size of token Sch frame: After loop" << r << std::endl;
-    std::cout << "Allocating memory for final_field_names with size: " << r + 1 << std::endl;
+    // std::cout << "size of token Sch frame: After loop" << r << std::endl;
+    // std::cout << "Allocating memory for final_field_names with size: " << r + 1 << std::endl;
 
     // Prepare the final field names
     lists t= (lists)omAlloc0Bin(slists_bin);
-  std::cout << "Before Init: r = " << r << std::endl;
+//   std::cout << "Before Init: r = " << r << std::endl;
 t->Init(r+1);
-std::cout << "After Init: r = " << r << std::endl;
+// std::cout << "After Init: r = " << r << std::endl;
 
 
     for (int s = 0; s < r; s++) {
