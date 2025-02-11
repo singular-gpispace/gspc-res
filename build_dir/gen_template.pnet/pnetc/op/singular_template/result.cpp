@@ -25,11 +25,11 @@ namespace pnetc
         , int& d_back
         )
       {
-#line 865 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 869 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
         
          
-      std::cout << "Result_Success: " << s<< std::endl;
+      // std::cout << "Result_Success: " << s<< std::endl;
         // std::cout << "counter: " <<counter<< std::endl;
         // std::cout << "place_E: " <<E<< std::endl;
         // std::cout << "place_N: " <<N<< std::endl;

@@ -25,26 +25,30 @@ namespace pnetc
         , const std::string& base_filename
         , std::list<pnet::type::value::value_type>& OUTPUT
         , int& counter
+        , long& runtime
         )
       {
-#line 119 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 120 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
-          //std::cout <<"All_LeadSyz_Input:"<<init<< std::endl;
-           auto start_computation = std::chrono::high_resolution_clock::now();
-					std::pair<std::vector<std::string>, int> out = RESOLVE_INTERFACE_FUNCTION( singular_template_all_leadsyz_GpI) (init,library_name, base_filename);
-               counter=out.second;
-                auto end_computation = std::chrono::high_resolution_clock::now();
-               auto computation_time =std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - start_computation).count();
+        //std::cout <<"All_LeadSyz_Input:"<<init<< std::endl;
+          
+					std::tuple<std::vector<std::string>, int, long> out = RESOLVE_INTERFACE_FUNCTION( singular_template_ALL_LEAD) (init,library_name, base_filename);
               
+
+                std::vector<std::string> vec = std::get<0>(out);
+                     counter = std::get<1>(out);
+                      runtime = std::get<2>(out);
+                
                     
-                for(int i (0); i<out.first.size(); i++)
+                 for(int i (0); i<vec.size(); i++)
                                                                  {
-                         //std::cout << "All_Success:"<<out.first[i] << std::endl;
-                         OUTPUT.emplace_back(out.first[i]);
+                        // std::cout << "SchFrame_Success:"<<vec[i] << std::endl;
+                       
+                          OUTPUT.emplace_back(vec[i]);
 
                     }
                     std::cout << "SchFrame"<<counter<< std::endl;
-                     std::cout << "SchFrame_Runtime: " << computation_time << " milliseconds" << std::endl;
+                    //  std::cout << "SchFrame_Runtime: " << runtime << " milliseconds" << std::endl;
           
             		
       }
