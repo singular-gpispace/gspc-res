@@ -614,12 +614,12 @@ namespace pnetc
       {
         const std::string & input (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "input"))));
         we::type::literal::control c;
-        std::string init;
         std::string output;
-        ::pnetc::op::singular_template::Init (input, c, init, output);
+        we::type::literal::control d;
+        ::pnetc::op::singular_template::Init (input, c, output, d);
         _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "c"), c);
-        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "init"), init);
         _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "output"), output);
+        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "d"), d);
       }
     }
   }

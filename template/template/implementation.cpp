@@ -517,7 +517,7 @@ std::pair<int, lists> LEAD_GPI(leftv args) {
         counter = 1;//counter=1
     } else if (tmp->m[0].Typ() == VECTOR_CMD) {
         // If it's a vector, handle it using Sec_leadSyz
-        std::cout << "vector:" <<tmp->m[0].Typ()<< std::endl;
+        // std::cout << "vector:" <<tmp->m[0].Typ()<< std::endl;
         ideal mM = (ideal)(tmp->m[4].Data()); 
          ideal mM_copy =idCopy(mM); 
         //    for(int k=0; k< IDELEMS(mM); k++){
@@ -724,6 +724,7 @@ std::tuple<std::vector<std::string>, int,  long> singular_template_LEAD(const st
   } 
   auto end_computation = std::chrono::high_resolution_clock::now();
    auto computation_time =std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - start_computation).count();
+   std::cout<<"LEADSYZ:="<<computation_time<< std::endl;
   //auto end_serialize = std::chrono::high_resolution_clock::now();
    //auto  serialization_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_serialize - start_serialize).count(); // Convert to milliseconds
  //auto total_runtime= computation_time_deserialize+computation_time+ serialization_time;
@@ -1651,6 +1652,8 @@ std::tuple<std::vector<std::string>, int, long> singular_template_LIFT(const std
     total_generator = lSize(u);  // Assuming u contains the computed generators
     auto end_computation = std::chrono::high_resolution_clock::now();
     auto computation_time =std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - start_computation).count();
+ 
+
     auto total_runtime=computation_time;
 // std::cout << " total gen " << total_generator<< std::endl;
 // std::cout << " total time " << total_runtime<< std::endl;

@@ -34,7 +34,7 @@ namespace pnetc
 #line 191 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
             
-            
+               std::cout << "#leadSyz="<< std::endl;
                   std::tuple<std::vector<std::string>, int, long> out = RESOLVE_INTERFACE_FUNCTION(singular_template_LEAD)
                         (input, library_name, base_filename);
                       std::vector<std::string> vec = std::get<0>(out);

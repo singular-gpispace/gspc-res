@@ -51,9 +51,8 @@
   <place name ="place_LIFT_sum" type ="long"/> 
 <place name ="place_subLIFT_sum" type ="long"/>
 <place name ="place_Reduce_sum" type ="long"/>
-<place name="place_Init" type="string">
- 
-</place>
+
+
     <!-- transition_Init-->
   
      <transition name="Initiate">
@@ -64,15 +63,16 @@
         		<out name="output" type="string"/>
             
             <out name ="c" type ="control"/>
-           <out name ="init" type ="string"/>
+             <out name ="d" type ="control"/>
+         
         		<module name="singular_template"
               		require_function_unloads_without_rest="false"
-              		function="Init(c, input,init, output)">
+              		function="Init(c, input,output,d)">
           		<cinclude href="interface/template_interface.hpp" />
           		<cinclude href="util-generic/dynamic_linking.hpp"/>
           			<code><![CDATA[
 						 output = RESOLVE_INTERFACE_FUNCTION(singular_template_Init) (input);
-              init=output;
+          
               
             		]]></code>
         		</module>
@@ -82,12 +82,12 @@
 			  <connect-out port="output" place="place_input_GB"/>
        
         <connect-out port="c" place="place_control"/>
-        <connect-out port="init" place="place_Init"/>
-        
+      
+         <connect-out port="d" place="place_control_All_Lead"/>
   		  </transition>
 
 <place name="place_control_All_Lead" type="control">
-  <token><value>[]</value></token>
+
 </place>
 
 <place name="place_length_Res" type="int">
@@ -145,7 +145,7 @@
       		</defun>
       	<connect-read port="library_name" place="place_library_name"/>
         <connect-read port="base_filename" place="place_base_filename"/>
-			  <connect-in port="init" place="place_Init"/>
+			  <connect-read port="init" place="place_input_GB"/>
         <connect-in port="C" place="place_control_All_Lead"/>
 
          <connect-out port ="runtime" place="place_SchFrame_runtime"/>
@@ -190,7 +190,7 @@
 
             <code><![CDATA[
             
-            
+               std::cout << "#leadSyz="<< std::endl;
                   std::tuple<std::vector<std::string>, int, long> out = RESOLVE_INTERFACE_FUNCTION(singular_template_LEAD)
                         (input, library_name, base_filename);
                       std::vector<std::string> vec = std::get<0>(out);

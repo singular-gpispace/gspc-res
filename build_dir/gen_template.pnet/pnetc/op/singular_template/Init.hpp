@@ -13,8 +13,8 @@ namespace pnetc
       void Init
         ( const std::string& input
         , we::type::literal::control& c
-        , std::string& init
         , std::string& output
+        , we::type::literal::control& d
         );
     }
   }
