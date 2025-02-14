@@ -495,14 +495,16 @@ std::pair<int, lists> LEAD_GPI(leftv args) {
     int c=0;
     // ideal LT=NULL;
     ideal LT = nullptr;
-    
+      auto start_computation = std::chrono::high_resolution_clock::now();
     // Check if f is an ideal or a vector
     if (tmp->m[0].Typ() == IDEAL_CMD) {
        ideal f_copy = idCopy((ideal)(tmp->m[0].Data()));  // Create a deep copy of f
       //  std::cout << "ideal:" <<tmp->m[0].Typ()<< std::endl;
         // If it's an ideal, call leadSyz
         LT = leadSyz(f_copy);
-     
+     auto end_computation = std::chrono::high_resolution_clock::now();
+   auto computation_time =std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - start_computation).count();
+    std::cout << "total_runtime_LeadSYZ:=" << computation_time<<" "<<"nanoseconds"<< std::endl;
         r = IDELEMS(LT); 
          c=r;
 
