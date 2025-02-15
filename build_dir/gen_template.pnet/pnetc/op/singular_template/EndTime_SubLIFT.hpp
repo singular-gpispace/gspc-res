@@ -10,8 +10,7 @@ namespace pnetc
     namespace singular_template
     {
       void EndTime_SubLIFT
-        ( const long& start_time_LIFT
-        , const long& start_timer
+        ( const long& start_timer
         , std::string& computed_output
         , long& end_timer
         );

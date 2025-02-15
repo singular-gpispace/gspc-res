@@ -1,5 +1,4 @@
 #include <pnetc/op/singular_template/LIFT.hpp>
-#include <we/type/literal/control.hpp>
 #include <list>
 #include <we/type/value.hpp>
 #include <string>
@@ -26,10 +25,9 @@ namespace pnetc
         , int& N
         , int& E
         , std::list<pnet::type::value::value_type>& LIFT
-        , we::type::literal::control& D
         )
       {
-#line 268 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 266 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
                   //  std::cout << "in singular _PetriNet_.._LIFT" << std::endl;
                    

@@ -14,7 +14,7 @@ LIB "random.lib";
 configToken gc = configure_gspc();
 gc.options.tmpdir = "/home/santosh/gspc-res/example_dir/temp";
 gc.options.nodefile = "nodefile";
-gc.options.procspernode = 4;
+gc.options.procspernode = 6;
 gc.options.loghost = "schipp";
 gc.options.logport = 9876;
 

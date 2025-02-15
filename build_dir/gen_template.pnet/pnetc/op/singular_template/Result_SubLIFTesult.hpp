@@ -1,5 +1,5 @@
-#ifndef _PNETC_OP_singular_template_rResult_SubLIFTesult
-#define _PNETC_OP_singular_template_rResult_SubLIFTesult
+#ifndef _PNETC_OP_singular_template_Result_SubLIFTesult
+#define _PNETC_OP_singular_template_Result_SubLIFTesult
 
 #include <string>
 
@@ -9,7 +9,7 @@ namespace pnetc
   {
     namespace singular_template
     {
-      void rResult_SubLIFTesult
+      void Result_SubLIFTesult
         ( const int& N
         , const int& E
         , std::string& s

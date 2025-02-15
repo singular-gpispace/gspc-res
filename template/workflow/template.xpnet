@@ -247,15 +247,13 @@
      <out name="E" type ="int"/>
      <in name ="all_lead" type= "string"/>
      <in name ="input_name" type= "string"/>
-     
-     
-    <out name="D" type ="control"/>
+
      <out name ="LIFT" type= "list"/>
     
 
              <module name="singular_template"
             require_function_unloads_without_rest="false"
-            function="LIFT(N,E,input_name,lead,all_lead,LIFT,needed_library,base_filename,D)">
+            function="LIFT(N,E,input_name,lead,all_lead,LIFT,needed_library,base_filename)">
             <cinclude href="interface/template_interface.hpp" />
            <cinclude href="util-generic/dynamic_linking.hpp"/>
             <cinclude href="vector"/>
@@ -318,7 +316,7 @@
   <connect-out-many port="LIFT" place="place_Tau"/>
   <connect-out port="N" place="place_N"/>
   <connect-out port="E" place="place_E"/>
-  <connect-out port="D" place="LIFT_init_Remove"/>
+ 
 
 
 
@@ -329,83 +327,10 @@
 
 
 
-  <place name="Count_LIFT" type="int">
- <token>
-        <value>0</value>
-      </token>
-    
-</place>
 
- <place name="Final_place_LIFT" type="control"/>
  
 
- <place name="LIFT_init_Remove" type="control">
  
-</place>
-<transition name="Count_LIFT">
-      <defun>
-        <inout name="a" type="int"/>
-        <in name="s" type="control"/>
-        <module name="singular_template" function="count_LIFT(a,s)">
-        <cinclude href="iostream"/>
-        <code><![CDATA[
-          a=a+1;
-      //  std::cout <<"Count_LIFT: " << a << std::endl;
-        ]]></code>
-        </module>
-        
-      </defun>
-      <connect-inout port="a" place="Count_LIFT"/>
-      <connect-in port="s" place="LIFT_init_Remove"/>
-     
-
-    </transition>
-
-
-
-
- <!-- Transition: Result_LIFT -->
-<transition name="Result_LIFT">
-    <defun>
-       <in name="counter" type="int"/>
-      
-       <in name="lift_count" type="int"/>
-       
-        <out name="output" type="control"/>
-       
-         <module name="singular_template" function="Result_LIFT(output,counter,lift_count)">
-         <cinclude href="interface/template_interface.hpp" />
-      <cinclude href="util-generic/dynamic_linking.hpp"/>
-      <cinclude href="iostream"/>
-      <cinclude href="chrono"/>
-        <code><![CDATA[
-          
-               
-                 std::cout <<"LIFT: " << lift_count << std::endl;
-                 std::cout <<"LeadSyz: " << counter << std::endl;
-           
-            ]]></code>
-         </module>
-        <condition>
-      ${counter}:eq:${lift_count}
-    </condition>
-    </defun>
-    
-
-  <connect-in port="counter" place="place_counter"/>
-  <connect-in port="lift_count" place="Count_LIFT"/>
-  
-  
-    <connect-out port="output" place="Final_place_LIFT"/>
-</transition>
-
-
-
-
-<place name="place_EndTime" type="long"/>
-<place name="place_EndTime_LIFT" type="long"/>
-
-<place name="place_SubLIFT_Syz" type="string"/>
 
 
 
@@ -413,40 +338,8 @@
 
 
 
- <!-- Transition: EndTime -->
-<transition name="EndTime">
-    <defun>
-      
-        <in name="start_timer" type="long"/>
-        <in name="computed_output" type="control"/>
-      
-        <out name="end_timer" type="long"/>
-         <module name="singular_template" function="EndTime(computed_output,end_timer,start_timer)">
-         <cinclude href="interface/template_interface.hpp" />
-      <cinclude href="util-generic/dynamic_linking.hpp"/>
-      <cinclude href="iostream"/>
-      <cinclude href="chrono"/>
-        <code><![CDATA[
-                auto computation_time = std::chrono::high_resolution_clock::now();
-                auto duration = computation_time.time_since_epoch();
-                long current_time = std::chrono::duration_cast<std::chrono::nanoseconds>(duration).count();
-                end_timer = current_time - start_timer; // Calculate elapsed time LIFT
-              
-                
-                  
-                // std::cout << "elapsed time_LIFT:= " << end_timer << " nanoseconds" << std::endl;
-            ]]></code>
-         </module>
-     
-    </defun>
-   
-    <connect-read port="start_timer" place="place_StartTime"/>
-   
-    <connect-in port="computed_output" place="Final_place_LIFT"/>
-    <connect-out port="end_timer" place="place_EndTime_LIFT"/>
-   
-   
-</transition>
+
+
 
 
 
@@ -644,7 +537,7 @@
    
     
       
-    <module name="singular_template" function="rResult_SubLIFTesult(s,N,E)">
+    <module name="singular_template" function="Result_SubLIFTesult(s,N,E)">
       <cinclude href="interface/template_interface.hpp" />
       <cinclude href="util-generic/dynamic_linking.hpp"/>
        <cinclude href="iostream"/>
@@ -652,13 +545,12 @@
         
          
       std::cout << "Result_Success: " << s<< std::endl;
-        // std::cout << "counter: " <<counter<< std::endl;
-        // std::cout << "place_E: " <<E<< std::endl;
-        // std::cout << "place_N: " <<N<< std::endl;
+  
+        std::cout << "place_E: " <<E<< std::endl;
+        std::cout << "place_N: " <<N<< std::endl;
          
          
-        //std::cout << "E_" <<e<< std::endl;
-        //std::cout << "N_" <<n<< std::endl;
+     
       ]]></code>
     </module>
        <condition>
@@ -688,18 +580,19 @@
 
 <place name="Final_place_SubLIFT" type="string"/>
 
-
+<place name="place_SubLIFT_Syz" type="string"/>
+<place name="place_EndTime" type="long"/>
 
 
  <!-- Transition: EndTime -->
 <transition name="EndTime_SubLIFT">
     <defun>
-        <in name="start_time_LIFT" type="long"/>
+       
         <in name="start_timer" type="long"/>
         <inout name="computed_output" type="string"/>
         
         <out name="end_timer" type="long"/>
-         <module name="singular_template" function="EndTime_SubLIFT(start_time_LIFT,computed_output,end_timer,start_timer)">
+         <module name="singular_template" function="EndTime_SubLIFT(computed_output,end_timer,start_timer)">
          <cinclude href="interface/template_interface.hpp" />
       <cinclude href="util-generic/dynamic_linking.hpp"/>
       <cinclude href="iostream"/>
@@ -709,8 +602,8 @@
                 auto duration = computation_time.time_since_epoch();
                 long current_time = std::chrono::duration_cast<std::chrono::nanoseconds>(duration).count();
                auto end_time = current_time - start_timer; // Calculate elapsed time LIFT
-               end_timer =end_time - start_time_LIFT; 
-                 std::cout << "Calculate elapsed time:LIFT = " << start_time_LIFT << " nanoseconds" << std::endl;
+               end_timer =end_time; 
+             
                    std::cout << "elapsed time_SubLIFT: = " << end_time << " nanoseconds" << std::endl;
                 std::cout << "only elapsed time_SubLIFT:= " << end_timer << " nanoseconds" << std::endl;
             ]]></code>
@@ -718,7 +611,7 @@
      
     </defun>
     <connect-in port="start_timer" place="place_StartTime"/>
-    <connect-in port="start_time_LIFT" place="place_EndTime_LIFT"/>
+   
     <connect-in port="computed_output" place="Final_place_SubLIFT"/>
     <connect-out port="end_timer" place="place_EndTime"/>
     <connect-out port="computed_output" place="place_SubLIFT_Syz"/>
