@@ -22,13 +22,11 @@ namespace pnetc
         , const std::string& all_lead
         , const std::string& needed_library
         , const std::string& base_filename
-        , int& N
-        , int& E
         , std::list<pnet::type::value::value_type>& LIFT
         , std::string& SUBLIFT
         )
       {
-#line 382 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 355 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
 
              
@@ -48,7 +46,7 @@ namespace pnetc
                          //std::cout << "SUBLIFT_Success:"<<out.first[i] << std::endl;
                           LIFT.emplace_back(vec[i]);
                           
-                         
+                          // std::cout << "SubLIFT_IN_Place:" << vec[i]<< std::endl;
                           
                           
                        
@@ -56,17 +54,7 @@ namespace pnetc
                          
       
                     }
-                  if (total_generator>=1)
-                {
-                   N=total_generator-1;
-                   E=0;
-                } else{
-                    if(total_generator==0){
-                      E=1;
-                      N=0;
-                  } 
-                }
-               
+           
               
                            
                 
@@ -77,7 +65,7 @@ namespace pnetc
 
 
                     SUBLIFT = place_Tau;
-                   //std::cout << "SubLIFT_IN_Place:" << SUBLIFT << std::endl;
+                  //  std::cout << "SubLIFT_IN_Place:" << SUBLIFT << std::endl;
                   //std::cout << "SubLIFT_COUNT:"<< tau_count << std::endl; 
 
 

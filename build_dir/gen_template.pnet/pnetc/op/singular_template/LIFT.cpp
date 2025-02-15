@@ -22,12 +22,10 @@ namespace pnetc
         , const std::string& all_lead
         , const std::string& needed_library
         , const std::string& base_filename
-        , int& N
-        , int& E
         , std::list<pnet::type::value::value_type>& LIFT
         )
       {
-#line 266 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 252 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
                   //  std::cout << "in singular _PetriNet_.._LIFT" << std::endl;
                    
@@ -49,17 +47,7 @@ namespace pnetc
                          
       
                     }
-                   if (total_generator>=1)
-                {
-                   N=total_generator-1;
-                   E=0;
-                } else{
-                    if(total_generator==0){
-                      E=1;
-                      N=0;
-                  } 
-                }
-              
+               
               // std::cout << "LIFT_COUNT_Parent:"<< N << std::endl;
               // std::cout << "LIFT_COUNT_Child:"<< E << std::endl;
               
