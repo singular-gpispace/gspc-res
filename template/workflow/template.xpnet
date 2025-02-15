@@ -36,20 +36,7 @@
 
 <place name ="place_StartTime" type ="long"/>
 
- <place name ="place_E" type ="int"/>
-    <place name ="place_N" type ="int"/>
 
-   
-    <place name="E" type="int">
-      <token>
-        <value>0</value>
-      </token>
-    </place>
-    <place name="N" type="int">
-      <token>
-        <value>0</value>
-      </token>
-    </place>
 
   <!-- Transition: StartTime -->
     <transition name="StartTime">
@@ -168,14 +155,14 @@
         <in name="base_filename" type="string"/>
         <in name="input" type="string"/>
         <in name ="s" type ="control"/>
-      <out name ="N" type ="int"/>
+ 
       
         <out name="counter" type="int"/>
         <out name="OUT" type="list"/>
        
       <module name="singular_template"
                 require_function_unloads_without_rest="false"
-                function="leadsyz(input,s,N,counter,OUT,library_name,base_filename)">
+                function="leadsyz(input,s,counter,OUT,library_name,base_filename)">
         <cinclude href="interface/template_interface.hpp" />
         <cinclude href="util-generic/dynamic_linking.hpp"/>
         <cinclude href="vector"/>
@@ -192,7 +179,7 @@
                         (input, library_name, base_filename);
                       std::vector<std::string> vec = std::get<0>(out);
                       int total_generator = std::get<1>(out);
-                       N=total_generator;
+                    
                     
                       counter=total_generator;
                       
@@ -221,7 +208,7 @@
       <connect-in port="s" place="place_control"/>
       <connect-out-many port="OUT" place="place_lead"/>
      
-       <connect-out port ="N" place="place_N"/>
+     
        <connect-out port="counter" place="place_counter"/>
      
     </transition>
@@ -243,8 +230,7 @@
      <in name="needed_library" type="string"/>
      <in name="base_filename" type="string"/>
      <in name ="lead" type = "string"/>
-       <out name="N" type="int"/>
-     <out name="E" type ="int"/>
+    
      <in name ="all_lead" type= "string"/>
      <in name ="input_name" type= "string"/>
 
@@ -253,7 +239,7 @@
 
              <module name="singular_template"
             require_function_unloads_without_rest="false"
-            function="LIFT(N,E,input_name,lead,all_lead,LIFT,needed_library,base_filename)">
+            function="LIFT(input_name,lead,all_lead,LIFT,needed_library,base_filename)">
             <cinclude href="interface/template_interface.hpp" />
            <cinclude href="util-generic/dynamic_linking.hpp"/>
             <cinclude href="vector"/>
@@ -284,17 +270,7 @@
                          
       
                     }
-                   if (total_generator>=1)
-                {
-                   N=total_generator-1;
-                   E=0;
-                } else{
-                    if(total_generator==0){
-                      E=1;
-                      N=0;
-                  } 
-                }
-              
+               
               // std::cout << "LIFT_COUNT_Parent:"<< N << std::endl;
               // std::cout << "LIFT_COUNT_Child:"<< E << std::endl;
               
@@ -314,9 +290,7 @@
    <connect-read port="all_lead" place="place_All_Lead"/>
   <connect-in port="lead" place="place_lead"/>
   <connect-out-many port="LIFT" place="place_Tau"/>
-  <connect-out port="N" place="place_N"/>
-  <connect-out port="E" place="place_E"/>
- 
+
 
 
 
@@ -362,11 +336,10 @@
     
      <out name ="LIFT" type= "list"/>
      <out name ="SUBLIFT" type= "string"/>
-      <out name="N" type="int"/>
-     <out name="E" type ="int"/>
+    
              <module name="singular_template"
             require_function_unloads_without_rest="false"
-            function="SUBLIFT(N,E,input_name,place_Tau,LIFT,all_lead,SUBLIFT,needed_library,base_filename)">
+            function="SUBLIFT(input_name,place_Tau,LIFT,all_lead,SUBLIFT,needed_library,base_filename)">
             <cinclude href="interface/template_interface.hpp" />
            <cinclude href="util-generic/dynamic_linking.hpp"/>
             <cinclude href="vector"/>
@@ -398,7 +371,7 @@
                          //std::cout << "SUBLIFT_Success:"<<out.first[i] << std::endl;
                           LIFT.emplace_back(vec[i]);
                           
-                         
+                          // std::cout << "SubLIFT_IN_Place:" << vec[i]<< std::endl;
                           
                           
                        
@@ -406,17 +379,7 @@
                          
       
                     }
-                  if (total_generator>=1)
-                {
-                   N=total_generator-1;
-                   E=0;
-                } else{
-                    if(total_generator==0){
-                      E=1;
-                      N=0;
-                  } 
-                }
-               
+           
               
                            
                 
@@ -427,7 +390,7 @@
 
 
                     SUBLIFT = place_Tau;
-                   //std::cout << "SubLIFT_IN_Place:" << SUBLIFT << std::endl;
+                  //  std::cout << "SubLIFT_IN_Place:" << SUBLIFT << std::endl;
                   //std::cout << "SubLIFT_COUNT:"<< tau_count << std::endl; 
 
 
@@ -449,8 +412,7 @@
   <connect-in port="place_Tau" place="place_Tau"/>
   <connect-out-many port="LIFT" place="place_Tau"/>
   <connect-out port="SUBLIFT" place="place_SubLift"/>
-   <connect-out port="N" place="place_N"/>
-  <connect-out port="E" place="place_E"/>
+
 
    
  
@@ -458,166 +420,102 @@
   </transition> 
 
 
-
-
-
-
-
-
-
-    <transition name="T1" priority="1">
-      <defun>
-        <inout name="a" type="int"/>
-       
-        <in name="n" type="int"/>
-        <inout name="c" type="control"/>
-        <module name="singular_template" function="Up(a,c, n)">
-        <cinclude href="iostream"/>
-        <code><![CDATA[
-        //std::cout << "T1 _n: " << n << std::endl;
-        a = a + n;
-      //  std::cout << "T1_sum: " << a<< std::endl;
-        ]]></code>
-        </module>
-      </defun>
-     
-      <connect-in port="n" place="place_N"/>
-      <connect-inout port="a" place="N"/>
-     
-      <connect-inout port="c" place="control_T2"/>
-    </transition>
-
-
-
-   
-<place name="control_T2" type="control">
+<place name="left_init" type="control">
   <token><value>[]</value></token>
 </place>
+<place name="right_init" type="control"/>
+<place name="L" type="string"/>
+<place name="R" type="string"/>
 
-    <transition name="T2" priority="0">
+
+
+    <transition name="LHS">
       <defun>
-        <inout name="a" type="int"/>
-        
-        <in name="e" type="int"/>
-       <inout name="c" type="control"/>
-        <module name="singular_template" function="down(a, e, c)">
+        <inout name="a" type="string"/>
+        <inout name="s" type="control"/>
+
+        <module name="singular_template" function="count(a)">
         <cinclude href="iostream"/>
         <code><![CDATA[
-       //std::cout << "T2_e:" << e << std::endl;
-        a = a + e;
-        // std::cout << "T2_sum:" << a << std::endl;
+       //std::cout << "LHS: " << a << std::endl;
         ]]></code>
         </module>
       </defun>
-     
-      <connect-in port="e" place="place_E"/>
-      <connect-inout port="a" place="E"/>
-    
-      <connect-inout port="c" place="control_T2"/>
-
+      <connect-in port="s" place="left_init"/>
+      <connect-out port="s" place="right_init"/>
+      <connect-in port="a" place="place_SubLift"/>
+      <connect-out port="a" place="L"/>
     </transition>
 
 
 
-
-
-
-
-<transition name="Result_SubLIFT">
-  <defun>
-   
-    
-     <inout name="s" type="string"/>
-    
-   
-    <in name="N" type="int"/>
-  
-    <in name="E" type="int"/>
-    
-   
-    
-      
-    <module name="singular_template" function="Result_SubLIFTesult(s,N,E)">
-      <cinclude href="interface/template_interface.hpp" />
-      <cinclude href="util-generic/dynamic_linking.hpp"/>
-       <cinclude href="iostream"/>
-      <code><![CDATA[
-        
-         
-      std::cout << "Result_Success: " << s<< std::endl;
-  
-        std::cout << "place_E: " <<E<< std::endl;
-        std::cout << "place_N: " <<N<< std::endl;
-         
-         
-     
-      ]]></code>
-    </module>
-       <condition>
-      ${N}:eq:${E}
-    </condition>
-   
-   
-   
-
-  </defun>
- 
-  <connect-in port="s" place="place_SubLift"/>
-
-
-  <connect-out port="s" place="Final_place_SubLIFT"/>
-  <connect-in port="E" place="E"/>
-  <connect-in port="N" place="N"/>
-
-
-
-  
-   
-</transition>
-
-
-
-
-<place name="Final_place_SubLIFT" type="string"/>
-
-<place name="place_SubLIFT_Syz" type="string"/>
-<place name="place_EndTime" type="long"/>
-
-
- <!-- Transition: EndTime -->
-<transition name="EndTime_SubLIFT">
-    <defun>
-       
-        <in name="start_timer" type="long"/>
-        <inout name="computed_output" type="string"/>
-        
-        <out name="end_timer" type="long"/>
-         <module name="singular_template" function="EndTime_SubLIFT(computed_output,end_timer,start_timer)">
-         <cinclude href="interface/template_interface.hpp" />
-      <cinclude href="util-generic/dynamic_linking.hpp"/>
-      <cinclude href="iostream"/>
-      <cinclude href="chrono"/>
+<transition name="RHS">
+      <defun>
+        <inout name="a" type="string"/>
+        <inout name="s" type="control"/>
+        <module name="singular_template" function="plus(a)">
+        <cinclude href="iostream"/>
         <code><![CDATA[
-                auto computation_time = std::chrono::high_resolution_clock::now();
-                auto duration = computation_time.time_since_epoch();
-                long current_time = std::chrono::duration_cast<std::chrono::nanoseconds>(duration).count();
-               auto end_time = current_time - start_timer; // Calculate elapsed time LIFT
-               end_timer =end_time; 
-             
-                   std::cout << "elapsed time_SubLIFT: = " << end_time << " nanoseconds" << std::endl;
-                std::cout << "only elapsed time_SubLIFT:= " << end_timer << " nanoseconds" << std::endl;
-            ]]></code>
-         </module>
-     
-    </defun>
-    <connect-in port="start_timer" place="place_StartTime"/>
-   
-    <connect-in port="computed_output" place="Final_place_SubLIFT"/>
-    <connect-out port="end_timer" place="place_EndTime"/>
-    <connect-out port="computed_output" place="place_SubLIFT_Syz"/>
-   
-</transition>
+       //std::cout << "RHS: " << a << std::endl;
+        ]]></code>
+        </module>
+      </defun>
+      <connect-in port="a" place="place_SubLift"/>
+      <connect-in port="s" place="right_init"/>
+      <connect-out port="s" place="left_init"/>
+      <connect-out port="a" place="R"/>
 
+    </transition>
+
+
+<!-- Transition 5: Reduce-->
+    <transition name="Reduce">
+      <defun>
+      <require key="worker" mandatory="true"/>
+    
+     <in name="library_name" type="string"/>
+     <in name="base_filename" type="string"/>
+        <out name="s" type="string"/>
+        <in name="l" type="string"/>
+        <in name="r" type="string"/>
+        <in name="input" type="string"/>
+      
+       
+     <module name="singular_template"
+              		require_function_unloads_without_rest="false"
+              		function="reduce(library_name, base_filename,input, s,l,r)">
+          		<cinclude href="interface/template_interface.hpp" />
+          		<cinclude href="util-generic/dynamic_linking.hpp"/>
+              <cinclude href="iostream"/>
+             <cinclude href="chrono"/>
+
+          			<code><![CDATA[
+
+                
+                //std::cout << "Reduce_Input:" <<input << std::endl;
+                //std::cout << "Reduce_l:" <<l << std::endl;
+                //std::cout << "Reduce_r" <<r<< std::endl;
+						 auto result  = RESOLVE_INTERFACE_FUNCTION(singular_template_reduce)(input,l,r,library_name, base_filename
+							); 
+                s = result.first;
+        
+            std::cout << "Reduce:" << s << std::endl;
+     
+
+//std::cout << "Reduce Duration: " << runtime << " milliseconds" << std::endl;
+
+            		]]></code>
+                 
+        		</module>
+      </defun>
+      <connect-read port="library_name" place="place_library_name"/> 
+      <connect-read port="base_filename" place="place_base_filename"/>
+      <connect-read port="input" place="place_input_GB"/>
+      <connect-in port="l" place="L"/>
+      <connect-in port="r" place="R"/>
+      <connect-out port="s" place="place_SubLift"/>
+  
+    </transition> 
 
 
 
