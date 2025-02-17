@@ -3,7 +3,7 @@
 #define _PNETC_TYPE_Std_basis
 
 #include <string>
-// Copyright (C) 2023 Fraunhofer ITWM
+// Copyright (C) 2025 Fraunhofer ITWM
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #ifndef GUARD_PNETC_COMPARE

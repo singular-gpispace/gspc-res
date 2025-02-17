@@ -1,4 +1,5 @@
 #include <pnetc/op/singular_template/LIFT.hpp>
+#include <we/type/literal/control.hpp>
 #include <list>
 #include <we/type/value.hpp>
 #include <string>
@@ -23,6 +24,7 @@ namespace pnetc
         , const std::string& needed_library
         , const std::string& base_filename
         , std::list<pnet::type::value::value_type>& LIFT
+        , we::type::literal::control& D
         )
       {
 #line 252 "/home/santosh/gspc-res/template/workflow/template.xpnet"

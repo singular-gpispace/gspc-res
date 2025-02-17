@@ -13,11 +13,11 @@
 
 	<in name="base_filename" type="string" place="place_base_filename"/>
 	<in name="library_name" type="string" place="place_library_name"/>
-  <in name="input" type="string" place="place_initiate"/>
-  <out name ="OUTPUT" type ="string" place ="place_SubLift"/>
+  <in name="input" type="string" place="place_input"/>
+  <out name ="OUTPUT" type ="string" place ="place_Schres"/>
   
 	<net>
-  <place name ="place_initiate" type ="string"/>
+  <place name ="place_input" type ="string"/>
  
     <place name ="place_input_GB" type ="string"/>
 		<place name="place_base_filename" type="string"/>
@@ -27,47 +27,47 @@
     <place name="place_lead" type="string"/>
     <place name="place_Tau" type="string"/>
     <place name ="place_SubLift" type ="string"/>
- 
+ <place name ="place_Syz" type ="string"/>
     <place name="place_counter" type="int"/>
- 
+ <place name ="place_Res" type="string"/>
 
 
 
 
-<place name ="place_StartTime" type ="long"/>
 
 
-
-  <!-- Transition: StartTime -->
-    <transition name="StartTime">
-      <defun>
-       <out name ="c" type ="control"/>
-      <in name="input" type="string"/>
-        <out name="output" type="string"/>
-        <out name="start_time" type="long"/>
-        <module name="singular_template" function="StartTime(start_time,input,c,output)">
-         <cinclude href="interface/template_interface.hpp" />
-      <cinclude href="util-generic/dynamic_linking.hpp"/>
-      <cinclude href="iostream"/>
-      <cinclude href="chrono"/>
-        <code><![CDATA[
-         auto computation_time = std::chrono::high_resolution_clock::now();
-    auto duration = computation_time.time_since_epoch();
-
-    start_time= std::chrono::duration_cast<std::chrono::nanoseconds>(duration).count();
-     output=input;
-    ]]></code>
-     </module>
-     
+    <!-- transition_Init-->
   
-    
-    
-      </defun>
-      <connect-in port="input" place="place_initiate"/>
-      <connect-out port="start_time" place="place_StartTime"/>
-       <connect-out port="output" place="place_input_GB"/>
+     <transition name="Initiate">
+      <defun>
+        		<require key="worker" mandatory="true"/>
+        		
+				    <in name="input" type="string"/>
+        		<out name="output" type="string"/>
+            <out name ="res" type ="string"/>
+            <out name ="c" type ="control"/>
+          
+        		<module name="singular_template"
+              		require_function_unloads_without_rest="false"
+              		function="Init(res,c, input, output)">
+          		<cinclude href="interface/template_interface.hpp" />
+          		<cinclude href="util-generic/dynamic_linking.hpp"/>
+          			<code><![CDATA[
+						 output = RESOLVE_INTERFACE_FUNCTION(singular_template_Init) (input);
+            
+              res=output;
+            		]]></code>
+        		</module>
+      		</defun>
+      	
+			  <connect-in port="input" place="place_input"/>
+			  <connect-out port="output" place="place_input_GB"/>
+        <connect-out port="res" place="place_Res"/>
         <connect-out port="c" place="place_control"/>
-    </transition>
+        
+        
+  		  </transition>
+
     
    
 
@@ -156,13 +156,13 @@
         <in name="input" type="string"/>
         <in name ="s" type ="control"/>
  
-      
+         <out name ="Sublift" type ="list"/>
         <out name="counter" type="int"/>
         <out name="OUT" type="list"/>
        
       <module name="singular_template"
                 require_function_unloads_without_rest="false"
-                function="leadsyz(input,s,counter,OUT,library_name,base_filename)">
+                function="leadsyz(input,s,counter,OUT,library_name,base_filename,Sublift)">
         <cinclude href="interface/template_interface.hpp" />
         <cinclude href="util-generic/dynamic_linking.hpp"/>
         <cinclude href="vector"/>
@@ -187,7 +187,7 @@
                                                                  {
                           //std::cout << "leadSyz_Success:"<<vec[i] << std::endl;
                           OUT.emplace_back(vec[i]);
-                       
+                          Sublift.emplace_back(vec[i]);
                          //std::cout << "leadSyz_Success:"<<vec[i] << std::endl;
                           //std::cout << "SubliftleadSyz_Success:"<<vec[i] << std::endl;
                           
@@ -207,8 +207,8 @@
       <connect-read port="input" place="place_input_GB"/>
       <connect-in port="s" place="place_control"/>
       <connect-out-many port="OUT" place="place_lead"/>
-     
-     
+        <connect-out-many port="Sublift" place="place_SubLift"/>
+   
        <connect-out port="counter" place="place_counter"/>
      
     </transition>
@@ -233,13 +233,13 @@
     
      <in name ="all_lead" type= "string"/>
      <in name ="input_name" type= "string"/>
-
+      <out name="D" type ="control"/>
      <out name ="LIFT" type= "list"/>
     
 
              <module name="singular_template"
             require_function_unloads_without_rest="false"
-            function="LIFT(input_name,lead,all_lead,LIFT,needed_library,base_filename)">
+            function="LIFT(input_name,lead,all_lead,LIFT,needed_library,base_filename,D)">
             <cinclude href="interface/template_interface.hpp" />
            <cinclude href="util-generic/dynamic_linking.hpp"/>
             <cinclude href="vector"/>
@@ -292,15 +292,46 @@
   <connect-out-many port="LIFT" place="place_Tau"/>
 
 
+<connect-out port="D" place="LIFT_init_Remove"/>
 
 
   </transition> 
+  
+      
+
+
+ <place name="LIFT_init_Remove" type="control">
+ 
+</place>
 
 
 
+<place name="Count_LIFT" type="int">
+ <token>
+        <value>0</value>
+      </token>
+    
+</place>
 
 
+<transition name="Count">
+      <defun>
+        <inout name="a" type="int"/>
+        <in name="s" type="control"/>
+        <module name="singular_template" function="count_LIFT(a,s)">
+        <cinclude href="iostream"/>
+        <code><![CDATA[
+          a=a+1;
+      //  std::cout <<"Count_LIFT: " << a << std::endl;
+        ]]></code>
+        </module>
+        
+      </defun>
+      <connect-inout port="a" place="Count_LIFT"/>
+      <connect-in port="s" place="LIFT_init_Remove"/>
+     
 
+    </transition>
 
  
 
@@ -437,7 +468,7 @@
         <module name="singular_template" function="count(a)">
         <cinclude href="iostream"/>
         <code><![CDATA[
-       //std::cout << "LHS: " << a << std::endl;
+       std::cout << "LHS: " << a << std::endl;
         ]]></code>
         </module>
       </defun>
@@ -456,7 +487,7 @@
         <module name="singular_template" function="plus(a)">
         <cinclude href="iostream"/>
         <code><![CDATA[
-       //std::cout << "RHS: " << a << std::endl;
+       std::cout << "RHS: " << a << std::endl;
         ]]></code>
         </module>
       </defun>
@@ -479,11 +510,12 @@
         <in name="l" type="string"/>
         <in name="r" type="string"/>
         <in name="input" type="string"/>
-      
+        <out name="LHS_delete" type="string"/>
+       <out name="RHS_delete" type="string"/>
        
      <module name="singular_template"
               		require_function_unloads_without_rest="false"
-              		function="reduce(library_name, base_filename,input, s,l,r)">
+              		function="reduce(library_name, base_filename,input, s,l,r,RHS_delete,LHS_delete)">
           		<cinclude href="interface/template_interface.hpp" />
           		<cinclude href="util-generic/dynamic_linking.hpp"/>
               <cinclude href="iostream"/>
@@ -501,7 +533,9 @@
         
             std::cout << "Reduce:" << s << std::endl;
      
-
+               LHS_delete=l;
+                          
+                       RHS_delete=r;
 //std::cout << "Reduce Duration: " << runtime << " milliseconds" << std::endl;
 
             		]]></code>
@@ -514,8 +548,210 @@
       <connect-in port="l" place="L"/>
       <connect-in port="r" place="R"/>
       <connect-out port="s" place="place_SubLift"/>
+           <connect-out port="LHS_delete" place="LHS_delete"/>
+       <connect-out port="RHS_delete" place="RHS_delete"/>
   
     </transition> 
+
+
+
+
+
+<place name ="LHS_delete" type ="string"/>
+<place name ="RHS_delete" type ="string"/>
+   <place name ="place_temp" type ="string"/>
+    
+<!-- Transition 5: Delete-->
+<transition name="Delete">
+  <defun>
+    <require key="worker" mandatory="true"/>
+    <out name="s" type="string"/>
+    <in name="l" type="string"/>
+    <in name="r" type="string"/>
+     <in name="LIFT" type="int"/>
+    <in name="nleads" type="int"/>
+   
+    <module name="singular_template"
+            require_function_unloads_without_rest="false"
+            function="removeFiles(LIFT,nleads,s,l,r)">
+      <cinclude href="interface/template_interface.hpp" />
+      <cinclude href="util-generic/dynamic_linking.hpp"/>
+      <cinclude href="iostream"/>
+      <code><![CDATA[
+        // std::cout <<"LIFT: " << LIFT << std::endl;
+        // std::cout <<"LeadSyz: " << nleads << std::endl;
+        s = RESOLVE_INTERFACE_FUNCTION(singular_template_removeFiles)(l, r);
+        // std::cout << "Delete:" << s << std::endl;
+      ]]></code>
+    </module>
+
+      <condition>
+      ${nleads}:eq:${LIFT}
+    </condition>
+  </defun>
+
+  <connect-in port="l" place="LHS_delete"/>
+  <connect-in port="r" place="RHS_delete"/>
+  <connect-read port="LIFT" place="Count_LIFT"/>
+   <connect-read port="nleads" place="place_counter"/>
+   
+  <connect-out port="s" place="place_temp"/>
+</transition>
+
+
+
+  <transition name="Result">
+  <defun>
+   
+    
+     <inout name="s" type="string"/>
+     <inout name="ctrl" type="control"/>
+      <in name="k1" type="unsigned long"/>
+        <in name="k2" type="unsigned long"/>
+         <in name="k3" type="unsigned long"/>
+         <in name="k4" type="unsigned long"/>
+        <out name ="d_back" type ="int"/>
+   
+    <module name="singular_template" function="result(s,k1,k2,k3,k4,ctrl,d_back)">
+      <cinclude href="interface/template_interface.hpp" />
+      <cinclude href="util-generic/dynamic_linking.hpp"/>
+       <cinclude href="iostream"/>
+      <code><![CDATA[
+        
+         
+      std::cout << "Result_Success: " << s<< std::endl;
+      //   std::cout << "counter: " <<counter<< std::endl;
+      //   std::cout << "place_E: " <<E<< std::endl;
+      //   std::cout << "place_N: " <<N<< std::endl;
+         d_back=0;
+      
+      ]]></code>
+    </module>
+       
+     <condition>
+      ${k1} :eq: 0UL :and:  ${k2} :eq: 0UL :and: ${k3} :eq: 0UL :and: ${k4} :eq: 0UL
+      
+     
+  
+    </condition>
+   
+   
+   
+
+  </defun>
+  <connect-in port="s" place="L"/>
+  <connect-number-of-tokens port="k1" place="place_SubLift"/>
+   <connect-number-of-tokens port="k2" place="R"/>
+     <connect-number-of-tokens port="k3" place="place_Tau"/>
+    <connect-number-of-tokens port="k4" place="place_lead"/>
+     <connect-in port="ctrl" place="right_init"/>
+<connect-out port="ctrl" place="left_init"/>
+  <connect-out port="s" place="place_Syz"/>
+   <connect-out port="d_back" place="Count_LIFT"/>
+
+ 
+  
+   
+</transition>
+
+
+
+
+<!-- Transition 11: Generate-->
+<transition name="Generate">
+  <defun>
+
+  <in name="library_name" type="string"/>
+     <in name="base_filename" type="string"/>
+    <inout name="len" type="int"/>
+    <in name="syz" type="string"/>
+    <in name="res" type="string"/>
+    <out name="Res" type ="string"/>
+    <in name="input" type="string"/>
+    
+   
+    <out name ="Input" type="string"/>
+    <out name="c" type ="control"/>
+    
+    <module name="singular_template" function="Generate(res,library_name, base_filename, Res, input,Input,len, c,syz)">
+      <cinclude href="interface/template_interface.hpp" />
+      <cinclude href="util-generic/dynamic_linking.hpp"/>
+       <cinclude href="iostream"/>
+      <code><![CDATA[
+       //std::cout << "Generate_Input:"<<input<< std::endl;
+       //std::cout << "Generate_Syz:"<<syz<< std::endl;
+       //std::cout << "Generate_control:"<<c<< std::endl;
+        Res= RESOLVE_INTERFACE_FUNCTION(singular_template_Generate)(res,syz,library_name, base_filename
+							); 
+       Input=syz;
+       
+        c={};
+      len=len-1;
+      std::cout << "Iterative_level_syz: "<<len<< std::endl;
+      // std::cout << "Generate_Syz:"<< Res<< std::endl;
+      ]]></code>
+    </module>
+    
+     
+
+  </defun>
+   <connect-read port="library_name" place="place_library_name"/> 
+    <connect-read port="base_filename" place="place_base_filename"/>
+  <connect-in port="input" place="place_input_GB"/>
+  <connect-in port="res" place="place_Res"/>
+  <connect-in port="syz" place="place_Syz"/>
+  <connect-out port="Input" place="place_input_GB"/>
+  <connect-out port="c" place="place_control"/>
+  <connect-out port="Res" place="place_Res"/>
+  <connect-inout port="len" place="place_length_Res"/>
+ 
+  
+</transition>
+
+
+
+
+
+<place name="place_Schres" type="string">
+  
+</place>
+
+<transition name="Resolution">
+  <defun>
+   
+    
+     <inout name="s" type="string"/>
+     
+    <in name="len" type="int"/>
+    
+    <module name="singular_template" function="resolution(s,len)">
+      <cinclude href="interface/template_interface.hpp" />
+      <cinclude href="util-generic/dynamic_linking.hpp"/>
+       <cinclude href="iostream"/>
+      <code><![CDATA[
+        
+         //std::cout << "Res_length:"<<len<< std::endl;
+         
+         std::cout << "Resolution:"<<s<< std::endl;
+      ]]></code>
+    </module>
+       <condition>
+      ${len}:eq:1
+    </condition>
+   
+
+   
+
+  </defun>
+  
+  <connect-in port="s" place="place_Res"/>
+
+  <connect-out port="s" place="place_Schres"/>
+ 
+  <connect-in port="len" place="place_length_Res"/>
+  
+</transition>
+
 
 
 

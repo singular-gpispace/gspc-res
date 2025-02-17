@@ -72,7 +72,8 @@ SOURCE_DIR=/home/santosh/gspc-res/template
 SINGULAR_HOME=/home/santosh/singular-gpispace/spack/opt/spack/linux-ubuntu22.04-skylake/gcc-11.4.0/singular-4.4.0p2-syrkttc4im2j3tzob5jykruuxnushksj
 
 BOOST_DIR=/home/santosh/singular-gpispace/spack/var/spack/environments/gpispace/.spack-env/view
-GPISPACE_DIR=/home/santosh/singular-gpispace/spack/opt/spack/linux-ubuntu22.04-skylake/gcc-11.4.0/gpi-space-23.06-yy4zzk24obghifdb5wvrqg4ojestij6d/share/GPISpace/cmake
+GPISPACE_DIR="/home/santosh/singular-gpispace/spack/opt/spack/linux-ubuntu22.04-skylake/gcc-11.4.0/gpi-space-24.12-ugaltunbzethad4p3szsepjqdbgthcch/share/GPISpace/cmake"
+
 QT5_DIR=/home/santosh/singular-gpispace/spack/opt/spack/linux-ubuntu22.04-skylake/gcc-11.4.0/qt-5.15.11-v2xrk5hnmdfygvc7v2wcy2hz27cu5ofi/lib/cmake/Qt5
 
 # Clean previous build directory

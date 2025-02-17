@@ -532,7 +532,7 @@ std::pair<int, lists> LEAD_GPI(leftv args) {
         counter = 1;//counter=1
     } else if (tmp->m[0].Typ() == VECTOR_CMD) {
         // If it's a vector, handle it using Sec_leadSyz
-        std::cout << "vector:" <<tmp->m[0].Typ()<< std::endl;
+        // std::cout << "vector:" <<tmp->m[0].Typ()<< std::endl;
         ideal mM = (ideal)(tmp->m[4].Data()); 
          ideal mM_copy =idCopy(mM); 
         //    for(int k=0; k< IDELEMS(mM); k++){
