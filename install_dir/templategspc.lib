@@ -176,7 +176,11 @@ proc gspc_template_SchRes(ideal I, configToken gc)
         t.data[2] = r;
         inputlists[i] = t;
     }
+    
+    int t0=rtimer;
     def re = gspc_template(inputlists, gc, ct);
+    rtimer-t0;
+print("timer");
     def inputRing = basering;
     // Access the first element in the list
     def resultToken = re[1];
