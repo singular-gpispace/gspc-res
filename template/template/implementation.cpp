@@ -2209,22 +2209,10 @@ std::tuple<std::vector<std::string>, int, long> singular_template_SUBLIFT(const 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 NO_NAME_MANGLING
 std::pair<int, lists> reduce_GPI(leftv arg1) {
 
-    // std::cout << "Type of 1.arg:" << arg1->Typ() <<std::endl;
+    //std::cout << "Type of 1.arg:" << arg1->Typ() <<std::endl;
     lists input = (lists)(arg1->Data()); //extract input
     //std::cout << "Type of 2.arg:" << arg1->next->Typ() <<std::endl;
     lists Tok = (lists)(arg1->next->Data()); // extract Tok
@@ -2259,21 +2247,23 @@ std::pair<int, lists> reduce_GPI(leftv arg1) {
     lists tmpL1 = (lists)(Tok->m[3].Data()); // Tok.data
     int counter=(int)(long)tmpL1->m[5].Data();//Tok.data[6]
   
-    matrix A;
-    matrix B;
+    // matrix A;
+    // matrix B;
     //leftv L2=(ideal)tmpL1->m[1];
     lists tmpl=(lists)(tok->m[3].Data()); //tok.data
     //leftv l=(ideal)(tmpl->m[1]);
-    A = (matrix)tmpL1->m[1].Data(); // Tok.data[2]
-    B = (matrix)tmpl->m[1].Data(); // tok.data[2]
+   ideal A0 = (ideal)tmpL1->m[1].Data(); // Tok.data[2]
+   ideal B0 = (ideal)tmpl->m[1].Data(); // tok.data[2]
     //smatrix A0=A;
-    // ideal A0=id_Matrix2Module(mp_Copy(A,currRing),currRing);
+    // matrix A=id_Module2Matrix(id_Copy(A0,currRing),currRing);
     // //smatrix A0=A;
-    // ideal B0=id_Matrix2Module(mp_Copy(B,currRing),currRing);
+    // matrix B=id_Module2Matrix(id_Copy(B0,currRing),currRing);
     // Perform the matrix addition using Singular's API function
-    // ideal C0 = sm_Add(A0, B0, currRing);
-    // idDelete(&A0);idDelete(&B0);
-    matrix C=mp_Add(A, B, currRing);
+    // matrix C0 = mp_Add(A, B, currRing);
+    ideal C = sm_Add(A0, B0, currRing);
+    // mp_Delete(&A,currRing);mp_Delete(&B,currRing);
+    // ideal C=id_Matrix2Module(mp_Copy(C0,currRing),currRing);
+    // matrix C=id_Module2Matrix(C0,currRing);
 //     std::cout << "Final in ADD transition _Reduce=" << std::endl;
 // for(int k = 1; k <= MATROWS(C); k++) {
 //     for(int l = 1; l <= MATCOLS(C); l++) {
@@ -2298,7 +2288,7 @@ std::pair<int, lists> reduce_GPI(leftv arg1) {
     t=(lists)omAlloc0Bin(slists_bin);
     t->Init(7);
     t->m[0].rtyp = tmpL1->m[0].rtyp;t->m[0].data=tmpL1->m[0].CopyD(); // copy Tok.data[1]
-    t->m[1].rtyp=MATRIX_CMD; t->m[1].data=C;
+    t->m[1].rtyp=SMATRIX_CMD; t->m[1].data=C;
     t->m[2].rtyp=INT_CMD;  t->m[2].data = (void*)(long)r;
     t->m[3].rtyp=INT_CMD; t->m[3].data = (void*)(long)c;
     
