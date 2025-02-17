@@ -34,7 +34,7 @@ namespace pnetc
        
         c={};
       len=len-1;
-      std::cout << "Iterative_level_syz: "<<len<< std::endl;
+      // std::cout << "Iterative_level_syz: "<<len<< std::endl;
       // std::cout << "Generate_Syz:"<< Res<< std::endl;
       
       }

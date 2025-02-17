@@ -194,7 +194,7 @@
                           }
                       
                       
-                          std::cout << "#leadSyz="<<counter<< std::endl;
+                          // std::cout << "#leadSyz="<<counter<< std::endl;
 
             
                    
@@ -468,7 +468,7 @@
         <module name="singular_template" function="count(a)">
         <cinclude href="iostream"/>
         <code><![CDATA[
-       std::cout << "LHS: " << a << std::endl;
+      //  std::cout << "LHS: " << a << std::endl;
         ]]></code>
         </module>
       </defun>
@@ -487,7 +487,7 @@
         <module name="singular_template" function="plus(a)">
         <cinclude href="iostream"/>
         <code><![CDATA[
-       std::cout << "RHS: " << a << std::endl;
+      //  std::cout << "RHS: " << a << std::endl;
         ]]></code>
         </module>
       </defun>
@@ -531,7 +531,7 @@
 							); 
                 s = result.first;
         
-            std::cout << "Reduce:" << s << std::endl;
+            // std::cout << "Reduce:" << s << std::endl;
      
                LHS_delete=l;
                           
@@ -687,7 +687,7 @@
        
         c={};
       len=len-1;
-      std::cout << "Iterative_level_syz: "<<len<< std::endl;
+      // std::cout << "Iterative_level_syz: "<<len<< std::endl;
       // std::cout << "Generate_Syz:"<< Res<< std::endl;
       ]]></code>
     </module>

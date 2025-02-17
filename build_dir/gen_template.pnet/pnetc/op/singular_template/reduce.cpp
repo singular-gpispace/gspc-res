@@ -33,7 +33,7 @@ namespace pnetc
 							); 
                 s = result.first;
         
-            std::cout << "Reduce:" << s << std::endl;
+            // std::cout << "Reduce:" << s << std::endl;
      
                LHS_delete=l;
                           

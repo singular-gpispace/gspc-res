@@ -14,7 +14,7 @@ namespace pnetc
       {
 #line 489 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
-       std::cout << "RHS: " << a << std::endl;
+      //  std::cout << "RHS: " << a << std::endl;
         
       }
     }
