@@ -34,7 +34,6 @@
 
 
 
-<place name ="place_StartTime" type ="long"/>
 
 
 
@@ -44,17 +43,14 @@
        <out name ="c" type ="control"/>
       <in name="input" type="string"/>
         <out name="output" type="string"/>
-        <out name="start_time" type="long"/>
-        <module name="singular_template" function="StartTime(start_time,input,c,output)">
+      
+        <module name="singular_template" function="StartTime(input,c,output)">
          <cinclude href="interface/template_interface.hpp" />
       <cinclude href="util-generic/dynamic_linking.hpp"/>
       <cinclude href="iostream"/>
       <cinclude href="chrono"/>
         <code><![CDATA[
-         auto computation_time = std::chrono::high_resolution_clock::now();
-    auto duration = computation_time.time_since_epoch();
-
-    start_time= std::chrono::duration_cast<std::chrono::nanoseconds>(duration).count();
+ 
      output=input;
     ]]></code>
      </module>
@@ -64,7 +60,7 @@
     
       </defun>
       <connect-in port="input" place="place_initiate"/>
-      <connect-out port="start_time" place="place_StartTime"/>
+     
        <connect-out port="output" place="place_input_GB"/>
         <connect-out port="c" place="place_control"/>
     </transition>
@@ -420,102 +416,6 @@
   </transition> 
 
 
-<place name="left_init" type="control">
-  <token><value>[]</value></token>
-</place>
-<place name="right_init" type="control"/>
-<place name="L" type="string"/>
-<place name="R" type="string"/>
-
-
-
-    <transition name="LHS">
-      <defun>
-        <inout name="a" type="string"/>
-        <inout name="s" type="control"/>
-
-        <module name="singular_template" function="count(a)">
-        <cinclude href="iostream"/>
-        <code><![CDATA[
-       //std::cout << "LHS: " << a << std::endl;
-        ]]></code>
-        </module>
-      </defun>
-      <connect-in port="s" place="left_init"/>
-      <connect-out port="s" place="right_init"/>
-      <connect-in port="a" place="place_SubLift"/>
-      <connect-out port="a" place="L"/>
-    </transition>
-
-
-
-<transition name="RHS">
-      <defun>
-        <inout name="a" type="string"/>
-        <inout name="s" type="control"/>
-        <module name="singular_template" function="plus(a)">
-        <cinclude href="iostream"/>
-        <code><![CDATA[
-       //std::cout << "RHS: " << a << std::endl;
-        ]]></code>
-        </module>
-      </defun>
-      <connect-in port="a" place="place_SubLift"/>
-      <connect-in port="s" place="right_init"/>
-      <connect-out port="s" place="left_init"/>
-      <connect-out port="a" place="R"/>
-
-    </transition>
-
-
-<!-- Transition 5: Reduce-->
-    <transition name="Reduce">
-      <defun>
-      <require key="worker" mandatory="true"/>
-    
-     <in name="library_name" type="string"/>
-     <in name="base_filename" type="string"/>
-        <out name="s" type="string"/>
-        <in name="l" type="string"/>
-        <in name="r" type="string"/>
-        <in name="input" type="string"/>
-      
-       
-     <module name="singular_template"
-              		require_function_unloads_without_rest="false"
-              		function="reduce(library_name, base_filename,input, s,l,r)">
-          		<cinclude href="interface/template_interface.hpp" />
-          		<cinclude href="util-generic/dynamic_linking.hpp"/>
-              <cinclude href="iostream"/>
-             <cinclude href="chrono"/>
-
-          			<code><![CDATA[
-
-                
-                //std::cout << "Reduce_Input:" <<input << std::endl;
-                //std::cout << "Reduce_l:" <<l << std::endl;
-                //std::cout << "Reduce_r" <<r<< std::endl;
-						 auto result  = RESOLVE_INTERFACE_FUNCTION(singular_template_reduce)(input,l,r,library_name, base_filename
-							); 
-                s = result.first;
-        
-            std::cout << "Reduce:" << s << std::endl;
-     
-
-//std::cout << "Reduce Duration: " << runtime << " milliseconds" << std::endl;
-
-            		]]></code>
-                 
-        		</module>
-      </defun>
-      <connect-read port="library_name" place="place_library_name"/> 
-      <connect-read port="base_filename" place="place_base_filename"/>
-      <connect-read port="input" place="place_input_GB"/>
-      <connect-in port="l" place="L"/>
-      <connect-in port="r" place="R"/>
-      <connect-out port="s" place="place_SubLift"/>
-  
-    </transition> 
 
 
 

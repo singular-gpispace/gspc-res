@@ -532,7 +532,7 @@ std::pair<int, lists> LEAD_GPI(leftv args) {
         counter = 1;//counter=1
     } else if (tmp->m[0].Typ() == VECTOR_CMD) {
         // If it's a vector, handle it using Sec_leadSyz
-        std::cout << "vector:" <<tmp->m[0].Typ()<< std::endl;
+        // std::cout << "vector:" <<tmp->m[0].Typ()<< std::endl;
         ideal mM = (ideal)(tmp->m[4].Data()); 
          ideal mM_copy =idCopy(mM); 
         //    for(int k=0; k< IDELEMS(mM); k++){
@@ -2267,13 +2267,13 @@ std::pair<int, lists> reduce_GPI(leftv arg1) {
     A = (matrix)tmpL1->m[1].Data(); // Tok.data[2]
     B = (matrix)tmpl->m[1].Data(); // tok.data[2]
     //smatrix A0=A;
-    // ideal A0=id_Matrix2Module(mp_Copy(A,currRing),currRing);
-    // //smatrix A0=A;
-    // ideal B0=id_Matrix2Module(mp_Copy(B,currRing),currRing);
+    ideal A0=id_Matrix2Module(mp_Copy(A,currRing),currRing);
+    //smatrix A0=A;
+    ideal B0=id_Matrix2Module(mp_Copy(B,currRing),currRing);
     // Perform the matrix addition using Singular's API function
-    // ideal C0 = sm_Add(A0, B0, currRing);
-    // idDelete(&A0);idDelete(&B0);
-    matrix C=mp_Add(A, B, currRing);
+    ideal C0 = sm_Add(A0, B0, currRing);
+    idDelete(&A0);idDelete(&B0);
+    matrix C=id_Module2Matrix(C0,currRing);
 //     std::cout << "Final in ADD transition _Reduce=" << std::endl;
 // for(int k = 1; k <= MATROWS(C); k++) {
 //     for(int l = 1; l <= MATCOLS(C); l++) {
@@ -2355,7 +2355,7 @@ std::pair<std::string, long> singular_template_reduce(const std::string& Red,
     ScopedLeftv arg(args, lift_syz.first, lCopy(lift_syz.second));
     
 
-    std::string function_name = "reduce_GPI";
+    // std::string function_name = "reduce_GPI";
     // Measure Computation Time
     auto start_computation = std::chrono::high_resolution_clock::now();
 

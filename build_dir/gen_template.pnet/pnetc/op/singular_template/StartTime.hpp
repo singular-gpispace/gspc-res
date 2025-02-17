@@ -12,7 +12,6 @@ namespace pnetc
     {
       void StartTime
         ( const std::string& input
-        , long& start_time
         , we::type::literal::control& c
         , std::string& output
         );
