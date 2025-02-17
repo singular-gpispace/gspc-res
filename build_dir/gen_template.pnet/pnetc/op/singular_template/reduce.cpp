@@ -18,9 +18,11 @@ namespace pnetc
         , const std::string& l
         , const std::string& r
         , std::string& s
+        , std::string& RHS_delete
+        , std::string& LHS_delete
         )
       {
-#line 492 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 533 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
 
                 
@@ -31,8 +33,10 @@ namespace pnetc
 							); 
                 s = result.first;
         
-            std::cout << "Reduce:" << s << std::endl;
-     
+            // std::cout << "Reduce:" << s << std::endl;
+                  LHS_delete=l;
+                          
+                       RHS_delete=r;
 
 //std::cout << "Reduce Duration: " << runtime << " milliseconds" << std::endl;
 

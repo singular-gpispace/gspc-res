@@ -2267,13 +2267,13 @@ std::pair<int, lists> reduce_GPI(leftv arg1) {
     A = (matrix)tmpL1->m[1].Data(); // Tok.data[2]
     B = (matrix)tmpl->m[1].Data(); // tok.data[2]
     //smatrix A0=A;
-    // ideal A0=id_Matrix2Module(mp_Copy(A,currRing),currRing);
-    // //smatrix A0=A;
-    // ideal B0=id_Matrix2Module(mp_Copy(B,currRing),currRing);
+    ideal A0=id_Matrix2Module(mp_Copy(A,currRing),currRing);
+    //smatrix A0=A;
+    ideal B0=id_Matrix2Module(mp_Copy(B,currRing),currRing);
     // Perform the matrix addition using Singular's API function
-    // ideal C0 = sm_Add(A0, B0, currRing);
-    // idDelete(&A0);idDelete(&B0);
-    matrix C=mp_Add(A, B, currRing);
+    ideal C0 = sm_Add(A0, B0, currRing);
+    idDelete(&A0);idDelete(&B0);
+    matrix C=id_Module2Matrix(C0,currRing);
 //     std::cout << "Final in ADD transition _Reduce=" << std::endl;
 // for(int k = 1; k <= MATROWS(C); k++) {
 //     for(int l = 1; l <= MATCOLS(C); l++) {

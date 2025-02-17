@@ -19,7 +19,7 @@ namespace pnetc
         , std::string& output
         )
       {
-#line 53 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 54 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
          auto computation_time = std::chrono::high_resolution_clock::now();
     auto duration = computation_time.time_since_epoch();
