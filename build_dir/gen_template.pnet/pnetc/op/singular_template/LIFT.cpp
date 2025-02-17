@@ -1,7 +1,7 @@
 #include <pnetc/op/singular_template/LIFT.hpp>
+#include <we/type/literal/control.hpp>
 #include <list>
 #include <we/type/value.hpp>
-#include <we/type/literal/control.hpp>
 #include <string>
 #include <interface/template_interface.hpp>
 #include <util-generic/dynamic_linking.hpp>
@@ -25,12 +25,11 @@ namespace pnetc
         , const std::string& base_filename
         , int& N
         , int& E
-        , we::type::literal::control& D
-        , long& runtime
         , std::list<pnet::type::value::value_type>& LIFT
+        , we::type::literal::control& D
         )
       {
-#line 272 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 264 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
                    //std::cout << "in singular _PetriNet_.._LIFT" << std::endl;
                    
@@ -40,7 +39,7 @@ namespace pnetc
 
                        std::vector<std::string> vec = std::get<0>(out);
                       int total_generator = std::get<1>(out);
-                      runtime = std::get<2>(out);
+                    
                        //std::cout << "LIFT_COUNT:"<< lift_count << std::endl;
                         
                          for(int i (0); i<vec.size(); i++)

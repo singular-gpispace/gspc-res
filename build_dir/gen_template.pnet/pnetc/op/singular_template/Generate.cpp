@@ -13,7 +13,6 @@ namespace pnetc
     {
       void Generate
         ( const std::string& res
-        , const long& sumTime
         , const std::string& library_name
         , const std::string& base_filename
         , const std::string& input
@@ -24,7 +23,7 @@ namespace pnetc
         , we::type::literal::control& c
         )
       {
-#line 983 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 825 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
        //std::cout << "Generate_Input:"<<input<< std::endl;
        //std::cout << "Generate_Syz:"<<syz<< std::endl;
@@ -36,7 +35,7 @@ namespace pnetc
         c={};
       len=len-1;
       std::cout << "Iterative_level_syz: "<<len<< std::endl;
-      // std::cout << "Generate_Syz:"<< Res<< std::endl;
+      std::cout << "Generate_Syz:"<< Res<< std::endl;
       
       }
     }

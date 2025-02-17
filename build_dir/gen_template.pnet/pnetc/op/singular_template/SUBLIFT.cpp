@@ -26,12 +26,11 @@ namespace pnetc
         , int& N
         , int& E
         , std::list<pnet::type::value::value_type>& LIFT
-        , long& runtime
         , we::type::literal::control& lift_count
         , std::string& SUBLIFT
         )
       {
-#line 405 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 399 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
 
              
@@ -42,7 +41,7 @@ namespace pnetc
                        
                      std::vector<std::string> vec = std::get<0>(out);
                       int total_generator = std::get<1>(out);
-                      runtime = std::get<2>(out);
+                      
 
                         
                          for(int i (0); i<vec.size(); i++)

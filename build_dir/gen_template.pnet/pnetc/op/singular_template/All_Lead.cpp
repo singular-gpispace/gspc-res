@@ -10,7 +10,6 @@
 #include <string>
 #include <list>
 #include <numeric>
-#include <chrono>
 
 namespace pnetc
 {
@@ -23,32 +22,31 @@ namespace pnetc
         , const we::type::literal::control& C
         , const std::string& library_name
         , const std::string& base_filename
-        , std::list<pnet::type::value::value_type>& OUTPUT
+        , std::list<pnet::type::value::value_type>& output
         , int& counter
-        , long& runtime
         )
       {
-#line 120 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 116 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
-        //std::cout <<"All_LeadSyz_Input:"<<init<< std::endl;
-          
-					std::tuple<std::vector<std::string>, int, long> out = RESOLVE_INTERFACE_FUNCTION( singular_template_ALL_LEAD) (init,library_name, base_filename);
+          //std::cout <<"All_LeadSyz_Input:"<<init<< std::endl;
+				std::tuple<std::vector<std::string>, int, long> out = RESOLVE_INTERFACE_FUNCTION( singular_template_ALL_LEAD) (init,library_name, base_filename);
               
 
                 std::vector<std::string> vec = std::get<0>(out);
                      counter = std::get<1>(out);
-                      runtime = std::get<2>(out);
-                
+                    //  auto runtime = std::get<2>(out);
+             
                     
                  for(int i (0); i<vec.size(); i++)
                                                                  {
                         // std::cout << "SchFrame_Success:"<<vec[i] << std::endl;
                        
-                          OUTPUT.emplace_back(vec[i]);
+                          output.emplace_back(vec[i]);
 
                     }
+
+                    
                     std::cout << "SchFrame"<<counter<< std::endl;
-                    //  std::cout << "SchFrame_Runtime: " << runtime << " milliseconds" << std::endl;
           
             		
       }

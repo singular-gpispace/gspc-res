@@ -1,9 +1,9 @@
 #ifndef _PNETC_OP_singular_template_LIFT
 #define _PNETC_OP_singular_template_LIFT
 
+#include <we/type/literal/control.hpp>
 #include <list>
 #include <we/type/value.hpp>
-#include <we/type/literal/control.hpp>
 #include <string>
 
 namespace pnetc
@@ -20,9 +20,8 @@ namespace pnetc
         , const std::string& base_filename
         , int& N
         , int& E
-        , we::type::literal::control& D
-        , long& runtime
         , std::list<pnet::type::value::value_type>& LIFT
+        , we::type::literal::control& D
         );
     }
   }

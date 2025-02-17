@@ -14,14 +14,13 @@ namespace pnetc
         ( const std::string& input
         , std::string& res
         , we::type::literal::control& c
-        , std::string& init
         , std::string& output
         )
       {
-#line 73 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 69 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
 						 output = RESOLVE_INTERFACE_FUNCTION(singular_template_Init) (input);
-              init=output;
+              
               res=output;
             		
       }
