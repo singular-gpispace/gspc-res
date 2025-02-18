@@ -23,11 +23,10 @@ namespace pnetc
         , const we::type::literal::control& s
         , const std::string& library_name
         , const std::string& base_filename
-        , int& counter
         , std::list<pnet::type::value::value_type>& OUT
         )
       {
-#line 171 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 175 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
             
             
@@ -37,7 +36,7 @@ namespace pnetc
                       int total_generator = std::get<1>(out);
                     
                     
-                      counter=total_generator;
+                      
                       
                          for(int i (0); i<vec.size(); i++)
                                                                  {
@@ -50,7 +49,7 @@ namespace pnetc
                           }
                       
                       
-                          std::cout << "#leadSyz="<<counter<< std::endl;
+                          
 
             
                    

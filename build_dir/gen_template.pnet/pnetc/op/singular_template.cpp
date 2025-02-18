@@ -20,9 +20,11 @@ namespace pnetc
         const std::string & input (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "input"))));
         we::type::literal::control c;
         std::string output;
-        ::pnetc::op::singular_template::StartTime (input, c, output);
+        long start_time;
+        ::pnetc::op::singular_template::StartTime (input, c, output, start_time);
         _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "c"), c);
         _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "output"), output);
+        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "start_time"), start_time);
       }
     }
   }
@@ -80,10 +82,8 @@ namespace pnetc
         const we::type::literal::control & s (::boost::get< we::type::literal::control > (_pnetc_input.value (std::list<std::string> (1, "s"))));
         const std::string & library_name (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "library_name"))));
         const std::string & base_filename (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "base_filename"))));
-        int counter;
         std::list<pnet::type::value::value_type> OUT;
-        ::pnetc::op::singular_template::leadsyz (input, s, library_name, base_filename, counter, OUT);
-        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "counter"), counter);
+        ::pnetc::op::singular_template::leadsyz (input, s, library_name, base_filename, OUT);
         _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "OUT"), OUT);
       }
     }
@@ -153,6 +153,59 @@ namespace pnetc
     }
   }
 }
+#include <pnetc/op/singular_template/result.hpp>
+#include <we/type/literal/control.hpp>
+#include <string>
+
+namespace pnetc
+{
+  namespace op
+  {
+    namespace singular_template
+    {
+      static void result
+        ( drts::worker::context *
+        , expr::eval::context const&_pnetc_input
+        , expr::eval::context&_pnetc_output
+        , std::map<std::string, void*> const&
+        )
+      {
+        const unsigned long & k3 (::boost::get< unsigned long > (_pnetc_input.value (std::list<std::string> (1, "k3"))));
+        const unsigned long & k4 (::boost::get< unsigned long > (_pnetc_input.value (std::list<std::string> (1, "k4"))));
+        const we::type::literal::control & c (::boost::get< we::type::literal::control > (_pnetc_input.value (std::list<std::string> (1, "c"))));
+        std::string s (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "s"))));
+        ::pnetc::op::singular_template::result (k3, k4, c, s);
+        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "s"), s);
+      }
+    }
+  }
+}
+#include <pnetc/op/singular_template/EndTime_SchFrame.hpp>
+#include <string>
+
+namespace pnetc
+{
+  namespace op
+  {
+    namespace singular_template
+    {
+      static void EndTime_SchFrame
+        ( drts::worker::context *
+        , expr::eval::context const&_pnetc_input
+        , expr::eval::context&_pnetc_output
+        , std::map<std::string, void*> const&
+        )
+      {
+        const long & start_time (::boost::get< long > (_pnetc_input.value (std::list<std::string> (1, "start_time"))));
+        std::string computed_output (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "computed_output"))));
+        long end_timer;
+        ::pnetc::op::singular_template::EndTime_SchFrame (start_time, computed_output, end_timer);
+        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "computed_output"), computed_output);
+        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "end_timer"), end_timer);
+      }
+    }
+  }
+}
 WE_MOD_INITIALIZE_START()
 {
   WE_REGISTER_FUN_AS (::pnetc::op::singular_template::StartTime,"StartTime");
@@ -160,5 +213,7 @@ WE_MOD_INITIALIZE_START()
   WE_REGISTER_FUN_AS (::pnetc::op::singular_template::leadsyz,"leadsyz");
   WE_REGISTER_FUN_AS (::pnetc::op::singular_template::All_Lead,"All_Lead");
   WE_REGISTER_FUN_AS (::pnetc::op::singular_template::SUBLIFT,"SUBLIFT");
+  WE_REGISTER_FUN_AS (::pnetc::op::singular_template::result,"result");
+  WE_REGISTER_FUN_AS (::pnetc::op::singular_template::EndTime_SchFrame,"EndTime_SchFrame");
 }
 WE_MOD_INITIALIZE_END()

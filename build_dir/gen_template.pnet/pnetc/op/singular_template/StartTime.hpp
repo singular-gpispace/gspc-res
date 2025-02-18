@@ -14,6 +14,7 @@ namespace pnetc
         ( const std::string& input
         , we::type::literal::control& c
         , std::string& output
+        , long& start_time
         );
     }
   }
