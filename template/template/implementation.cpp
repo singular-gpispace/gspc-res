@@ -582,14 +582,14 @@ std::pair<int, lists> LEAD_GPI(leftv args) {
         pSetmComp(lm);
 
         MATELEM(sM, l_k, k+1) =pCopy(lm);
-     ideal M_copy = id_Matrix2Module(mp_Copy(sM,currRing), currRing);
+         ideal A0=id_Matrix2Module(mp_Copy(sM,currRing),currRing);
         // Prepare Ld data
         t = (lists)omAlloc0Bin(slists_bin);
         t->Init(7);
         t->m[0].rtyp = VECTOR_CMD; 
         t->m[0].data = pCopy(s_lift);
         t->m[1].rtyp = SMATRIX_CMD; 
-        t->m[1].data = M_copy;
+        t->m[1].data = A0;
         t->m[2].rtyp = INT_CMD; 
         t->m[2].data = (void*)(long)l_k;
         t->m[3].rtyp = INT_CMD; 
@@ -1462,14 +1462,14 @@ std::pair<int, lists> LIFT_GPI(leftv args) {
         pSetmComp(lm);
 
         MATELEM(sM, l_k, colmn) = p_Mult_q(pISet(-1), pCopy(lm), currRing);
-     ideal M_copy = id_Matrix2Module(mp_Copy(sM,currRing), currRing);
+          ideal A0=id_Matrix2Module(mp_Copy(sM,currRing),currRing);
         // Prepare Ld data
         t = (lists)omAlloc0Bin(slists_bin);
         t->Init(7);
         t->m[0].rtyp = VECTOR_CMD; 
         t->m[0].data = pCopy(p_Mult_q(pISet(-1), s_lift, currRing));
         t->m[1].rtyp = SMATRIX_CMD; 
-        t->m[1].data = M_copy ;
+        t->m[1].data = A0;
         t->m[2].rtyp = INT_CMD; 
         t->m[2].data = (void*)(long)l_k;
         t->m[3].rtyp = INT_CMD; 
@@ -1964,7 +1964,7 @@ std::pair<int, lists> SubLIFT_GPI(leftv args) {
         lists t = (lists)omAlloc0Bin(slists_bin);
         t->Init(2);
         t->m[0].rtyp = STRING_CMD; t->m[0].data = strdup("generators");
-        t->m[1].rtyp = STRING_CMD; t->m[1].data = strdup("Sparse_matrix_Lift");
+        t->m[1].rtyp = STRING_CMD; t->m[1].data = strdup("Sparse_matrix_SubLIFT");
 
         Ld->m[1].rtyp = LIST_CMD; Ld->m[1].data = t;
         Ld->m[0].rtyp = RING_CMD; Ld->m[0].data = currRing;
@@ -2267,13 +2267,13 @@ std::pair<int, lists> reduce_GPI(leftv arg1) {
     A = (matrix)tmpL1->m[1].Data(); // Tok.data[2]
     B = (matrix)tmpl->m[1].Data(); // tok.data[2]
     //smatrix A0=A;
-    // ideal A0=id_Matrix2Module(mp_Copy(A,currRing),currRing);
-    // //smatrix A0=A;
-    // ideal B0=id_Matrix2Module(mp_Copy(B,currRing),currRing);
+    ideal A0=id_Matrix2Module(mp_Copy(A,currRing),currRing);
+    //smatrix A0=A;
+    ideal B0=id_Matrix2Module(mp_Copy(B,currRing),currRing);
     // Perform the matrix addition using Singular's API function
-    // ideal C0 = sm_Add(A0, B0, currRing);
-    // idDelete(&A0);idDelete(&B0);
-    matrix C=mp_Add(A, B, currRing);
+    ideal C0 = sm_Add(A0, B0, currRing);
+    idDelete(&A0);idDelete(&B0);
+    matrix C=id_Module2Matrix(C0,currRing);
 //     std::cout << "Final in ADD transition _Reduce=" << std::endl;
 // for(int k = 1; k <= MATROWS(C); k++) {
 //     for(int l = 1; l <= MATCOLS(C); l++) {
@@ -2450,7 +2450,3 @@ std::string singular_template_removeFiles(const std::string& Red, const std::str
     }
     return {};
 }
-
-
-
-

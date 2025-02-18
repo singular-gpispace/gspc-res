@@ -1,30 +1,34 @@
-[2025-02-18 17:29:34] schipp: pid 41611 tid41616: T: task finished: schipp.job.41597.1
-[2025-02-18 17:29:34] schipp: pid 41617 tid41622: I: place_SchFrame_counter: 3
-[2025-02-18 17:29:34] schipp: pid 41617 tid41622: T: task finished: schipp.job.41597.3
-[2025-02-18 17:29:34] schipp: pid 41623 tid41628: I: #leadSyz=6
-[2025-02-18 17:29:34] schipp: pid 41623 tid41628: T: task finished: schipp.job.41597.2
-[2025-02-18 17:29:34] schipp: pid 41617 tid41622: T: task finished: schipp.job.41597.9
-[2025-02-18 17:29:34] schipp: pid 41623 tid41628: T: task finished: schipp.job.41597.10
-[2025-02-18 17:29:34] schipp: pid 41617 tid41622: I: Calculate elapsed time_SchFrame: = 31110662 nanoseconds
-[2025-02-18 17:29:34] schipp: pid 41623 tid41628: T: task finished: schipp.job.41597.11
-[2025-02-18 17:29:34] schipp: pid 41617 tid41622: T: task finished: schipp.job.41597.7
-[2025-02-18 17:29:34] schipp: pid 41617 tid41622: T: task finished: schipp.job.41597.12
-[2025-02-18 17:29:34] schipp: pid 41623 tid41628: T: task finished: schipp.job.41597.8
-[2025-02-18 17:29:34] schipp: pid 41623 tid41628: T: task finished: schipp.job.41597.13
-[2025-02-18 17:29:34] schipp: pid 41617 tid41622: T: task finished: schipp.job.41597.5
-[2025-02-18 17:29:34] schipp: pid 41623 tid41628: T: task finished: schipp.job.41597.14
-[2025-02-18 17:29:34] schipp: pid 41605 tid41610: T: task finished: schipp.job.41597.4
-[2025-02-18 17:29:34] schipp: pid 41611 tid41616: T: task finished: schipp.job.41597.6
-[2025-02-18 17:29:34] schipp: pid 41617 tid41622: T: task finished: schipp.job.41597.15
-[2025-02-18 17:29:34] schipp: pid 41611 tid41616: T: task finished: schipp.job.41597.16
-[2025-02-18 17:29:34] schipp: pid 41623 tid41628: I: LIFT: 6
-[2025-02-18 17:29:34] schipp: pid 41623 tid41628: I: LeadSyz: /home/santosh/gspc-res/example_dir/temp/schipp_41605_1739896174842092344
-[2025-02-18 17:29:34] schipp: pid 41623 tid41628: T: task finished: schipp.job.41597.17
-[2025-02-18 17:29:34] schipp: pid 41605 tid41610: I: Calculate elapsed time:SchFrame = 31110662 nanoseconds
-[2025-02-18 17:29:34] schipp: pid 41605 tid41610: I:  elapsed time_LIFT: = 57961840 nanoseconds
-[2025-02-18 17:29:34] schipp: pid 41605 tid41610: I: only elapsed time_LIFT:= 26851178 nanoseconds
-[2025-02-18 17:29:34] schipp: pid 41605 tid41610: T: task finished: schipp.job.41597.18
-[2025-02-18 17:29:34] schipp: pid 41623 tid41626: T: worker-schipp 41201 41587-4 is shutting down
-[2025-02-18 17:29:34] schipp: pid 41611 tid41614: T: worker-schipp 41201 41587-2 is shutting down
-[2025-02-18 17:29:34] schipp: pid 41605 tid41608: T: worker-schipp 41201 41587-1 is shutting down
-[2025-02-18 17:29:34] schipp: pid 41617 tid41620: T: worker-schipp 41201 41587-3 is shutting down
+[2025-02-18 19:46:02] schipp: pid 76466 tid76471: T: task finished: schipp.job.76440.1
+[2025-02-18 19:46:02] schipp: pid 76466 tid76471: I: #leadSyz=8
+[2025-02-18 19:46:02] schipp: pid 76466 tid76471: T: task finished: schipp.job.76440.3
+[2025-02-18 19:46:02] schipp: pid 76448 tid76453: I: place_SchFrame_counter: 3
+[2025-02-18 19:46:02] schipp: pid 76448 tid76453: T: task finished: schipp.job.76440.2
+[2025-02-18 19:46:02] schipp: pid 76466 tid76471: T: task finished: schipp.job.76440.4
+[2025-02-18 19:46:02] schipp: pid 76448 tid76453: T: task finished: schipp.job.76440.5
+[2025-02-18 19:46:02] schipp: pid 76454 tid76459: I: Calculate elapsed time_SchFrame: = 28853020 nanoseconds
+[2025-02-18 19:46:02] schipp: pid 76454 tid76459: T: task finished: schipp.job.76440.6
+[2025-02-18 19:46:02] schipp: pid 76466 tid76471: T: task finished: schipp.job.76440.10
+[2025-02-18 19:46:02] schipp: pid 76448 tid76453: T: task finished: schipp.job.76440.7
+[2025-02-18 19:46:02] schipp: pid 76466 tid76471: T: task finished: schipp.job.76440.13
+[2025-02-18 19:46:02] schipp: pid 76448 tid76453: T: task finished: schipp.job.76440.12
+[2025-02-18 19:46:02] schipp: pid 76466 tid76471: T: task finished: schipp.job.76440.9
+[2025-02-18 19:46:02] schipp: pid 76448 tid76453: T: task finished: schipp.job.76440.14
+[2025-02-18 19:46:02] schipp: pid 76448 tid76453: T: task finished: schipp.job.76440.15
+[2025-02-18 19:46:02] schipp: pid 76466 tid76471: T: task finished: schipp.job.76440.16
+[2025-02-18 19:46:02] schipp: pid 76466 tid76471: T: task finished: schipp.job.76440.17
+[2025-02-18 19:46:02] schipp: pid 76448 tid76453: T: task finished: schipp.job.76440.18
+[2025-02-18 19:46:02] schipp: pid 76460 tid76465: T: task finished: schipp.job.76440.11
+[2025-02-18 19:46:02] schipp: pid 76454 tid76459: T: task finished: schipp.job.76440.8
+[2025-02-18 19:46:02] schipp: pid 76448 tid76453: T: task finished: schipp.job.76440.19
+[2025-02-18 19:46:02] schipp: pid 76454 tid76459: T: task finished: schipp.job.76440.20
+[2025-02-18 19:46:02] schipp: pid 76466 tid76471: I: LIFT: 8
+[2025-02-18 19:46:02] schipp: pid 76466 tid76471: I: LeadSyz: /home/santosh/gspc-res/example_dir/temp/schipp_76460_1739904362485291140
+[2025-02-18 19:46:02] schipp: pid 76466 tid76471: T: task finished: schipp.job.76440.21
+[2025-02-18 19:46:02] schipp: pid 76466 tid76471: I: Calculate elapsed time:SchFrame = 28853020 nanoseconds
+[2025-02-18 19:46:02] schipp: pid 76466 tid76471: I:  elapsed time_LIFT: = 56491473 nanoseconds
+[2025-02-18 19:46:02] schipp: pid 76466 tid76471: I: only elapsed time_LIFT:= 27638453 nanoseconds
+[2025-02-18 19:46:02] schipp: pid 76466 tid76471: T: task finished: schipp.job.76440.22
+[2025-02-18 19:46:02] schipp: pid 76466 tid76469: T: worker-schipp 37729 76430-4 is shutting down
+[2025-02-18 19:46:02] schipp: pid 76454 tid76457: T: worker-schipp 37729 76430-2 is shutting down
+[2025-02-18 19:46:02] schipp: pid 76448 tid76451: T: worker-schipp 37729 76430-1 is shutting down
+[2025-02-18 19:46:02] schipp: pid 76460 tid76463: T: worker-schipp 37729 76430-3 is shutting down
