@@ -2450,7 +2450,3 @@ std::string singular_template_removeFiles(const std::string& Red, const std::str
     }
     return {};
 }
-
-
-
-
