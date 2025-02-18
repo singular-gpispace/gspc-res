@@ -23,7 +23,7 @@ namespace pnetc
           
                 output=computed_output;
                  std::cout <<"LIFT: " << lift_count << std::endl;
-        std::cout <<"LeadSyz: " << counter << std::endl;
+        std::cout <<"LeadSyz: " << computed_output << std::endl;
            
             
       }

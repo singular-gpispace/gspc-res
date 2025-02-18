@@ -582,14 +582,14 @@ std::pair<int, lists> LEAD_GPI(leftv args) {
         pSetmComp(lm);
 
         MATELEM(sM, l_k, k+1) =pCopy(lm);
-
+     ideal M_copy = id_Matrix2Module(mp_Copy(sM,currRing), currRing);
         // Prepare Ld data
         t = (lists)omAlloc0Bin(slists_bin);
         t->Init(7);
         t->m[0].rtyp = VECTOR_CMD; 
         t->m[0].data = pCopy(s_lift);
-        t->m[1].rtyp = MATRIX_CMD; 
-        t->m[1].data = sM;
+        t->m[1].rtyp = SMATRIX_CMD; 
+        t->m[1].data = M_copy;
         t->m[2].rtyp = INT_CMD; 
         t->m[2].data = (void*)(long)l_k;
         t->m[3].rtyp = INT_CMD; 
@@ -1462,14 +1462,14 @@ std::pair<int, lists> LIFT_GPI(leftv args) {
         pSetmComp(lm);
 
         MATELEM(sM, l_k, colmn) = p_Mult_q(pISet(-1), pCopy(lm), currRing);
-
+     ideal M_copy = id_Matrix2Module(mp_Copy(sM,currRing), currRing);
         // Prepare Ld data
         t = (lists)omAlloc0Bin(slists_bin);
         t->Init(7);
         t->m[0].rtyp = VECTOR_CMD; 
         t->m[0].data = pCopy(p_Mult_q(pISet(-1), s_lift, currRing));
-        t->m[1].rtyp = MATRIX_CMD; 
-        t->m[1].data = sM;
+        t->m[1].rtyp = SMATRIX_CMD; 
+        t->m[1].data = M_copy ;
         t->m[2].rtyp = INT_CMD; 
         t->m[2].data = (void*)(long)l_k;
         t->m[3].rtyp = INT_CMD; 
