@@ -572,24 +572,41 @@ std::pair<int, lists> LEAD_GPI(leftv args) {
         Ld->m[1].rtyp = LIST_CMD; Ld->m[1].data = t;
         Ld->m[0].rtyp = RING_CMD; Ld->m[0].data = currRing;
         Ld->m[2].rtyp = RING_CMD; Ld->m[2].data = currRing;
-
-        matrix sM = mpNew(r0, c);
+         
+         
+         ideal sM = idInit(c, r0);
+        // matrix sM = mpNew(r0, c);
         poly s_lift = (poly)LT->m[k]; // Retrieve the lifted polynomial
+         std::cout << "#s_lift:=" <<pString(s_lift)<< std::endl;
         int l_k = p_GetComp(s_lift, currRing);
 
         poly lm = pHead(s_lift);
         pSetComp(lm, 0);
         pSetmComp(lm);
+        poly C=sM->m[k];
+        //  std::cout << "#poly C:=" <<pString(C)<< std::endl;
+        poly Ci=p_Vec2Poly(C,l_k,currRing);
+       
+        C=p_Sub(C,Ci,currRing);
+        //  std::cout << "after C-Ci:=" <<pString(C)<< std::endl;
+         poly C1= pCopy(lm);
+                   p_SetComp(C1,l_k,currRing);
+                   p_SetmComp(C1,currRing);
+                   
+//        std::cout << "Before addition C: " << pString(C) << std::endl;
+// std::cout << "Before addition C1: " << pString(C1) << std::endl;
 
-        MATELEM(sM, l_k, k+1) =pCopy(lm);
-         ideal A0=id_Matrix2Module(mp_Copy(sM,currRing),currRing);
+C=p_Add_q(C, pCopy(C1), currRing);
+
+// std::cout << "After addition C: " << pString(C) << std::endl;
+sM->m[k]=C;
         // Prepare Ld data
         t = (lists)omAlloc0Bin(slists_bin);
         t->Init(7);
         t->m[0].rtyp = VECTOR_CMD; 
         t->m[0].data = pCopy(s_lift);
         t->m[1].rtyp = SMATRIX_CMD; 
-        t->m[1].data = A0;
+        t->m[1].data = sM;
         t->m[2].rtyp = INT_CMD; 
         t->m[2].data = (void*)(long)l_k;
         t->m[3].rtyp = INT_CMD; 
@@ -1453,23 +1470,49 @@ std::pair<int, lists> LIFT_GPI(leftv args) {
         Ld->m[0].rtyp = RING_CMD; Ld->m[0].data = currRing;
         Ld->m[2].rtyp = RING_CMD; Ld->m[2].data = currRing;
 
-        matrix sM = mpNew(r0, c);
-        poly s_lift = (poly)lL->m[k].Data(); // Retrieve the lifted polynomial
+      
+  
+         ideal sM = idInit(c, r0);
+        // matrix sM = mpNew(r0, c);
+       poly s_lift = (poly)lL->m[k].Data(); // Retrieve the lifted polynomial
         int l_k = p_GetComp(s_lift, currRing);
 
         poly lm = pHead(s_lift);
         pSetComp(lm, 0);
         pSetmComp(lm);
+        //  std::cout << "#colmn:=" <<colmn<< std::endl;
+        poly C=sM->m[colmn-1];
+        //  std::cout << "#poly C:=" <<pString(C)<< std::endl;
+        poly Ci=p_Vec2Poly(C,l_k,currRing);
+       
+      C= p_Sub(C,Ci,currRing);
+        //  std::cout << "after C-Ci:=" <<pString(C)<< std::endl;
+         poly C1= pCopy(p_Mult_q(pISet(-1), pCopy(lm), currRing));
+                   p_SetComp(C1,l_k,currRing);
+                   p_SetmComp(C1,currRing);
+                   
+//        std::cout << "Before addition C: " << pString(C) << std::endl;
+// std::cout << "Before addition C1: " << pString(C1) << std::endl;
 
-        MATELEM(sM, l_k, colmn) = p_Mult_q(pISet(-1), pCopy(lm), currRing);
-          ideal A0=id_Matrix2Module(mp_Copy(sM,currRing),currRing);
+C=p_Add_q(C, pCopy(C1), currRing);
+
+// std::cout << "After addition C: " << pString(C) << std::endl;
+   sM->m[colmn-1]=C;
+
+
+
+
+
+
+
+
         // Prepare Ld data
         t = (lists)omAlloc0Bin(slists_bin);
         t->Init(7);
         t->m[0].rtyp = VECTOR_CMD; 
         t->m[0].data = pCopy(p_Mult_q(pISet(-1), s_lift, currRing));
         t->m[1].rtyp = SMATRIX_CMD; 
-        t->m[1].data = A0;
+        t->m[1].data = sM;
         t->m[2].rtyp = INT_CMD; 
         t->m[2].data = (void*)(long)l_k;
         t->m[3].rtyp = INT_CMD; 
@@ -1970,22 +2013,46 @@ std::pair<int, lists> SubLIFT_GPI(leftv args) {
         Ld->m[0].rtyp = RING_CMD; Ld->m[0].data = currRing;
         Ld->m[2].rtyp = RING_CMD; Ld->m[2].data = currRing;
 
-        matrix sM = mpNew(r0, c);
-        poly s_lift = (poly)lL->m[k].Data(); // Retrieve the lifted polynomial
+      
+
+           ideal sM = idInit(c, r0);
+        // matrix sM = mpNew(r0, c);
+       poly s_lift = (poly)lL->m[k].Data(); // Retrieve the lifted polynomial
         int l_k = p_GetComp(s_lift, currRing);
 
         poly lm = pHead(s_lift);
         pSetComp(lm, 0);
         pSetmComp(lm);
- //if lm is constant ?? Ask Hans
-        MATELEM(sM, l_k, colmn) = p_Mult_q(pISet(-1), pCopy(lm), currRing);
+         std::cout << "#colmn:=" <<colmn<< std::endl;
+        poly C=sM->m[colmn-1];
+         std::cout << "#poly C:=" <<pString(C)<< std::endl;
+        poly Ci=p_Vec2Poly(C,l_k,currRing);
+       
+      C= p_Sub(C,Ci,currRing);
+         std::cout << "after C-Ci:=" <<pString(C)<< std::endl;
+         poly C1= pCopy(p_Mult_q(pISet(-1), pCopy(lm), currRing));
+                   p_SetComp(C1,l_k,currRing);
+                   p_SetmComp(C1,currRing);
+                   
+       std::cout << "Before addition C: " << pString(C) << std::endl;
+std::cout << "Before addition C1: " << pString(C1) << std::endl;
+
+C=p_Add_q(C, pCopy(C1), currRing);
+
+std::cout << "After addition C: " << pString(C) << std::endl;
+   sM->m[colmn-1]=C;
+
+
+
+
+
 
         // Prepare Ld data
         t = (lists)omAlloc0Bin(slists_bin);
         t->Init(7);
         t->m[0].rtyp = VECTOR_CMD; 
         t->m[0].data = pCopy(p_Mult_q(pISet(-1), s_lift, currRing));
-        t->m[1].rtyp = MATRIX_CMD; 
+        t->m[1].rtyp = SMATRIX_CMD; 
         t->m[1].data = sM;
         t->m[2].rtyp = INT_CMD; 
         t->m[2].data = (void*)(long)l_k;
@@ -2259,21 +2326,19 @@ std::pair<int, lists> reduce_GPI(leftv arg1) {
     lists tmpL1 = (lists)(Tok->m[3].Data()); // Tok.data
     int counter=(int)(long)tmpL1->m[5].Data();//Tok.data[6]
   
-    matrix A;
-    matrix B;
+
+    ideal A = idInit(c, r);
+    ideal B = idInit(c, r);
     //leftv L2=(ideal)tmpL1->m[1];
     lists tmpl=(lists)(tok->m[3].Data()); //tok.data
     //leftv l=(ideal)(tmpl->m[1]);
-    A = (matrix)tmpL1->m[1].Data(); // Tok.data[2]
-    B = (matrix)tmpl->m[1].Data(); // tok.data[2]
+    A = (ideal)tmpL1->m[1].Data(); // Tok.data[2]
+    B = (ideal)tmpl->m[1].Data(); // tok.data[2]
     //smatrix A0=A;
-    ideal A0=id_Matrix2Module(mp_Copy(A,currRing),currRing);
-    //smatrix A0=A;
-    ideal B0=id_Matrix2Module(mp_Copy(B,currRing),currRing);
+    ideal C = idInit(c, r);
     // Perform the matrix addition using Singular's API function
-    ideal C0 = sm_Add(A0, B0, currRing);
-    idDelete(&A0);idDelete(&B0);
-    matrix C=id_Module2Matrix(C0,currRing);
+     C = sm_Add(A, B, currRing);
+ 
 //     std::cout << "Final in ADD transition _Reduce=" << std::endl;
 // for(int k = 1; k <= MATROWS(C); k++) {
 //     for(int l = 1; l <= MATCOLS(C); l++) {
@@ -2298,7 +2363,7 @@ std::pair<int, lists> reduce_GPI(leftv arg1) {
     t=(lists)omAlloc0Bin(slists_bin);
     t->Init(7);
     t->m[0].rtyp = tmpL1->m[0].rtyp;t->m[0].data=tmpL1->m[0].CopyD(); // copy Tok.data[1]
-    t->m[1].rtyp=MATRIX_CMD; t->m[1].data=C;
+    t->m[1].rtyp=SMATRIX_CMD; t->m[1].data=C;
     t->m[2].rtyp=INT_CMD;  t->m[2].data = (void*)(long)r;
     t->m[3].rtyp=INT_CMD; t->m[3].data = (void*)(long)c;
     

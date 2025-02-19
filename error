@@ -1,34 +1,66 @@
-[2025-02-18 19:46:02] schipp: pid 76466 tid76471: T: task finished: schipp.job.76440.1
-[2025-02-18 19:46:02] schipp: pid 76466 tid76471: I: #leadSyz=8
-[2025-02-18 19:46:02] schipp: pid 76466 tid76471: T: task finished: schipp.job.76440.3
-[2025-02-18 19:46:02] schipp: pid 76448 tid76453: I: place_SchFrame_counter: 3
-[2025-02-18 19:46:02] schipp: pid 76448 tid76453: T: task finished: schipp.job.76440.2
-[2025-02-18 19:46:02] schipp: pid 76466 tid76471: T: task finished: schipp.job.76440.4
-[2025-02-18 19:46:02] schipp: pid 76448 tid76453: T: task finished: schipp.job.76440.5
-[2025-02-18 19:46:02] schipp: pid 76454 tid76459: I: Calculate elapsed time_SchFrame: = 28853020 nanoseconds
-[2025-02-18 19:46:02] schipp: pid 76454 tid76459: T: task finished: schipp.job.76440.6
-[2025-02-18 19:46:02] schipp: pid 76466 tid76471: T: task finished: schipp.job.76440.10
-[2025-02-18 19:46:02] schipp: pid 76448 tid76453: T: task finished: schipp.job.76440.7
-[2025-02-18 19:46:02] schipp: pid 76466 tid76471: T: task finished: schipp.job.76440.13
-[2025-02-18 19:46:02] schipp: pid 76448 tid76453: T: task finished: schipp.job.76440.12
-[2025-02-18 19:46:02] schipp: pid 76466 tid76471: T: task finished: schipp.job.76440.9
-[2025-02-18 19:46:02] schipp: pid 76448 tid76453: T: task finished: schipp.job.76440.14
-[2025-02-18 19:46:02] schipp: pid 76448 tid76453: T: task finished: schipp.job.76440.15
-[2025-02-18 19:46:02] schipp: pid 76466 tid76471: T: task finished: schipp.job.76440.16
-[2025-02-18 19:46:02] schipp: pid 76466 tid76471: T: task finished: schipp.job.76440.17
-[2025-02-18 19:46:02] schipp: pid 76448 tid76453: T: task finished: schipp.job.76440.18
-[2025-02-18 19:46:02] schipp: pid 76460 tid76465: T: task finished: schipp.job.76440.11
-[2025-02-18 19:46:02] schipp: pid 76454 tid76459: T: task finished: schipp.job.76440.8
-[2025-02-18 19:46:02] schipp: pid 76448 tid76453: T: task finished: schipp.job.76440.19
-[2025-02-18 19:46:02] schipp: pid 76454 tid76459: T: task finished: schipp.job.76440.20
-[2025-02-18 19:46:02] schipp: pid 76466 tid76471: I: LIFT: 8
-[2025-02-18 19:46:02] schipp: pid 76466 tid76471: I: LeadSyz: /home/santosh/gspc-res/example_dir/temp/schipp_76460_1739904362485291140
-[2025-02-18 19:46:02] schipp: pid 76466 tid76471: T: task finished: schipp.job.76440.21
-[2025-02-18 19:46:02] schipp: pid 76466 tid76471: I: Calculate elapsed time:SchFrame = 28853020 nanoseconds
-[2025-02-18 19:46:02] schipp: pid 76466 tid76471: I:  elapsed time_LIFT: = 56491473 nanoseconds
-[2025-02-18 19:46:02] schipp: pid 76466 tid76471: I: only elapsed time_LIFT:= 27638453 nanoseconds
-[2025-02-18 19:46:02] schipp: pid 76466 tid76471: T: task finished: schipp.job.76440.22
-[2025-02-18 19:46:02] schipp: pid 76466 tid76469: T: worker-schipp 37729 76430-4 is shutting down
-[2025-02-18 19:46:02] schipp: pid 76454 tid76457: T: worker-schipp 37729 76430-2 is shutting down
-[2025-02-18 19:46:02] schipp: pid 76448 tid76451: T: worker-schipp 37729 76430-1 is shutting down
-[2025-02-18 19:46:02] schipp: pid 76460 tid76463: T: worker-schipp 37729 76430-3 is shutting down
+[2025-02-19 11:09:43] schipp: pid 124442 tid124447: T: task finished: schipp.job.124419.1
+[2025-02-19 11:09:43] schipp: pid 124454 tid124459: I: #s_lift:=w*gen(2)
+[2025-02-19 11:09:43] schipp: pid 124430 tid124441: I: place_SchFrame_counter: 3
+[2025-02-19 11:09:43] schipp: pid 124454 tid124459: I: #s_lift:=w*gen(3)
+[2025-02-19 11:09:43] schipp: pid 124430 tid124441: T: task finished: schipp.job.124419.3
+[2025-02-19 11:09:43] schipp: pid 124454 tid124459: I: #s_lift:=w*gen(4)
+[2025-02-19 11:09:43] schipp: pid 124454 tid124459: I: #s_lift:=x*gen(4)
+[2025-02-19 11:09:43] schipp: pid 124454 tid124459: I: #s_lift:=w2*gen(5)
+[2025-02-19 11:09:43] schipp: pid 124454 tid124459: I: #s_lift:=x*gen(5)
+[2025-02-19 11:09:43] schipp: pid 124454 tid124459: I: leadSyz_Success:/home/santosh/gspc-res/example_dir/temp/schipp_124454_1739959783893267082
+[2025-02-19 11:09:43] schipp: pid 124454 tid124459: I: leadSyz_Success:/home/santosh/gspc-res/example_dir/temp/schipp_124454_1739959783893341477
+[2025-02-19 11:09:43] schipp: pid 124454 tid124459: I: leadSyz_Success:/home/santosh/gspc-res/example_dir/temp/schipp_124454_1739959783893384807
+[2025-02-19 11:09:43] schipp: pid 124454 tid124459: I: leadSyz_Success:/home/santosh/gspc-res/example_dir/temp/schipp_124454_1739959783893425709
+[2025-02-19 11:09:43] schipp: pid 124454 tid124459: I: leadSyz_Success:/home/santosh/gspc-res/example_dir/temp/schipp_124454_1739959783893467573
+[2025-02-19 11:09:43] schipp: pid 124454 tid124459: I: leadSyz_Success:/home/santosh/gspc-res/example_dir/temp/schipp_124454_1739959783893506949
+[2025-02-19 11:09:43] schipp: pid 124454 tid124459: I: #leadSyz=6
+[2025-02-19 11:09:43] schipp: pid 124454 tid124459: T: task finished: schipp.job.124419.2
+[2025-02-19 11:09:43] schipp: pid 124454 tid124459: T: task finished: schipp.job.124419.4
+[2025-02-19 11:09:43] schipp: pid 124430 tid124441: I: LIFT_Success:/home/santosh/gspc-res/example_dir/temp/schipp_124430_1739959783894914059
+[2025-02-19 11:09:43] schipp: pid 124430 tid124441: I: LIFT_Success:/home/santosh/gspc-res/example_dir/temp/schipp_124430_1739959783894966772
+[2025-02-19 11:09:43] schipp: pid 124430 tid124441: T: task finished: schipp.job.124419.10
+[2025-02-19 11:09:43] schipp: pid 124454 tid124459: I: LIFT_Success:/home/santosh/gspc-res/example_dir/temp/schipp_124454_1739959783895505109
+[2025-02-19 11:09:43] schipp: pid 124454 tid124459: I: LIFT_Success:/home/santosh/gspc-res/example_dir/temp/schipp_124454_1739959783895559138
+[2025-02-19 11:09:43] schipp: pid 124454 tid124459: T: task finished: schipp.job.124419.7
+[2025-02-19 11:09:43] schipp: pid 124430 tid124441: T: task finished: schipp.job.124419.11
+[2025-02-19 11:09:43] schipp: pid 124430 tid124441: T: task finished: schipp.job.124419.12
+[2025-02-19 11:09:43] schipp: pid 124454 tid124459: I: LIFT_Success:/home/santosh/gspc-res/example_dir/temp/schipp_124454_1739959783896449955
+[2025-02-19 11:09:43] schipp: pid 124454 tid124459: T: task finished: schipp.job.124419.8
+[2025-02-19 11:09:43] schipp: pid 124430 tid124441: T: task finished: schipp.job.124419.13
+[2025-02-19 11:09:43] schipp: pid 124454 tid124459: I: Reduce:/home/santosh/gspc-res/example_dir/temp/schipp_124454_1739959783897230894
+[2025-02-19 11:09:43] schipp: pid 124454 tid124459: T: task finished: schipp.job.124419.14
+[2025-02-19 11:09:43] schipp: pid 124430 tid124441: T: task finished: schipp.job.124419.15
+[2025-02-19 11:09:43] schipp: pid 124454 tid124459: T: task finished: schipp.job.124419.16
+[2025-02-19 11:09:43] schipp: pid 124430 tid124441: I: LIFT_Success:/home/santosh/gspc-res/example_dir/temp/schipp_124430_1739959783898219472
+[2025-02-19 11:09:43] schipp: pid 124430 tid124441: I: LIFT_Success:/home/santosh/gspc-res/example_dir/temp/schipp_124430_1739959783898279112
+[2025-02-19 11:09:43] schipp: pid 124454 tid124459: T: task finished: schipp.job.124419.17
+[2025-02-19 11:09:43] schipp: pid 124430 tid124441: T: task finished: schipp.job.124419.6
+[2025-02-19 11:09:43] schipp: pid 124454 tid124459: T: task finished: schipp.job.124419.19
+[2025-02-19 11:09:43] schipp: pid 124430 tid124441: I: Reduce:/home/santosh/gspc-res/example_dir/temp/schipp_124430_1739959783899168623
+[2025-02-19 11:09:43] schipp: pid 124430 tid124441: T: task finished: schipp.job.124419.18
+[2025-02-19 11:09:43] schipp: pid 124454 tid124459: T: task finished: schipp.job.124419.20
+[2025-02-19 11:09:43] schipp: pid 124430 tid124441: T: task finished: schipp.job.124419.21
+[2025-02-19 11:09:43] schipp: pid 124454 tid124459: T: task finished: schipp.job.124419.23
+[2025-02-19 11:09:43] schipp: pid 124430 tid124441: I: Reduce:/home/santosh/gspc-res/example_dir/temp/schipp_124430_1739959783900489934
+[2025-02-19 11:09:43] schipp: pid 124430 tid124441: T: task finished: schipp.job.124419.22
+[2025-02-19 11:09:43] schipp: pid 124454 tid124459: T: task finished: schipp.job.124419.24
+[2025-02-19 11:09:43] schipp: pid 124430 tid124441: T: task finished: schipp.job.124419.25
+[2025-02-19 11:09:43] schipp: pid 124454 tid124459: I: Reduce:/home/santosh/gspc-res/example_dir/temp/schipp_124454_1739959783901633941
+[2025-02-19 11:09:43] schipp: pid 124454 tid124459: T: task finished: schipp.job.124419.26
+[2025-02-19 11:09:43] schipp: pid 124430 tid124441: T: task finished: schipp.job.124419.27
+[2025-02-19 11:09:43] schipp: pid 124454 tid124459: I: Reduce:/home/santosh/gspc-res/example_dir/temp/schipp_124454_1739959783902909601
+[2025-02-19 11:09:43] schipp: pid 124454 tid124459: T: task finished: schipp.job.124419.28
+[2025-02-19 11:09:43] schipp: pid 124454 tid124459: T: task finished: schipp.job.124419.29
+[2025-02-19 11:09:43] schipp: pid 124442 tid124447: I: LIFT_Success:/home/santosh/gspc-res/example_dir/temp/schipp_124442_1739959783918737970
+[2025-02-19 11:09:43] schipp: pid 124448 tid124453: I: LIFT_Success:/home/santosh/gspc-res/example_dir/temp/schipp_124448_1739959783918737162
+[2025-02-19 11:09:43] schipp: pid 124442 tid124447: T: task finished: schipp.job.124419.5
+[2025-02-19 11:09:43] schipp: pid 124448 tid124453: T: task finished: schipp.job.124419.9
+[2025-02-19 11:09:43] schipp: pid 124442 tid124447: T: task finished: schipp.job.124419.30
+[2025-02-19 11:09:43] schipp: pid 124430 tid124441: T: task finished: schipp.job.124419.31
+[2025-02-19 11:09:43] schipp: pid 124454 tid124459: I: LIFT: 6
+[2025-02-19 11:09:43] schipp: pid 124454 tid124459: I: LeadSyz: /home/santosh/gspc-res/example_dir/temp/schipp_124430_1739959783898279112
+[2025-02-19 11:09:43] schipp: pid 124454 tid124459: T: task finished: schipp.job.124419.32
+[2025-02-19 11:09:43] schipp: pid 124454 tid124457: T: worker-schipp 44943 124405-4 is shutting down
+[2025-02-19 11:09:43] schipp: pid 124448 tid124451: T: worker-schipp 44943 124405-3 is shutting down
+[2025-02-19 11:09:43] schipp: pid 124442 tid124445: T: worker-schipp 44943 124405-2 is shutting down
+[2025-02-19 11:09:43] schipp: pid 124430 tid124439: T: worker-schipp 44943 124405-1 is shutting down

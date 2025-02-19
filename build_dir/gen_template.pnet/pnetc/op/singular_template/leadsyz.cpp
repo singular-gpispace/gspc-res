@@ -25,6 +25,7 @@ namespace pnetc
         , const std::string& base_filename
         , int& counter
         , std::list<pnet::type::value::value_type>& OUT
+        , std::list<pnet::type::value::value_type>& Sublift
         )
       {
 #line 175 "/home/santosh/gspc-res/template/workflow/template.xpnet"
@@ -41,9 +42,9 @@ namespace pnetc
                       
                          for(int i (0); i<vec.size(); i++)
                                                                  {
-                          //std::cout << "leadSyz_Success:"<<vec[i] << std::endl;
+                          std::cout << "leadSyz_Success:"<<vec[i] << std::endl;
                           OUT.emplace_back(vec[i]);
-                       
+                            Sublift.emplace_back(vec[i]);
                          //std::cout << "leadSyz_Success:"<<vec[i] << std::endl;
                           //std::cout << "SubliftleadSyz_Success:"<<vec[i] << std::endl;
                           

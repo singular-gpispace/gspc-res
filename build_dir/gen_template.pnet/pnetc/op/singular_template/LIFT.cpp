@@ -27,7 +27,7 @@ namespace pnetc
         , we::type::literal::control& D
         )
       {
-#line 286 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 248 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
                   //  std::cout << "in singular _PetriNet_.._LIFT" << std::endl;
                    
@@ -41,7 +41,7 @@ namespace pnetc
                         
                          for(int i (0); i<vec.size(); i++)
                                                                  {
-                         //std::cout << "LIFT_Success:"<<out.first[i] << std::endl;
+                         std::cout << "LIFT_Success:"<<vec[i] << std::endl;
                           LIFT.emplace_back(vec[i]);
                        
                          

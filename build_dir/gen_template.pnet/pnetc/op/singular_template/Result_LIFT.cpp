@@ -18,7 +18,7 @@ namespace pnetc
         , std::string& output
         )
       {
-#line 390 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 352 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
           
                 output=computed_output;
