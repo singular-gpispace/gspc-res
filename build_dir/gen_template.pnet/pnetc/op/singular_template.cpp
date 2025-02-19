@@ -316,7 +316,7 @@ namespace pnetc
     }
   }
 }
-#include <pnetc/op/singular_template/EndTime_SchFrame.hpp>
+#include <pnetc/op/singular_template/EndTime_Syz.hpp>
 #include <string>
 
 namespace pnetc
@@ -325,7 +325,7 @@ namespace pnetc
   {
     namespace singular_template
     {
-      static void EndTime_SchFrame
+      static void EndTime_Syz
         ( drts::worker::context *
         , expr::eval::context const&_pnetc_input
         , expr::eval::context&_pnetc_output
@@ -335,7 +335,7 @@ namespace pnetc
         const long & start_time (::boost::get< long > (_pnetc_input.value (std::list<std::string> (1, "start_time"))));
         std::string computed_output (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "computed_output"))));
         long end_timer;
-        ::pnetc::op::singular_template::EndTime_SchFrame (start_time, computed_output, end_timer);
+        ::pnetc::op::singular_template::EndTime_Syz (start_time, computed_output, end_timer);
         _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "computed_output"), computed_output);
         _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "end_timer"), end_timer);
       }
@@ -355,6 +355,6 @@ WE_MOD_INITIALIZE_START()
   WE_REGISTER_FUN_AS (::pnetc::op::singular_template::removeFiles,"removeFiles");
   WE_REGISTER_FUN_AS (::pnetc::op::singular_template::plus,"plus");
   WE_REGISTER_FUN_AS (::pnetc::op::singular_template::result,"result");
-  WE_REGISTER_FUN_AS (::pnetc::op::singular_template::EndTime_SchFrame,"EndTime_SchFrame");
+  WE_REGISTER_FUN_AS (::pnetc::op::singular_template::EndTime_Syz,"EndTime_Syz");
 }
 WE_MOD_INITIALIZE_END()

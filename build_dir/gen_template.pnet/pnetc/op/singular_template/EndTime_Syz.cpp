@@ -1,4 +1,4 @@
-#include <pnetc/op/singular_template/EndTime_SchFrame.hpp>
+#include <pnetc/op/singular_template/EndTime_Syz.hpp>
 #include <string>
 #include <interface/template_interface.hpp>
 #include <util-generic/dynamic_linking.hpp>
@@ -11,7 +11,7 @@ namespace pnetc
   {
     namespace singular_template
     {
-      void EndTime_SchFrame
+      void EndTime_Syz
         ( const long& start_time
         , std::string& computed_output
         , long& end_timer

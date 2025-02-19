@@ -676,13 +676,13 @@
 <place name ="place_endTime_SubLIFT" type ="long"/>
 
  <!-- Transition: EndTime -->
-<transition name="EndTime_SubLIFt">
+<transition name="EndTime_Syz">
     <defun>
         <in name="start_time" type="long"/>
         <inout name="computed_output" type="string"/>
       
         <out name="end_timer" type="long"/>
-         <module name="singular_template" function="EndTime_SchFrame(start_time,computed_output,end_timer)">
+         <module name="singular_template" function="EndTime_Syz(start_time,computed_output,end_timer)">
          <cinclude href="interface/template_interface.hpp" />
       <cinclude href="util-generic/dynamic_linking.hpp"/>
       <cinclude href="iostream"/>
