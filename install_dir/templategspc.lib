@@ -192,8 +192,8 @@ print("timer");
        setring resultRing;
     // Extract the data from resultToken
     def Result = resultToken.data;
-   print("beforeReturn");
-  print(Result);
+//    print("beforeReturn");
+//   print(Result);
     
 
 
