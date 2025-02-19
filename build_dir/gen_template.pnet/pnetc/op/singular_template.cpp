@@ -369,10 +369,11 @@ namespace pnetc
         const unsigned long & k2 (::boost::get< unsigned long > (_pnetc_input.value (std::list<std::string> (1, "k2"))));
         const unsigned long & k3 (::boost::get< unsigned long > (_pnetc_input.value (std::list<std::string> (1, "k3"))));
         const unsigned long & k4 (::boost::get< unsigned long > (_pnetc_input.value (std::list<std::string> (1, "k4"))));
+        const int & nleads (::boost::get< int > (_pnetc_input.value (std::list<std::string> (1, "nleads"))));
         std::string s (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "s"))));
         we::type::literal::control ctrl (::boost::get< we::type::literal::control > (_pnetc_input.value (std::list<std::string> (1, "ctrl"))));
-        int d_back;
-        ::pnetc::op::singular_template::result (k1, k2, k3, k4, s, ctrl, d_back);
+        int d_back (::boost::get< int > (_pnetc_input.value (std::list<std::string> (1, "d_back"))));
+        ::pnetc::op::singular_template::result (k1, k2, k3, k4, nleads, s, ctrl, d_back);
         _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "s"), s);
         _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "ctrl"), ctrl);
         _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "d_back"), d_back);

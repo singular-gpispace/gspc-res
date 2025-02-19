@@ -610,9 +610,9 @@
         <in name="k2" type="unsigned long"/>
          <in name="k3" type="unsigned long"/>
          <in name="k4" type="unsigned long"/>
-        <out name ="d_back" type ="int"/>
-   
-    <module name="singular_template" function="result(s,k1,k2,k3,k4,ctrl,d_back)">
+        <inout name ="d_back" type ="int"/>
+         <in name ="nleads" type ="int"/>
+    <module name="singular_template" function="result(s,k1,k2,k3,k4,ctrl,d_back,nleads)">
       <cinclude href="interface/template_interface.hpp" />
       <cinclude href="util-generic/dynamic_linking.hpp"/>
        <cinclude href="iostream"/>
@@ -645,6 +645,8 @@
      <connect-number-of-tokens port="k3" place="place_Tau"/>
     <connect-number-of-tokens port="k4" place="place_lead"/>
      <connect-in port="ctrl" place="right_init"/>
+      <connect-in port="d_back" place="Count_LIFT"/>
+       <connect-in port="nleads" place="place_counter"/>
 <connect-out port="ctrl" place="left_init"/>
   <connect-out port="s" place="place_Syz"/>
    <connect-out port="d_back" place="Count_LIFT"/>
