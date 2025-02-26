@@ -16,8 +16,8 @@ namespace pnetc
         , const std::string& l
         , const std::string& r
         , std::string& s
-        , std::string& LHS_delete
         , std::string& RHS_delete
+        , std::string& LHS_delete
         );
     }
   }

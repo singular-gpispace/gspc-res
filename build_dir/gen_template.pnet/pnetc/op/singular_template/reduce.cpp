@@ -18,11 +18,11 @@ namespace pnetc
         , const std::string& l
         , const std::string& r
         , std::string& s
-        , std::string& LHS_delete
         , std::string& RHS_delete
+        , std::string& LHS_delete
         )
       {
-#line 489 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 534 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
 
                 
@@ -32,12 +32,11 @@ namespace pnetc
 						 auto result  = RESOLVE_INTERFACE_FUNCTION(singular_template_reduce)(input,l,r,library_name, base_filename
 							); 
                 s = result.first;
-                 LHS_delete=l;
-                          
-                 RHS_delete=r;
-           
+        
             // std::cout << "Reduce:" << s << std::endl;
-               
+                  LHS_delete=l;
+                          
+                       RHS_delete=r;
 
 //std::cout << "Reduce Duration: " << runtime << " milliseconds" << std::endl;
 

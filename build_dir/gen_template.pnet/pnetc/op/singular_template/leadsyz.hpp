@@ -20,7 +20,6 @@ namespace pnetc
         , int& counter
         , std::list<pnet::type::value::value_type>& OUT
         , std::list<pnet::type::value::value_type>& Sublift
-        , std::string& syz_sum
         );
     }
   }

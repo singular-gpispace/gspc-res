@@ -26,10 +26,9 @@ namespace pnetc
         , int& counter
         , std::list<pnet::type::value::value_type>& OUT
         , std::list<pnet::type::value::value_type>& Sublift
-        , std::string& syz_sum
         )
       {
-#line 177 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 176 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
             
             
@@ -41,7 +40,7 @@ namespace pnetc
                     
                       counter=total_generator;
                       
-                         for(int i (0); i<total_generator; i++)
+                         for(int i (0); i<vec.size(); i++)
                                                                  {
                           //std::cout << "leadSyz_Success:"<<vec[i] << std::endl;
                           OUT.emplace_back(vec[i]);
@@ -50,9 +49,9 @@ namespace pnetc
                           //std::cout << "SubliftleadSyz_Success:"<<vec[i] << std::endl;
                           
                           }
-                       syz_sum=vec[total_generator-1];
                       
-                          std::cout << "#leadSyz="<<syz_sum<< std::endl;
+                      
+                          std::cout << "#leadSyz="<<counter<< std::endl;
 
             
                    

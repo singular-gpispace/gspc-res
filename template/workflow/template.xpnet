@@ -27,12 +27,11 @@
     <place name="place_lead" type="string"/>
     <place name="place_Tau" type="string"/>
     <place name ="place_SubLift" type ="string"/>
-  
-    <place name ="place_Syz" type ="string"/>
- 
+
+  <place name ="place_Syz" type ="string"/>
     <place name="place_counter" type="int"/>
-  <place name ="place_Final_Syz" type ="string"/>
  
+ <place name ="place_Final_Syz" type ="string"/>
 
 
 
@@ -161,10 +160,10 @@
        <out name ="Sublift" type ="list"/>
         <out name="counter" type="int"/>
         <out name="OUT" type="list"/>
-        <out name="syz_sum" type="string"/>
+       
       <module name="singular_template"
                 require_function_unloads_without_rest="false"
-                function="leadsyz(input,s,counter,OUT,library_name,base_filename,Sublift,syz_sum)">
+                function="leadsyz(input,s,counter,OUT,library_name,base_filename,Sublift)">
         <cinclude href="interface/template_interface.hpp" />
         <cinclude href="util-generic/dynamic_linking.hpp"/>
         <cinclude href="vector"/>
@@ -185,7 +184,7 @@
                     
                       counter=total_generator;
                       
-                         for(int i (0); i<total_generator; i++)
+                         for(int i (0); i<vec.size(); i++)
                                                                  {
                           //std::cout << "leadSyz_Success:"<<vec[i] << std::endl;
                           OUT.emplace_back(vec[i]);
@@ -194,9 +193,9 @@
                           //std::cout << "SubliftleadSyz_Success:"<<vec[i] << std::endl;
                           
                           }
-                       syz_sum=vec[total_generator-1];
                       
-                          std::cout << "#leadSyz="<<syz_sum<< std::endl;
+                      
+                          std::cout << "#leadSyz="<<counter<< std::endl;
 
             
                    
@@ -211,9 +210,9 @@
       <connect-out-many port="OUT" place="place_lead"/>
      
         <connect-out-many port="Sublift" place="place_SubLift"/>
-       <connect-out port="syz_sum" place="place_Syz"/>
+     
        <connect-out port="counter" place="place_counter"/>
-    
+     
     </transition>
 
 
@@ -462,10 +461,56 @@
   </transition> 
 
 
+<place name="left_init" type="control">
+  <token><value>[]</value></token>
+</place>
+<place name="right_init" type="control"/>
+<place name="L" type="string"/>
+<place name="R" type="string"/>
+
+
+
+    <transition name="LHS">
+      <defun>
+        <inout name="a" type="string"/>
+        <inout name="s" type="control"/>
+
+        <module name="singular_template" function="count(a)">
+        <cinclude href="iostream"/>
+        <code><![CDATA[
+       //std::cout << "LHS: " << a << std::endl;
+        ]]></code>
+        </module>
+      </defun>
+      <connect-in port="s" place="left_init"/>
+      <connect-out port="s" place="right_init"/>
+      <connect-in port="a" place="place_SubLift"/>
+      <connect-out port="a" place="L"/>
+    </transition>
+
+
+
+<transition name="RHS">
+      <defun>
+        <inout name="a" type="string"/>
+        <inout name="s" type="control"/>
+        <module name="singular_template" function="plus(a)">
+        <cinclude href="iostream"/>
+        <code><![CDATA[
+       //std::cout << "RHS: " << a << std::endl;
+        ]]></code>
+        </module>
+      </defun>
+      <connect-in port="a" place="place_SubLift"/>
+      <connect-in port="s" place="right_init"/>
+      <connect-out port="s" place="left_init"/>
+      <connect-out port="a" place="R"/>
+
+    </transition>
 
 
 <!-- Transition 5: Reduce-->
-    <transition name="Add1">
+    <transition name="Reduce">
       <defun>
       <require key="worker" mandatory="true"/>
     
@@ -475,12 +520,12 @@
         <in name="l" type="string"/>
         <in name="r" type="string"/>
         <in name="input" type="string"/>
-       <out name="LHS_delete" type="string"/>
+      <out name="LHS_delete" type="string"/>
        <out name="RHS_delete" type="string"/>
        
      <module name="singular_template"
               		require_function_unloads_without_rest="false"
-              		function="reduce(library_name, base_filename,input, s,l,r,LHS_delete,RHS_delete)">
+              		function="reduce(library_name, base_filename,input, s,l,r,RHS_delete,LHS_delete)">
           		<cinclude href="interface/template_interface.hpp" />
           		<cinclude href="util-generic/dynamic_linking.hpp"/>
               <cinclude href="iostream"/>
@@ -495,12 +540,11 @@
 						 auto result  = RESOLVE_INTERFACE_FUNCTION(singular_template_reduce)(input,l,r,library_name, base_filename
 							); 
                 s = result.first;
-                 LHS_delete=l;
-                          
-                 RHS_delete=r;
-           
+        
             // std::cout << "Reduce:" << s << std::endl;
-               
+                  LHS_delete=l;
+                          
+                       RHS_delete=r;
 
 //std::cout << "Reduce Duration: " << runtime << " milliseconds" << std::endl;
 
@@ -511,19 +555,14 @@
       <connect-read port="library_name" place="place_library_name"/> 
       <connect-read port="base_filename" place="place_base_filename"/>
       <connect-read port="input" place="place_input_GB"/>
-      <connect-in port="l" place="place_SubLift"/>
-     <connect-in port="r" place="place_Syz"/>
-     
-      <connect-out port="s" place="place_Syz"/>
+      <connect-in port="l" place="L"/>
+      <connect-in port="r" place="R"/>
+      <connect-out port="s" place="place_SubLift"/>
+  
        <connect-out port="LHS_delete" place="LHS_delete"/>
        <connect-out port="RHS_delete" place="RHS_delete"/>
+  
     </transition> 
-
-
-
-
-
-
 
 
 
@@ -552,7 +591,7 @@
       <code><![CDATA[
         // std::cout <<"LIFT: " << LIFT << std::endl;
         // std::cout <<"LeadSyz: " << nleads << std::endl;
-       auto s = RESOLVE_INTERFACE_FUNCTION(singular_template_removeFiles)(l, r);
+        auto s = RESOLVE_INTERFACE_FUNCTION(singular_template_removeFiles)(l, r);
         // std::cout << "Delete:" << s << std::endl;
       ]]></code>
     </module>
@@ -567,23 +606,28 @@
   <connect-read port="LIFT" place="Count_LIFT"/>
    <connect-read port="nleads" place="place_counter"/>
    
- 
+
 </transition>
 
 
-<transition name="Result">
+
+
+
+
+
+ <transition name="Result">
   <defun>
    
     
      <inout name="s" type="string"/>
     
       <in name="k1" type="unsigned long"/>
-     
+        <in name="k2" type="unsigned long"/>
          <in name="k3" type="unsigned long"/>
          <in name="k4" type="unsigned long"/>
 
    
-    <module name="singular_template" function="result(s,k1,k3,k4)">
+    <module name="singular_template" function="result(s,k1,k2,k3,k4)">
       <cinclude href="interface/template_interface.hpp" />
       <cinclude href="util-generic/dynamic_linking.hpp"/>
        <cinclude href="iostream"/>
@@ -600,7 +644,7 @@
     </module>
        
      <condition>
-      ${k1} :eq: 0UL :and: ${k3} :eq: 0UL :and: ${k4} :eq: 0UL
+      ${k1} :eq: 0UL :and:  ${k2} :eq: 0UL :and: ${k3} :eq: 0UL :and: ${k4} :eq: 0UL
       
      
   
@@ -610,14 +654,14 @@
    
 
   </defun>
- 
+  <connect-in port="s" place="L"/>
   <connect-number-of-tokens port="k1" place="place_SubLift"/>
-  
+   <connect-number-of-tokens port="k2" place="R"/>
      <connect-number-of-tokens port="k3" place="place_Tau"/>
     <connect-number-of-tokens port="k4" place="place_lead"/>
  
-  <connect-in port="s" place="place_Syz"/>
-  <connect-out port="s" place="L"/>
+  <connect-out port="s" place="place_Syz"/>
+ 
 
  
   
@@ -626,7 +670,7 @@
 
 
 
-<place name ="L" type ="string"/>
+
 
 
 
@@ -637,7 +681,7 @@
         <in name="start_time" type="long"/>
         <inout name="computed_output" type="string"/>
       
-      
+       
          <module name="singular_template" function="EndTime_Syz(start_time,computed_output)">
          <cinclude href="interface/template_interface.hpp" />
       <cinclude href="util-generic/dynamic_linking.hpp"/>
@@ -647,7 +691,7 @@
                 auto computation_time = std::chrono::high_resolution_clock::now();
                 auto duration = computation_time.time_since_epoch();
                 long current_time = std::chrono::duration_cast<std::chrono::nanoseconds>(duration).count();
-               long end_timer = current_time - start_time; // Calculate elapsed time
+               auto  end_timer = current_time - start_time; // Calculate elapsed time
               
                 std::cout << "Calculate Syz: = " << end_timer << " nanoseconds" << std::endl;
             ]]></code>
@@ -656,10 +700,10 @@
     </defun>
     
     <connect-in port="start_time" place="place_StartTime"/>
-    <connect-in port="computed_output" place="L"/>
+    <connect-in port="computed_output" place="place_Syz"/>
    
     <connect-out port="computed_output" place="place_Final_Syz"/>
-   
+  
     
 </transition>
 

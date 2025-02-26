@@ -12,12 +12,13 @@ namespace pnetc
     {
       void result
         ( const unsigned long& k1
+        , const unsigned long& k2
         , const unsigned long& k3
         , const unsigned long& k4
         , std::string& s
         )
       {
-#line 590 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 634 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
         
          
