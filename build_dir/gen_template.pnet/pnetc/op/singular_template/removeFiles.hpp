@@ -14,7 +14,6 @@ namespace pnetc
         , const int& nleads
         , const std::string& l
         , const std::string& r
-        , std::string& s
         );
     }
   }

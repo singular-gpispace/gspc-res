@@ -12,7 +12,6 @@ namespace pnetc
       void EndTime_Syz
         ( const long& start_time
         , std::string& computed_output
-        , long& end_timer
         );
     }
   }

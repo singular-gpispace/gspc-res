@@ -15,14 +15,13 @@ namespace pnetc
         , const int& nleads
         , const std::string& l
         , const std::string& r
-        , std::string& s
         )
       {
-#line 591 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 552 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
         // std::cout <<"LIFT: " << LIFT << std::endl;
         // std::cout <<"LeadSyz: " << nleads << std::endl;
-        s = RESOLVE_INTERFACE_FUNCTION(singular_template_removeFiles)(l, r);
+       auto s = RESOLVE_INTERFACE_FUNCTION(singular_template_removeFiles)(l, r);
         // std::cout << "Delete:" << s << std::endl;
       
       }
