@@ -19,8 +19,7 @@
 #include <vector>
 #include <map>
 #include <filesystem>
-#include <sstream>
-#include <string>
+
 
 NO_NAME_MANGLING
 std::string singular_template_compute_StdBasis(std::string const& input_filename 
@@ -2156,7 +2155,7 @@ std::tuple<std::vector<std::string>, int, long> singular_template_SUBLIFT(const 
     
     // Debugging: Print worker ID
     std::string ids = worker();
-    // std::cout << "Path"<<lead << std::endl;
+    //std::cout << ids << "Inside_LIFT" << std::endl;
 
     // Deserialize input data
     std::pair<int, lists> input;
@@ -2278,123 +2277,8 @@ std::tuple<std::vector<std::string>, int, long> singular_template_SUBLIFT(const 
 
 
 
-NO_NAME_MANGLING
-std::pair<std::string, long> singular_template_reduce(const std::string& Red, 
-    int N,
-    const std::string& needed_library,
-    const std::string& base_filename) 
-{
-    init_singular(config::singularLibrary().string());
-    load_singular_library(needed_library);
 
-    // Extract the folder path from the Red file's location
-    std::filesystem::path basePath = std::filesystem::path(Red).parent_path();
-    // std::cout << base_filename<< "base_filename" << std::endl;
-    // std::cout <<Red<< "" << std::endl;
-    // std::cout <<N<< "int n" << std::endl;
-    std::string ids = worker();
-    std::pair<int, lists> Gb = deserialize(Red, ids);
 
-    auto start_computation = std::chrono::high_resolution_clock::now();
-
-    lists Gb_data = (lists)(Gb.second);
-    lists tmpL1 = (lists)(Gb_data->m[3].Data());
-   
-    ideal C = nullptr;
-    int counter = 0;
-    int r=0;int c=0;
-    poly vec = nullptr;
-    leftv L = nullptr; leftv LL = nullptr;
-    for (int i = 1; i <= N; ++i) { // Iterate from 1 to N to match "1.ssi", "2.ssi", etc.
-        // Construct the full path for i.ssi files within the same folder as Red
-        std::string filename = (basePath / (std::to_string(i) + ".ssi")).string();
-            // std::cout << filename<< "filename" << std::endl;
-            // std::cout <<i<< "i" << std::endl;
-        // Deserialize using the full path
-        std::pair<int, lists> input_part = deserialize(filename, ids);
-
-        lists token = (lists)(input_part.second);
-        lists tmpL = (lists)(token->m[3].Data());
-     
-        vec = (poly)tmpL->m[0].Data();
-        counter = (int)(long)tmpL->m[5].Data();
-        if (tmpL1->m[0].Typ() == IDEAL_CMD) {
-            // Handle case where `f` is an ideal
-            r = IDELEMS((ideal)(tmpL1->m[0].Data()));
-          
-            L=&tmpL->m[4];
-          
-           c = IDELEMS((ideal)L->Data());
-         
-        } else if (tmpL1->m[0].Typ() == VECTOR_CMD) {
-            // Handle case where `f` is a vector
-            ideal t=(ideal)(tmpL1->m[4].Data());
-            r = IDELEMS(t);
-            L=&tmpL->m[4];
-          
-           c = IDELEMS((ideal)L->Data());
-        }
-        ideal A = idCopy((ideal)tmpL->m[1].Data());
-        if (C == nullptr) {
-            C = idCopy(A);
-        } else {
-            ideal temp = idInit(IDELEMS(C), r);
-            temp = sm_Add(C, A, currRing);
-            idDelete(&C);
-            C = idCopy(temp);
-            idDelete(&temp);
-        }
-        idDelete(&A);
-
-        try {
-            std::filesystem::remove(filename);
-            // std::cout << "Deleted file: " << filename << std::endl;
-        } catch (const std::filesystem::filesystem_error& e) {
-            std::cerr << "Failed to delete " << filename << ": " << e.what() << std::endl;
-        }
-    }
-
-    lists output = (lists)omAlloc0Bin(slists_bin);
-    output->Init(4);
-
-    lists t = (lists)omAlloc0Bin(slists_bin);
-    t->Init(2);
-    t->m[0].rtyp = STRING_CMD; t->m[0].data = strdup("generators");
-    t->m[1].rtyp = STRING_CMD; t->m[1].data = strdup("FirstSyz_smatrix");
-
-    output->m[1].rtyp = LIST_CMD; output->m[1].data = t;
-    output->m[0].rtyp = RING_CMD; output->m[0].data = currRing;
-    output->m[2].rtyp = RING_CMD; output->m[2].data = currRing;
-
-    t = (lists)omAlloc0Bin(slists_bin);
-    t->Init(7);
-    t->m[0].rtyp = VECTOR_CMD; t->m[0].data = vec;
-    t->m[1].rtyp = SMATRIX_CMD; t->m[1].data = C;
-    t->m[2].rtyp = INT_CMD; t->m[2].data = (void*)(long)r;
-    t->m[3].rtyp = INT_CMD; t->m[3].data = (void*)(long)c;
-
-    if (tmpL1->m[0].Typ() == IDEAL_CMD) {
-        t->m[4].rtyp=MODUL_CMD; t->m[4].data= L->CopyD();//Tok.data[5]
-
-    } 
-    else if (tmpL1->m[0].Typ() == VECTOR_CMD) {
-        t->m[4].rtyp=MODUL_CMD; t->m[4].data= LL->CopyD();//Tok.data[5]
-    }
-    t->m[5].rtyp = INT_CMD; t->m[5].data = (void*)(long)counter;
-    t->m[6].rtyp = INT_CMD; t->m[6].data = (void*)(long)(counter + 1);
-
-    output->m[3].rtyp = LIST_CMD; output->m[3].data = t;
-
-    int cmd_nr;
-    blackboxIsCmd("token", cmd_nr);
-
-    std::string out_filename = serialize(output, base_filename);
-
-    auto end_computation = std::chrono::high_resolution_clock::now();
-    auto computation_time = std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - start_computation).count();
-
-    return {out_filename, computation_time};
-}
 
 
 
@@ -2436,6 +2320,201 @@ std::string singular_template_Generate(const std::string& res,
 	return out_filename;
 }
 
+
+
+
+
+
+
+
+NO_NAME_MANGLING
+std::pair<int, lists> reduce_GPI(leftv arg1) {
+
+    // std::cout << "Type of 1.arg:" << arg1->Typ() <<std::endl;
+    lists input = (lists)(arg1->Data()); //extract input
+    //std::cout << "Type of 2.arg:" << arg1->next->Typ() <<std::endl;
+    lists Tok = (lists)(arg1->next->Data()); // extract Tok
+    //std::cout << "Type of 3.arg:" << arg1->next->next->Typ() <<std::endl;
+ 
+
+    lists tmp = (lists)(input->m[3].Data()); // input.data
+   
+      int r = IDELEMS((ideal)(tmp->m[0].Data()));
+  
+   
+
+
+    lists tmpL1 = (lists)(Tok->m[3].Data()); // Tok.data
+       int c=(int)(long)(tmpL1->m[0].Data());//Tok.data[1]
+      
+     lists J = (lists)(tmpL1->m[1].Data());
+  
+
+   
+   
+   
+ 
+    //smatrix A0=A;
+    ideal C= idInit(c,r);
+      for(int k=0; k<lSize(J)+1;k++){
+    ideal A = idInit(c,r);
+     A =(ideal)J->m[k].Data();  // Deep copy matrix A
+   
+    C=sm_Add(C, A, currRing);
+   
+    
+    
+}
+    // Perform the matrix addition using Singular's API function
+
+ 
+//     std::cout << "Final in ADD transition _Reduce=" << std::endl;
+// for(int k = 1; k <= MATROWS(C); k++) {
+//     for(int l = 1; l <= MATCOLS(C); l++) {
+//         poly entr = MATELEM(C, k, l);
+//         std::cout << "Entry at position (" << k << ", " << l << ") = " << pString(entr) << std::endl;
+//     }
+// }
+
+
+  // Prepare the output token
+    lists output=(lists)omAlloc0Bin(slists_bin);
+    output->Init(4);// type token
+    // fieldnames
+    lists t=(lists)omAlloc0Bin(slists_bin);
+    t->Init(2);
+    t->m[0].rtyp=STRING_CMD; t->m[0].data=strdup("generators");
+    t->m[1].rtyp=STRING_CMD; t->m[1].data=strdup("FirstSyz_matrix");
+    output->m[1].rtyp=LIST_CMD; output->m[1].data=t;
+     output->m[0].rtyp=RING_CMD; output->m[0].data=currRing;
+      output->m[2].rtyp=RING_CMD; output->m[2].data=currRing;
+    //data
+    t=(lists)omAlloc0Bin(slists_bin);
+    t->Init(2);
+  
+    t->m[0].rtyp=SMATRIX_CMD; t->m[0].data=C;
+    t->m[1].rtyp=INT_CMD;  t->m[1].data = (void*)(long)r;
+ 
+    
+   
+
+ 
+   output->m[3].rtyp=LIST_CMD; output->m[3].data=t;//data is in postion 4
+    
+     int cmd_nr;
+     blackboxIsCmd("token",cmd_nr); // get the type id of "token"
+     
+     return {cmd_nr,output};
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+NO_NAME_MANGLING
+std::pair<std::string, long> singular_template_reduce(const std::string& Red, 
+                                                      const std::string& input_filename,
+                                                    
+                                                      const std::string& needed_library,
+                                                      const std::string& base_filename) 
+{
+    init_singular(config::singularLibrary().string());
+    load_singular_library(needed_library);
+
+    std::pair<int, lists> out;
+    std::string ids;
+    std::string out_filename;
+    ids = worker();
+    
+    std::pair<int, lists> Gb = deserialize(Red, ids);
+    std::pair<int, lists> input = deserialize(input_filename, ids);
+ 
+      
+
+        // std::cout << "input.reduce:-= " << Gb.second<< std::endl;
+
+
+    // Prepare arguments
+    ScopedLeftv arg1(Gb.first, lCopy(Gb.second));
+    ScopedLeftv args(arg1, input.first, lCopy(input.second));
+  
+    
+
+    // std::string function_name = "reduce_GPI";
+    // Measure Computation Time
+    auto start_computation = std::chrono::high_resolution_clock::now();
+
+    // out = call_user_proc(function_name, needed_library, arg1);
+    out = reduce_GPI(arg1.leftV());  // Call reduce_GPI with the raw pointer
+
+
+
+
+  //   lists Token1 = (lists)(arg1.leftV()->data);
+   
+  // int L_si = lSize(Token1)+1;
+  // std::cout << "Size of J in the transition: " << L_si << std::endl;
+  // for (int i = 0; i < L_si; i++) {
+  //         sleftv& listElement = Token1->m[i];  // Access each element as `leftv`
+  //     std::cout << "Input: " << listElement.String()  << std::endl;
+  // }
+
+  //   lists Token2 = (lists)(args.leftV()->data);
+   
+  // int L = lSize(Token2)+1;
+  // std::cout << "Size of J in the transition: " << L << std::endl;
+  // for (int i = 0; i < L; i++) {
+  //         sleftv& listElement = Token2->m[i];  // Access each element as `leftv`
+  //     std::cout << "LHS: " << listElement.String()  << std::endl;
+  // }
+
+
+  //   lists Token3 = (lists)(arg.leftV()->data);
+   
+  // int L0 = lSize(Token3)+1;
+  // std::cout << "Size of J in the transition: " << L0 << std::endl;
+  // for (int i = 0; i < L0; i++) {
+  //         sleftv& listElement = Token3->m[i];  // Access each element as `leftv`
+  //     std::cout << "RHS: " << listElement.String()  << std::endl;
+  // }
+
+
+
+    
+    out_filename = serialize(out.second, base_filename);
+    auto end_computation = std::chrono::high_resolution_clock::now();
+    auto computation_time = std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - start_computation).count();
+    auto total_runtime = computation_time;
+    
+  //  std::cout << " total gen " << total_generator<< std::endl;
+// std::cout << " total time " << total_runtime<< std::endl;
+//   std::cout << arg1.leftV()->String() <<std::endl;
+    return {out_filename, total_runtime};
+}
+
+
+
+
+
+
+
+
+
 std::vector<std::string> Generate_GPI_CPP(const std::string& input, const std::vector<std::string>& Tok) {
     // Initialize an empty list L
     std::vector<std::string> L;
@@ -2456,52 +2535,18 @@ std::vector<std::string> Generate_GPI_CPP(const std::string& input, const std::v
 
 
 
-
 NO_NAME_MANGLING
-std::string singular_template_Rename_File(const std::string& Red, int N) {
-    // static std::chrono::high_resolution_clock::time_point start_time;  // Make this static to persist across calls
-    // static bool timer_started = false;  // To ensure we only start the timer once
-
-    // std::cout << "N:= " << N << std::endl;
-
+// Define singular_template_removeFiles instead of delete
+std::string singular_template_removeFiles(const std::string& Red, const std::string& lift) {
     try {
-        // if (N == 1 && !timer_started) {  // Start timer only once when N == 1
-        //     start_time = std::chrono::high_resolution_clock::now();
-        //     timer_started = true;
-        //     std::cout << "Timer started at N == 1." << std::endl;
-        // }
-
-        std::filesystem::path oldPath(Red);
-        if (std::filesystem::exists(oldPath)) {
-            std::filesystem::path newPath = oldPath.parent_path();
-            newPath /= std::to_string(N) + ".ssi";
-
-            // Check if a file with the new name already exists
-            if (!std::filesystem::exists(newPath)) {
-                std::filesystem::rename(oldPath, newPath);
-
-                // if (N == 7047&& timer_started) {  // Calculate time when N == 23
-                //     auto end_time = std::chrono::high_resolution_clock::now();
-                //     auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end_time - start_time).count();
-
-                //     std::cout << "Timer stopped at N == 23." << std::endl;
-                //     std::cout << "Renaming completed. Time taken: " << duration << " nanoseconds." << std::endl;
-
-                //     timer_started = false;  // Reset timer after completion
-                // }
-                return newPath.string();
-            } else {
-                std::cerr << "File with new name already exists: " << newPath.string() << std::endl;
-            }
-        } else {
-            std::cerr << "File does not exist: " << Red << std::endl;
+        if (std::filesystem::exists(Red)) {
+            std::filesystem::remove(Red); // Delete the file represented by Red
+        }
+        if (std::filesystem::exists(lift)) {
+            std::filesystem::remove(lift); // Delete the file represented by lift
         }
     } catch (const std::filesystem::filesystem_error& e) {
-        std::cerr << "Filesystem error: " << e.what() << std::endl;
-    } catch (const std::exception& e) {
-        std::cerr << "Error during renaming: " << e.what() << std::endl;
+        std::cerr << "Error deleting file: " << e.what() << std::endl;
     }
-
-    return {};  // Return an empty string if there's any failure
+    return {};
 }
-

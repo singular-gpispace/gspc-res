@@ -1337,10 +1337,42 @@ if(typeof(f)=="ideal"){
 
 
 
+proc Generate_GPI(token input, token Tok){
+  //  string path = "/home/santosh/gspc-res/example_dir/temp/";  // Ensure the path ends with a "/"
+  //   string filename = "Generate.ssi";
+  //    link l0 = "ssi:w " + path + filename;
 
-//Summation function for GPI-Space
 
-proc reduce_GPI(token input, token Tok, token tok)
+ def L0=input.data[2];
+ def Syz=Tok.data[2];
+list L=L0;
+
+def Sch=Tok.data[5];
+int c=size(Sch);
+ list L1;
+ for(int i=1; i<=size(L); i++){
+  L1[i]=L[i];
+ }
+ L1[size(L)+1]=Syz;
+
+
+ 
+  // write(l0,L1,"generate_gpi");
+  // close(l0);
+    token output;
+    output.fieldnames = list("generators","list_Syz_matrices");
+     output.data[1]=c;
+    output.data[2] =L1;
+   
+   
+   
+   
+  
+    return(output);
+}
+
+
+proc reduce_GPI(token input, token Tok)
 "USAGE: reduce_GPI(input, Tok, tok);
        RETURN: an token output containing a sum  of the two tokens Tok and tok.
        NOTE  : The types token are defined . This procedure is intended to
@@ -1349,367 +1381,43 @@ proc reduce_GPI(token input, token Tok, token tok)
 "          
 
 {
-    string path = "/home/santosh/gspc-res/example_dir/temp/";  // Ensure the path ends with a "/"
-    string filename = "Reduce.ssi";
-     link l0 = "ssi:w " + path + filename;
+    // string path = "/home/santosh/gspc-res/example_dir/temp/";  // Ensure the path ends with a "/"
+    // string filename = "Reduce.ssi";
+    //  link l0 = "ssi:w " + path + filename;
  def f=input.data[1];
 
-if(typeof(f)=="ideal"){
-int r= size(f);
+int r=size(f);
 
- def L=Tok.data[5];
- int c=size(L);
-  write(l0, f, "input");
-            
-  write(l0, L, "LeadSyz");
-            
-}else {
-  if(typeof(f)=="vector"){
-    def L=input.data[5];
-    int r= size(L);
-
- def LL=Tok.data[5];
- int c=size(LL);
-  }
-}
+ list J=Tok.data[2];//list of matrices
 
 
- int counter= Tok.data[6];
-  write(l0, counter, "counter");
- matrix A[r][c];
- matrix B[r][c];
- def v=Tok.data[1];
- A=Tok.data[2];
+ int c=Tok.data[1];
  
- B= tok.data[2];
-  write(l0, v, "vector");
-            
-   write(l0, A, "matrix A");
-    write(l0, B, "matrix B");
-             close(l0);
+ smatrix C[r][c];
   
-            // write(l0, Bl, "matrix");
+        
             
     // Perform the matrix addition using jjPLUS_MA
-    matrix C[r][c];
-    C=A+B;
+  for(int k=1; k<=size(J);k++){
+
+    smatrix temp[r][c]=J[k];
+    C=C+temp;
+}
 
    
  
-  
+  //   write(l0,C,"reduce_gpi");
+  // close(l0);
     token output;
     output.fieldnames = list("generators","FirstSyz_matrix");
-    output.data[1] = v;
-    output.data[2]=C;
-    output.data[3] = r;
+   
+    output.data[1]=C;
+    output.data[2] = r;
    
     //print("q:column");
-    output.data[4]=c;
+    output.data[3]=c;
   
    
-   if(typeof(f)=="ideal"){
-   output.data[5]=L;
-   }else {
-    if(typeof(f)=="vector"){
-      output.data[5]=LL;
-    }
-   }
    
-   output.data[6]=counter;//counter
-   output.data[7]=counter+1;
     return(output);
 }
-
-proc Generate_GPI(token input, token Tok){
- def res=input.data[1];
- def Syz=Tok.data[2];
- list L=res;
- list L1;
- for(int i=1; i<=size(L); i++){
-  L1[i]=L[i];
- }
- L1[size(L)+1]=Syz;
- 
-    token output;
-    output.fieldnames = list("generators","list_Syz_matrices");
-    output.data[1] = L1;
-    output.data[2]=size(L1);
-   
-  
-    return(output);
-}
-proc EndTiming(token input)
-
-{
-   int t=input.data[1];
-  int t0= rtimer-t;
-
-   
-     token output;
-    output.fieldnames = list("generators","timing");
-    output.data[1] = t0;
-   
-   
-  
-    return(output);
-
-
-}
-
-
-
-
-
-proc leadmonomial_nc(def s) 
-{
-  int e;
-  poly m;
-
-  if(typeof(s) == "vector"){
-    e=leadexp(s)[nvars(basering)+1];
-    m=leadmonom(s)[e,1];
-  }
-  if(typeof(s) == "poly"){
-    m=leadmonom(s);
-   }
-  return(m);
-}
-
-proc leadterm(def s)
-{
-  int e;
-  poly m;
-
-  if(typeof(s) == "vector"){
-    e=leadexp(s)[nvars(basering)+1];
-    m=lead(s)[e,1];
-  }
-  if(typeof(s) == "poly"){
-    m=lead(s);
-   }
-  return(m);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-proc lcm_(poly v, poly w)
-{
-    string strv = string(v);
-    string strw = string(w);
-    int sizev = size(strv);
-    int sizew = size(strw);
-    int n = nvars(basering);
-    int i;
-    intvec expv, expw;
-    poly ans = 1;
-    if (strv[sizev] == "2" && strw[sizew] == "2"){
-      ans = 0;
-      return(ans); // not sure about type
-    }
-    else{
-      if (strv[sizev] != "2" && strw[sizew] != "2"){
-        expv = leadexp(v);
-        expw = leadexp(w);
-        for (i=1; i<=n; i++){
-          if (expv[i]==1 || expw[i]==1){
-            ans = ans*var(i);
-          }
-        }
-        return(ans);
-      }
-      else {
-        if (strv[sizev] == "2"){
-          expw = leadexp(w);
-          expv = leadexp(v);
-          for (i=1; i<=n; i++){
-            if (expv[i] == 2){
-              ans = ans*(var(i))^2;
-            }
-            else{
-              if (expw[i] == 1){
-                ans = ans*var(i);
-              }
-            }
-          }
-        }
-        else{
-          expw = leadexp(w);
-          expv = leadexp(v);
-          for (i=1; i<=n; i++){
-            if (expw[i] == 2){
-              ans = ans*(var(i))^2;
-            }
-            else{
-              if (expv[i] == 1){
-                ans = ans*var(i);
-              }
-            }
-          }
-        }
-        return(ans);
-      }
-    }
-}
-
-
-proc lead_syz_(module m)
-{
-
-    string path = "/home/santosh/gspc-res/example_dir/temp/";  // Ensure the path ends with a "/"
-string filename = "lead_syz_extr.ssi";
-link l = "ssi:w " + path + filename;
-write(l,m, "lead_syz_extra");
-
-
-  close(l);
-  int r = size(m);
-  int n = nvars(basering);
-  module M = std(freemodule(r));
-
-  vector pi, pj, t, s;
-  poly Li, Lj, mji;
-  int i, j, k, expi, expj;
-  module temp_mod_1, temp_mod_2;
-  module lead_mod; //this is what we will return
- int cc=1;
-  for(i=2; i<=r; i++){
-    pi = m[i];
-    for(j=1; j<i; j++){
-      pj = m[j];
-      expi = leadexp(pi)[n+1];
-      expj = leadexp(pj)[n+1];
-      if(expi == expj){
-      
-        Li = leadmonomial_nc(pi);
-        Lj = leadmonomial_nc(pj);
-        print(Li);
-        print(Lj);
-        mji = lcm_(Lj,Li)/leadterm(pi);
-        t = mji*M[i];
-
-       
-        for (k=1;k<=size(lead_mod);k++){
-          temp_mod_1 = lead_mod[k];
-          attrib(temp_mod_1, "isSB", 1);
-          if (NF(t, temp_mod_1)==0){
-            t = 0;
-            break;
-          }
-          else{
-            temp_mod_2 = t;
-            attrib(temp_mod_2, "isSB", 1);
-            if(NF(lead_mod[k], temp_mod_2)==0){
-              lead_mod = delete(lead_mod, k);
-              k = k-1;
-              cc=cc-1;
-            }
-          }
-        }
-        if(t != 0){
-          lead_mod[cc] = t;
-          cc++;
-        }
-      }
-    }
-  }
-  return(lead_mod);
-}
-
-
-
-
-
-
-
-
-
-proc lead_syz_GpI(token Token) 
-"USAGE: leadsyz_GpI(Token); Token token
-RETURN: a token LLT containing a list of leading syzygies
-NOTE: The types token are defined . This procedure is 
-intended to be called as a transition procedure inside the
-worker process (that is, the "inner" instances of SINGULAR).
-"
-{
-  string path = "/home/santosh/gspc-res/example_dir/temp/";  // Ensure the path ends with a "/"
-string filename = "Leadsyz.ssi";
-link l = "ssi:w " + path + filename;
-  def f= Token.data[1];
-  int counter;
- write(l,f, "Module");
-
-  token LLT;
-  int k;
- 
-  def LT;
- 
-   LT = lead_syz_(f);
-   int ro=size(f);
-   counter=1;
- 
-   
-
-
-write(l, LT, "SecondSyzModule");
-close(l);
-   
-   
-  //list J=tok.data[1];
-   //int level=size(J);
-
-
- 
-
-  int r = size(LT);
-  for (k = 1; k <=r; k++) {
-    token Ld;
-    Ld.fieldnames = list("generator", "Lead_Syz_Sparse_matrix");  
-    matrix sM[ro][size(LT)];
-    vector s_lift = LT[k];
-    
-    int l_k = leadexp(s_lift)[nvars(basering) + 1];
-
-    sM[l_k, k] = leadcoef(s_lift) * leadmonomial(s_lift);
-    
-    //print(sM);
-    Ld.data[1]= s_lift;
-    //print(s_lift);
-    Ld.data[2]= sM;
-     //print("matrix");
-    //print(Ld.A);
-
-    //print("row");
-
-    Ld.data[3] = l_k;
-    //print(Ld.p);
-
-    //print("q:column");
-    Ld.data[4]= k;
-
-    Ld.data[5]=LT;
-    Ld.data[6]=counter;
-    Ld.data[7]=counter;
-    LLT.fieldnames[k] = "generator";  
-    LLT.data[k] = Ld; 
-
-  }
-  
-      LLT.fieldnames[size(LLT.fieldnames) + 1] = "total_number_generator";  
-      LLT.data[size(LLT.data) + 1] = r;  
-    return (LLT);  
-}
-
-

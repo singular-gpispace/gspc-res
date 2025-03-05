@@ -17,10 +17,7 @@ namespace pnetc
         , const we::type::literal::control& s
         , const std::string& library_name
         , const std::string& base_filename
-        , int& counter
         , std::list<pnet::type::value::value_type>& OUT
-        , std::list<pnet::type::value::value_type>& Sublift
-        , std::string& syz_sum
         );
     }
   }

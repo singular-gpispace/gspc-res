@@ -1,5 +1,4 @@
 #include <pnetc/op/singular_template/LIFT.hpp>
-#include <we/type/literal/control.hpp>
 #include <list>
 #include <we/type/value.hpp>
 #include <string>
@@ -24,10 +23,10 @@ namespace pnetc
         , const std::string& needed_library
         , const std::string& base_filename
         , std::list<pnet::type::value::value_type>& LIFT
-        , we::type::literal::control& D
+        , std::string& SUBLIFT
         )
       {
-#line 255 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 254 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
                   //  std::cout << "in singular _PetriNet_.._LIFT" << std::endl;
                    
@@ -49,6 +48,7 @@ namespace pnetc
                          
       
                     }
+                    SUBLIFT = lead;
                
               // std::cout << "LIFT_COUNT_Parent:"<< N << std::endl;
               // std::cout << "LIFT_COUNT_Child:"<< E << std::endl;

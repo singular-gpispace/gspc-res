@@ -14,7 +14,7 @@
 	<in name="base_filename" type="string" place="place_base_filename"/>
 	<in name="library_name" type="string" place="place_library_name"/>
   <in name="input" type="string" place="place_initiate"/>
- <out name ="OUTPUT" type ="string" place ="place_Final_Syz"/>
+ <out name ="OUTPUT" type ="string" place ="place_All_Lead"/>
   
 	<net>
   <place name ="place_initiate" type ="string"/>
@@ -27,7 +27,7 @@
     <place name="place_lead" type="string"/>
     <place name="place_Tau" type="string"/>
     <place name ="place_SubLift" type ="string"/>
-    <place name ="place_Syz" type ="string"/>
+   
 
  
    
@@ -36,9 +36,9 @@
 
 
 
-    <place name ="place_Final_Syz" type ="string"/>
+   
 
-    <place name ="place_StartTime" type ="long"/>
+   
 
   <!-- Transition: StartTime -->
     <transition name="StartTime">
@@ -46,17 +46,14 @@
        <out name ="c" type ="control"/>
       <in name="input" type="string"/>
         <out name="output" type="string"/>
-        <out name="start_time" type="long"/>
-        <module name="singular_template" function="StartTime(input,c,output,start_time)">
+     
+        <module name="singular_template" function="StartTime(input,c,output)">
          <cinclude href="interface/template_interface.hpp" />
       <cinclude href="util-generic/dynamic_linking.hpp"/>
       <cinclude href="iostream"/>
       <cinclude href="chrono"/>
         <code><![CDATA[
-          auto computation_time = std::chrono::high_resolution_clock::now();
-          auto duration = computation_time.time_since_epoch();
-      
-          start_time= std::chrono::duration_cast<std::chrono::nanoseconds>(duration).count();
+        
      output=input;
     ]]></code>
      </module>
@@ -66,7 +63,7 @@
     
       </defun>
       <connect-in port="input" place="place_initiate"/>
-      <connect-out port="start_time" place="place_StartTime"/>
+   
        <connect-out port="output" place="place_input_GB"/>
         <connect-out port="c" place="place_control"/>
     </transition>
@@ -436,18 +433,81 @@
   <token>
         <value>0</value>
       </token>
+
   </place>
+
+  <place name="place_file_control" type="control">
+  <token>
+        <value>[]</value>
+      </token>
+
+  </place>
+  <place name="place_file_Read" type="control"/>
+ 
+
+
+  <!-- Transition: control_Rename_File -->
+  <transition name="control_Rename_File">
+    <defun>
+    <in name ="IN" type ="control"/>
+     <out name ="N" type ="control"/>
+     <out name="start_time" type="long"/>
+    <in name="k4" type="unsigned long"/>
+  
+    
+    
+      <module name="singular_template" function="control_Rename_file( start_time,IN,N,k4)">
+      <cinclude href="interface/template_interface.hpp" />
+      <cinclude href="util-generic/dynamic_linking.hpp"/>
+       <cinclude href="vector"/>
+       <cinclude href="iostream"/>
+       <cinclude href ="string"/>
+       <cinclude href="list"/>
+       <cinclude href="chrono"/>
+      <code><![CDATA[
+        auto computation_time = std::chrono::high_resolution_clock::now();
+        auto duration = computation_time.time_since_epoch();
+    
+        start_time= std::chrono::duration_cast<std::chrono::nanoseconds>(duration).count();
+     
+    std::cout << "control_Rename_File_fires"<< std::endl;
+    
+  ]]></code>
+   </module>
+ 
+   <condition>
+   ${k4} :eq: 23UL
+   
+  
+
+ </condition>
+  
+    </defun>
   
   
+    <connect-number-of-tokens port="k4" place="place_SubLift"/>
+    
+    <connect-out port="start_time" place="place_StartTime"/>
+    
+    <connect-out port="N" place="place_file_Read"/>
+  
+      <connect-in port="IN" place="place_file_control"/>
+  
+  </transition>
+
+
   
   <!-- Transition: RenameFIle -->
   <transition name="Rename_File">
     <defun>
      <inout name ="N" type ="int"/>
     <in name="Sublift" type="string"/>
-
+   
+   
+    <in name="k" type="control"/>
     
-      <module name="singular_template" function="Rename_file(N,Sublift)">
+    
+      <module name="singular_template" function="Rename_file(N,Sublift,k)">
       <cinclude href="interface/template_interface.hpp" />
       <cinclude href="util-generic/dynamic_linking.hpp"/>
        <cinclude href="vector"/>
@@ -457,17 +517,23 @@
        <cinclude href="chrono"/>
       <code><![CDATA[
         N=N+1;
+     
         // std::cout << "Nin Rename:" << N << std::endl;
         auto s  = RESOLVE_INTERFACE_FUNCTION(singular_template_Rename_File) (Sublift,N);
+   
+    
   ]]></code>
    </module>
-   
  
   
     </defun>
+  
+
+    
     <connect-in port="Sublift" place="place_SubLift"/>
    
-    
+  
+    <connect-read port="k" place="place_file_Read"/>
       <connect-in port="N" place="place_file_number"/>
   
       <connect-out port="N" place="place_file_number"/>
@@ -477,84 +543,19 @@
 
 
 
-
-
-  <!-- Transition 5: Reduce-->
-  <transition name="Add1">
-    <defun>
-    <require key="worker" mandatory="true"/>
-  
-   <in name="library_name" type="string"/>
-   <in name="base_filename" type="string"/>
-      <out name="s" type="string"/>
-      <in name="N" type="int"/>
-    
-      <in name="input" type="string"/>
-      <in name="k1" type="unsigned long"/>
-      <in name="k3" type="unsigned long"/>
-      <in name="k2" type="unsigned long"/>
-      <in name="k4" type="unsigned long"/>
-   <module name="singular_template"
-                require_function_unloads_without_rest="false"
-                function="reduce(library_name, base_filename,input,s, N,k1,k2,k3,k4)">
-            <cinclude href="interface/template_interface.hpp" />
-            <cinclude href="util-generic/dynamic_linking.hpp"/>
-            <cinclude href="iostream"/>
-           <cinclude href="chrono"/>
-
-              <code><![CDATA[
-
-                auto computation_time = std::chrono::high_resolution_clock::now();
-              
-              //std::cout << "Reduce_Input:" <<input << std::endl;
-              //std::cout << "Reduce_l:" <<l << std::endl;
-              //std::cout << "Reduce_r" <<r<< std::endl;
-           auto result  = RESOLVE_INTERFACE_FUNCTION(singular_template_reduce)(input,N,library_name, base_filename
-            ); 
-            auto end_computation = std::chrono::high_resolution_clock::now();
-            auto computation_duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - computation_time).count();
-    
-              s = result.first;
-           
-         
-          std::cout << "Reduce:" << s << std::endl;
-             
-
-std::cout << "Reduce Duration: " <<computation_duration << "nanosecond" << std::endl;
-
-              ]]></code>
-               
-          </module>
-          <condition>
-          ${k1} :eq: 0UL :and: ${k2} :eq: 0UL :and: ${k3} :eq: 0UL :and: ${k4} :eq: 0UL
-          
-         
-      
-        </condition>
-    </defun>
-    <connect-number-of-tokens port="k1" place="place_Tau"/>
-    <connect-number-of-tokens port="k2" place="place_lead"/>
-    <connect-number-of-tokens port="k3" place="place_SubLift"/>
-    <connect-number-of-tokens port="k4" place="place_control"/>
-    <connect-read port="library_name" place="place_library_name"/> 
-    <connect-read port="base_filename" place="place_base_filename"/>
-    <connect-read port="input" place="place_input_GB"/>
-    <connect-in port="N" place="place_file_number"/>
-   
-   
-    <connect-out port="s" place="place_Syz"/>
-    
-  </transition> 
-
+  <place name ="place_StartTime" type ="long"/>
 
   <!-- Transition: EndTime -->
   <transition name="EndTime_Syz">
       <defun>
           <in name="start_time" type="long"/>
-          <inout name="computed_output" type="string"/>
+          <in name="k1" type="unsigned long"/>
+          <in name="k3" type="unsigned long"/>
+          <in name="k2" type="unsigned long"/>
+          <in name="k4" type="unsigned long"/>
         
         
-           <module name="singular_template" function="EndTime_Syz(start_time,computed_output)">
+           <module name="singular_template" function="EndTime_Syz(start_time,k1,k2,k3,k4)">
            <cinclude href="interface/template_interface.hpp" />
         <cinclude href="util-generic/dynamic_linking.hpp"/>
         <cinclude href="iostream"/>
@@ -568,18 +569,25 @@ std::cout << "Reduce Duration: " <<computation_duration << "nanosecond" << std::
                   std::cout << "Calculate Syz: = " << end_timer << " nanoseconds" << std::endl;
               ]]></code>
            </module>
+           <condition>
+           ${k1} :eq: 0UL :and: ${k2} :eq: 0UL :and: ${k3} :eq: 0UL :and: ${k4} :eq: 0UL
+           
+          
+       
+         </condition>
        
       </defun>
+      <connect-number-of-tokens port="k1" place="place_Tau"/>
+      <connect-number-of-tokens port="k2" place="place_lead"/>
+      <connect-number-of-tokens port="k3" place="place_SubLift"/>
+      <connect-number-of-tokens port="k4" place="place_control"/>
       
       <connect-in port="start_time" place="place_StartTime"/>
-      <connect-in port="computed_output" place="place_Syz"/>
-     
-      <connect-out port="computed_output" place="place_Final_Syz"/>
+    
      
       
   </transition>
-  
-
+ 
 
   </net>
 </defun>

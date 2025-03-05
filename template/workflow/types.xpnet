@@ -1,0 +1,65 @@
+<structs>
+  <struct name="problem_data">
+    <field name="equations" type="file" />
+    <field name="targets" type="file" />
+    <field name="interpolate_indices" type="list" />
+    <field name="reference_indices" type="list" />
+    <field name="col_perm_start" type="unsigned long" />
+    <field name="traces" type="optional_file" />
+    <field name="target_master" type="optional_file" />
+    <field name="target_master_subset" type="optional_file" />
+  </struct>
+
+  <struct name="multiply_data">
+    <field name="left" type="file" />
+    <field name="right" type="file" />
+    <field name="interpolate_indices" type="list" />
+    <field name="reference_indices" type="list" />
+  </struct>
+
+  <struct name="config">
+    <field name="working_directory" type="directory" />
+    <field name="comp_multiplier" type="unsigned long" />
+    <field name="logging_options" type="string" />
+    <field name="file_prefix" type="string" />
+    <field name="interpolation_granularity" type="unsigned int" />
+    <field name="plugin_history_file" type="optional_file" />
+    <field name="input_history_file" type="optional_file" />
+  </struct>
+
+  <struct name="degree_bound">
+    <field name="index" type="unsigned long" />
+    <field name="bound" type="unsigned long" />
+    <field name="degmatrices" type="optional_file" />
+  </struct>
+
+  <struct name="interpolation_data">
+    <field name="parameter_index" type="unsigned long" />
+    <field name="point" type="map" />
+    <field name="filenames" type="map" />
+  </struct>
+
+  <struct name="matrix">
+    <field name="data"  type="file" />
+    <field name="point" type="map" />
+    <field name="valid" type="bool" />
+  </struct>
+
+  <struct name="optional_map">
+    <field name="map"   type="map" />
+    <field name="valid" type="bool" />
+  </struct>
+
+  <struct name="file">
+    <field name="path" type="string" />
+  </struct>
+
+  <struct name="optional_file">
+    <field name="valid" type="bool" />
+    <field name="path" type="string" />
+  </struct>
+
+  <struct name="directory">
+    <field name="path" type="string" />
+  </struct>
+</structs>

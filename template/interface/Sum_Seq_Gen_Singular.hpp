@@ -71,7 +71,7 @@ std::tuple<std::vector<std::string>, int,  long> singular_template_SUBLIFT ( std
 
 NO_NAME_MANGLING
 std::pair<std::string, long> singular_template_reduce( std::string const&
-                                      ,int N
+                                     , std::string const&
                                      , std::string const&
                                    
 						  , std::string const&
@@ -88,10 +88,7 @@ std::string singular_template_Generate (std::string const&
                                       
                                       NO_NAME_MANGLING
 std::string  singular_template_removeFiles(const std::string&,
-                                      const std::string&);   
-
-                                      NO_NAME_MANGLING
-std::string singular_template_Rename_File(const std::string&,int N);                   
+                                      const std::string&);                     
 
 
 

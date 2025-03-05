@@ -23,10 +23,7 @@ namespace pnetc
         , const we::type::literal::control& s
         , const std::string& library_name
         , const std::string& base_filename
-        , int& counter
         , std::list<pnet::type::value::value_type>& OUT
-        , std::list<pnet::type::value::value_type>& Sublift
-        , std::string& syz_sum
         )
       {
 #line 177 "/home/santosh/gspc-res/template/workflow/template.xpnet"
@@ -39,20 +36,19 @@ namespace pnetc
                       int total_generator = std::get<1>(out);
                     
                     
-                      counter=total_generator;
-                      
-                         for(int i (0); i<total_generator; i++)
+                    
+                        for(int i (0); i<total_generator; i++)
                                                                  {
                           //std::cout << "leadSyz_Success:"<<vec[i] << std::endl;
                           OUT.emplace_back(vec[i]);
-                           Sublift.emplace_back(vec[i]);
+                         
                          //std::cout << "leadSyz_Success:"<<vec[i] << std::endl;
                           //std::cout << "SubliftleadSyz_Success:"<<vec[i] << std::endl;
                           
                           }
-                       syz_sum=vec[total_generator-1];
                       
-                          std::cout << "#leadSyz="<<syz_sum<< std::endl;
+                      
+                         
 
             
                    

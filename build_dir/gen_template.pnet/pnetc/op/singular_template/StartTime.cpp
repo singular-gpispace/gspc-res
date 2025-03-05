@@ -14,17 +14,17 @@ namespace pnetc
     {
       void StartTime
         ( const std::string& input
-        , long& start_time
         , we::type::literal::control& c
         , std::string& output
+        , long& start_time
         )
       {
 #line 55 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
-         auto computation_time = std::chrono::high_resolution_clock::now();
-    auto duration = computation_time.time_since_epoch();
-
-    start_time= std::chrono::duration_cast<std::chrono::nanoseconds>(duration).count();
+          auto computation_time = std::chrono::high_resolution_clock::now();
+          auto duration = computation_time.time_since_epoch();
+      
+          start_time= std::chrono::duration_cast<std::chrono::nanoseconds>(duration).count();
      output=input;
     
       }

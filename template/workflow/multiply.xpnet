@@ -1,0 +1,567 @@
+<defun name="feynman">
+  <include-structs href="/home/santosh/gspc-res/template/workflow/types.xpnet" />
+
+  <in name="multiply_data" type="multiply_data" place="input_data" />
+  <in name="config" type="config" place="config" />
+  <in name="plugin_path" type="string" place="plugin_path" />
+  <out name="final_mathematica_file" type="file" place="fname" />
+
+  <net>
+    <!-- ===== PLACES ===== -->
+    <!-- in-out places -->
+    <place name="input_data" type="multiply_data" />
+    <place name="config" type="config" />
+    <place name="start" type="control">
+      <token><value>[]</value></token>
+    </place>
+    <place name="fname" type="file" />
+
+    <!-- places between transitions -->
+    <place name="init_ref" type="control" />
+    <place name="init_subst" type="control" />
+
+    <place name="idx" type="unsigned long" />
+
+    <!-- degree matrix lives in this place while it may change,
+         it will then be moved to degree_matrices -->
+    <place name="degmat_pre" type="map">
+      <token><value>Map []</value></token>
+    </place>
+
+    <place name="deg_bound" type="degree_bound" />
+    <place name="ip_deg_count" type="unsigned long" />
+    <place name="degmat_count" type="unsigned long" />
+
+    <place name="degree_matrices" type="map" />
+
+    <place name="ip_substs" type="map" put_token="true" />
+    <place name="product" type="matrix" />
+    <place name="reference" type="matrix" />
+    <place name="matrix_to_store" type="matrix" />
+    <place name="ip_token" type="interpolation_data" put_token="true" />
+    <place name="finalfile" type="file" put_token="true" />
+    <place name="finalfile_ready" type="file" />
+
+    <!-- counters -->
+    <place name="file_id" type="unsigned long" />
+    <place name="file_id_increment" type="unsigned long" put_token="true" />
+    <place name="file_id_counter" type="unsigned long">
+      <token><value>0UL</value></token>
+    </place>
+
+    <!-- plugin -->
+    <place name="plugin_path" type="string" />
+    <place name="plugin_id" type="unsigned long" />
+
+    <!-- ===== TRANSITIONS ===== -->
+    <!-- ID handling -->
+    <transition name="discard_zero_inc">
+      <defun>
+        <in name="id_inc" type="unsigned long" />
+        <expression />
+      </defun>
+      <condition>
+        ${id_inc} :eq: 0UL
+      </condition>
+
+      <connect-in port="id_inc" place="file_id_increment" />
+    </transition>
+
+    <!-- puts unique file/directory IDs in a common place for every transition
+         to grab -->
+    <transition name="generate_id">
+      <defun>
+        <inout name="id_ctr" type="unsigned long" />
+        <inout name="id_inc" type="unsigned long" />
+        <out   name="id"     type="unsigned long" />
+
+        <expression>
+          ${id} := ${id_ctr};
+          ${id_ctr} := ${id_ctr} + 1UL;
+          ${id_inc} := ${id_inc} - 1UL;
+        </expression>
+      </defun>
+
+      <condition>
+        ${id_inc} :gt: 0UL
+      </condition>
+
+      <connect-inout port="id_ctr" place="file_id_counter" />
+      <connect-inout port="id_inc" place="file_id_increment" />
+      <connect-out   port="id"     place="file_id" />
+    </transition>
+
+    <transition name="split_start">
+      <defun>
+        <in name="start" type="control" />
+        <in name="data" type="multiply_data" />
+        <out name="init_ref" type="control" />
+        <out name="init_subst" type="control" />
+
+        <expression>
+          ${init_ref} := [];
+          ${init_subst} := [];
+        </expression>
+      </defun>
+
+      <connect-in   port="start" place="start" />
+      <connect-read port="data" place="input_data" />
+      <connect-out  port="init_ref" place="init_ref" />
+      <connect-out  port="init_subst" place="init_subst" />
+    </transition>
+
+    <transition name="create_storage_plugin">
+      <defun>
+        <properties name="gspc">
+          <properties name="we">
+            <properties name="plugin">
+              <property key="create" />
+            </properties>
+          </properties>
+        </properties>
+
+        <in  name="plugin_path" type="string" />
+        <out name="plugin_id" type="unsigned long" />
+
+        <expression>
+          ${place.substitutions} := "ip_substs";
+          ${place.interpolation_points} := "ip_token";
+          ${place.id_increment} := "file_id_increment";
+          ${place.final_filename} := "finalfile";
+        </expression>
+      </defun>
+
+      <connect-in  port="plugin_path" place="plugin_path" />
+      <connect-out port="plugin_id" place="plugin_id" />
+    </transition>
+
+    <transition name="generate_reference">
+      <defun>
+        <require key="worker" mandatory="true" />
+        <in  name="init" type="control" />
+        <in  name="data" type="multiply_data" />
+        <in  name="config" type="config" />
+        <out name="reference" type="matrix" />
+
+        <module name="multiply"
+                function="reference compute_reference (data, config)"
+                pass_context="true">
+          <cinclude href="util-feynman/feynman_interface.hpp" />
+          <cinclude href="logging/scope_profiler.hpp" />
+          <code><![CDATA[
+            ::feynman::logging::ScopeProfiler profiler
+              ( ::feynman::logging::Log::instance
+                (_pnetc_context, config.logging_options)
+              , "reference"
+              );
+            return RESOLVE_INTERFACE_FUNCTION (compute_mult_reference)
+              (data, config);
+          ]]></code>
+        </module>
+      </defun>
+
+      <connect-read port="data" place="input_data" />
+      <connect-read port="config" place="config" />
+      <connect-in   port="init" place="init_ref" />
+      <connect-out  port="reference" place="reference" />
+    </transition>
+
+    <!-- GEN SUBST START -->
+    <transition name="generate_idx_lists">
+      <defun>
+        <in name="init" type="control" />
+        <in name="data" type="multiply_data" />
+        <in name="config" type="config" />
+        <out name="icount" type="unsigned long" />
+        <out name="ccount" type="unsigned long" />
+        <out name="idx_list" type="list" />
+
+        <module name="multiply"
+                function="idx_list gen_indices (icount, ccount, config, data)">
+          <cinclude href="util-feynman/feynman_interface.hpp" />
+          <code><![CDATA[
+            ::feynman::pnet_list out;
+            for (unsigned long i = 0; i < config.comp_multiplier; i++)
+            {
+              out.insert
+                ( out.end()
+                , data.interpolate_indices.begin()
+                , data.interpolate_indices.end()
+                );
+              out.insert
+                ( out.end()
+                , data.reference_indices.begin()
+                , data.reference_indices.end()
+                );
+            }
+            icount = config.comp_multiplier * data.interpolate_indices.size();
+            ccount = config.comp_multiplier * data.reference_indices.size();
+            return out;
+          ]]></code>
+        </module>
+      </defun>
+
+      <connect-in port="init" place="init_subst" />
+      <connect-read port="config" place="config" />
+      <connect-read port="data" place="input_data" />
+      <connect-out port="icount" place="ip_deg_count" />
+      <connect-out port="ccount" place="degmat_count" />
+      <connect-out-many port="idx_list" place="idx" />
+    </transition>
+
+    <transition name="compute_degree_bound">
+      <defun>
+        <require key="worker" mandatory="true" />
+        <in name="config" type="config" />
+        <in name="data"  type="multiply_data" />
+        <in name="idx" type="unsigned long" />
+        <out name="deg"  type="degree_bound" />
+
+        <module name="multiply"
+                function="deg compute_bound (config, data, idx)"
+                pass_context="true">
+          <cinclude href="util-feynman/feynman_interface.hpp" />
+          <cinclude href="logging/scope_profiler.hpp" />
+          <code><![CDATA[
+            ::feynman::logging::ScopeProfiler profiler
+              ( ::feynman::logging::Log::instance
+                (_pnetc_context, config.logging_options)
+              , "compute_degree"
+              );
+            return RESOLVE_INTERFACE_FUNCTION (compute_mult_degree_bound)
+              (config, data, idx);
+          ]]></code>
+        </module>
+      </defun>
+
+      <connect-read port="config" place="config" />
+      <connect-read port="data" place="input_data" />
+      <connect-in  port="idx" place="idx" />
+      <connect-out port="deg" place="deg_bound" />
+    </transition>
+
+    <!-- COMPLEMENT INDICES -->
+    <transition name="update_degree_matrix">
+      <defun>
+        <in name="deg_bound" type="degree_bound" />
+        <in name="data" type="multiply_data" />
+        <in name="config" type="config" />
+        <inout name="degmat" type="map" />
+        <inout name="count" type="unsigned long" />
+        <module name="multiply"
+                function="count update_degmat (config, data, deg_bound, degmat, count)">
+          <cinclude href="util-feynman/feynman_interface.hpp" />
+          <code><![CDATA[
+            RESOLVE_INTERFACE_FUNCTION (update_degree_matrices)
+              (config, deg_bound.index, ::feynman::pnet_file (deg_bound.degmatrices.path), degmat);
+            return count-1;
+          ]]></code>
+        </module>
+      </defun>
+
+      <condition>
+        (${count} :gt: 0UL) :and: ${deg_bound.degmatrices.valid}
+      </condition>
+
+      <connect-read port="config" place="config" />
+      <connect-read port="data" place="input_data" />
+      <connect-in port="deg_bound" place="deg_bound" />
+      <connect-inout port="count" place="degmat_count" />
+      <connect-inout port="degmat" place="degmat_pre" />
+    </transition>
+
+    <transition name="get_final_degmat">
+      <defun>
+        <in name="count" type="unsigned long" />
+        <in name="degmat_pre" type="map" />
+        <out name="degmat" type="map" />
+        <expression>
+          ${degmat} := ${degmat_pre};
+        </expression>
+      </defun>
+
+      <condition>
+        ${count} :eq: 0UL
+      </condition>
+
+      <connect-in port="count" place="degmat_count" />
+      <connect-in port="degmat_pre" place="degmat_pre" />
+      <connect-out port="degmat" place="degree_matrices" />
+    </transition>
+
+    <!-- INTERPOLATION INDICES -->
+    <transition name="record_ip_degree_bound">
+      <defun>
+        <properties name="gspc">
+          <properties name="we">
+            <properties name="plugin">
+              <property key="call_after_eval">
+                "stack_push (List(), ${plugin_id})"
+              </property>
+            </properties>
+          </properties>
+        </properties>
+
+        <in name="deg_bound" type="degree_bound" />
+        <in name="plugin_id" type="unsigned long" />
+        <inout name="count" type="unsigned long" />
+
+        <expression>
+          ${operation} := "RECORD DEGREE";
+
+          ${idx} := ${deg_bound.index};
+          ${degree} := ${deg_bound.bound};
+          ${count} := ${count} - 1UL;
+        </expression>
+      </defun>
+
+      <condition>
+        (${count} :gt: 0UL) :and: !${deg_bound.degmatrices.valid}
+      </condition>
+
+      <connect-read port="plugin_id" place="plugin_id" />
+      <connect-in port="deg_bound" place="deg_bound" />
+      <connect-inout port="count" place="ip_deg_count" />
+    </transition>
+
+    <transition name="generate_ip_substitutions">
+      <defun>
+        <properties name="gspc">
+          <properties name="we">
+            <properties name="plugin">
+              <property key="call_after_eval">
+                "stack_push (List(), ${plugin_id})"
+              </property>
+            </properties>
+          </properties>
+        </properties>
+
+        <in name="plugin_id" type="unsigned long" />
+        <in name="count" type="unsigned long" />
+
+        <expression>
+          ${operation} := "INITIALIZE";
+        </expression>
+      </defun>
+
+      <!-- do not start prematurely -->
+      <condition>
+        ${count} :eq: 0UL
+      </condition>
+
+      <connect-read port="plugin_id" place="plugin_id" />
+      <connect-in port="count" place="ip_deg_count" />
+    </transition>
+    <!-- GEN SUBST END -->
+
+    <transition name="multiply">
+      <defun>
+        <require key="worker" mandatory="true" />
+        <in    name="data" type="multiply_data" />
+        <in    name="config" type="config" />
+        <in    name="point" type="map" />
+        <in    name="id" type="unsigned long" />
+        <out   name="product" type="matrix" />
+
+        <module name="multiply"
+                function="product reduce (data, config, point, id)"
+                pass_context="true">
+          <cinclude href="util-feynman/feynman_interface.hpp" />
+          <cinclude href="logging/scope_profiler.hpp" />
+          <code><![CDATA[
+            ::feynman::logging::ScopeProfiler profiler
+              ( ::feynman::logging::Log::instance
+                (_pnetc_context, config.logging_options)
+              , "reduce"
+              );
+            return RESOLVE_INTERFACE_FUNCTION (multiply)
+              (data, config, point, id);
+          ]]></code>
+        </module>
+      </defun>
+
+      <connect-read port="data" place="input_data" />
+      <connect-read port="config" place="config" />
+      <connect-in   port="id" place="file_id" />
+      <connect-in   port="point" place="ip_substs" />
+      <connect-out  port="product" place="product" />
+    </transition>
+
+    <transition name="normalize">
+      <defun>
+        <in  name="config" type="config" />
+        <in  name="product" type="matrix" />
+        <in  name="reference" type="matrix" />
+        <in  name="deg_mats"  type="map" />
+        <out name="product_norm" type="matrix" />
+
+        <module name="multiply"
+                function="product_norm normalize (config, product, reference, deg_mats)"
+                pass_context="true">
+          <cinclude href="util-feynman/feynman_interface.hpp" />
+          <cinclude href="logging/scope_profiler.hpp" />
+          <code><![CDATA[
+            ::feynman::logging::ScopeProfiler profiler
+              ( ::feynman::logging::Log::instance
+                (_pnetc_context, config.logging_options)
+              , "normalize"
+              );
+            return RESOLVE_INTERFACE_FUNCTION (normalize)
+              (product, reference, deg_mats);
+          ]]></code>
+        </module>
+      </defun>
+
+      <connect-read port="config" place="config" />
+      <connect-in port="product" place="product" />
+      <connect-read port="deg_mats" place="degree_matrices" />
+      <connect-read port="reference" place="reference" />
+      <connect-out port="product_norm" place="matrix_to_store" />
+    </transition>
+
+    <transition name="record_failure">
+      <defun>
+        <properties name="gspc">
+          <properties name="we">
+            <properties name="plugin">
+              <property key="call_after_eval">
+                "stack_push (List(), ${plugin_id})"
+              </property>
+            </properties>
+          </properties>
+        </properties>
+
+        <in name="plugin_id" type="unsigned long" />
+        <in name="bad_point" type="matrix" />
+
+        <expression>
+          ${operation} := "FAILED";
+
+          ${point} := ${bad_point.point};
+        </expression>
+      </defun>
+
+      <condition>
+        !${bad_point.valid}
+      </condition>
+
+      <connect-read port="plugin_id" place="plugin_id" />
+      <connect-in   port="bad_point" place="matrix_to_store" />
+    </transition>
+
+    <transition name="record_name">
+      <defun>
+        <properties name="gspc">
+          <properties name="we">
+            <properties name="plugin">
+              <property key="call_after_eval">
+                "stack_push (List(), ${plugin_id})"
+              </property>
+            </properties>
+          </properties>
+        </properties>
+
+        <in name="plugin_id" type="unsigned long" />
+        <in name="subst_mat" type="matrix" />
+
+        <expression>
+          ${operation} := "FINISHED";
+
+          ${point} := ${subst_mat.point};
+          ${path} := ${subst_mat.data.path};
+        </expression>
+      </defun>
+
+      <condition>
+        ${subst_mat.valid}
+      </condition>
+
+      <connect-read port="plugin_id" place="plugin_id" />
+      <connect-in   port="subst_mat" place="matrix_to_store" />
+    </transition>
+
+    <transition name="interpolate">
+      <defun>
+        <require key="interpolate" mandatory="true" />
+        <in  name="config" type="config" />
+        <in  name="ip_tok" type="interpolation_data" />
+        <in  name="id" type="unsigned long" />
+        <out name="ip_mat" type="matrix" />
+
+        <module name="multiply"
+                function="ip_mat interpolate (config, ip_tok, id)"
+                pass_context="true">
+          <cinclude href="util-feynman/feynman_interface.hpp" />
+          <cinclude href="logging/scope_profiler.hpp" />
+          <code><![CDATA[
+            ::feynman::logging::ScopeProfiler profiler
+              ( ::feynman::logging::Log::instance
+                (_pnetc_context, config.logging_options)
+              , "interpolate"
+              );
+            return RESOLVE_INTERFACE_FUNCTION (interpolate)
+              (config, ip_tok, id);
+          ]]></code>
+        </module>
+      </defun>
+
+      <!-- should now always be true -->
+      <condition>
+        ${ip_tok.index} :gt: 0UL
+      </condition>
+
+      <connect-read port="config" place="config" />
+      <connect-in port="id" place="file_id" />
+      <connect-in port="ip_tok" place="ip_token" />
+      <connect-out port="ip_mat" place="matrix_to_store" />
+    </transition>
+
+    <!-- as soon as finalfile is populated this can destroy the plugin -->
+    <transition name="destroy_storage_plugin">
+      <defun>
+        <properties name="gspc">
+          <properties name="we">
+            <properties name="plugin">
+              <property key="destroy" />
+            </properties>
+          </properties>
+        </properties>
+
+        <in    name="plugin_id" type="unsigned long" />
+        <inout name="fname" type="file" />
+        <expression />
+      </defun>
+
+      <connect-in  port="fname" place="finalfile" />
+      <connect-in  port="plugin_id" place="plugin_id" />
+      <connect-out port="fname" place="finalfile_ready" />
+    </transition>
+
+    <transition name="finish">
+      <defun>
+        <in  name="config" type="config" />
+        <in  name="ffile" type="file" />
+        <out name="fname" type="file" />
+
+        <module name="multiply"
+                function="fname finish (config, ffile)"
+                pass_context="true">
+          <cinclude href="util-feynman/feynman_interface.hpp" />
+          <cinclude href="logging/scope_profiler.hpp" />
+          <code><![CDATA[
+            ::feynman::logging::ScopeProfiler profiler
+              ( ::feynman::logging::Log::instance
+                (_pnetc_context, config.logging_options)
+              , "end"
+              );
+            return RESOLVE_INTERFACE_FUNCTION (finalfile)(config, ffile);
+          ]]></code>
+        </module>
+      </defun>
+
+      <connect-read port="config" place="config" />
+      <connect-in   port="ffile" place="finalfile_ready" />
+      <connect-out  port="fname" place="fname" />
+    </transition>
+  </net>
+</defun>

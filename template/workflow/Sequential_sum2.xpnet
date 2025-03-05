@@ -14,7 +14,7 @@
 	<in name="base_filename" type="string" place="place_base_filename"/>
 	<in name="library_name" type="string" place="place_library_name"/>
   <in name="input" type="string" place="place_initiate"/>
- <out name ="OUTPUT" type ="string" place ="place_Syz"/>
+ <out name ="OUTPUT" type ="string" place ="place_Final_Syz"/>
   
 	<net>
   <place name ="place_initiate" type ="string"/>
@@ -27,7 +27,7 @@
     <place name="place_lead" type="string"/>
     <place name="place_Tau" type="string"/>
     <place name ="place_SubLift" type ="string"/>
-  
+    <place name ="place_Syz" type ="string"/>
 
  
     <place name="place_counter" type="int"/>
@@ -36,7 +36,7 @@
 
 
 
-<place name ="place_StartTime" type ="long"/>
+
 
 
 
@@ -46,17 +46,14 @@
        <out name ="c" type ="control"/>
       <in name="input" type="string"/>
         <out name="output" type="string"/>
-        <out name="start_time" type="long"/>
-        <module name="singular_template" function="StartTime(start_time,input,c,output)">
+      
+        <module name="singular_template" function="StartTime(input,c,output)">
          <cinclude href="interface/template_interface.hpp" />
       <cinclude href="util-generic/dynamic_linking.hpp"/>
       <cinclude href="iostream"/>
       <cinclude href="chrono"/>
         <code><![CDATA[
-         auto computation_time = std::chrono::high_resolution_clock::now();
-    auto duration = computation_time.time_since_epoch();
 
-    start_time= std::chrono::duration_cast<std::chrono::nanoseconds>(duration).count();
      output=input;
     ]]></code>
      </module>
@@ -66,7 +63,7 @@
     
       </defun>
       <connect-in port="input" place="place_initiate"/>
-      <connect-out port="start_time" place="place_StartTime"/>
+     
        <connect-out port="output" place="place_input_GB"/>
         <connect-out port="c" place="place_control"/>
     </transition>
@@ -161,10 +158,10 @@
        <out name ="Sublift" type ="list"/>
         <out name="counter" type="int"/>
         <out name="OUT" type="list"/>
-       
+        <out name="syz_sum" type="list"/>
       <module name="singular_template"
                 require_function_unloads_without_rest="false"
-                function="leadsyz(input,s,counter,OUT,library_name,base_filename,Sublift)">
+                function="leadsyz(input,s,counter,OUT,library_name,base_filename,Sublift,syz_sum)">
         <cinclude href="interface/template_interface.hpp" />
         <cinclude href="util-generic/dynamic_linking.hpp"/>
         <cinclude href="vector"/>
@@ -184,19 +181,27 @@
                     
                     
                       counter=total_generator;
-                      
-                         for(int i (0); i<vec.size(); i++)
+                        for(int i (0); i<total_generator; i++)
                                                                  {
                           //std::cout << "leadSyz_Success:"<<vec[i] << std::endl;
                           OUT.emplace_back(vec[i]);
-                           Sublift.emplace_back(vec[i]);
+                          
                          //std::cout << "leadSyz_Success:"<<vec[i] << std::endl;
                           //std::cout << "SubliftleadSyz_Success:"<<vec[i] << std::endl;
                           
                           }
+                            for(int i (0); i<total_generator-1; i++)
+                                                                 {
+                          //std::cout << "leadSyz_Success:"<<vec[i] << std::endl;
+                          Sublift.emplace_back(vec[i]);
+                         
+                         //std::cout << "leadSyz_Success:"<<vec[i] << std::endl;
+                          //std::cout << "SubliftleadSyz_Success:"<<vec[i] << std::endl;
+                          
+                          }
+                       syz_sum.emplace_back(vec[total_generator-1]);
                       
-                      
-                          std::cout << "#leadSyz="<<counter<< std::endl;
+                         
 
             
                    
@@ -211,7 +216,8 @@
       <connect-out-many port="OUT" place="place_lead"/>
      
         <connect-out-many port="Sublift" place="place_SubLift"/>
-     
+    
+       <connect-out port="syz_sum" place="left_init"/>
        <connect-out port="counter" place="place_counter"/>
      
     </transition>
@@ -462,56 +468,201 @@
   </transition> 
 
 
-<place name="left_init" type="string">
-  <token><value>""</value></token>
+
+
+  <place name="place_file_number" type="int">
+ 
 </place>
 
-<place name="right_init" type="string">
- <token><value>""</value></token>
+
+
+<!-- Transition: RenameFIle -->
+<transition name="Rename_File">
+  <defun>
+   <inout name ="n" type ="control"/>
+  <in name="Sublift" type="string"/>
+   
+  
+    <module name="singular_template" function="Rename_file(n,Sublift)">
+     <cinclude href="interface/template_interface.hpp" />
+  <cinclude href="util-generic/dynamic_linking.hpp"/>
+  <cinclude href="iostream"/>
+  <cinclude href="chrono"/>
+    <code><![CDATA[
+
+ output=input;
+]]></code>
+ </module>
+    n=n+1;
+ auto s  = RESOLVE_INTERFACE_FUNCTION(singular_template_Rename_File) (Sublift,n);
+ 
+
+  </defun>
+  <connect-in port="Sublift" place="place_SubLift"/>
+ 
+  
+    <connect-in port="n" place="place_file_number"/>
+
+    <connect-out port="n" place="place_file_number"/>
+</transition>
+
+
+
+
+<place name="left_init" type="list">
+ 
 </place>
 
-<place name="Tem_Sum" type="string"/>
 
-
-
-
-    <transition name="Generate1">
+    <transition name="Generate">
       <defun>
+        <require key="worker" mandatory="true"/>
+    
+    
         <in name="a" type="string"/>
-        <inout name="s" type="string"/>
-
-        <module name="singular_template" function="count(a)">
+        <in name="s" type="list"/>
+        <out name ="vec" type="list"/>
+        <inout name="vec_size" type="unsigned long"/>
+        <module name="singular_template" 
+        require_function_unloads_without_rest="false"
+         function="Generate(s,a,vec,vec_size)">
+        
+         <cinclude href="interface/template_interface.hpp" />
+        <cinclude href="util-generic/dynamic_linking.hpp"/>
+        <cinclude href="vector"/>
         <cinclude href="iostream"/>
+        <cinclude href ="string"/>
+        <cinclude href="list"/>
+        <cinclude href="numeric"/> 
+        <cinclude href="chrono"/>
+
         <code><![CDATA[
-       //std::cout << "LHS: " << a << std::endl;
-        ]]></code>
-        </module>
-      </defun>
-      <connect-in port="s" place="left_init"/>
-      <connect-out port="s" place="left_init"/>
-      <connect-in port="a" place="place_SubLift"/>
+          
+      
      
-    </transition>
 
 
 
-<transition name="Generate2">
-      <defun>
-        <in name="a" type="string"/>
-        <inout name="s" type="string"/>
-        <module name="singular_template" function="plus(a)">
-        <cinclude href="iostream"/>
-        <code><![CDATA[
-       //std::cout << "RHS: " << a << std::endl;
-        ]]></code>
-        </module>
-      </defun>
-      <connect-in port="a" place="place_SubLift"/>
-      <connect-in port="s" place="right_init"/>
-      <connect-out port="s" place="right_init"/>
+    using pnet_value = pnet::type::value::value_type;
+    using pnet_list = std::list<pnet_value>;
+         pnet_list temp_a;
+        for (const auto& item : s)
+        {
+         
+            temp_a.push_back(pnet::type::value::value_type(item));
+        }
+        temp_a.push_back(pnet::type::value::value_type(a));
+
+        vec.push_back(temp_a);
     
 
+           // Calculate the total number of elements in vec
+           unsigned long total_elements = 0;
+
+           // Iterate over each item in vec and count the size of each inner list
+           for (const auto& variant_item : vec) {
+               // Try to extract the list from the variant
+               if (const auto* inner_list = boost::get<std::list<pnet_value>>(&variant_item)) {
+                   total_elements += inner_list->size(); // Add the size of the inner list
+               }
+               // You can add more cases for other types, if necessary
+           }
+   
+           // Set the size of vec to the calculated total number of elements
+          vec_size = total_elements;
+          std::cout << "vec_size :" << vec_size  << std::endl;
+
+        ]]></code>
+        </module>
+      </defun>
+   
+      <connect-in port="s" place="left_init"/>
+      <connect-out-many port="vec" place="left_init"/>
+      <connect-in port="a" place="place_SubLift"/>
+      <connect-in port="vec_size" place="place_vec_size"/>
+      <connect-out port="vec_size" place="place_vec_size"/>
     </transition>
+
+
+    <place name="place_vec_size" type="unsigned long">
+    <token>
+    <value>0UL</value>
+  </token>
+
+</place>
+     
+
+
+
+
+
+
+
+<place name ="place_StartTime" type ="long"/>
+
+<transition name="Result">
+  <defun>
+    <in name="s" type="list"/>
+    <out name="vec" type="list"/>
+    <out name="start_time" type="long"/>
+   
+    <in name="vec_size" type="unsigned long"/>
+
+    <module name="singular_template" function="result(s,vec,start_time,vec_size)">
+      <cinclude href="interface/template_interface.hpp" />
+      <cinclude href="util-generic/dynamic_linking.hpp"/>
+      <cinclude href="iostream"/>
+      <cinclude href="chrono"/>
+      <code><![CDATA[
+        auto computation_time = std::chrono::high_resolution_clock::now();
+        auto duration = computation_time.time_since_epoch();
+        start_time = std::chrono::duration_cast<std::chrono::nanoseconds>(duration).count();
+
+        using pnet_value = pnet::type::value::value_type;
+        using pnet_list = std::list<pnet_value>;
+
+        pnet_list temp_a;
+        
+        // Copy elements from s to temp_a
+        for (const auto& item : s)
+        {
+            temp_a.push_back(pnet::type::value::value_type(item));
+        }
+
+        // Append the new element 'a' to the list
+  
+
+        // Push the updated list to vec
+        vec.push_back(temp_a);
+
+        std::cout << "vec_size_in Result :" << vec_size  << std::endl;
+
+      
+      ]]></code>
+    </module>
+
+    <condition>
+    ${vec_size} :eq: 20UL
+    </condition>
+  </defun>
+
+
+  <connect-out port="start_time" place="place_StartTime"/>
+  <connect-in port="s" place="left_init"/>
+  <connect-out-many port="vec" place="place_sum_token"/>
+  <connect-in port="vec_size" place="place_vec_size"/>
+
+</transition>
+
+
+
+
+
+ <place name="place_sum_token" type="list"/>
+<place name="place_Final_Syz" type="string"/>
+
+
+
 
 
 <!-- Transition 5: Reduce-->
@@ -522,174 +673,99 @@
      <in name="library_name" type="string"/>
      <in name="base_filename" type="string"/>
         <out name="s" type="string"/>
-        <in name="l" type="string"/>
-        <out name="r" type="string"/>
+        <in name="l" type="list"/>
+        
         <in name="input" type="string"/>
-    
+     
        
      <module name="singular_template"
               		require_function_unloads_without_rest="false"
-              		function="reduce(library_name, base_filename,input, s,l,r)">
+              		function="reduce(library_name, base_filename,input, s,l)">
           		<cinclude href="interface/template_interface.hpp" />
           		<cinclude href="util-generic/dynamic_linking.hpp"/>
               <cinclude href="iostream"/>
              <cinclude href="chrono"/>
 
           			<code><![CDATA[
-
-                
-                //std::cout << "Reduce_Input:" <<input << std::endl;
-                //std::cout << "Reduce_l:" <<l << std::endl;
-                //std::cout << "Reduce_r" <<r<< std::endl;
-						 auto result  = RESOLVE_INTERFACE_FUNCTION(singular_template_reduce)(input,l,r,library_name, base_filename
+std::vector<std::string> vec;
+ for (const auto& elem : l) {
+            auto ptr = boost::get<std::string>(&elem) ;
+            std::string ss=*ptr;
+            vec.push_back(ss);
+          }
+              
+              
+						 auto result  = RESOLVE_INTERFACE_FUNCTION(singular_template_reduce)(input,vec,library_name, base_filename
 							); 
                 s = result.first;
         
-            // std::cout << "Reduce:" << s << std::endl;
-                  LHS_delete=l;
-                          
-                       RHS_delete=r;
+            std::cout << "Reduce:" << s << std::endl;
+                 
 
 //std::cout << "Reduce Duration: " << runtime << " milliseconds" << std::endl;
 
             		]]></code>
                  
         		</module>
-      </defun>
-      <connect-read port="library_name" place="place_library_name"/> 
-      <connect-read port="base_filename" place="place_base_filename"/>
-      <connect-read port="input" place="place_input_GB"/>
-      <connect-in port="l" place="left_init"/>
-     
-      <connect-out port="r" place="left_init"/>
-      <connect-out port="s" place="Tem_Sum"/>
-  
-    </transition> 
-
-
-
-
-
-     
-<!-- Transition 5: Reduce-->
-    <transition name="Add2">
-      <defun>
-      <require key="worker" mandatory="true"/>
-    
-     <in name="library_name" type="string"/>
-     <in name="base_filename" type="string"/>
-        <out name="s" type="string"/>
-        <in name="l" type="string"/>
-          <out name="r" type="string"/>
-        <in name="input" type="string"/>
-    
-       
-     <module name="singular_template"
-              		require_function_unloads_without_rest="false"
-              		function="reduce(library_name, base_filename,input, s,l,r)">
-          		<cinclude href="interface/template_interface.hpp" />
-          		<cinclude href="util-generic/dynamic_linking.hpp"/>
-              <cinclude href="iostream"/>
-             <cinclude href="chrono"/>
-
-          			<code><![CDATA[
-
-                
-                //std::cout << "Reduce_Input:" <<input << std::endl;
-                //std::cout << "Reduce_l:" <<l << std::endl;
-                //std::cout << "Reduce_r" <<r<< std::endl;
-						 auto result  = RESOLVE_INTERFACE_FUNCTION(singular_template_reduce)(input,l,r,library_name, base_filename
-							); 
-                s = result.first;
-        
-            // std::cout << "Reduce:" << s << std::endl;
-          
-
-//std::cout << "Reduce Duration: " << runtime << " milliseconds" << std::endl;
-
-            		]]></code>
                  
-        		</module>
+     
       </defun>
+
       <connect-read port="library_name" place="place_library_name"/> 
       <connect-read port="base_filename" place="place_base_filename"/>
       <connect-read port="input" place="place_input_GB"/>
-      <connect-in port="l" place="right_init"/>
     
-      <connect-out port="r" place="right_init"/>
-      <connect-out port="s" place="Tem_Sum"/>
+     
+      <connect-in port="l" place="place_sum_token"/>
+     
+     
+   
+      <connect-out port="s" place="place_Syz"/>
   
     </transition> 
 
 
 
-
-<place name ="LHS_delete" type ="string"/>
-<place name ="RHS_delete" type ="string"/>
- 
-    
-<!-- Transition 5: Delete-->
-<transition name="Delete">
-  <defun>
-    <require key="worker" mandatory="true"/>
    
-    <in name="l" type="string"/>
-    <in name="r" type="string"/>
-     <in name="LIFT" type="int"/>
-    <in name="nleads" type="int"/>
-   
-    <module name="singular_template"
-            require_function_unloads_without_rest="false"
-            function="removeFiles(LIFT,nleads,l,r)">
-      <cinclude href="interface/template_interface.hpp" />
+ <!-- Transition: EndTime -->
+<transition name="EndTime_Syz">
+    <defun>
+        <in name="start_time" type="long"/>
+        <inout name="computed_output" type="string"/>
+      
+      
+         <module name="singular_template" function="EndTime_Syz(start_time,computed_output)">
+         <cinclude href="interface/template_interface.hpp" />
       <cinclude href="util-generic/dynamic_linking.hpp"/>
       <cinclude href="iostream"/>
-      <code><![CDATA[
-        // std::cout <<"LIFT: " << LIFT << std::endl;
-        // std::cout <<"LeadSyz: " << nleads << std::endl;
-       auto s = RESOLVE_INTERFACE_FUNCTION(singular_template_removeFiles)(l, r);
-        // std::cout << "Delete:" << s << std::endl;
-      ]]></code>
-    </module>
-
-      <condition>
-      ${nleads}:eq:${LIFT}
-    </condition>
-  </defun>
-
-  <connect-in port="l" place="LHS_delete"/>
-  <connect-in port="r" place="RHS_delete"/>
-  <connect-read port="LIFT" place="Count_LIFT"/>
-   <connect-read port="nleads" place="place_counter"/>
+      <cinclude href="chrono"/>
+        <code><![CDATA[
+                auto computation_time = std::chrono::high_resolution_clock::now();
+                auto duration = computation_time.time_since_epoch();
+                long current_time = std::chrono::duration_cast<std::chrono::nanoseconds>(duration).count();
+               long end_timer = current_time - start_time; // Calculate elapsed time
+              
+                std::cout << "Calculate Syz: = " << end_timer << " nanoseconds" << std::endl;
+            ]]></code>
+         </module>
+     
+    </defun>
+    
+    <connect-in port="start_time" place="place_StartTime"/>
+    <connect-in port="computed_output" place="place_Syz"/>
    
- 
+    <connect-out port="computed_output" place="place_Final_Syz"/>
+   
+    
 </transition>
 
 
 
-<transition name="Final_Sum">
-      <defun>
-        <in name="a" type="string"/>
-        <inout name="s" type="string"/>
-        <module name="singular_template" function="plus(a)">
-        <cinclude href="iostream"/>
-        <code><![CDATA[
-       //std::cout << "RHS: " << a << std::endl;
-        ]]></code>
-        </module>
-      </defun>
-      <connect-in port="a" place="Tem_Sum"/>
-      <connect-in port="s" place="place_Syz"/>
-      <connect-out port="s" place="place_Syz"/>
-      
-    
-
-    </transition>
 
 
-<place name="place_Syz" type="string">
-  <token><value>""</value></token>
-</place>
+
+
+
 
 
 

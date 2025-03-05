@@ -15,33 +15,36 @@ namespace pnetc
         ( const std::string& library_name
         , const std::string& base_filename
         , const std::string& input
-        , const std::string& l
-        , const std::string& r
+        , const int& N
+        , const unsigned long& k1
+        , const unsigned long& k2
+        , const unsigned long& k3
+        , const unsigned long& k4
         , std::string& s
-        , std::string& LHS_delete
-        , std::string& RHS_delete
         )
       {
-#line 489 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 505 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
 
-                
-                //std::cout << "Reduce_Input:" <<input << std::endl;
-                //std::cout << "Reduce_l:" <<l << std::endl;
-                //std::cout << "Reduce_r" <<r<< std::endl;
-						 auto result  = RESOLVE_INTERFACE_FUNCTION(singular_template_reduce)(input,l,r,library_name, base_filename
-							); 
-                s = result.first;
-                 LHS_delete=l;
-                          
-                 RHS_delete=r;
+                auto computation_time = std::chrono::high_resolution_clock::now();
+              
+              //std::cout << "Reduce_Input:" <<input << std::endl;
+              //std::cout << "Reduce_l:" <<l << std::endl;
+              //std::cout << "Reduce_r" <<r<< std::endl;
+           auto result  = RESOLVE_INTERFACE_FUNCTION(singular_template_reduce)(input,N,library_name, base_filename
+            ); 
+            auto end_computation = std::chrono::high_resolution_clock::now();
+            auto computation_duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - computation_time).count();
+    
+              s = result.first;
            
-            // std::cout << "Reduce:" << s << std::endl;
-               
+         
+          std::cout << "Reduce:" << s << std::endl;
+             
 
-//std::cout << "Reduce Duration: " << runtime << " milliseconds" << std::endl;
+std::cout << "Reduce Duration: " <<computation_duration << "nanosecond" << std::endl;
 
-            		
+              
       }
     }
   }
