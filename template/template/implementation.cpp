@@ -1603,7 +1603,7 @@ std::tuple<std::vector<std::string>, int, long> singular_template_LIFT(const std
                                                                        const std::string& all_lead,
                                                                        const std::string& lead,
                                                                        const std::string& needed_library,
-                                                                       const std::string& base_filename)
+                                                                       const std::string& base_filename,int N)
 {
     // Initialize Singular and load the necessary library
     init_singular(config::singularLibrary().string());
@@ -1651,7 +1651,25 @@ std::tuple<std::vector<std::string>, int, long> singular_template_LIFT(const std
 
     // Extract the result list from the output
     lists u = (lists)out.second->m[3].Data();
-    
+    std::filesystem::path oldPath(lead);
+
+if (std::filesystem::exists(oldPath)) {
+    std::filesystem::path newPath = oldPath.parent_path() / (std::to_string(N) + ".ssi");
+
+    if (!std::filesystem::exists(newPath)) {
+        try {
+            std::filesystem::rename(oldPath, newPath);
+            // std::cout << "Renamed " << lead << " to " << newPath.string() << std::endl;
+        } catch (const std::filesystem::filesystem_error& e) {
+            std::cerr << "Error renaming file: " << e.what() << std::endl;
+        }
+    } else {
+        std::cerr << "File with new name already exists: " << newPath.string() << std::endl;
+    }
+} else {
+    std::cerr << "File does not exist: " << lead << std::endl;
+}
+
     
     std::vector<std::string> vec;
     int total_generator;
@@ -1911,8 +1929,7 @@ lists subLiftTree2(ideal f, poly s, lists J, int level) {
     return TT;
 }
 
-
-
+NO_NAME_MANGLING
 std::pair<int, lists> SubLIFT_GPI(leftv args) {
     // Extract the Token
     lists Token = (lists)(args->Data());
@@ -2149,7 +2166,7 @@ std::tuple<std::vector<std::string>, int, long> singular_template_SUBLIFT(const 
                                                                 const std::string& lead,
                                                                
                                                   const std::string& needed_library,
-                                                   const std::string& base_filename)
+                                                   const std::string& base_filename,int N)
 { // Initialize Singular and load library
     init_singular(config::singularLibrary().string());
     load_singular_library(needed_library);
@@ -2226,7 +2243,26 @@ std::tuple<std::vector<std::string>, int, long> singular_template_SUBLIFT(const 
   //         sleftv& listElement = Token2->m[i];  // Access each element as `leftv`
   //     std::cout << "All_lead: " << listElement.String()  << std::endl;
   // }
+//   std::cout << "Renamed " << lead <<"" << std::endl;
+  std::filesystem::path oldPath(lead);
 
+  if (std::filesystem::exists(oldPath)) {
+      std::filesystem::path newPath = oldPath.parent_path() / (std::to_string(N) + ".ssi");
+  
+      if (!std::filesystem::exists(newPath)) {
+          try {
+              std::filesystem::rename(oldPath, newPath);
+            //   std::cout << "Renamed " << lead << " to " << newPath.string() << std::endl;
+          } catch (const std::filesystem::filesystem_error& e) {
+              std::cerr << "Error renaming file: " << e.what() << std::endl;
+          }
+      } else {
+          std::cerr << "File with new name already exists: " << newPath.string() << std::endl;
+      }
+  } else {
+      std::cerr << "File does not exist: " << lead << std::endl;
+  }
+  
 
      std::vector<std::string> vec;
      int total_generator;
@@ -2407,101 +2443,33 @@ std::pair<std::string, long> singular_template_reduce(const std::string& Red,
 
 
 
-NO_NAME_MANGLING
-
-
-std::string singular_template_Generate(const std::string& res,
-                                       const std::string& syz,
-										                   const std::string & needed_library,
-            							             const std::string& base_filename)
-{
-	init_singular (config::singularLibrary().string());
-	load_singular_library(needed_library);
-	std::pair<int,lists> Res;
-  std::pair<int,lists> Syz;
-	std::pair<int, lists> out;
-	std::string ids;
-	std::string out_filename;
-	ids = worker();
-	//std::cout << ids << " in singular_..._compute" << std::endl;
-  Res = deserialize(res,ids);
-  Syz = deserialize(syz,ids);
-  
-	ScopedLeftv args( Res.first, lCopy(Res.second));
-  ScopedLeftv arg(args,Syz.first, lCopy(Syz.second));
-  std::string function_name = "Generate_GPI";
-	out = call_user_proc(function_name, needed_library, args);
-  out_filename = serialize(out.second, base_filename);
-    
-	return out_filename;
-}
-
-std::vector<std::string> Generate_GPI_CPP(const std::string& input, const std::vector<std::string>& Tok) {
-    // Initialize an empty list L
-    std::vector<std::string> L;
-
-    // Append all elements from Tok to L
-    for (const auto& item : Tok) {
-        L.push_back(item);
-    }
-
-    // Add the new input to the end of L
-    L.push_back(input);
-
-    // Return the updated list
-    return L;
-}
-
-
-
 
 
 
 NO_NAME_MANGLING
-std::string singular_template_Rename_File(const std::string& Red, int N) {
-    // static std::chrono::high_resolution_clock::time_point start_time;  // Make this static to persist across calls
-    // static bool timer_started = false;  // To ensure we only start the timer once
-
-    // std::cout << "N:= " << N << std::endl;
-
-    try {
-        // if (N == 1 && !timer_started) {  // Start timer only once when N == 1
-        //     start_time = std::chrono::high_resolution_clock::now();
-        //     timer_started = true;
-        //     std::cout << "Timer started at N == 1." << std::endl;
-        // }
-
-        std::filesystem::path oldPath(Red);
-        if (std::filesystem::exists(oldPath)) {
-            std::filesystem::path newPath = oldPath.parent_path();
-            newPath /= std::to_string(N) + ".ssi";
-
-            // Check if a file with the new name already exists
-            if (!std::filesystem::exists(newPath)) {
-                std::filesystem::rename(oldPath, newPath);
-
-                // if (N == 7047&& timer_started) {  // Calculate time when N == 23
-                //     auto end_time = std::chrono::high_resolution_clock::now();
-                //     auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end_time - start_time).count();
-
-                //     std::cout << "Timer stopped at N == 23." << std::endl;
-                //     std::cout << "Renaming completed. Time taken: " << duration << " nanoseconds." << std::endl;
-
-                //     timer_started = false;  // Reset timer after completion
-                // }
-                return newPath.string();
-            } else {
-                std::cerr << "File with new name already exists: " << newPath.string() << std::endl;
-            }
-        } else {
-            std::cerr << "File does not exist: " << Red << std::endl;
+std::string singular_template_Rename_File(const std::string& Red, int N, const std::string& needed_library,
+    const std::string& base_filename) 
+        {
+            init_singular(config::singularLibrary().string());
+            load_singular_library(needed_library);
+        
+            // Extract the folder path from the Red file's location
+            std::filesystem::path basePath = std::filesystem::path(Red).parent_path();
+            // std::cout << base_filename<< "base_filename" << std::endl;
+            // std::cout <<Red<< "" << std::endl;
+            // std::cout <<N<< "int n" << std::endl;
+            std::string ids = worker();
+           
+                std::pair<int, lists> Gb = deserialize(Red, ids);
+                std::string rename_file=serialize_with_N(Gb.second,base_filename,N);
+               // After the new file is written, delete the old Red file
+        try {
+            std::filesystem::remove(Red);
+            // std::cout << "Deleted old file: " << Red << std::endl;
+        } catch (const std::filesystem::filesystem_error& e) {
+            std::cerr << "Failed to delete " << Red << ": " << e.what() << std::endl;
         }
-    } catch (const std::filesystem::filesystem_error& e) {
-        std::cerr << "Filesystem error: " << e.what() << std::endl;
-    } catch (const std::exception& e) {
-        std::cerr << "Error during renaming: " << e.what() << std::endl;
-    }
+            //  std::cout <<N<<":=" <<"-"<<rename_file<< std::endl;
+            return rename_file;
 
-    return {};  // Return an empty string if there's any failure
 }
-
