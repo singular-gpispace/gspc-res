@@ -1,4 +1,6 @@
 #include <pnetc/op/singular_template/StartTime.hpp>
+#include <list>
+#include <we/type/value.hpp>
 #include <we/type/literal/control.hpp>
 #include <string>
 #include <interface/template_interface.hpp>
@@ -14,17 +16,22 @@ namespace pnetc
     {
       void StartTime
         ( const std::string& input
+        , const int& N
         , we::type::literal::control& c
         , std::string& output
+        , std::list<pnet::type::value::value_type>& outgoing
         , long& start_time
         )
       {
-#line 55 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 64 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
           auto computation_time = std::chrono::high_resolution_clock::now();
           auto duration = computation_time.time_since_epoch();
       
           start_time= std::chrono::duration_cast<std::chrono::nanoseconds>(duration).count();
+          for(int k=1; k<=N; k++){
+            outgoing.emplace_back(k);
+          }
      output=input;
     
       }

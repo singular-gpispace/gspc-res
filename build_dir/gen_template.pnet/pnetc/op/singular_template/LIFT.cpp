@@ -22,16 +22,17 @@ namespace pnetc
         , const std::string& all_lead
         , const std::string& needed_library
         , const std::string& base_filename
+        , const int& N
         , std::list<pnet::type::value::value_type>& LIFT
         , std::string& SUBLIFT
         )
       {
-#line 254 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 268 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
                   //  std::cout << "in singular _PetriNet_.._LIFT" << std::endl;
                    
                    std::tuple<std::vector<std::string>, int, long> out = RESOLVE_INTERFACE_FUNCTION(singular_template_LIFT)
-                  (input_name,all_lead, lead, needed_library, base_filename);
+                  (input_name,all_lead, lead, needed_library, base_filename,N);
                        
 
                        std::vector<std::string> vec = std::get<0>(out);
@@ -50,7 +51,7 @@ namespace pnetc
                     }
                     SUBLIFT = lead;
                
-              // std::cout << "LIFT_COUNT_Parent:"<< N << std::endl;
+              // std::cout << "LIFT::"<<  SUBLIFT << std::endl;
               // std::cout << "LIFT_COUNT_Child:"<< E << std::endl;
               
 

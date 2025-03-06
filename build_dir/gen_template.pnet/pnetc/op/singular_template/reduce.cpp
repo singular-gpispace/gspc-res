@@ -1,4 +1,5 @@
 #include <pnetc/op/singular_template/reduce.hpp>
+#include <we/type/literal/control.hpp>
 #include <string>
 #include <interface/template_interface.hpp>
 #include <util-generic/dynamic_linking.hpp>
@@ -15,17 +16,13 @@ namespace pnetc
         ( const std::string& library_name
         , const std::string& base_filename
         , const std::string& input
-        , const int& N
-        , const unsigned long& k1
-        , const unsigned long& k2
-        , const unsigned long& k3
-        , const unsigned long& k4
+        , const we::type::literal::control& IN
         , std::string& s
         )
       {
-#line 505 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 525 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
-
+               int N=7047;
                 auto computation_time = std::chrono::high_resolution_clock::now();
               
               //std::cout << "Reduce_Input:" <<input << std::endl;

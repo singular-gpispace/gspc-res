@@ -2444,32 +2444,3 @@ std::pair<std::string, long> singular_template_reduce(const std::string& Red,
 
 
 
-
-
-NO_NAME_MANGLING
-std::string singular_template_Rename_File(const std::string& Red, int N, const std::string& needed_library,
-    const std::string& base_filename) 
-        {
-            init_singular(config::singularLibrary().string());
-            load_singular_library(needed_library);
-        
-            // Extract the folder path from the Red file's location
-            std::filesystem::path basePath = std::filesystem::path(Red).parent_path();
-            // std::cout << base_filename<< "base_filename" << std::endl;
-            // std::cout <<Red<< "" << std::endl;
-            // std::cout <<N<< "int n" << std::endl;
-            std::string ids = worker();
-           
-                std::pair<int, lists> Gb = deserialize(Red, ids);
-                std::string rename_file=serialize_with_N(Gb.second,base_filename,N);
-               // After the new file is written, delete the old Red file
-        try {
-            std::filesystem::remove(Red);
-            // std::cout << "Deleted old file: " << Red << std::endl;
-        } catch (const std::filesystem::filesystem_error& e) {
-            std::cerr << "Failed to delete " << Red << ": " << e.what() << std::endl;
-        }
-            //  std::cout <<N<<":=" <<"-"<<rename_file<< std::endl;
-            return rename_file;
-
-}

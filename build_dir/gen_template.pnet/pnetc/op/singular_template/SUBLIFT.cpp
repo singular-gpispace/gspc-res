@@ -22,18 +22,19 @@ namespace pnetc
         , const std::string& all_lead
         , const std::string& needed_library
         , const std::string& base_filename
+        , const int& N
         , std::list<pnet::type::value::value_type>& LIFT
         , std::string& SUBLIFT
         )
       {
-#line 364 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 378 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
 
              
                   //  std::cout << "in singular _PetriNet_.._SubLIFT" << std::endl;
                            
                  std::tuple<std::vector<std::string>, int, long> out = RESOLVE_INTERFACE_FUNCTION(singular_template_SUBLIFT)
-                 (input_name,all_lead,place_Tau, needed_library, base_filename);
+                 (input_name,all_lead,place_Tau, needed_library, base_filename,N);
                        
                      std::vector<std::string> vec = std::get<0>(out);
                       int total_generator = std::get<1>(out);
@@ -65,6 +66,7 @@ namespace pnetc
 
 
                     SUBLIFT = place_Tau;
+                    // std::cout << " SUBLIFT ::"<<  SUBLIFT << std::endl;
                   //  std::cout << "SubLIFT_IN_Place:" << SUBLIFT << std::endl;
                   //std::cout << "SubLIFT_COUNT:"<< tau_count << std::endl; 
 

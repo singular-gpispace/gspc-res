@@ -1,6 +1,7 @@
 #ifndef _PNETC_OP_singular_template_reduce
 #define _PNETC_OP_singular_template_reduce
 
+#include <we/type/literal/control.hpp>
 #include <string>
 
 namespace pnetc
@@ -13,11 +14,7 @@ namespace pnetc
         ( const std::string& library_name
         , const std::string& base_filename
         , const std::string& input
-        , const int& N
-        , const unsigned long& k1
-        , const unsigned long& k2
-        , const unsigned long& k3
-        , const unsigned long& k4
+        , const we::type::literal::control& IN
         , std::string& s
         );
     }
