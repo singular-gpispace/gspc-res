@@ -14,7 +14,9 @@ namespace pnetc
         ( const std::string& library_name
         , const std::string& base_filename
         , const std::string& input
-        , const we::type::literal::control& IN
+        , const unsigned long& N
+        , const we::type::literal::control& k1
+        , const unsigned long& k2
         , std::string& s
         );
     }

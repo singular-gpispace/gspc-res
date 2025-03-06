@@ -16,13 +16,15 @@ namespace pnetc
         ( const std::string& library_name
         , const std::string& base_filename
         , const std::string& input
-        , const we::type::literal::control& IN
+        , const unsigned long& N
+        , const we::type::literal::control& k1
+        , const unsigned long& k2
         , std::string& s
         )
       {
-#line 525 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 637 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
-               int N=7047;
+             
                 auto computation_time = std::chrono::high_resolution_clock::now();
               
               //std::cout << "Reduce_Input:" <<input << std::endl;

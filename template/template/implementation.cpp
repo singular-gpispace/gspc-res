@@ -1603,7 +1603,7 @@ std::tuple<std::vector<std::string>, int, long> singular_template_LIFT(const std
                                                                        const std::string& all_lead,
                                                                        const std::string& lead,
                                                                        const std::string& needed_library,
-                                                                       const std::string& base_filename,int N)
+                                                                       const std::string& base_filename, unsigned long N)
 {
     // Initialize Singular and load the necessary library
     init_singular(config::singularLibrary().string());
@@ -2166,7 +2166,7 @@ std::tuple<std::vector<std::string>, int, long> singular_template_SUBLIFT(const 
                                                                 const std::string& lead,
                                                                
                                                   const std::string& needed_library,
-                                                   const std::string& base_filename,int N)
+                                                   const std::string& base_filename,unsigned long N)
 { // Initialize Singular and load library
     init_singular(config::singularLibrary().string());
     load_singular_library(needed_library);
@@ -2314,9 +2314,10 @@ std::tuple<std::vector<std::string>, int, long> singular_template_SUBLIFT(const 
 
 
 
+
 NO_NAME_MANGLING
 std::pair<std::string, long> singular_template_reduce(const std::string& Red, 
-    int N,
+    unsigned long N,
     const std::string& needed_library,
     const std::string& base_filename) 
 {
@@ -2327,7 +2328,7 @@ std::pair<std::string, long> singular_template_reduce(const std::string& Red,
     std::filesystem::path basePath = std::filesystem::path(Red).parent_path();
     // std::cout << base_filename<< "base_filename" << std::endl;
     // std::cout <<Red<< "" << std::endl;
-    // std::cout <<N<< "int n" << std::endl;
+    // std::cout <<N<< "=:Reduce" << std::endl;
     std::string ids = worker();
     std::pair<int, lists> Gb = deserialize(Red, ids);
 
@@ -2341,11 +2342,16 @@ std::pair<std::string, long> singular_template_reduce(const std::string& Red,
     int r=0;int c=0;
     poly vec = nullptr;
     leftv L = nullptr; leftv LL = nullptr;
-    for (int i = 1; i <= N; ++i) { // Iterate from 1 to N to match "1.ssi", "2.ssi", etc.
+    for (unsigned long  i = 1; i <= N; ++i) { // Iterate from 1 to N to match "1.ssi", "2.ssi", etc.
         // Construct the full path for i.ssi files within the same folder as Red
         std::string filename = (basePath / (std::to_string(i) + ".ssi")).string();
-            // std::cout << filename<< "filename" << std::endl;
-            // std::cout <<i<< "i" << std::endl;
+            // std::cout << filename<< "" << std::endl;
+          
+            if (!std::filesystem::exists(filename)) {
+                // std::cerr << "File not found: " << filename << ". Skipping this iteration." << std::endl;
+                continue;  // Skip to next iteration
+            }
+            
         // Deserialize using the full path
         std::pair<int, lists> input_part = deserialize(filename, ids);
 
@@ -2431,7 +2437,6 @@ std::pair<std::string, long> singular_template_reduce(const std::string& Red,
 
     return {out_filename, computation_time};
 }
-
 
 
 

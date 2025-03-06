@@ -15,12 +15,14 @@ namespace pnetc
     namespace singular_template
     {
       void control_Rename_file
-        ( const we::type::literal::control& IN
+        ( const unsigned long& k2
+        , const unsigned long& k3
         , const unsigned long& k4
+        , const we::type::literal::control& IN
         , we::type::literal::control& N
         )
       {
-#line 475 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 526 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
     
     

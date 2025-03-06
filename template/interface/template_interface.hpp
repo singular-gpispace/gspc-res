@@ -56,7 +56,7 @@ std::tuple<std::vector<std::string>, int,  long> singular_template_LIFT( std::st
                                      , std::string const&
                                      ,std::string const&
                                       , std::string const&
-						 , int N
+						 , unsigned long N
                                       );
 
           
@@ -66,12 +66,12 @@ std::tuple<std::vector<std::string>, int,  long> singular_template_SUBLIFT ( std
                                      , std::string const&
                                      ,std::string const&
                                       , std::string const&
-						 , int N
+						 , unsigned long N
                                       );
 
 NO_NAME_MANGLING
 std::pair<std::string, long> singular_template_reduce( std::string const&
-                                      ,int N
+                                      ,unsigned long N
                                      , std::string const&
                                    
 						  , std::string const&

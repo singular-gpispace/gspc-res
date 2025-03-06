@@ -1,6 +1,7 @@
 #ifndef _PNETC_OP_singular_template_SUBLIFT
 #define _PNETC_OP_singular_template_SUBLIFT
 
+#include <we/type/literal/control.hpp>
 #include <list>
 #include <we/type/value.hpp>
 #include <string>
@@ -17,9 +18,9 @@ namespace pnetc
         , const std::string& all_lead
         , const std::string& needed_library
         , const std::string& base_filename
-        , const int& N
+        , const unsigned long& N
         , std::list<pnet::type::value::value_type>& LIFT
-        , std::string& SUBLIFT
+        , we::type::literal::control& Ctrl
         );
     }
   }
