@@ -1,4 +1,4 @@
-#include <pnetc/op/singular_template/control_Rename_file.hpp>
+#include <pnetc/op/singular_template/Empty.hpp>
 #include <we/type/literal/control.hpp>
 #include <interface/template_interface.hpp>
 #include <util-generic/dynamic_linking.hpp>
@@ -14,17 +14,18 @@ namespace pnetc
   {
     namespace singular_template
     {
-      void control_Rename_file
+      void Empty
         ( const unsigned long& k2
         , const unsigned long& k3
         , const unsigned long& k4
         , const we::type::literal::control& IN
         , we::type::literal::control& N
+        , we::type::literal::control& drain
         )
       {
-#line 526 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 545 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
-    
+    //  std::cout << "Empty:"<<""<< std::endl; 
     
   
       }

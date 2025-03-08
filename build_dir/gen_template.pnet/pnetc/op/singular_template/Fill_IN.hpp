@@ -15,7 +15,6 @@ namespace pnetc
         , const unsigned long& M
         , const unsigned long& k1
         , unsigned long& N
-        , unsigned long& Batch
         , std::list<pnet::type::value::value_type>& outgoing
         );
     }

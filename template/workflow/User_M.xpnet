@@ -42,9 +42,12 @@
  
 
     <place name="place_start_pool" type="unsigned long">
-    <token><value>0UL</value></token>
+    
   </place>
-
+   
+  <place name="place_Init_N" type="unsigned long">
+  <token><value>100UL</value></token>
+</place>
 
 
   <place name="place__Pool" type="unsigned long">
@@ -91,6 +94,55 @@
 
 
 
+      
+    <!-- Transition: INIT_Fill In -->
+    <transition name="INIT_Fill">
+      <defun>
+      
+        <out name="outgoing" type="list"/>
+        <inout name="N" type="unsigned long"/> 
+      
+        
+       
+      
+        <module name="singular_template" function="INIT_Fill(outgoing,N)">
+          <cinclude href="interface/template_interface.hpp" />
+          <cinclude href="util-generic/dynamic_linking.hpp"/>
+          <cinclude href="iostream"/>
+          <cinclude href="chrono"/>
+          <code><![CDATA[
+         
+           // Fill outgoing with the next batch
+           for(unsigned long k =1; k <= N; k++) {
+            outgoing.emplace_back(k);
+            //  std::cout << "batch_start:"<<k << std::endl;
+          }
+          // Batch=N+1;
+        
+            // Fill outgoing with the next batch
+            // for(unsigned long k = Batch; k <= N; k++) {
+            //   outgoing.emplace_back(k);
+            //   //  std::cout << "batch_start:"<<k << std::endl;
+            // }
+            // Batch=N+1;
+            // N=N+M;
+      std::cout << "INIT:"<<N<< std::endl;
+        // std::cout << "Last:"<<N << std::endl;
+          ]]></code>
+        </module>
+    
+      
+     
+      </defun>
+    
+      <connect-in port="N" place="place_Init_N"/>
+      <connect-out port="N" place="place_start_pool"/>
+     
+      <connect-out-many port="outgoing" place="place__Pool"/>
+     
+    </transition>
+    
+   
 
 
 
@@ -168,14 +220,14 @@
         		
         <in name="library_name" type="string"/>
         <in name="base_filename" type="string"/>
-        <in name ="C" type ="control"/>
+				   
         		<out name="OUTPUT" type="list"/>
-          
+           <inout name ="C" type="control"/>
            <out name ="counter" type="int"/>
            <in name ="init" type ="string"/>
         		<module name="singular_template"
               		require_function_unloads_without_rest="false"
-              		function="All_Lead(init, OUTPUT, C,counter,library_name, base_filename)">
+              		function="All_Lead(init, OUTPUT,C, counter,library_name, base_filename)">
           		<cinclude href="interface/template_interface.hpp" />
           		<cinclude href="util-generic/dynamic_linking.hpp"/>
         <cinclude href="vector"/>
@@ -216,7 +268,7 @@
        
        <connect-out port="counter" place="place_length_Res"/>
 			  <connect-out-many port="OUTPUT" place="place_All_Lead"/>
-       
+        <connect-out port="C" place="place_Empty_control"/>
        
         
   		  </transition>
@@ -235,7 +287,7 @@
         <in name="library_name" type="string"/>
         <in name="base_filename" type="string"/>
         <in name="input" type="string"/>
-        <inout name ="s" type ="control"/>
+        <in name ="s" type ="control"/>
  
      
        
@@ -288,7 +340,7 @@
       <connect-in port="s" place="place_control"/>
       <connect-out-many port="OUT" place="place_lead"/>
      
-      <connect-out port="s" place="place_Empty_control"/>
+ 
     
      
      
@@ -543,7 +595,7 @@
        <cinclude href="list"/>
        <cinclude href="chrono"/>
       <code><![CDATA[
-    //  std::cout << "Empty:"<<""<< std::endl; 
+     std::cout << "Empty:"<<""<< std::endl; 
     
   ]]></code>
    </module>
@@ -704,7 +756,7 @@
               //std::cout << "Reduce_Input:" <<input << std::endl;
               //std::cout << "Reduce_l:" <<l << std::endl;
               //std::cout << "Reduce_r" <<r<< std::endl;
-              // std::cout << "N in ADD:"<<N<< std::endl;
+              std::cout << "N in ADD:"<<N<< std::endl;
            auto result  = RESOLVE_INTERFACE_FUNCTION(singular_template_reduce)(input,N,library_name, base_filename
             ); 
             auto end_computation = std::chrono::high_resolution_clock::now();

@@ -1,4 +1,4 @@
-#include <pnetc/op/singular_template/Drainage.hpp>
+#include <pnetc/op/singular_template/Enable.hpp>
 #include <we/type/literal/control.hpp>
 #include <interface/template_interface.hpp>
 #include <util-generic/dynamic_linking.hpp>
@@ -14,12 +14,12 @@ namespace pnetc
   {
     namespace singular_template
     {
-      void Drainage
-        ( const we::type::literal::control& N
-        , const unsigned long& IN
+      void Enable
+        ( const we::type::literal::control& IN
+        , unsigned long& N
         )
       {
-#line 600 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 651 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
     
     

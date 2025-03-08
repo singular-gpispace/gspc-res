@@ -31,7 +31,7 @@ gc.options.logport = 9876;
 // poly f3= xy + z2; 
 // ideal J=f1,f2,f3;
 
-//Koszul
+// //Koszul
 // ring R=0, (x1,x2,x3,x4),dp;
 //  ideal J=x1,x2,x3,x4;
 // print("ideal J=");
@@ -39,8 +39,8 @@ gc.options.logport = 9876;
 
  //Example 1:
  
-// ring R= 0, (w,x,y,z), (dp,c);
-// ideal J= w2-x*z, w*x- y*z, x2-w*y, x*y- z2, y2- w*z;
+ring R= 0, (w,x,y,z), (dp,c);
+ideal J= w2-x*z, w*x- y*z, x2-w*y, x*y- z2, y2- w*z;
 // module m;
 // vector s1=[-x,w,-z,0,0];
 // vector s2=[y,-x,w,0,0];
@@ -87,17 +87,17 @@ gc.options.logport = 9876;
 // print(size(J));
 
  //Example4
- ring R = 0, (x0, x1, x2, x3, x4), (dp,c); // Example for n+1 = 5 variables
-// Step 2: Generate a regular sequence
-poly f1 = x0^2 + x1^2 + x2^2 + x3^2 + x4^2;
-poly f2 = x0*x1 + x2*x3 + x4^2;
-poly f3 = x0*x2 + x1*x3 + x4*x0;
-poly f4 = x0*x3 + x1*x4 + x2*x0;
-poly f5 = x0*x4 + x1*x2 + x3*x1;
-ideal J1= f1,f2,f3,f4,f5;
-J1;
-print("GB");
-ideal J= std(J1);
+//  ring R = 0, (x0, x1, x2, x3, x4), (dp,c); // Example for n+1 = 5 variables
+// // Step 2: Generate a regular sequence
+// poly f1 = x0^2 + x1^2 + x2^2 + x3^2 + x4^2;
+// poly f2 = x0*x1 + x2*x3 + x4^2;
+// poly f3 = x0*x2 + x1*x3 + x4*x0;
+// poly f4 = x0*x3 + x1*x4 + x2*x0;
+// poly f5 = x0*x4 + x1*x2 + x3*x1;
+// ideal J1= f1,f2,f3,f4,f5;
+// J1;
+// print("GB");
+// ideal J= std(J1);
 
 
 
