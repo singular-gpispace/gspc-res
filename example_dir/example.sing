@@ -13,6 +13,8 @@ LIB "random.lib";
 // Configure GPI-Space	
 configToken gc = configure_gspc();
 gc.options.tmpdir = "/home/santosh/gspc-res/example_dir/temp";
+// gc.options.tmpdir = "/dev/shm/gnawali/temp";
+
 gc.options.nodefile = "nodefile";
 gc.options.procspernode = 6;
 gc.options.loghost = "schipp";
@@ -39,8 +41,8 @@ gc.options.logport = 9876;
 
  //Example 1:
  
-ring R= 0, (w,x,y,z), (dp,c);
-ideal J= w2-x*z, w*x- y*z, x2-w*y, x*y- z2, y2- w*z;
+// ring R= 0, (w,x,y,z), (dp,c);
+// ideal J= w2-x*z, w*x- y*z, x2-w*y, x*y- z2, y2- w*z;
 // module m;
 // vector s1=[-x,w,-z,0,0];
 // vector s2=[y,-x,w,0,0];
@@ -50,7 +52,7 @@ ideal J= w2-x*z, w*x- y*z, x2-w*y, x*y- z2, y2- w*z;
 // vector s6=[0,z,0,-y,x];
 // module m=s1,s2,s3,s4,s5,s6;
 
-  // Example2:
+//   // Example2:
 // ring R= 0, (x(1),x(2),x(3),x(4),x(5),x(6),x(7),x(8)), (lp,c);
 // matrix mS[2][4]= x(4)+ x(6), x(6)+ x(3), x(8)+ x(3), x(1)-x(3), x(2)-x(4), x(5)-x(7), x(8)-x(7), x(2)+ x(3);
 // ideal I_minor= minor(mS,2);
@@ -103,26 +105,26 @@ ideal J= w2-x*z, w*x- y*z, x2-w*y, x*y- z2, y2- w*z;
 
 //Example 5
 
-// ring R = 0, (x0, x1, x2, x3, x4, x5), (dp,c);
-// poly f1 = x0 + x1 + x2 + x3;
-// poly f2 = x0*x1 + x2*x3 + x4*x5;
-// poly f3 = x0*x2 + x1*x3;
-// poly f4 = x0*x3 + x1*x4 + x2*x5;
-// poly f5 = x0*x4 + x1*x5;
-// ideal J1 = f1, f2, f3, f4, f5;
-// ideal J=std(J1);
+ring R = 0, (x0, x1, x2, x3, x4, x5), (dp,c);
+poly f1 = x0 + x1 + x2 + x3;
+poly f2 = x0*x1 + x2*x3 + x4*x5;
+poly f3 = x0*x2 + x1*x3;
+poly f4 = x0*x3 + x1*x4 + x2*x5;
+poly f5 = x0*x4 + x1*x5;
+ideal J1 = f1, f2, f3, f4, f5;
+ideal J=std(J1);
 
 
-// Example 6 freezes for SubLIFT
-// ring R=0, (x0,x1,x2,x3,x4,x5,x6),dp;
-// matrix m[2][6]=x0,x1,x2,x3,x4,x5,x1,x2,x3,x4,x5,x6;
-// ideal rNC=minor(m,2);
-// ideal I=randomid(maxideal(1),5,3);
-//  map f=R,I[1..5];
+// Example 6 freezes for( for timing profilings)
+// ring R=0, (x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10),dp;
+// matrix m[3][4]=x0,x1,x2,x3,x4,x5,x1,x2,x4,x5,x3,x6;
+// ideal rNC=x0,x1,x2,x4,x5,x6,x3,x7,x8,x9,x10;
+// ideal I=randomid(maxideal(1),8,7);
+//  map f=R,I[1..8];
 // ideal RNC=f(rNC);
 // ideal J=std(RNC);
 // print("ideal J=");
-// print(J);
+// J;
 
 //ForSingular
 // LIB "random.lib";
