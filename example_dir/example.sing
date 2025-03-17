@@ -19,6 +19,8 @@ gc.options.loghost = "schipp";
 gc.options.logport = 9876;
 
 
+<"ideal_M2.sing";
+
  //Example from Singular book
 //  ring R=0, (x,y,z), dp;
 //  ideal J1=y*z+z^2,y^2 + x*z,x*y+z^2,z^3,x*z^2,x^2*z;
@@ -39,8 +41,8 @@ gc.options.logport = 9876;
 
  //Example 1:
  
-ring R= 0, (w,x,y,z), (dp,c);
-ideal J= w2-x*z, w*x- y*z, x2-w*y, x*y- z2, y2- w*z;
+// ring R= 0, (w,x,y,z), (dp,c);
+// ideal J= w2-x*z, w*x- y*z, x2-w*y, x*y- z2, y2- w*z;
 //module m;
 // vector s1=[-x,w,-z,0,0];
 // vector s2=[y,-x,w,0,0];

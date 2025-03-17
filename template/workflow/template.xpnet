@@ -185,7 +185,7 @@
                       
                          for(int i (0); i<vec.size(); i++)
                                                                  {
-                          std::cout << "leadSyz_Success:"<<vec[i] << std::endl;
+                          // std::cout << "leadSyz_Success:"<<vec[i] << std::endl;
                           OUT.emplace_back(vec[i]);
                             Sublift.emplace_back(vec[i]);
                          //std::cout << "leadSyz_Success:"<<vec[i] << std::endl;
@@ -215,6 +215,60 @@
 
 
 
+
+
+
+     
+    <place name ="place_StartTime_LIFT" type ="long"/>
+
+
+
+   
+    <place name="place_control_StartTime_LIFT" type="control">
+    <token><value>[]</value></token>
+  </place>
+  
+  
+  
+  
+  
+    <!-- Transition: StartTime -->
+      <transition name="StartTransition_LIFT">
+        <defun>
+         <in name ="c" type ="control"/>
+        <in name="in" type="string"/>
+       
+         
+          <out name="start_time" type="long"/>
+          <module name="singular_template" function="StartTime_LIFT(c,in,start_time)">
+           <cinclude href="interface/template_interface.hpp" />
+        <cinclude href="util-generic/dynamic_linking.hpp"/>
+        <cinclude href="iostream"/>
+        <cinclude href="chrono"/>
+          <code><![CDATA[
+            auto computation_time = std::chrono::high_resolution_clock::now();
+            auto duration = computation_time.time_since_epoch();
+        
+            start_time= std::chrono::duration_cast<std::chrono::nanoseconds>(duration).count();
+          
+     
+      ]]></code>
+       </module>
+       
+    
+      
+      
+        </defun>
+        <connect-read port="in" place="place_lead"/>
+          <connect-in port="c" place="place_control_StartTime_LIFT"/>
+        
+          <connect-out port="start_time" place="place_StartTime_LIFT"/>
+  
+      </transition>
+
+
+
+
      <!-- Transition 2: LIFT-->
 
       <transition name="LIFT">
@@ -229,13 +283,13 @@
      <in name ="input_name" type= "string"/>
      
   
-    <out name="D" type ="control"/>
+   
      <out name ="LIFT" type= "list"/>
     
 
              <module name="singular_template"
             require_function_unloads_without_rest="false"
-            function="LIFT(input_name,lead,all_lead,LIFT,needed_library,base_filename,D)">
+            function="LIFT(input_name,lead,all_lead,LIFT,needed_library,base_filename)">
             <cinclude href="interface/template_interface.hpp" />
            <cinclude href="util-generic/dynamic_linking.hpp"/>
             <cinclude href="vector"/>
@@ -258,7 +312,7 @@
                         
                          for(int i (0); i<vec.size(); i++)
                                                                  {
-                         std::cout << "LIFT_Success:"<<vec[i] << std::endl;
+                        //  std::cout << "LIFT_Success:"<<vec[i] << std::endl;
                           LIFT.emplace_back(vec[i]);
                        
                          
@@ -287,7 +341,7 @@
   <connect-in port="lead" place="place_lead"/>
   <connect-out-many port="LIFT" place="place_Tau"/>
 
-  <connect-out port="D" place="LIFT_init_Remove"/>
+
  
 
 
@@ -295,183 +349,47 @@
 
 
 
-  <place name="Count_LIFT" type="int">
- <token>
-        <value>0</value>
-      </token>
-    
-</place>
 
- <place name="Final_place_LIFT" type="string"/>
- 
-
- <place name="LIFT_init_Remove" type="control">
- 
-</place>
-<transition name="Count_LIFT">
+  <!-- Transition: EndTime -->
+  <transition name="EndTime_LIFT">
       <defun>
-        <inout name="a" type="int"/>
-        <in name="s" type="control"/>
-        <module name="singular_template" function="count_LIFT(a,s)">
-        <cinclude href="iostream"/>
-        <code><![CDATA[
-          a=a+1;
-      //  std::cout <<"Count_LIFT: " << a << std::endl;
-        ]]></code>
-        </module>
+          <in name="start_time" type="long"/>
+          <in name="k2" type="unsigned long"/>
         
-      </defun>
-      <connect-inout port="a" place="Count_LIFT"/>
-      <connect-in port="s" place="LIFT_init_Remove"/>
-     
-
-    </transition>
-
-
-
-
-
-
-
-
-
- <!-- Transition: Result_LIFT -->
-<transition name="Result_LIFT">
-    <defun>
-       <in name="counter" type="int"/>
-      
-       <in name="lift_count" type="int"/>
-        <in name="computed_output" type="string"/>
-        <out name="output" type="string"/>
-       
-         <module name="singular_template" function="Result_LIFT(computed_output,output,counter,lift_count)">
-         <cinclude href="interface/template_interface.hpp" />
-      <cinclude href="util-generic/dynamic_linking.hpp"/>
-      <cinclude href="iostream"/>
-      <cinclude href="chrono"/>
-        <code><![CDATA[
-          
-                output=computed_output;
-                 std::cout <<"LIFT: " << lift_count << std::endl;
-        std::cout <<"LeadSyz: " << computed_output << std::endl;
-           
-            ]]></code>
-         </module>
-        <condition>
-      ${counter}:eq:${lift_count}
-    </condition>
-    </defun>
-    
-
-  <connect-in port="counter" place="place_counter"/>
-  <connect-in port="lift_count" place="Count_LIFT"/>
-    <connect-in port="computed_output" place="place_Tau"/>
-  
-    <connect-out port="output" place="Final_place_LIFT"/>
-</transition>
-
-
-
-<place name="left_init" type="control">
-  <token><value>[]</value></token>
-</place>
-<place name="right_init" type="control"/>
-<place name="L" type="string"/>
-<place name="R" type="string"/>
-
-
-
-    <transition name="LHS">
-      <defun>
-        <inout name="a" type="string"/>
-        <inout name="s" type="control"/>
-
-        <module name="singular_template" function="count(a)">
+         
+           <module name="singular_template" function="EndTime_LIFT(start_time,k2)">
+           <cinclude href="interface/template_interface.hpp" />
+        <cinclude href="util-generic/dynamic_linking.hpp"/>
         <cinclude href="iostream"/>
-        <code><![CDATA[
-       //std::cout << "LHS: " << a << std::endl;
-        ]]></code>
-        </module>
-      </defun>
-      <connect-in port="s" place="left_init"/>
-      <connect-out port="s" place="right_init"/>
-      <connect-in port="a" place="place_SubLift"/>
-      <connect-out port="a" place="L"/>
-    </transition>
-
-
-
-<transition name="RHS">
-      <defun>
-        <inout name="a" type="string"/>
-        <inout name="s" type="control"/>
-        <module name="singular_template" function="plus(a)">
-        <cinclude href="iostream"/>
-        <code><![CDATA[
-       //std::cout << "RHS: " << a << std::endl;
-        ]]></code>
-        </module>
-      </defun>
-      <connect-in port="a" place="place_SubLift"/>
-      <connect-in port="s" place="right_init"/>
-      <connect-out port="s" place="left_init"/>
-      <connect-out port="a" place="R"/>
-
-    </transition>
-
-
-<!-- Transition 5: Reduce-->
-    <transition name="Reduce">
-      <defun>
-      <require key="worker" mandatory="true"/>
-    
-     <in name="library_name" type="string"/>
-     <in name="base_filename" type="string"/>
-        <out name="s" type="string"/>
-        <in name="l" type="string"/>
-        <in name="r" type="string"/>
-        <in name="input" type="string"/>
-     
-       
-     <module name="singular_template"
-              		require_function_unloads_without_rest="false"
-              		function="reduce(library_name, base_filename,input, s,l,r)">
-          		<cinclude href="interface/template_interface.hpp" />
-          		<cinclude href="util-generic/dynamic_linking.hpp"/>
-              <cinclude href="iostream"/>
-             <cinclude href="chrono"/>
-
-          			<code><![CDATA[
-
+        <cinclude href="chrono"/>
+          <code><![CDATA[
+                  auto computation_time = std::chrono::high_resolution_clock::now();
+                  auto duration = computation_time.time_since_epoch();
+                  long current_time = std::chrono::duration_cast<std::chrono::nanoseconds>(duration).count();
+                 auto  end_timer = current_time - start_time; // Calculate elapsed time
                 
-                //std::cout << "Reduce_Input:" <<input << std::endl;
-                //std::cout << "Reduce_l:" <<l << std::endl;
-                //std::cout << "Reduce_r" <<r<< std::endl;
-						 auto result  = RESOLVE_INTERFACE_FUNCTION(singular_template_reduce)(input,l,r,library_name, base_filename
-							); 
-                s = result.first;
-        
-            std::cout << "Reduce:" << s << std::endl;
-              
+                  std::cout << "Calculate LIFT: = " << end_timer << " nanoseconds" << std::endl;
+              ]]></code>
+           </module>
+       
+   <condition>
+  
+   ${k2} :eq: 0UL 
+  
+ 
 
-//std::cout << "Reduce Duration: " << runtime << " milliseconds" << std::endl;
 
-            		]]></code>
-                 
-        		</module>
+  
+ 
+
+</condition>
       </defun>
-      <connect-read port="library_name" place="place_library_name"/> 
-      <connect-read port="base_filename" place="place_base_filename"/>
-      <connect-read port="input" place="place_input_GB"/>
-      <connect-in port="l" place="L"/>
-      <connect-in port="r" place="R"/>
-      <connect-out port="s" place="place_SubLift"/>
-  
       
-  
-
-   
-</transition>
+      <connect-in port="start_time" place="place_StartTime_LIFT"/>
+      <connect-number-of-tokens port="k2" place="place_lead"/>
+    
+      
+  </transition>
 
 
 

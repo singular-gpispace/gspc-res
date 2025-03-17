@@ -558,11 +558,22 @@ std::pair<int, lists> LEAD_GPI(leftv args) {
     LLT->Init(4); // Initialize with 4 fields
     lists temp = (lists)omAlloc0Bin(slists_bin);
     temp->Init(r);
-   // Iterate to fill in data
+    ideal sM = idInit(c, r0);  // Initialize the smatrix
+    lists Ld = NULL; //(lists)omAlloc0Bin(slists_bin);  // Initialize Ld
+
     for (int k = 0; k < r; k++) {
-        // Create a new token Ld
-        lists Ld = (lists)omAlloc0Bin(slists_bin);
-        Ld->Init(4); // Initialize with 4 fields
+
+
+       // Create a new token Ld
+       id_Delete(&sM, currRing);  // Delete the existing sM
+       sM = idInit(c, r0);        // Reinitialize sM
+
+       // omUpdateInfo();
+       // std::cout << "used mem: " << om_Info.UsedBytes << std::endl;
+   
+   
+      Ld = (lists)omAlloc0Bin(slists_bin);  // Reinitialize Ld
+      Ld->Init(4);  // Initialize with 4 fields
 
         lists t = (lists)omAlloc0Bin(slists_bin);
         t->Init(2);
@@ -574,10 +585,10 @@ std::pair<int, lists> LEAD_GPI(leftv args) {
         Ld->m[2].rtyp = RING_CMD; Ld->m[2].data = currRing;
          
          
-         ideal sM = idInit(c, r0);
-        // matrix sM = mpNew(r0, c);
+      
+       
         poly s_lift = (poly)LT->m[k]; // Retrieve the lifted polynomial
-         std::cout << "#s_lift:=" <<pString(s_lift)<< std::endl;
+        //  std::cout << "#s_lift:=" <<pString(s_lift)<< std::endl;
         int l_k = p_GetComp(s_lift, currRing);
 
         poly lm = pHead(s_lift);
@@ -643,12 +654,12 @@ sM->m[k]=C;
         LLT->m[2].data = currRing;
 
         // Set data for LLT
-        lists t0 = (lists)omAlloc0Bin(slists_bin);
-        t0->Init(r);
-        for (int s = 0; s < r; s++) {
-            t0->m[s].rtyp = LIST_CMD;
-            t0->m[s].data = lCopy(Ld);
-        }
+        // lists t0 = (lists)omAlloc0Bin(slists_bin);
+        // t0->Init(r);
+        // for (int s = 0; s < r; s++) {
+        //     t0->m[s].rtyp = LIST_CMD;
+        //     t0->m[s].data = lCopy(Ld);
+        // }
         temp->m[k].rtyp = LIST_CMD;
         temp->m[k].data = lCopy(Ld);
     }
@@ -673,6 +684,8 @@ sM->m[k]=C;
     for (int k = 0; k < r; k++) {
         final_data->m[k].rtyp = LIST_CMD;
         final_data->m[k].data = temp->m[k].data;  // Transfer data from temp
+
+        temp->m[k].data = NULL; 
     }
 
     final_data->m[r].rtyp = INT_CMD;
@@ -680,6 +693,11 @@ sM->m[k]=C;
 
     LLT->m[3].rtyp = LIST_CMD;
     LLT->m[3].data = final_data;
+
+        // Clean up sM,Ld and temp
+        id_Delete(&sM, currRing);
+        omFreeBin(Ld, slists_bin);
+        temp->Clean(currRing);
 
     return {r, LLT};  // Return success state and LLT
 }
@@ -1454,12 +1472,18 @@ std::pair<int, lists> LIFT_GPI(leftv args) {
     LLT->Init(4); // Initialize with 4 fields
     lists temp = (lists)omAlloc0Bin(slists_bin);
     temp->Init(r);
-
+    lists Ld = NULL;
     // Iterate to fill in data
+    ideal sM = idInit(c, r0);
+
     for (int k = 0; k < r; k++) {
+
+        id_Delete(&sM, currRing);  // Delete the existing sM
+        sM = idInit(c, r0);  
         // Create a new token Ld
-        lists Ld = (lists)omAlloc0Bin(slists_bin);
-        Ld->Init(4); // Initialize with 4 fields
+        // omFreeBin(Ld, slists_bin);  // Free the existing Ld
+        Ld = (lists)omAlloc0Bin(slists_bin);  // Reinitialize Ld
+        Ld->Init(4);  // Initialize with 4 fields
 
         lists t = (lists)omAlloc0Bin(slists_bin);
         t->Init(2);
@@ -1472,7 +1496,7 @@ std::pair<int, lists> LIFT_GPI(leftv args) {
 
       
   
-         ideal sM = idInit(c, r0);
+     
         // matrix sM = mpNew(r0, c);
        poly s_lift = (poly)lL->m[k].Data(); // Retrieve the lifted polynomial
         int l_k = p_GetComp(s_lift, currRing);
@@ -1541,7 +1565,7 @@ C=p_Add_q(C, pCopy(C1), currRing);
         field_names->Init(r);
         for (int s = 0; s < r; s++) {
             field_names->m[s].rtyp = STRING_CMD;
-            field_names->m[s].data = strdup("generator");
+            field_names->m[s].data = omStrDup("generator");
         }
 
         LLT->m[0].rtyp = RING_CMD; 
@@ -1554,12 +1578,12 @@ C=p_Add_q(C, pCopy(C1), currRing);
         LLT->m[2].data = currRing;
 
         // Set data for LLT
-        lists t0 = (lists)omAlloc0Bin(slists_bin);
-        t0->Init(r);
-        for (int s = 0; s < r; s++) {
-            t0->m[s].rtyp = LIST_CMD;
-            t0->m[s].data = lCopy(Ld);
-        }
+        // lists t0 = (lists)omAlloc0Bin(slists_bin);
+        // t0->Init(r);
+        // for (int s = 0; s < r; s++) {
+        //     t0->m[s].rtyp = LIST_CMD;
+        //     t0->m[s].data = lCopy(Ld);
+        // }
         temp->m[k].rtyp = LIST_CMD;
         temp->m[k].data = lCopy(Ld);
     }
@@ -1574,7 +1598,7 @@ C=p_Add_q(C, pCopy(C1), currRing);
 
     // Append "total_number_generator"
     final_field_names->m[r].rtyp = STRING_CMD;
-    final_field_names->m[r].data = strdup("total_number_generator");
+    final_field_names->m[r].data = omStrDup("total_number_generator");
     LLT->m[1].rtyp = LIST_CMD;  
     LLT->m[1].data = final_field_names;
 
@@ -1584,6 +1608,7 @@ C=p_Add_q(C, pCopy(C1), currRing);
     for (int k = 0; k < r; k++) {
         final_data->m[k].rtyp = LIST_CMD;
         final_data->m[k].data = temp->m[k].data;  // Transfer data from temp
+        temp->m[k].data=NULL;
     }
 
     final_data->m[r].rtyp = INT_CMD;
@@ -1591,6 +1616,11 @@ C=p_Add_q(C, pCopy(C1), currRing);
 
     LLT->m[3].rtyp = LIST_CMD;
     LLT->m[3].data = final_data;
+
+    // Clean up sM and Ld
+    id_Delete(&sM, currRing);
+    omFreeBin(Ld, slists_bin);
+    temp->Clean(currRing);
 
     return {r, LLT};  // Return success state and LLT
 }
@@ -1998,11 +2028,17 @@ std::pair<int, lists> SubLIFT_GPI(leftv args) {
     lists temp = (lists)omAlloc0Bin(slists_bin);
     temp->Init(r);
 
-    // Iterate to fill in data
+     // Allocate sM and Ld outside the loop
+     ideal sM = idInit(c, r0);  // Initialize the smatrix
+     lists Ld = NULL; //(lists)omAlloc0Bin(slists_bin);  // Initialize Ld
     for (int k = 0; k < r; k++) {
+       
+        id_Delete(&sM, currRing);  // Delete the existing sM
+        sM = idInit(c, r0);  
         // Create a new token Ld
-        lists Ld = (lists)omAlloc0Bin(slists_bin);
-        Ld->Init(4); // Initialize with 4 fields
+        // omFreeBin(Ld, slists_bin);  // Free the existing Ld
+        Ld = (lists)omAlloc0Bin(slists_bin);  // Reinitialize Ld
+        Ld->Init(4);  // Initialize with 4 fields
 
         lists t = (lists)omAlloc0Bin(slists_bin);
         t->Init(2);
@@ -2015,7 +2051,6 @@ std::pair<int, lists> SubLIFT_GPI(leftv args) {
 
       
 
-           ideal sM = idInit(c, r0);
         // matrix sM = mpNew(r0, c);
        poly s_lift = (poly)lL->m[k].Data(); // Retrieve the lifted polynomial
         int l_k = p_GetComp(s_lift, currRing);
@@ -2095,12 +2130,12 @@ std::cout << "After addition C: " << pString(C) << std::endl;
         LLT->m[2].data = currRing;
 
         // Set data for LLT
-        lists t0 = (lists)omAlloc0Bin(slists_bin);
-        t0->Init(r);
-        for (int s = 0; s < r; s++) {
-            t0->m[s].rtyp = LIST_CMD;
-            t0->m[s].data = lCopy(Ld);
-        }
+        // lists t0 = (lists)omAlloc0Bin(slists_bin);
+        // t0->Init(r);
+        // for (int s = 0; s < r; s++) {
+        //     t0->m[s].rtyp = LIST_CMD;
+        //     t0->m[s].data = lCopy(Ld);
+        // }
         temp->m[k].rtyp = LIST_CMD;
         temp->m[k].data = lCopy(Ld);
     }
@@ -2125,6 +2160,7 @@ std::cout << "After addition C: " << pString(C) << std::endl;
     for (int k = 0; k < r; k++) {
         final_data->m[k].rtyp = LIST_CMD;
         final_data->m[k].data = temp->m[k].data;  // Transfer data from temp
+        temp->m[k].data=NULL; 
     }
 
     final_data->m[r].rtyp = INT_CMD;
@@ -2132,6 +2168,12 @@ std::cout << "After addition C: " << pString(C) << std::endl;
 
     LLT->m[3].rtyp = LIST_CMD;
     LLT->m[3].data = final_data;
+
+
+       // Clean up sM,Ld and temp
+       id_Delete(&sM, currRing);
+       omFreeBin(Ld, slists_bin);
+       temp->Clean(currRing);
 
     return {r, LLT};  // Return success state and LLT
 }
