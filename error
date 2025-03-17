@@ -1,20 +1,21 @@
-[2025-03-17 19:12:25] schipp: pid 19677 tid19682: T: task finished: schipp.job.19669.1
-[2025-03-17 19:12:25] schipp: pid 19689 tid19694: I: #leadSyz=8
-[2025-03-17 19:12:25] schipp: pid 19689 tid19694: T: task finished: schipp.job.19669.3
-[2025-03-17 19:12:25] schipp: pid 19683 tid19688: I: place_SchFrame_counter: 3
-[2025-03-17 19:12:25] schipp: pid 19683 tid19688: T: task finished: schipp.job.19669.2
-[2025-03-17 19:12:25] schipp: pid 19695 tid19700: T: task finished: schipp.job.19669.4
-[2025-03-17 19:12:25] schipp: pid 19683 tid19688: T: task finished: schipp.job.19669.7
-[2025-03-17 19:12:25] schipp: pid 19683 tid19688: T: task finished: schipp.job.19669.11
-[2025-03-17 19:12:25] schipp: pid 19689 tid19694: T: task finished: schipp.job.19669.5
-[2025-03-17 19:12:25] schipp: pid 19683 tid19688: T: task finished: schipp.job.19669.12
-[2025-03-17 19:12:25] schipp: pid 19689 tid19694: T: task finished: schipp.job.19669.8
-[2025-03-17 19:12:25] schipp: pid 19683 tid19688: T: task finished: schipp.job.19669.9
-[2025-03-17 19:12:25] schipp: pid 19695 tid19700: T: task finished: schipp.job.19669.10
-[2025-03-17 19:12:25] schipp: pid 19677 tid19682: T: task finished: schipp.job.19669.6
-[2025-03-17 19:12:25] schipp: pid 19689 tid19694: I: Calculate LIFT: = 35997034 nanoseconds
-[2025-03-17 19:12:25] schipp: pid 19689 tid19694: T: task finished: schipp.job.19669.13
-[2025-03-17 19:12:25] schipp: pid 19695 tid19698: T: worker-schipp 39257 19659-4 is shutting down
-[2025-03-17 19:12:25] schipp: pid 19683 tid19686: T: worker-schipp 39257 19659-2 is shutting down
-[2025-03-17 19:12:25] schipp: pid 19677 tid19680: T: worker-schipp 39257 19659-1 is shutting down
-[2025-03-17 19:12:25] schipp: pid 19689 tid19692: T: worker-schipp 39257 19659-3 is shutting down
+[2025-03-17 20:14:27] schipp: pid 8549 tid8554: T: task finished: schipp.job.8529.1
+[2025-03-17 20:14:27] schipp: pid 8555 tid8560: I: LeadSyzTiming:= 24670125 nanoseconds
+[2025-03-17 20:14:27] schipp: pid 8555 tid8560: T: task finished: schipp.job.8529.3
+[2025-03-17 20:14:27] schipp: pid 8549 tid8554: T: task finished: schipp.job.8529.4
+[2025-03-17 20:14:27] schipp: pid 8543 tid8548: I: place_SchFrame_counter: 3
+[2025-03-17 20:14:27] schipp: pid 8543 tid8548: T: task finished: schipp.job.8529.2
+[2025-03-17 20:14:27] schipp: pid 8555 tid8560: T: task finished: schipp.job.8529.9
+[2025-03-17 20:14:27] schipp: pid 8555 tid8560: T: task finished: schipp.job.8529.7
+[2025-03-17 20:14:27] schipp: pid 8555 tid8560: T: task finished: schipp.job.8529.11
+[2025-03-17 20:14:27] schipp: pid 8543 tid8548: T: task finished: schipp.job.8529.6
+[2025-03-17 20:14:27] schipp: pid 8555 tid8560: T: task finished: schipp.job.8529.8
+[2025-03-17 20:14:27] schipp: pid 8543 tid8548: T: task finished: schipp.job.8529.12
+[2025-03-17 20:14:27] schipp: pid 8537 tid8542: T: task finished: schipp.job.8529.10
+[2025-03-17 20:14:27] schipp: pid 8549 tid8554: T: task finished: schipp.job.8529.5
+[2025-03-17 20:14:27] schipp: pid 8543 tid8548: I: Calculate  only LIFT: = 33083309 nanoseconds
+[2025-03-17 20:14:27] schipp: pid 8543 tid8548: I: Calculate LIFT: = 60619958 nanoseconds
+[2025-03-17 20:14:27] schipp: pid 8543 tid8548: T: task finished: schipp.job.8529.13
+[2025-03-17 20:14:27] schipp: pid 8555 tid8558: T: worker-schipp 41979 8519-4 is shutting down
+[2025-03-17 20:14:27] schipp: pid 8537 tid8540: T: worker-schipp 41979 8519-1 is shutting down
+[2025-03-17 20:14:27] schipp: pid 8543 tid8546: T: worker-schipp 41979 8519-2 is shutting down
+[2025-03-17 20:14:27] schipp: pid 8549 tid8552: T: worker-schipp 41979 8519-3 is shutting down

@@ -18,6 +18,7 @@ namespace pnetc
         , const std::string& needed_library
         , const std::string& base_filename
         , std::list<pnet::type::value::value_type>& LIFT
+        , std::string& SUBLIFT
         );
     }
   }

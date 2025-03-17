@@ -211,7 +211,7 @@ print("timer");
 
 // spack location -i gpi-space
 // spack find gpi-space
-//pnet: cat template.xpnet | pnetc  | pnet2dot | dot -Tsvg > First_LIFT_LEAD_GPI.svg
+//pnet: cat template.xpnet | pnetc  | pnet2dot | dot -Tsvg > LIFT_LEAD_GPI.svg
 
 //Starting monitor:gspc-monitor --port 9876 &
 

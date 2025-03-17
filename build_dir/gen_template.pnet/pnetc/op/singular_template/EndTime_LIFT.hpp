@@ -11,6 +11,7 @@ namespace pnetc
       void EndTime_LIFT
         ( const long& start_time
         , const unsigned long& k2
+        , const long& bigin_time
         );
     }
   }

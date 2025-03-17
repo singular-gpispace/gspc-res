@@ -53,8 +53,10 @@ namespace pnetc
         const std::string & needed_library (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "needed_library"))));
         const std::string & base_filename (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "base_filename"))));
         std::list<pnet::type::value::value_type> LIFT;
-        ::pnetc::op::singular_template::LIFT (input_name, lead, all_lead, needed_library, base_filename, LIFT);
+        std::string SUBLIFT;
+        ::pnetc::op::singular_template::LIFT (input_name, lead, all_lead, needed_library, base_filename, LIFT, SUBLIFT);
         _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "LIFT"), LIFT);
+        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "SUBLIFT"), SUBLIFT);
       }
     }
   }
@@ -76,7 +78,8 @@ namespace pnetc
       {
         const long & start_time (::boost::get< long > (_pnetc_input.value (std::list<std::string> (1, "start_time"))));
         const unsigned long & k2 (::boost::get< unsigned long > (_pnetc_input.value (std::list<std::string> (1, "k2"))));
-        ::pnetc::op::singular_template::EndTime_LIFT (start_time, k2);
+        const long & bigin_time (::boost::get< long > (_pnetc_input.value (std::list<std::string> (1, "bigin_time"))));
+        ::pnetc::op::singular_template::EndTime_LIFT (start_time, k2, bigin_time);
       }
     }
   }
@@ -106,11 +109,9 @@ namespace pnetc
         const std::string & base_filename (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "base_filename"))));
         int counter;
         std::list<pnet::type::value::value_type> OUT;
-        std::list<pnet::type::value::value_type> Sublift;
-        ::pnetc::op::singular_template::leadsyz (input, s, library_name, base_filename, counter, OUT, Sublift);
+        ::pnetc::op::singular_template::leadsyz (input, s, library_name, base_filename, counter, OUT);
         _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "counter"), counter);
         _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "OUT"), OUT);
-        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "Sublift"), Sublift);
       }
     }
   }
