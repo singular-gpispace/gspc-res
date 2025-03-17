@@ -176,7 +176,7 @@ src/CMakeFiles/SINGULAR-template-module.dir/__/template/singular_functions.cpp.o
  /home/santosh/singular-gpispace/spack/opt/spack/linux-ubuntu22.04-skylake/gcc-11.4.0/singular-4.4.0p2-syrkttc4im2j3tzob5jykruuxnushksj/include/singular/reporter/s_buff.h \
  /home/santosh/singular-gpispace/spack/opt/spack/linux-ubuntu22.04-skylake/gcc-11.4.0/singular-4.4.0p2-syrkttc4im2j3tzob5jykruuxnushksj/include/singular/coeffs/si_gmp.h \
  /home/santosh/singular-gpispace/spack/opt/spack/linux-ubuntu22.04-skylake/gcc-11.4.0/singular-4.4.0p2-syrkttc4im2j3tzob5jykruuxnushksj/include/factory/cf_gmp.h \
- /usr/include/x86_64-linux-gnu/gmp.h \
+ /home/santosh/singular-gpispace/spack/opt/spack/linux-ubuntu22.04-skylake/gcc-11.4.0/gmp-6.2.1-je2hjalmvjhvsf6vgwimc4kaqwikwe3u/include/gmp.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/limits.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/syslimits.h \
  /usr/include/limits.h /usr/include/x86_64-linux-gnu/bits/posix1_lim.h \
