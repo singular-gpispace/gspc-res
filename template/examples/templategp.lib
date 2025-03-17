@@ -670,7 +670,19 @@ proc coM2(module f, vector s, vector t, list J, int k) {
 
 
 
-
+proc phi(vector s, def f)
+{
+ 
+  number lc_s = leadcoef(s);  // leading coefficient of s
+  poly lm_s = leadmonomial(s);  // leading monomial of s
+  int n = nvars(basering);
+   int a = leadexp(s)[n + 1];
+  def g;
+ 
+  //s is a term
+  g = lc_s * lm_s * f[a]; 
+  return(g);
+}
 
 
 //First Level LiftTree
@@ -679,31 +691,12 @@ proc liftTree(ideal f, vector s) {
     list TT;  // Initialize TT as an empty list
     int r = size(f);
    // poly h, t, g;
-   poly t,g;
+   poly t;
     list T;
     int i, c,i0;
 
     
-    number lc_s = leadcoef(s);  // leading coefficient of s
-    poly lm_s = leadmonomial(s);  // leading monomial of s
-     int a = leadexp(s)[nvars(basering) + 1];
-
-    //  for (i = 1; i <= r; i++) {
-    //     if (s == lc_s * lm_s * gen(i)) {
-    //         h = lc_s * lm_s * f[i];  // Map to m * f[i]
-    //         break;  // Once found, break the loop early
-    //     }
-    // }
-
-
-    //    for (i = 1; i <= r; i++) {
-    //     if (a == i) {
-    //         h = lc_s * lm_s * f[i];  // Map to m * f[i]
-    //         break;  // Once found, break the loop early
-    //     }
-    // }
-   
-     g = lc_s * lm_s * f[a]; 
+  poly g = phi(s, f);
    poly T0 = g - LOT(g, f);
     //poly T0 =LOT(g, f);
     T = pOLY_List(T0);
@@ -778,28 +771,10 @@ proc liftTree2(module f, vector s, list J, int level) {
  vector g;
     list T;  
     int c;
+  
+
+    g = phi(s, f);
    
-    number lc_s = leadcoef(s);  // leading coefficient of s
-    poly lm_s = leadmonomial(s);  // leading monomial of s
-     int a0 = leadexp(s)[nvars(basering) + 1];
-
-    //  for (i = 1; i <= r; i++) {
-    //     if (s == lc_s * lm_s * gen(i)) {
-    //         h = lc_s * lm_s * f[i];  // Map to m * f[i]
-    //         break;  // Once found, break the loop early
-    //     }
-    // }
-
-
-    //    for (i = 1; i <= r; i++) {
-    //     if (a0 == i) {
-    //         h = lc_s * lm_s * f[i];  // Map to m * f[i]
-    //         break;  // Once found, break the loop early
-    //     }
-    // }
-
-    g = lc_s * lm_s * f[a0]; 
-    //list S = f;
      
 
 
@@ -1031,27 +1006,10 @@ proc oneSublift(ideal f, vector s) {
     list T;
     int k, q,i0;
 
-    number lc_s = leadcoef(s);  // leading coefficient of s
-    poly lm_s = leadmonomial(s);  // leading monomial of s
-     int a = leadexp(s)[nvars(basering) + 1];
+   
+    h = phi(s, f);
 
-    //  for (i = 1; i <= r; i++) {
-    //     if (s == lc_s * lm_s * gen(i)) {
-    //         h = lc_s * lm_s * f[i];  // Map to m * f[i]
-    //         break;  // Once found, break the loop early
-    //     }
-    // }
-
-
-    //    for (i = 1; i <= r; i++) {
-    //     if (a == i) {
-    //         h = lc_s * lm_s * f[i];  // Map to m * f[i]
-    //         break;  // Once found, break the loop early
-    //     }
-    // }
-
-
-    h = lc_s * lm_s * f[a];  // Map to m * f[i]
+  
     g =h- lead(h);
     poly T0 = g - LOT(g, f);
     
@@ -1121,29 +1079,11 @@ proc subLiftTree2(module f, vector s, list J, int level) {
      //ideal I_Gr=J[1];
      module f0=J[level];
      
-    number lc_s = leadcoef(s);  // leading coefficient of s
-    poly lm_s = leadmonomial(s);  // leading monomial of s
-     int a0 = leadexp(s)[nvars(basering) + 1];
- 
-    // for (i = 1; i <= r; i++) {
-    //     if (s == lc_s * lm_s * gen(i)) { // replacing leadmonomial by lead
-    //         h = lc_s * lm_s * f[i]; // psi: R^r --> R^s; g := psi(s);
-    //         H=lc_s * lm_s * f0[i]; // psi: R^r --> R^s; g := psi(s);
-    //           break;
-    //     }
-    // }
+     h= phi(s,f);//h:=psi(s)
 
+     H= phi(s,f0);//H:=psi(s)
 
-    //    for (i = 1; i <= r; i++) {
-    //     if (a0 == i) {
-    //         h = lc_s * lm_s * f[i];  // psi: R^r --> R^s; g := psi(s);
-    //          H=lc_s * lm_s * f0[i]; // psi: R^r --> R^s; g := psi(s);
-    //         break;  // Once found, break the loop early
-    //     }
-    // }
-
-     h = lc_s * lm_s * f[a0];  // psi: R^r --> R^s; h := psi(s);
-     H=lc_s * lm_s * f0[a0]; // psi: R^r --> R^s; H := LT(psi(s));
+   
  
     g = h - lead(H);
     

@@ -12,8 +12,8 @@ LIB "random.lib";
     
 // Configure GPI-Space	
 configToken gc = configure_gspc();
-gc.options.tmpdir = "/home/santosh/gspc-res/example_dir/temp";
-// gc.options.tmpdir = "/dev/shm/gnawali/temp";
+// gc.options.tmpdir = "/home/santosh/gspc-res/example_dir/temp";
+gc.options.tmpdir = "/dev/shm/gnawali/temp";
 
 gc.options.nodefile = "nodefile";
 gc.options.procspernode = 6;

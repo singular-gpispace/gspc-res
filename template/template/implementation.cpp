@@ -559,11 +559,23 @@ std::pair<int, lists> LEAD_GPI(leftv args) {
     LLT->Init(4); // Initialize with 4 fields
     lists temp = (lists)omAlloc0Bin(slists_bin);
     temp->Init(r);
-   // Iterate to fill in data
+    ideal sM = idInit(c, r0);  // Initialize the smatrix
+    lists Ld = (lists)omAlloc0Bin(slists_bin);  // Initialize Ld
+    Ld->Init(4);  // Initialize with 4 fields
+
     for (int k = 0; k < r; k++) {
         // Create a new token Ld
-        lists Ld = (lists)omAlloc0Bin(slists_bin);
-        Ld->Init(4); // Initialize with 4 fields
+      id_Delete(&sM, currRing);  // Delete the existing sM
+        sM = idInit(c, r0);        // Reinitialize sM
+
+        // omUpdateInfo();
+        // std::cout << "used mem: " << om_Info.UsedBytes << std::endl;
+    
+    
+       // Reset Ld for the current iteration (without reallocating)
+       omFreeBin(Ld, slists_bin);  // Free the existing Ld
+       Ld = (lists)omAlloc0Bin(slists_bin);  // Reinitialize Ld
+       Ld->Init(4);  // Initialize with 4 fields
 
         lists t = (lists)omAlloc0Bin(slists_bin);
         t->Init(2);
@@ -575,7 +587,7 @@ std::pair<int, lists> LEAD_GPI(leftv args) {
         Ld->m[2].rtyp = RING_CMD; Ld->m[2].data = currRing;
          
          
-         ideal sM = idInit(c, r0);
+       
         // matrix sM = mpNew(r0, c);
         poly s_lift = (poly)LT->m[k]; // Retrieve the lifted polynomial
         //  std::cout << "#s_lift:=" <<pString(s_lift)<< std::endl;
@@ -652,6 +664,10 @@ sM->m[k]=C;
         }
         temp->m[k].rtyp = LIST_CMD;
         temp->m[k].data = lCopy(Ld);
+         // Clean up temporary lists
+         omFreeBin(t, slists_bin);
+         omFreeBin(field_names, slists_bin);
+         omFreeBin(t0, slists_bin);
     }
 
     // Prepare the final field names
@@ -681,6 +697,9 @@ sM->m[k]=C;
 
     LLT->m[3].rtyp = LIST_CMD;
     LLT->m[3].data = final_data;
+      // Clean up sM and Ld
+      id_Delete(&sM, currRing);
+      omFreeBin(Ld, slists_bin);
 
     return {r, LLT};  // Return success state and LLT
 }
@@ -1133,7 +1152,19 @@ int coM2(ideal f, poly s, poly t, lists J, int k) { //poly s and poly t are sing
 }
 
 
-
+poly phi(poly s, ideal f)
+{
+ 
+ poly g = NULL;
+  poly lm_s = pHead(s);
+  pSetComp(lm_s,0);
+  pSetmComp(lm_s);
+  int g1= p_GetComp(s,currRing);
+     
+  
+  g=pp_Mult_qq(lm_s,f->m[g1-1],currRing);//g:=psi(s)
+  return(g);
+}
 
 NO_NAME_MANGLING
 //First Level LiftTree
@@ -1149,15 +1180,10 @@ lists  liftTree(ideal f, poly s) { //poly s is singular vector
     int q = 0;
    
     
-    poly lm_s = pHead(s); // Get the leading monomial of s including coefficient
-   
-    pSetComp(lm_s,0);
-    pSetmComp(lm_s);
-      
-    int g1= p_GetComp(s,currRing);
-     
   
-    g=pp_Mult_qq(lm_s,f->m[g1-1],currRing);//g:=psi(s)
+   g= phi(pCopy(s),idCopy(f));//g:=psi(s)
+  
+  
      //std::cout<<"g=psi(s)" << pString(g) <<": s="<<pString(s)<<std::endl;
     poly g_copy = pCopy(g);
     poly lOT=LOT(g_copy, f);//poly T0 = LOT(g, f); 
@@ -1252,18 +1278,7 @@ lists liftTree2(ideal f, poly s, lists J, int level) {
 
  
    
-   // number lc_s = leadcoef(s);
-    poly lm_s =  pHead(s); //leading monomial including coefficient
-   
-   
-    pSetComp(lm_s,0);
-    pSetmComp(lm_s);
-    int g1= p_GetComp(s,currRing);
-
-   
-        
-    
-  g = pp_Mult_qq(lm_s, f->m[g1-1],currRing);//g:=psi(s)
+    g= phi(pCopy(s),idCopy(f));//g:=psi(s)
 
  // std::cout<<"g=psi(s)in LIFT2" << pString(pCopy(g)) <<std::endl;
   poly g_copy = pCopy(g);
@@ -1456,11 +1471,19 @@ std::pair<int, lists> LIFT_GPI(leftv args) {
     lists temp = (lists)omAlloc0Bin(slists_bin);
     temp->Init(r);
 
-    // Iterate to fill in data
+    lists Ld = (lists)omAlloc0Bin(slists_bin);
+    Ld->Init(4); // Initialize with 4 fields
+   
+    ideal sM = idInit(c, r0);
     for (int k = 0; k < r; k++) {
+
+        id_Delete(&sM, currRing);  // Delete the existing sM
+        sM = idInit(c, r0);  
         // Create a new token Ld
-        lists Ld = (lists)omAlloc0Bin(slists_bin);
-        Ld->Init(4); // Initialize with 4 fields
+        omFreeBin(Ld, slists_bin);  // Free the existing Ld
+        Ld = (lists)omAlloc0Bin(slists_bin);  // Reinitialize Ld
+        Ld->Init(4);  // Initialize with 4 fields
+
 
         lists t = (lists)omAlloc0Bin(slists_bin);
         t->Init(2);
@@ -1473,7 +1496,7 @@ std::pair<int, lists> LIFT_GPI(leftv args) {
 
       
   
-         ideal sM = idInit(c, r0);
+      
         // matrix sM = mpNew(r0, c);
        poly s_lift = (poly)lL->m[k].Data(); // Retrieve the lifted polynomial
         int l_k = p_GetComp(s_lift, currRing);
@@ -1563,6 +1586,10 @@ C=p_Add_q(C, pCopy(C1), currRing);
         }
         temp->m[k].rtyp = LIST_CMD;
         temp->m[k].data = lCopy(Ld);
+         // Clean up temporary lists
+         omFreeBin(t, slists_bin);
+         omFreeBin(field_names, slists_bin);
+         omFreeBin(t0, slists_bin);
     }
 
     // Prepare the final field names
@@ -1592,6 +1619,9 @@ C=p_Add_q(C, pCopy(C1), currRing);
 
     LLT->m[3].rtyp = LIST_CMD;
     LLT->m[3].data = final_data;
+       // Clean up sM and Ld
+       id_Delete(&sM, currRing);
+       omFreeBin(Ld, slists_bin);
 
     return {r, LLT};  // Return success state and LLT
 }
@@ -1711,17 +1741,7 @@ lists oneSublift(ideal f, poly s)
     int k = 0;
     int q = 0;
     
-   //For s= c*x^a*gen(i);
-   //poly lm_s=c*x^a;
-    poly lm_s = pHead(s); // Get the leading monomial of s including coefficient
-    pSetComp(lm_s,0);
-    pSetmComp(lm_s);
-
-    int g1= p_GetComp(s,currRing);
-     
-    //std::cout << "GetComp: " << g1 << std::endl;
-    //std::cout<<"f[g1]=" << pString(f->m[g1-1]) <<std::endl;
-    h=pp_Mult_qq(lm_s,f->m[g1-1],currRing); //h=lm_s*f[g1]
+    h= phi(pCopy(s),idCopy(f));//h:=psi(s)
     //std::cout << "psi(s): " << h << std::endl;
      //std::cout<<"After _f[g1]=" << pString(f->m[g1-1]) <<std::endl;
 
@@ -1833,17 +1853,13 @@ lists subLiftTree2(ideal f, poly s, lists J, int level) {
     // Get the ideal f0 from the list J at the current level
     ideal f0 = (ideal)J->m[level-1].Data();
     
-    // Get the leading monomial of s, including the coefficient
-    poly lm_s = pHead(s);
-    pSetComp(lm_s,0);
-    pSetmComp(lm_s);
-    // Get the component of the vector s
-    int g1 = p_GetComp(s, currRing);
+  
+  
 
-    // Multiply the leading monomial by the corresponding elements in f and f0
-    h = pp_Mult_qq(lm_s, f->m[g1-1], currRing);    // h = lm_s * f[g1]
-    H = pp_Mult_qq(lm_s, f0->m[g1-1], currRing);   // H = lm_s * f0[g1]
+   
+    h= phi(pCopy(s),idCopy(f));//h:=psi(s)
 
+    H= phi(pCopy(s),idCopy(f0));//H:=psi(s)
     // Subtract the head of H from h
     g = p_Sub(h, pHead(H), currRing); // g = h - lead(H)
     poly g_copy = pCopy(g);
@@ -2016,11 +2032,20 @@ std::pair<int, lists> SubLIFT_GPI(leftv args) {
     lists temp = (lists)omAlloc0Bin(slists_bin);
     temp->Init(r);
 
-    // Iterate to fill in data
-    for (int k = 0; k < r; k++) {
-        // Create a new token Ld
-        lists Ld = (lists)omAlloc0Bin(slists_bin);
-        Ld->Init(4); // Initialize with 4 fields
+      // Allocate sM and Ld outside the loop
+      ideal sM = idInit(c, r0);  // Initialize the submodule
+      lists Ld = (lists)omAlloc0Bin(slists_bin);  // Initialize Ld
+      Ld->Init(4);  // Initialize with 4 fields
+      int k=0;
+    for (k = 0; k < r; k++) {
+
+        id_Delete(&sM, currRing);  // Delete the existing sM
+        sM = idInit(c, r0);  
+    
+      
+        omFreeBin(Ld, slists_bin);  // Free the existing Ld
+        Ld = (lists)omAlloc0Bin(slists_bin);  // Reinitialize Ld
+        Ld->Init(4);  // Initialize with 4 fields
 
         lists t = (lists)omAlloc0Bin(slists_bin);
         t->Init(2);
@@ -2121,6 +2146,10 @@ C=p_Add_q(C, pCopy(C1), currRing);
         }
         temp->m[k].rtyp = LIST_CMD;
         temp->m[k].data = lCopy(Ld);
+          // Clean up temporary lists
+          omFreeBin(t, slists_bin);
+          omFreeBin(field_names, slists_bin);
+          omFreeBin(t0, slists_bin);
     }
 
     // Prepare the final field names
@@ -2150,6 +2179,10 @@ C=p_Add_q(C, pCopy(C1), currRing);
 
     LLT->m[3].rtyp = LIST_CMD;
     LLT->m[3].data = final_data;
+
+      // Clean up sM and Ld
+      id_Delete(&sM, currRing);
+      omFreeBin(Ld, slists_bin);
 
     return {r, LLT};  // Return success state and LLT
 }
