@@ -53,7 +53,7 @@
 
 # Exit on any error
 set -e
-
+spack load gpi-space@24.12
 # Activate the Spack environment
 if ! spack env list | grep -q gpispace; then
     echo "Creating Spack environment 'gpispace'..."
