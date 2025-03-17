@@ -559,11 +559,23 @@ std::pair<int, lists> LEAD_GPI(leftv args) {
     LLT->Init(4); // Initialize with 4 fields
     lists temp = (lists)omAlloc0Bin(slists_bin);
     temp->Init(r);
-   // Iterate to fill in data
-    for (int k = 0; k < r; k++) {
-        // Create a new token Ld
-        lists Ld = (lists)omAlloc0Bin(slists_bin);
-        Ld->Init(4); // Initialize with 4 fields
+    ideal sM = idInit(c, r0);  // Initialize the smatrix
+    lists Ld = (lists)omAlloc0Bin(slists_bin);  // Initialize Ld
+    Ld->Init(4);  // Initialize with 4 fields
+    int k=0;
+    for (k = 0; k < r; k++) {
+          // Create a new token Ld
+          id_Delete(&sM, currRing);  // Delete the existing sM
+          sM = idInit(c, r0);        // Reinitialize sM
+  
+          // omUpdateInfo();
+          // std::cout << "used mem: " << om_Info.UsedBytes << std::endl;
+      
+      
+         // Reset Ld for the current iteration (without reallocating)
+         omFreeBin(Ld, slists_bin);  // Free the existing Ld
+         Ld = (lists)omAlloc0Bin(slists_bin);  // Reinitialize Ld
+         Ld->Init(4);  // Initialize with 4 fields
 
         lists t = (lists)omAlloc0Bin(slists_bin);
         t->Init(2);
@@ -652,6 +664,11 @@ sM->m[k]=C;
         }
         temp->m[k].rtyp = LIST_CMD;
         temp->m[k].data = lCopy(Ld);
+
+           // Clean up temporary lists
+           omFreeBin(t, slists_bin);
+           omFreeBin(field_names, slists_bin);
+           omFreeBin(t0, slists_bin);
     }
 
     // Prepare the final field names
@@ -681,6 +698,10 @@ sM->m[k]=C;
 
     LLT->m[3].rtyp = LIST_CMD;
     LLT->m[3].data = final_data;
+
+       // Clean up sM and Ld
+       id_Delete(&sM, currRing);
+       omFreeBin(Ld, slists_bin);
 
     return {r, LLT};  // Return success state and LLT
 }
@@ -1456,11 +1477,18 @@ std::pair<int, lists> LIFT_GPI(leftv args) {
     lists temp = (lists)omAlloc0Bin(slists_bin);
     temp->Init(r);
 
-    // Iterate to fill in data
-    for (int k = 0; k < r; k++) {
+    lists Ld = (lists)omAlloc0Bin(slists_bin);
+    Ld->Init(4); // Initialize with 4 fields
+    ideal sM = idInit(c, r0);
+    int k=0;
+    for (k = 0; k < r; k++) {
+     
+        id_Delete(&sM, currRing);  // Delete the existing sM
+        sM = idInit(c, r0);  
         // Create a new token Ld
-        lists Ld = (lists)omAlloc0Bin(slists_bin);
-        Ld->Init(4); // Initialize with 4 fields
+        omFreeBin(Ld, slists_bin);  // Free the existing Ld
+        Ld = (lists)omAlloc0Bin(slists_bin);  // Reinitialize Ld
+        Ld->Init(4);  // Initialize with 4 fields
 
         lists t = (lists)omAlloc0Bin(slists_bin);
         t->Init(2);
@@ -1563,6 +1591,11 @@ C=p_Add_q(C, pCopy(C1), currRing);
         }
         temp->m[k].rtyp = LIST_CMD;
         temp->m[k].data = lCopy(Ld);
+
+         // Clean up temporary lists
+         omFreeBin(t, slists_bin);
+         omFreeBin(field_names, slists_bin);
+         omFreeBin(t0, slists_bin);
     }
 
     // Prepare the final field names
@@ -1592,6 +1625,10 @@ C=p_Add_q(C, pCopy(C1), currRing);
 
     LLT->m[3].rtyp = LIST_CMD;
     LLT->m[3].data = final_data;
+
+      // Clean up sM and Ld
+      id_Delete(&sM, currRing);
+      omFreeBin(Ld, slists_bin);
 
     return {r, LLT};  // Return success state and LLT
 }
@@ -2015,12 +2052,18 @@ std::pair<int, lists> SubLIFT_GPI(leftv args) {
     LLT->Init(4); // Initialize with 4 fields
     lists temp = (lists)omAlloc0Bin(slists_bin);
     temp->Init(r);
+     // Allocate sM and Ld outside the loop
+     ideal sM = idInit(c, r0);  // Initialize the smatrix
+     lists Ld = (lists)omAlloc0Bin(slists_bin);  // Initialize Ld
+     Ld->Init(4);  // Initialize with 4 fields
+   int k=0;
+    for (k = 0; k < r; k++) {
 
-    // Iterate to fill in data
-    for (int k = 0; k < r; k++) {
-        // Create a new token Ld
-        lists Ld = (lists)omAlloc0Bin(slists_bin);
-        Ld->Init(4); // Initialize with 4 fields
+        id_Delete(&sM, currRing);  // Delete the existing sM
+        sM = idInit(c, r0);  
+        omFreeBin(Ld, slists_bin);  // Free the existing Ld
+        Ld = (lists)omAlloc0Bin(slists_bin);  // Reinitialize Ld
+        Ld->Init(4);  // Initialize with 4 fields
 
         lists t = (lists)omAlloc0Bin(slists_bin);
         t->Init(2);
@@ -2033,7 +2076,7 @@ std::pair<int, lists> SubLIFT_GPI(leftv args) {
 
       
 
-        ideal sM = idInit(c, r0);
+      
         // matrix sM = mpNew(r0, c);
        poly s_lift = (poly)lL->m[k].Data(); // Retrieve the lifted polynomial
         int l_k = p_GetComp(s_lift, currRing);
@@ -2046,7 +2089,7 @@ std::pair<int, lists> SubLIFT_GPI(leftv args) {
         //  std::cout << "#poly C:=" <<pString(C)<< std::endl;
         poly Ci=p_Vec2Poly(C,l_k,currRing);
        
-      C= p_Sub(C,Ci,currRing);
+         C= p_Sub(C,Ci,currRing);
         //  std::cout << "after C-Ci:=" <<pString(C)<< std::endl;
          poly C1= pCopy(p_Mult_q(pISet(-1), pCopy(lm), currRing));
                    p_SetComp(C1,l_k,currRing);
@@ -2055,7 +2098,7 @@ std::pair<int, lists> SubLIFT_GPI(leftv args) {
 //        std::cout << "Before addition C: " << pString(C) << std::endl;
 // std::cout << "Before addition C1: " << pString(C1) << std::endl;
 
-C=p_Add_q(C, pCopy(C1), currRing);
+   C=p_Add_q(C, pCopy(C1), currRing);
 
 // std::cout << "After addition C: " << pString(C) << std::endl;
    sM->m[colmn-1]=C;
@@ -2121,6 +2164,11 @@ C=p_Add_q(C, pCopy(C1), currRing);
         }
         temp->m[k].rtyp = LIST_CMD;
         temp->m[k].data = lCopy(Ld);
+
+          // Clean up temporary lists
+          omFreeBin(t, slists_bin);
+          omFreeBin(field_names, slists_bin);
+          omFreeBin(t0, slists_bin);
     }
 
     // Prepare the final field names
@@ -2150,6 +2198,10 @@ C=p_Add_q(C, pCopy(C1), currRing);
 
     LLT->m[3].rtyp = LIST_CMD;
     LLT->m[3].data = final_data;
+
+       // Clean up sM and Ld
+       id_Delete(&sM, currRing);
+       omFreeBin(Ld, slists_bin);
 
     return {r, LLT};  // Return success state and LLT
 }
@@ -2415,13 +2467,17 @@ std::pair<std::string, long> singular_template_reduce(const std::string& Red,
     t->m[2].rtyp = INT_CMD; t->m[2].data = (void*)(long)r;
     t->m[3].rtyp = INT_CMD; t->m[3].data = (void*)(long)c;
 
-    if (tmpL1->m[0].Typ() == IDEAL_CMD) {
-        t->m[4].rtyp=MODUL_CMD; t->m[4].data= L->CopyD();//Tok.data[5]
-
-    } 
-    else if (tmpL1->m[0].Typ() == VECTOR_CMD) {
-        t->m[4].rtyp=MODUL_CMD; t->m[4].data= LL->CopyD();//Tok.data[5]
+    if (tmpL1->m[0].Typ() == IDEAL_CMD && L != nullptr) {
+        t->m[4].rtyp = MODUL_CMD;
+        t->m[4].data = L->CopyD();
+    } else if (tmpL1->m[0].Typ() == VECTOR_CMD && LL != nullptr) {
+        t->m[4].rtyp = MODUL_CMD;
+        t->m[4].data = LL->CopyD();
+    } else {
+        std::cerr << "Error: L or LL is null. Cannot call CopyD." << std::endl;
+        throw std::runtime_error("Null pointer in CopyD call");
     }
+    
     t->m[5].rtyp = INT_CMD; t->m[5].data = (void*)(long)counter;
     t->m[6].rtyp = INT_CMD; t->m[6].data = (void*)(long)(counter + 1);
 

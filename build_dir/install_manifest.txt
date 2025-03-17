@@ -1,0 +1,10 @@
+/scratch/gnawali/Try/gspc-res/install_dir/lib/libSINGULAR-template-installation.so
+/scratch/gnawali/Try/gspc-res/install_dir/libSINGULAR-template-module.so
+/scratch/gnawali/Try/gspc-res/install_dir/libexec/workflow/libtemplate_implementation.so
+/scratch/gnawali/Try/gspc-res/install_dir/templategspc.lib
+/scratch/gnawali/Try/gspc-res/install_dir/libexec/workflow/template.pnet
+/scratch/gnawali/Try/gspc-res/install_dir/libexec/workflow/libsingular_template.so
+/scratch/gnawali/Try/gspc-res/install_dir/share/examples/templategp.lib
+/scratch/gnawali/Try/gspc-res/install_dir/share/examples/oneSublift_kernel.cpp
+/scratch/gnawali/Try/gspc-res/install_dir/share/examples/all_lead_syz.cpp
+/scratch/gnawali/Try/gspc-res/install_dir/share/examples/Trygp.lib
