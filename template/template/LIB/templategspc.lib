@@ -23,7 +23,7 @@ proc mod_init()
 {
     //Singular does not support fieldname containing underscore
        // LIB "libSINGULAR-template-module.so";
-      LIB "/home/santosh/gspc-res/build_dir/src/libSINGULAR-template-module.so";
+       LIB "/scratch/gnawali/Try/gspc-res/build_dir/src/libSINGULAR-template-module.so";
     newstruct("configToken", "string tokentype, def options");
     newstruct("gspcConfigToken", "string tmpdir, string nodefile, int procspernode, string rifstrategy, string rifstrategyparameters, string loghost, int logport, string loghostfile");
     newstruct("templateConfigToken", " string neededLibrary, string functionName");
