@@ -25,7 +25,7 @@ namespace pnetc
         , std::list<pnet::type::value::value_type>& LIFT
         )
       {
-#line 252 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 305 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
                   //  std::cout << "in singular _PetriNet_.._LIFT" << std::endl;
                    
@@ -34,13 +34,12 @@ namespace pnetc
                        
 
                        std::vector<std::string> vec = std::get<0>(out);
-                       int total_generator = std::get<1>(out);
                       
-                      //  std::cout << "#LIFT_Terms:"<< counter << std::endl;
+                       //std::cout << "LIFT_COUNT:"<< lift_count << std::endl;
                         
                          for(int i (0); i<vec.size(); i++)
                                                                  {
-                         //std::cout << "LIFT_Success:"<<out.first[i] << std::endl;
+                        //  std::cout << "LIFT_Success:"<<vec[i] << std::endl;
                           LIFT.emplace_back(vec[i]);
                        
                          
@@ -48,6 +47,7 @@ namespace pnetc
       
                     }
                
+              
               // std::cout << "LIFT_COUNT_Parent:"<< N << std::endl;
               // std::cout << "LIFT_COUNT_Child:"<< E << std::endl;
               

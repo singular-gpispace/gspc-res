@@ -1,5 +1,5 @@
-#ifndef _PNETC_OP_singular_template_EndTime_SchFrame
-#define _PNETC_OP_singular_template_EndTime_SchFrame
+#ifndef _PNETC_OP_singular_template_EndTime_Syz
+#define _PNETC_OP_singular_template_EndTime_Syz
 
 #include <string>
 
@@ -9,10 +9,10 @@ namespace pnetc
   {
     namespace singular_template
     {
-      void EndTime_SchFrame
+      void EndTime_Syz
         ( const long& start_time
+        , const unsigned long& k2
         , std::string& computed_output
-        , long& end_timer
         );
     }
   }
