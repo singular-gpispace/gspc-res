@@ -1,8 +1,8 @@
-# Install script for directory: /home/santosh/gspc-res/template
+# Install script for directory: /scratch/gnawali/Try/gspc-res/template
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/santosh/gspc-res/install_dir")
+  set(CMAKE_INSTALL_PREFIX "/scratch/gnawali/Try/gspc-res/install_dir")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -44,29 +44,29 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/santosh/gspc-res/build_dir/src/cmake_install.cmake")
+  include("/scratch/gnawali/Try/gspc-res/build_dir/src/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/santosh/gspc-res/build_dir/template/cmake_install.cmake")
+  include("/scratch/gnawali/Try/gspc-res/build_dir/template/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/santosh/gspc-res/build_dir/workflow/cmake_install.cmake")
+  include("/scratch/gnawali/Try/gspc-res/build_dir/workflow/cmake_install.cmake")
 endif()
 
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
+if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/home/santosh/gspc-res/install_dir/share/examples")
+   "/scratch/gnawali/Try/gspc-res/install_dir/share/examples")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-  file(INSTALL DESTINATION "/home/santosh/gspc-res/install_dir/share" TYPE DIRECTORY FILES "/home/santosh/gspc-res/template/examples")
+  file(INSTALL DESTINATION "/scratch/gnawali/Try/gspc-res/install_dir/share" TYPE DIRECTORY FILES "/scratch/gnawali/Try/gspc-res/template/examples")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT)
@@ -77,5 +77,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/santosh/gspc-res/build_dir/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/scratch/gnawali/Try/gspc-res/build_dir/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

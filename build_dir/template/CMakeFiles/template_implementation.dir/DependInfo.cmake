@@ -8,8 +8,8 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/santosh/gspc-res/template/template/implementation.cpp" "template/CMakeFiles/template_implementation.dir/implementation.cpp.o" "gcc" "template/CMakeFiles/template_implementation.dir/implementation.cpp.o.d"
-  "/home/santosh/gspc-res/template/template/singular_functions.cpp" "template/CMakeFiles/template_implementation.dir/singular_functions.cpp.o" "gcc" "template/CMakeFiles/template_implementation.dir/singular_functions.cpp.o.d"
+  "/scratch/gnawali/Try/gspc-res/template/template/implementation.cpp" "template/CMakeFiles/template_implementation.dir/implementation.cpp.o" "gcc" "template/CMakeFiles/template_implementation.dir/implementation.cpp.o.d"
+  "/scratch/gnawali/Try/gspc-res/template/template/singular_functions.cpp" "template/CMakeFiles/template_implementation.dir/singular_functions.cpp.o" "gcc" "template/CMakeFiles/template_implementation.dir/singular_functions.cpp.o.d"
   )
 
 # Targets to which this target links.

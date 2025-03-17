@@ -1,4 +1,4 @@
-// defined in [/home/santosh/gspc-res/template/workflow/template.xpnet:4:5]
+// defined in [/scratch/gnawali/Try/gspc-res/template/workflow/template.xpnet:4:5]
 #ifndef _PNETC_TYPE_Std_basis_OP
 #define _PNETC_TYPE_Std_basis_OP
 

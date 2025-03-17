@@ -1,56 +1,32 @@
 Performing C++ SOURCE FILE Test CXX_COMPILER_SUPPORTS__Wundefined_reinterpret_cast failed with the following output:
-<<<<<<< HEAD
-Change Dir: /home/santosh/gspc-res/build_dir/CMakeFiles/CMakeTmp
+Change Dir: /scratch/gnawali/Try/gspc-res/build_dir/CMakeFiles/CMakeScratch/TryCompile-ng1Egv
 
-Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_3a402/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_3a402.dir/build.make CMakeFiles/cmTC_3a402.dir/build
-gmake[1]: Entering directory '/home/santosh/gspc-res/build_dir/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_3a402.dir/src.cxx.o
-/usr/bin/c++ -DCXX_COMPILER_SUPPORTS__Wundefined_reinterpret_cast  -Wall -Wextra -Werror    -Wundefined-reinterpret-cast -std=gnu++17 -o CMakeFiles/cmTC_3a402.dir/src.cxx.o -c /home/santosh/gspc-res/build_dir/CMakeFiles/CMakeTmp/src.cxx
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_f7862/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_f7862.dir/build.make CMakeFiles/cmTC_f7862.dir/build
+gmake[1]: Entering directory '/scratch/gnawali/Try/gspc-res/build_dir/CMakeFiles/CMakeScratch/TryCompile-ng1Egv'
+Building CXX object CMakeFiles/cmTC_f7862.dir/src.cxx.o
+/usr/bin/c++ -DCXX_COMPILER_SUPPORTS__Wundefined_reinterpret_cast  -Wall -Wextra -Werror    -Wundefined-reinterpret-cast -std=gnu++17 -o CMakeFiles/cmTC_f7862.dir/src.cxx.o -c /scratch/gnawali/Try/gspc-res/build_dir/CMakeFiles/CMakeScratch/TryCompile-ng1Egv/src.cxx
 c++: error: unrecognized command-line option '-Wundefined-reinterpret-cast'
-gmake[1]: *** [CMakeFiles/cmTC_3a402.dir/build.make:78: CMakeFiles/cmTC_3a402.dir/src.cxx.o] Error 1
-gmake[1]: Leaving directory '/home/santosh/gspc-res/build_dir/CMakeFiles/CMakeTmp'
-gmake: *** [Makefile:127: cmTC_3a402/fast] Error 2
-=======
-Change Dir: /scratch/gnawali/Try/gspc-res/build_dir/CMakeFiles/CMakeScratch/TryCompile-SSLyNS
-
-Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_d2556/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_d2556.dir/build.make CMakeFiles/cmTC_d2556.dir/build
-gmake[1]: Entering directory '/scratch/gnawali/Try/gspc-res/build_dir/CMakeFiles/CMakeScratch/TryCompile-SSLyNS'
-Building CXX object CMakeFiles/cmTC_d2556.dir/src.cxx.o
-/usr/bin/c++ -DCXX_COMPILER_SUPPORTS__Wundefined_reinterpret_cast  -Wall -Wextra -Werror    -Wundefined-reinterpret-cast -std=gnu++17 -o CMakeFiles/cmTC_d2556.dir/src.cxx.o -c /scratch/gnawali/Try/gspc-res/build_dir/CMakeFiles/CMakeScratch/TryCompile-SSLyNS/src.cxx
-c++: error: unrecognized command-line option '-Wundefined-reinterpret-cast'
-gmake[1]: *** [CMakeFiles/cmTC_d2556.dir/build.make:78: CMakeFiles/cmTC_d2556.dir/src.cxx.o] Error 1
-gmake[1]: Leaving directory '/scratch/gnawali/Try/gspc-res/build_dir/CMakeFiles/CMakeScratch/TryCompile-SSLyNS'
-gmake: *** [Makefile:127: cmTC_d2556/fast] Error 2
->>>>>>> 0953350 (push to cipserv05)
+gmake[1]: *** [CMakeFiles/cmTC_f7862.dir/build.make:78: CMakeFiles/cmTC_f7862.dir/src.cxx.o] Error 1
+gmake[1]: Leaving directory '/scratch/gnawali/Try/gspc-res/build_dir/CMakeFiles/CMakeScratch/TryCompile-ng1Egv'
+gmake: *** [Makefile:127: cmTC_f7862/fast] Error 2
 
 
 Source file was:
 int main() { return 0; }
+
 Performing C++ SOURCE FILE Test CXX_COMPILER_SUPPORTS__Wextra_semi_stmt failed with the following output:
-<<<<<<< HEAD
-Change Dir: /home/santosh/gspc-res/build_dir/CMakeFiles/CMakeTmp
+Change Dir: /scratch/gnawali/Try/gspc-res/build_dir/CMakeFiles/CMakeScratch/TryCompile-jVbjJG
 
-Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_f142d/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_f142d.dir/build.make CMakeFiles/cmTC_f142d.dir/build
-gmake[1]: Entering directory '/home/santosh/gspc-res/build_dir/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_f142d.dir/src.cxx.o
-/usr/bin/c++ -DCXX_COMPILER_SUPPORTS__Wextra_semi_stmt  -Wall -Wextra -Werror    -Wextra-semi-stmt -std=gnu++17 -o CMakeFiles/cmTC_f142d.dir/src.cxx.o -c /home/santosh/gspc-res/build_dir/CMakeFiles/CMakeTmp/src.cxx
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_1b5f2/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_1b5f2.dir/build.make CMakeFiles/cmTC_1b5f2.dir/build
+gmake[1]: Entering directory '/scratch/gnawali/Try/gspc-res/build_dir/CMakeFiles/CMakeScratch/TryCompile-jVbjJG'
+Building CXX object CMakeFiles/cmTC_1b5f2.dir/src.cxx.o
+/usr/bin/c++ -DCXX_COMPILER_SUPPORTS__Wextra_semi_stmt  -Wall -Wextra -Werror    -Wextra-semi-stmt -std=gnu++17 -o CMakeFiles/cmTC_1b5f2.dir/src.cxx.o -c /scratch/gnawali/Try/gspc-res/build_dir/CMakeFiles/CMakeScratch/TryCompile-jVbjJG/src.cxx
 c++: error: unrecognized command-line option '-Wextra-semi-stmt'; did you mean '-Wextra-semi'?
-gmake[1]: *** [CMakeFiles/cmTC_f142d.dir/build.make:78: CMakeFiles/cmTC_f142d.dir/src.cxx.o] Error 1
-gmake[1]: Leaving directory '/home/santosh/gspc-res/build_dir/CMakeFiles/CMakeTmp'
-gmake: *** [Makefile:127: cmTC_f142d/fast] Error 2
-=======
-Change Dir: /scratch/gnawali/Try/gspc-res/build_dir/CMakeFiles/CMakeScratch/TryCompile-Rrws3h
-
-Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_2d4ab/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_2d4ab.dir/build.make CMakeFiles/cmTC_2d4ab.dir/build
-gmake[1]: Entering directory '/scratch/gnawali/Try/gspc-res/build_dir/CMakeFiles/CMakeScratch/TryCompile-Rrws3h'
-Building CXX object CMakeFiles/cmTC_2d4ab.dir/src.cxx.o
-/usr/bin/c++ -DCXX_COMPILER_SUPPORTS__Wextra_semi_stmt  -Wall -Wextra -Werror    -Wextra-semi-stmt -std=gnu++17 -o CMakeFiles/cmTC_2d4ab.dir/src.cxx.o -c /scratch/gnawali/Try/gspc-res/build_dir/CMakeFiles/CMakeScratch/TryCompile-Rrws3h/src.cxx
-c++: error: unrecognized command-line option '-Wextra-semi-stmt'; did you mean '-Wextra-semi'?
-gmake[1]: *** [CMakeFiles/cmTC_2d4ab.dir/build.make:78: CMakeFiles/cmTC_2d4ab.dir/src.cxx.o] Error 1
-gmake[1]: Leaving directory '/scratch/gnawali/Try/gspc-res/build_dir/CMakeFiles/CMakeScratch/TryCompile-Rrws3h'
-gmake: *** [Makefile:127: cmTC_2d4ab/fast] Error 2
->>>>>>> 0953350 (push to cipserv05)
+gmake[1]: *** [CMakeFiles/cmTC_1b5f2.dir/build.make:78: CMakeFiles/cmTC_1b5f2.dir/src.cxx.o] Error 1
+gmake[1]: Leaving directory '/scratch/gnawali/Try/gspc-res/build_dir/CMakeFiles/CMakeScratch/TryCompile-jVbjJG'
+gmake: *** [Makefile:127: cmTC_1b5f2/fast] Error 2
 
 
 Source file was:
 int main() { return 0; }
+

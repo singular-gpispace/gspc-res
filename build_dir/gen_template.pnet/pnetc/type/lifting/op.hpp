@@ -1,4 +1,4 @@
-// defined in [/home/santosh/gspc-res/template/workflow/template.xpnet:8:7]
+// defined in [/scratch/gnawali/Try/gspc-res/template/workflow/template.xpnet:8:7]
 #ifndef _PNETC_TYPE_lifting_OP
 #define _PNETC_TYPE_lifting_OP
 

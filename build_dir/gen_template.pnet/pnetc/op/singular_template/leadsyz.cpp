@@ -26,7 +26,7 @@ namespace pnetc
         , std::list<pnet::type::value::value_type>& OUT
         )
       {
-#line 256 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 256 "/scratch/gnawali/Try/gspc-res/template/workflow/template.xpnet"
 
             
             
