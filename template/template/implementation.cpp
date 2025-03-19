@@ -72,6 +72,9 @@ std::string singular_template_Init( std::string const& input) {
 
 
 
+
+
+
 NO_NAME_MANGLING
 
 matrix lcm_mod(ideal G) {
@@ -334,17 +337,19 @@ std::pair<int, lists> ALL_LEAD_GPI(leftv args) {
     lists temp = (lists)omAlloc0Bin(slists_bin);
    
     temp->Init(r);
-
+    lists Ld = NULL; //(lists)omAlloc0Bin(slists_bin);  // Initialize Ld
     for(int k = 0; k < r; k++) {
-        lists Ld = (lists)omAlloc0Bin(slists_bin);
+
+        
+         Ld = (lists)omAlloc0Bin(slists_bin);
        
         Ld->Init(4); // type token
         
         lists t = (lists)omAlloc0Bin(slists_bin);
       
         t->Init(2);
-        t->m[0].rtyp = STRING_CMD; t->m[0].data = strdup("generators");
-        t->m[1].rtyp = STRING_CMD; t->m[1].data = strdup("SchFrame");
+        t->m[0].rtyp = STRING_CMD; t->m[0].data = omStrDup("generators");
+        t->m[1].rtyp = STRING_CMD; t->m[1].data = omStrDup("SchFrame");
 
         Ld->m[0].rtyp = RING_CMD; Ld->m[0].data = currRing;
         Ld->m[1].rtyp = LIST_CMD; Ld->m[1].data = t;
@@ -363,7 +368,7 @@ std::pair<int, lists> ALL_LEAD_GPI(leftv args) {
         field_names->Init(r);
         for (int s = 0; s < r; s++) {
             field_names->m[s].rtyp = STRING_CMD;
-            field_names->m[s].data = strdup("generator");
+            field_names->m[s].data = omStrDup("generator");
            
         }
 
@@ -375,16 +380,19 @@ std::pair<int, lists> ALL_LEAD_GPI(leftv args) {
 
         LLT->m[2].rtyp = RING_CMD; LLT->m[2].data = currRing;
 
-        lists t0 = (lists)omAlloc0Bin(slists_bin);
+        // lists t0 = (lists)omAlloc0Bin(slists_bin);
       
-        t0->Init(r);
-        for (int s = 0; s < r; s++) {
-            t0->m[s].rtyp = LIST_CMD;
-            t0->m[s].data = lCopy(Ld);
-        }
-
-        LLT->m[3].rtyp = LIST_CMD;
-        LLT->m[3].data = t0;
+        // t0->Init(r);
+        // for (int s = 0; s < r; s++) {
+        //     t0->m[s].rtyp = LIST_CMD;
+        //     t0->m[s].data = lCopy(Ld);
+        // }
+//         omUpdateInfo();
+      
+//   std::cout << "used mem_SchFrame: " << om_Info.UsedBytes << std::endl;
+        
+        // LLT->m[3].rtyp = LIST_CMD;
+        // LLT->m[3].data = t0;
 
         temp->m[k].rtyp = LIST_CMD;
         temp->m[k].data = lCopy(Ld);
@@ -408,7 +416,7 @@ t->Init(r+1);
 
     // Append "total_number_generator"
    t->m[r].rtyp = STRING_CMD;
-   t->m[r].data = strdup("total_number_generator");
+   t->m[r].data = omStrDup("total_number_generator");
  
     LLT->m[1].rtyp = LIST_CMD;  
     LLT->m[1].data =t;
@@ -420,6 +428,7 @@ t->Init(r+1);
     for (int k = 0; k < r; k++) {
         final_data->m[k].rtyp = LIST_CMD;
         final_data->m[k].data = temp->m[k].data;  // Transfer data from temp
+        temp->m[k].data = NULL; temp->m[k].rtyp=DEF_CMD;
     }
 
     final_data->m[r].rtyp = INT_CMD;
@@ -427,6 +436,10 @@ t->Init(r+1);
 
     LLT->m[3].rtyp = LIST_CMD;
     LLT->m[3].data = final_data;
+       // Clean up sM,Ld and temp
+     
+       omFreeBin(Ld, slists_bin);
+       temp->Clean(currRing);
 
     return {r, LLT};  // Return success state and LLT
 }
@@ -490,6 +503,7 @@ std::tuple<std::vector<std::string>, int, long> singular_template_ALL_LEAD(std::
     auto end_computation = std::chrono::high_resolution_clock::now();
   auto computation_time =std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - start_computation).count();
    total_generator = lSize(u); // Assuming u contains the computed generators
+   u->Clean(currRing);
    auto total_runtime=computation_time;
     // std::cout << "total_runtime_SchFrame:=" << total_runtime<<" "<<"nanoseconds"<< std::endl;
   return {vec, total_generator,total_runtime};
@@ -559,35 +573,35 @@ std::pair<int, lists> LEAD_GPI(leftv args) {
     LLT->Init(4); // Initialize with 4 fields
     lists temp = (lists)omAlloc0Bin(slists_bin);
     temp->Init(r);
+
     ideal sM = idInit(c, r0);  // Initialize the smatrix
-    lists Ld = (lists)omAlloc0Bin(slists_bin);  // Initialize Ld
-    Ld->Init(4);  // Initialize with 4 fields
-    int k=0;
-    for (k = 0; k < r; k++) {
-          // Create a new token Ld
-          id_Delete(&sM, currRing);  // Delete the existing sM
-          sM = idInit(c, r0);        // Reinitialize sM
+    lists Ld =nullptr; //(lists)omAlloc0Bin(slists_bin);  // Initialize Ld
   
-          // omUpdateInfo();
-          // std::cout << "used mem: " << om_Info.UsedBytes << std::endl;
+    for (int k = 0; k < r; k++) {
+        // Create a new token Ld
+      id_Delete(&sM, currRing);  // Delete the existing sM
+        sM = idInit(c, r0);        // Reinitialize sM
+
+//         omUpdateInfo();
+//         if(k==5){
+//   std::cout << "used mem: " << om_Info.UsedBytes << std::endl;
+//         }
       
-      
-         // Reset Ld for the current iteration (without reallocating)
-         omFreeBin(Ld, slists_bin);  // Free the existing Ld
-         Ld = (lists)omAlloc0Bin(slists_bin);  // Reinitialize Ld
-         Ld->Init(4);  // Initialize with 4 fields
+    
+       Ld = (lists)omAlloc0Bin(slists_bin);  // Reinitialize Ld
+       Ld->Init(4);  // Initialize with 4 fields
 
         lists t = (lists)omAlloc0Bin(slists_bin);
         t->Init(2);
-        t->m[0].rtyp = STRING_CMD; t->m[0].data = strdup("generators");
-        t->m[1].rtyp = STRING_CMD; t->m[1].data = strdup("Sparse_LeadSyz_matrix");
+        t->m[0].rtyp = STRING_CMD; t->m[0].data = omStrDup("generators");
+        t->m[1].rtyp = STRING_CMD; t->m[1].data = omStrDup("Sparse_LeadSyz_matrix");
 
         Ld->m[1].rtyp = LIST_CMD; Ld->m[1].data = t;
         Ld->m[0].rtyp = RING_CMD; Ld->m[0].data = currRing;
         Ld->m[2].rtyp = RING_CMD; Ld->m[2].data = currRing;
          
          
-         ideal sM = idInit(c, r0);
+       
         // matrix sM = mpNew(r0, c);
         poly s_lift = (poly)LT->m[k]; // Retrieve the lifted polynomial
         //  std::cout << "#s_lift:=" <<pString(s_lift)<< std::endl;
@@ -637,13 +651,13 @@ sM->m[k]=C;
 
         Ld->m[3].rtyp = LIST_CMD; 
         Ld->m[3].data = t;
-
+       
         // Set fieldnames[k] to "generator"
         lists field_names = (lists)omAlloc0Bin(slists_bin);
         field_names->Init(r);
         for (int s = 0; s < r; s++) {
             field_names->m[s].rtyp = STRING_CMD;
-            field_names->m[s].data = strdup("generator");
+            field_names->m[s].data = omStrDup("generator");
         }
 
         LLT->m[0].rtyp = RING_CMD; 
@@ -656,19 +670,22 @@ sM->m[k]=C;
         LLT->m[2].data = currRing;
 
         // Set data for LLT
-        lists t0 = (lists)omAlloc0Bin(slists_bin);
-        t0->Init(r);
-        for (int s = 0; s < r; s++) {
-            t0->m[s].rtyp = LIST_CMD;
-            t0->m[s].data = lCopy(Ld);
-        }
+        // lists t0 = (lists)omAlloc0Bin(slists_bin);
+        // t0->Init(r);
+        // for (int s = 0; s < r; s++) {
+        //     t0->m[s].rtyp = LIST_CMD;
+        //     t0->m[s].data = lCopy(Ld);
+        // }
+
         temp->m[k].rtyp = LIST_CMD;
         temp->m[k].data = lCopy(Ld);
-
-           // Clean up temporary lists
-           omFreeBin(t, slists_bin);
-           omFreeBin(field_names, slists_bin);
-           omFreeBin(t0, slists_bin);
+        pDelete(&Ci);
+        pDelete(&C1);
+      
+         // Clean up temporary lists
+         omFreeBin(t, slists_bin);
+         omFreeBin(field_names, slists_bin);
+        //  omFreeBin(t0, slists_bin);
     }
 
     // Prepare the final field names
@@ -681,7 +698,7 @@ sM->m[k]=C;
 
     // Append "total_number_generator"
     final_field_names->m[r].rtyp = STRING_CMD;
-    final_field_names->m[r].data = strdup("total_number_generator");
+    final_field_names->m[r].data = omStrDup("total_number_generator");
     LLT->m[1].rtyp = LIST_CMD;  
     LLT->m[1].data = final_field_names;
 
@@ -691,6 +708,8 @@ sM->m[k]=C;
     for (int k = 0; k < r; k++) {
         final_data->m[k].rtyp = LIST_CMD;
         final_data->m[k].data = temp->m[k].data;  // Transfer data from temp
+        temp->m[k].data = NULL; temp->m[k].rtyp=DEF_CMD;
+
     }
 
     final_data->m[r].rtyp = INT_CMD;
@@ -699,9 +718,10 @@ sM->m[k]=C;
     LLT->m[3].rtyp = LIST_CMD;
     LLT->m[3].data = final_data;
 
-       // Clean up sM and Ld
-       id_Delete(&sM, currRing);
-       omFreeBin(Ld, slists_bin);
+       // Clean up sM,Ld and temp
+    id_Delete(&sM, currRing);
+    omFreeBin(Ld, slists_bin);
+    temp->Clean(currRing);
 
     return {r, LLT};  // Return success state and LLT
 }
@@ -766,8 +786,8 @@ std::tuple<std::vector<std::string>, int,  long> singular_template_LEAD(const st
     // // Iterate through each element of the outer list
      //auto start_serialize = std::chrono::high_resolution_clock::now();
       // std::cout<<"GPI_LEADSYZ_tokens="<<lSize(u)<< std::endl;
-     
-    for(int i (0); i<lSize(u); i++)
+      total_generator  = lSize(u); 
+    for(int i (0); i<total_generator; i++)
 
   { 
     //std::cout<<"size of u:"<<lSize(u)+1<<std::endl;
@@ -775,7 +795,8 @@ std::tuple<std::vector<std::string>, int,  long> singular_template_LEAD(const st
     
     // std::cout<<"LEADSYZ:="<<Outname<< std::endl;
     vec.push_back(Outname);
-  } 
+  }  // Free memory after usage
+ u->Clean(currRing);
   auto end_computation = std::chrono::high_resolution_clock::now();
    auto computation_time =std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - start_computation).count();
   //auto end_serialize = std::chrono::high_resolution_clock::now();
@@ -787,7 +808,7 @@ auto total_runtime=computation_time;
 
 
 //  std::cout << "total_runtime_LeadSYZ:=" << total_runtime<<" "<<"nanoseconds"<< std::endl;
-   total_generator = lSize(u); // Assuming u contains the computed generators
+  // Assuming u contains the computed generators
 
   return {vec, total_generator, total_runtime};
 
@@ -1154,7 +1175,19 @@ int coM2(ideal f, poly s, poly t, lists J, int k) { //poly s and poly t are sing
 }
 
 
-
+poly phi(poly s, ideal f)
+{
+ 
+ poly g = NULL;
+  poly lm_s = pHead(s);
+  pSetComp(lm_s,0);
+  pSetmComp(lm_s);
+  int g1= p_GetComp(s,currRing);
+     
+  
+  g=pp_Mult_qq(lm_s,f->m[g1-1],currRing);//g:=psi(s)
+  return(g);
+}
 
 NO_NAME_MANGLING
 //First Level LiftTree
@@ -1170,15 +1203,10 @@ lists  liftTree(ideal f, poly s) { //poly s is singular vector
     int q = 0;
    
     
-    poly lm_s = pHead(s); // Get the leading monomial of s including coefficient
-   
-    pSetComp(lm_s,0);
-    pSetmComp(lm_s);
-      
-    int g1= p_GetComp(s,currRing);
-     
   
-    g=pp_Mult_qq(lm_s,f->m[g1-1],currRing);//g:=psi(s)
+   g= phi(pCopy(s),idCopy(f));//g:=psi(s)
+  
+  
      //std::cout<<"g=psi(s)" << pString(g) <<": s="<<pString(s)<<std::endl;
     poly g_copy = pCopy(g);
     poly lOT=LOT(g_copy, f);//poly T0 = LOT(g, f); 
@@ -1186,7 +1214,7 @@ lists  liftTree(ideal f, poly s) { //poly s is singular vector
      //poly T0 = g-LOT(g, f); 
     poly T0=p_Sub(pCopy(g),pCopy(lOT),currRing);
     //std::cout << "g-LOT_in LIFT: " << pString(T0) << std::endl;
-    lists T=pOLY_List(pCopy(T0));  //lists T = (lists)pOLY_List(T0)->Data(); 
+    lists T=pOLY_List(T0);  //lists T = (lists)pOLY_List(T0)->Data(); 
     
     poly m1 = NULL;
     poly m = NULL;
@@ -1206,11 +1234,11 @@ lists  liftTree(ideal f, poly s) { //poly s is singular vector
 
       TT->Init(t_size); // Initialize TT with size t_size
     
-    
+        poly s_v = NULL;//vector s_v
   
     for ( k = 0; k < t_size; k++) {
         poly t = (poly)T->m[k].Data();// poly t=T[k]
-       poly s_v = NULL;//vector s_v
+   
        //std::cout << "t in LIFT:"<<pString(t)<< ": given leadsyz:s="<<pString(s)<<std::endl;
         for (q = 0; q < r; q++) {
         
@@ -1224,17 +1252,17 @@ lists  liftTree(ideal f, poly s) { //poly s is singular vector
             if (c == TRUE) {
                   m1=pp_Divide(t,pHead(f->m[q]), currRing);
                  
-                   m = pCopy(m1);//m=m1;
+                   m = m1;//m=m1;
                    p_SetComp(m,q+1,currRing);
                    p_SetmComp(m,currRing);
-                   s_v=pCopy(m);
+                   s_v=m;
                //std::cout << "s_v in LIFT_COM:"<<pString(s_v)<<":corresponding t="<<pString(t)<< ": given leadsyz:s="<<pString(s)<<std::endl;
                 C = coM(f, s, s_v);
                  //std::cout << "s_v in LIFT_COM:"<<pString(s_v)<<":corresponding t="<<pString(t)<< ": given leadsyz:s="<<pString(s)<<"com c="<<C<<std::endl;
                 if(C == 1) {
                   
                    TT->m[k].rtyp = VECTOR_CMD;
-                   TT->m[k].data=pCopy(s_v);  //TT[cl]=m*f[lambda]
+                   TT->m[k].data=s_v;  //TT[cl]=m*f[lambda]
                   
                     
                     break;
@@ -1273,18 +1301,7 @@ lists liftTree2(ideal f, poly s, lists J, int level) {
 
  
    
-   // number lc_s = leadcoef(s);
-    poly lm_s =  pHead(s); //leading monomial including coefficient
-   
-   
-    pSetComp(lm_s,0);
-    pSetmComp(lm_s);
-    int g1= p_GetComp(s,currRing);
-
-   
-        
-    
-  g = pp_Mult_qq(lm_s, f->m[g1-1],currRing);//g:=psi(s)
+    g= phi(pCopy(s),idCopy(f));//g:=psi(s)
 
  // std::cout<<"g=psi(s)in LIFT2" << pString(pCopy(g)) <<std::endl;
   poly g_copy = pCopy(g);
@@ -1350,10 +1367,10 @@ lists liftTree2(ideal f, poly s, lists J, int level) {
                if (d==TRUE) {
                    //std::cout << "bool d in LIFT2:"<<d<< std::endl;
                    m1 = pp_Divide(pHead(t), pHead(f0->m[lambda]), currRing);
-                   m = pCopy(m1);//m=m1;
+                   m = m1;//m=m1;
                    p_SetComp(m,lambda+1,currRing);
                    p_SetmComp(m,currRing);
-                   s_v=pCopy(m);
+                   s_v=m;
    
               
                       int c= coM2(f0, s, s_v, J,level);
@@ -1361,7 +1378,7 @@ lists liftTree2(ideal f, poly s, lists J, int level) {
                        {
                      //std::cout <<"in LIFT2 s="<<pString(s)<<":correspond t="<<pString(t)<< ":found s_v=:"<<pString(s_v)<< std::endl;
                       TT->m[k].rtyp = VECTOR_CMD;
-                      TT->m[k].data=pCopy(s_v);;  //TT[cl]=m*f[lambda]
+                      TT->m[k].data=s_v;;  //TT[cl]=m*f[lambda]
                    // std::cout <<"in LIFT2 s="<<pString(s)<<":correspond t="<<pString(t)<< ":found s_v=:"<<pString(s_v)<< std::endl;
   
                     break;
@@ -1470,30 +1487,30 @@ std::pair<int, lists> LIFT_GPI(leftv args) {
 
         r = lSize(lL) + 1;
     }
-
+        // std::cout << "#LIFT:=" <<r<< std::endl;
     // Prepare the LLT token
     lists LLT = (lists)omAlloc0Bin(slists_bin);
     LLT->Init(4); // Initialize with 4 fields
     lists temp = (lists)omAlloc0Bin(slists_bin);
     temp->Init(r);
 
-    lists Ld = (lists)omAlloc0Bin(slists_bin);
-    Ld->Init(4); // Initialize with 4 fields
+    lists Ld = NULL;
+    // Iterate to fill in data
     ideal sM = idInit(c, r0);
-    int k=0;
-    for (k = 0; k < r; k++) {
-     
+    for (int k = 0; k < r; k++) {
+
         id_Delete(&sM, currRing);  // Delete the existing sM
         sM = idInit(c, r0);  
         // Create a new token Ld
-        omFreeBin(Ld, slists_bin);  // Free the existing Ld
+     
         Ld = (lists)omAlloc0Bin(slists_bin);  // Reinitialize Ld
         Ld->Init(4);  // Initialize with 4 fields
 
+
         lists t = (lists)omAlloc0Bin(slists_bin);
         t->Init(2);
-        t->m[0].rtyp = STRING_CMD; t->m[0].data = strdup("generators");
-        t->m[1].rtyp = STRING_CMD; t->m[1].data = strdup("Sparse_matrix_Lift");
+        t->m[0].rtyp = STRING_CMD; t->m[0].data = omStrDup("generators");
+        t->m[1].rtyp = STRING_CMD; t->m[1].data = omStrDup("Sparse_matrix_Lift");
 
         Ld->m[1].rtyp = LIST_CMD; Ld->m[1].data = t;
         Ld->m[0].rtyp = RING_CMD; Ld->m[0].data = currRing;
@@ -1501,7 +1518,7 @@ std::pair<int, lists> LIFT_GPI(leftv args) {
 
       
   
-         ideal sM = idInit(c, r0);
+      
         // matrix sM = mpNew(r0, c);
        poly s_lift = (poly)lL->m[k].Data(); // Retrieve the lifted polynomial
         int l_k = p_GetComp(s_lift, currRing);
@@ -1564,13 +1581,13 @@ C=p_Add_q(C, pCopy(C1), currRing);
 
         Ld->m[3].rtyp = LIST_CMD; 
         Ld->m[3].data = t;
-
+      
         // Set fieldnames[k] to "generator"
         lists field_names = (lists)omAlloc0Bin(slists_bin);
         field_names->Init(r);
         for (int s = 0; s < r; s++) {
             field_names->m[s].rtyp = STRING_CMD;
-            field_names->m[s].data = strdup("generator");
+            field_names->m[s].data = omStrDup("generator");
         }
 
         LLT->m[0].rtyp = RING_CMD; 
@@ -1583,19 +1600,26 @@ C=p_Add_q(C, pCopy(C1), currRing);
         LLT->m[2].data = currRing;
 
         // Set data for LLT
-        lists t0 = (lists)omAlloc0Bin(slists_bin);
-        t0->Init(r);
-        for (int s = 0; s < r; s++) {
-            t0->m[s].rtyp = LIST_CMD;
-            t0->m[s].data = lCopy(Ld);
-        }
+        // lists t0 = (lists)omAlloc0Bin(slists_bin);
+        // t0->Init(r);
+        // for (int s = 0; s < r; s++) {
+        //     t0->m[s].rtyp = LIST_CMD;
+        //     t0->m[s].data = lCopy(Ld);
+        // }
         temp->m[k].rtyp = LIST_CMD;
         temp->m[k].data = lCopy(Ld);
-
-         // Clean up temporary lists
+        pDelete(&Ci);
+        pDelete(&C1);
+     
+        // omUpdateInfo();
+        // if(k==r-1){
+        //   std::cout << "used mem_LIFT: " << om_Info.UsedBytes << std::endl;
+        // }
+  
+        //  // Clean up temporary lists
          omFreeBin(t, slists_bin);
          omFreeBin(field_names, slists_bin);
-         omFreeBin(t0, slists_bin);
+        //  omFreeBin(t0, slists_bin);
     }
 
     // Prepare the final field names
@@ -1608,7 +1632,7 @@ C=p_Add_q(C, pCopy(C1), currRing);
 
     // Append "total_number_generator"
     final_field_names->m[r].rtyp = STRING_CMD;
-    final_field_names->m[r].data = strdup("total_number_generator");
+    final_field_names->m[r].data = omStrDup("total_number_generator");
     LLT->m[1].rtyp = LIST_CMD;  
     LLT->m[1].data = final_field_names;
 
@@ -1618,6 +1642,7 @@ C=p_Add_q(C, pCopy(C1), currRing);
     for (int k = 0; k < r; k++) {
         final_data->m[k].rtyp = LIST_CMD;
         final_data->m[k].data = temp->m[k].data;  // Transfer data from temp
+        temp->m[k].data=NULL;  temp->m[k].rtyp=DEF_CMD;
     }
 
     final_data->m[r].rtyp = INT_CMD;
@@ -1626,10 +1651,13 @@ C=p_Add_q(C, pCopy(C1), currRing);
     LLT->m[3].rtyp = LIST_CMD;
     LLT->m[3].data = final_data;
 
-      // Clean up sM and Ld
-      id_Delete(&sM, currRing);
-      omFreeBin(Ld, slists_bin);
-
+       // Clean up sM,Ld and temp
+    id_Delete(&sM, currRing);
+    // omFreeBin(final_data, slists_bin);
+    omFreeBin(Ld, slists_bin);
+    temp->Clean(currRing);
+    lL->Clean(currRing);
+  
     return {r, LLT};  // Return success state and LLT
 }
 
@@ -1718,8 +1746,10 @@ if (std::filesystem::exists(oldPath)) {
         // std::cout << " Outname:LIFT2 " << Outname<< std::endl;
         vec.push_back(Outname);
     }
+    // Free memory after usage
 
     total_generator = lSize(u);  // Assuming u contains the computed generators
+    u->Clean(currRing);
     auto end_computation = std::chrono::high_resolution_clock::now();
     auto computation_time =std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - start_computation).count();
     auto total_runtime=computation_time;
@@ -1748,17 +1778,7 @@ lists oneSublift(ideal f, poly s)
     int k = 0;
     int q = 0;
     
-   //For s= c*x^a*gen(i);
-   //poly lm_s=c*x^a;
-    poly lm_s = pHead(s); // Get the leading monomial of s including coefficient
-    pSetComp(lm_s,0);
-    pSetmComp(lm_s);
-
-    int g1= p_GetComp(s,currRing);
-     
-    //std::cout << "GetComp: " << g1 << std::endl;
-    //std::cout<<"f[g1]=" << pString(f->m[g1-1]) <<std::endl;
-    h=pp_Mult_qq(lm_s,f->m[g1-1],currRing); //h=lm_s*f[g1]
+    h= phi(pCopy(s),idCopy(f));//h:=psi(s)
     //std::cout << "psi(s): " << h << std::endl;
      //std::cout<<"After _f[g1]=" << pString(f->m[g1-1]) <<std::endl;
 
@@ -1776,8 +1796,8 @@ lists oneSublift(ideal f, poly s)
 
     //std::cout << "g-LOT: " << pString(T0) << std::endl;
 
-    lists T=pOLY_List(pCopy(T0)); 
-   
+    lists T=pOLY_List(T0); 
+    // pDelete(&g_copy); 
     // std::cout << "Input_pOLY_LIST: "<< std::endl;
     // for(int k=0; k<lSize(T)+1; k++){
     //     poly lm=(poly)T->m[k].Data();
@@ -1791,7 +1811,7 @@ lists oneSublift(ideal f, poly s)
     
     poly m1 = NULL;
     poly m = NULL;
-    poly s_v = NULL;//vector s_v
+    // poly s_v = NULL;//vector s_v
     //int C = 0;
     //int cl = 0;
     int t_size =lSize(T) + 1;
@@ -1838,13 +1858,13 @@ lists oneSublift(ideal f, poly s)
             //m1 = p_PolyDiv(t, lead_terms[q], currRing); 
             m1=pp_Divide(t,pHead(f->m[q]), currRing);
                  
-            m = pCopy(m1); //m=m1;
+            m = m1; //m=m1;
             p_SetComp(m,q+1,currRing);
             p_SetmComp(m,currRing);
-            s_v=pCopy(m);
+            // s_v=pCopy(m);
             //std::cout << "vector s_v in SubLIFT:"<<pString(s_v)<< std::endl;
             TT->m[k].rtyp = VECTOR_CMD;
-            TT->m[k].data = pCopy(s_v);
+            TT->m[k].data = m;
             //cl++;
               break;
           }
@@ -1870,17 +1890,13 @@ lists subLiftTree2(ideal f, poly s, lists J, int level) {
     // Get the ideal f0 from the list J at the current level
     ideal f0 = (ideal)J->m[level-1].Data();
     
-    // Get the leading monomial of s, including the coefficient
-    poly lm_s = pHead(s);
-    pSetComp(lm_s,0);
-    pSetmComp(lm_s);
-    // Get the component of the vector s
-    int g1 = p_GetComp(s, currRing);
+  
+  
 
-    // Multiply the leading monomial by the corresponding elements in f and f0
-    h = pp_Mult_qq(lm_s, f->m[g1-1], currRing);    // h = lm_s * f[g1]
-    H = pp_Mult_qq(lm_s, f0->m[g1-1], currRing);   // H = lm_s * f0[g1]
+   
+    h= phi(pCopy(s),idCopy(f));//h:=psi(s)
 
+    H= phi(pCopy(s),idCopy(f0));//H:=psi(s)
     // Subtract the head of H from h
     g = p_Sub(h, pHead(H), currRing); // g = h - lead(H)
     poly g_copy = pCopy(g);
@@ -1892,7 +1908,7 @@ lists subLiftTree2(ideal f, poly s, lists J, int level) {
 
     // Convert T0 into a list of vectors
     lists T = vector_List(T0);
-
+   
 
     //  std::cout << "Input_Vector_LIST: "<< std::endl;
     // for(int k=0; k<lSize(T)+1; k++){
@@ -1919,7 +1935,7 @@ lists subLiftTree2(ideal f, poly s, lists J, int level) {
     }                          // Initialize TT with size t_size
 
     // Initialize temporary variables
-    poly s_v = NULL;   // Temporary vector for storing the result
+    // poly s_v = NULL;   // Temporary vector for storing the result
     poly m = NULL;
     poly m1 = NULL;
     //int counter = 0;   // Counter to track the number of terms in TT
@@ -1946,14 +1962,14 @@ lists subLiftTree2(ideal f, poly s, lists J, int level) {
                     m1 = pp_Divide(pHead(t), pHead(f0->m[lambda]), currRing);
 
                     // Copy m1 to m and set its component
-                    m = pCopy(m1);
+                    m = m1;
                     p_SetComp(m, lambda+1, currRing);
                     p_SetmComp(m, currRing);
 
                     // Set s_v as m and store in TT
-                    s_v =pCopy(m);
+                    // s_v =pCopy(m);
                     TT->m[k].rtyp = VECTOR_CMD;
-                    TT->m[k].data = pCopy(s_v);
+                    TT->m[k].data = m;
                     //std::cout << "vector s_v in SubLIFT:2"<<pString(s_v)<< std::endl;
                    // counter++;  // Increment the counter
                     break;
@@ -2026,7 +2042,7 @@ std::pair<int, lists> SubLIFT_GPI(leftv args) {
         ideal f_copy = idCopy((ideal)(tmp->m[0].Data()));  // Create a deep copy of f
         poly s_copy = pCopy(s);  // Copy polynomial s to prevent modification
 
-        lL =oneSublift(f_copy, s_copy); // Call liftTree with copies
+        lL = oneSublift(f_copy, s_copy); // Call liftTree with copies
         idDelete(&f_copy);  // Clean up copy
         pDelete(&s_copy);    // Clean up polynomial copy
 
@@ -2047,66 +2063,83 @@ std::pair<int, lists> SubLIFT_GPI(leftv args) {
         r = lSize(lL) + 1;
     }
 
+    if (r == 0) {
+        // std::cerr << "Warning: lL is empty. Returning empty result." << std::endl;
+        
+        lists empty_list = (lists)omAlloc0Bin(slists_bin);
+        empty_list->Init(4);
+
+        empty_list->m[0].rtyp = RING_CMD;
+        empty_list->m[0].data = currRing;
+
+        // Initialize field names
+        lists field_names = (lists)omAlloc0Bin(slists_bin);
+        field_names->Init(1); // Initialize with 1 field
+        field_names->m[0].rtyp = STRING_CMD;
+        field_names->m[0].data = omStrDup("empty");
+
+        empty_list->m[1].rtyp = LIST_CMD;
+        empty_list->m[1].data = field_names;
+
+        empty_list->m[2].rtyp = RING_CMD;
+        empty_list->m[2].data = currRing;
+
+        // Create an empty list for `final_data`
+        lists final_data = (lists)omAlloc0Bin(slists_bin);
+        final_data->Init(1);
+        final_data->m[0].rtyp = INT_CMD;
+        final_data->m[0].data = (void*)(long)0;  // Indicate no generators found
+
+        empty_list->m[3].rtyp = LIST_CMD;
+        empty_list->m[3].data = final_data;
+
+        return {0, empty_list};
+    }
+
     // Prepare the LLT token
     lists LLT = (lists)omAlloc0Bin(slists_bin);
     LLT->Init(4); // Initialize with 4 fields
     lists temp = (lists)omAlloc0Bin(slists_bin);
     temp->Init(r);
-     // Allocate sM and Ld outside the loop
-     ideal sM = idInit(c, r0);  // Initialize the smatrix
-     lists Ld = (lists)omAlloc0Bin(slists_bin);  // Initialize Ld
-     Ld->Init(4);  // Initialize with 4 fields
-   int k=0;
-    for (k = 0; k < r; k++) {
 
+    // Allocate sM and Ld outside the loop
+    ideal sM = idInit(c, r0);  // Initialize the submodule
+    lists Ld = NULL;  // Initialize Ld
+    // std::cout << "#SubLIFT: " << r << std::endl;
+    for (int k = 0; k < r; k++) {
         id_Delete(&sM, currRing);  // Delete the existing sM
         sM = idInit(c, r0);  
-        omFreeBin(Ld, slists_bin);  // Free the existing Ld
+    
         Ld = (lists)omAlloc0Bin(slists_bin);  // Reinitialize Ld
         Ld->Init(4);  // Initialize with 4 fields
 
         lists t = (lists)omAlloc0Bin(slists_bin);
         t->Init(2);
-        t->m[0].rtyp = STRING_CMD; t->m[0].data = strdup("generators");
-        t->m[1].rtyp = STRING_CMD; t->m[1].data = strdup("Sparse_matrix_SubLIFT");
+        t->m[0].rtyp = STRING_CMD; t->m[0].data = omStrDup("generators");
+        t->m[1].rtyp = STRING_CMD; t->m[1].data = omStrDup("Sparse_matrix_SubLIFT");
 
         Ld->m[1].rtyp = LIST_CMD; Ld->m[1].data = t;
         Ld->m[0].rtyp = RING_CMD; Ld->m[0].data = currRing;
         Ld->m[2].rtyp = RING_CMD; Ld->m[2].data = currRing;
 
-      
-
-      
         // matrix sM = mpNew(r0, c);
-       poly s_lift = (poly)lL->m[k].Data(); // Retrieve the lifted polynomial
+        poly s_lift = (poly)lL->m[k].Data(); // Retrieve the lifted polynomial
         int l_k = p_GetComp(s_lift, currRing);
 
         poly lm = pHead(s_lift);
         pSetComp(lm, 0);
         pSetmComp(lm);
-        //  std::cout << "#colmn:=" <<colmn<< std::endl;
-        poly C=sM->m[colmn-1];
-        //  std::cout << "#poly C:=" <<pString(C)<< std::endl;
-        poly Ci=p_Vec2Poly(C,l_k,currRing);
-       
-         C= p_Sub(C,Ci,currRing);
-        //  std::cout << "after C-Ci:=" <<pString(C)<< std::endl;
-         poly C1= pCopy(p_Mult_q(pISet(-1), pCopy(lm), currRing));
-                   p_SetComp(C1,l_k,currRing);
-                   p_SetmComp(C1,currRing);
-                   
-//        std::cout << "Before addition C: " << pString(C) << std::endl;
-// std::cout << "Before addition C1: " << pString(C1) << std::endl;
 
-   C=p_Add_q(C, pCopy(C1), currRing);
+        poly C = sM->m[colmn - 1];
+        poly Ci = p_Vec2Poly(C, l_k, currRing);
+        C = p_Sub(C, Ci, currRing);
 
-// std::cout << "After addition C: " << pString(C) << std::endl;
-   sM->m[colmn-1]=C;
+        poly C1 = pCopy(p_Mult_q(pISet(-1), pCopy(lm), currRing));
+        p_SetComp(C1, l_k, currRing);
+        p_SetmComp(C1, currRing);
 
-
-
-
-
+        C = p_Add_q(C, pCopy(C1), currRing);
+        sM->m[colmn - 1] = C;
 
         // Prepare Ld data
         t = (lists)omAlloc0Bin(slists_bin);
@@ -2143,7 +2176,7 @@ std::pair<int, lists> SubLIFT_GPI(leftv args) {
         field_names->Init(r);
         for (int s = 0; s < r; s++) {
             field_names->m[s].rtyp = STRING_CMD;
-            field_names->m[s].data = strdup("generator");
+            field_names->m[s].data = omStrDup("generator");
         }
 
         LLT->m[0].rtyp = RING_CMD; 
@@ -2156,19 +2189,18 @@ std::pair<int, lists> SubLIFT_GPI(leftv args) {
         LLT->m[2].data = currRing;
 
         // Set data for LLT
-        lists t0 = (lists)omAlloc0Bin(slists_bin);
-        t0->Init(r);
-        for (int s = 0; s < r; s++) {
-            t0->m[s].rtyp = LIST_CMD;
-            t0->m[s].data = lCopy(Ld);
-        }
         temp->m[k].rtyp = LIST_CMD;
         temp->m[k].data = lCopy(Ld);
+        pDelete(&Ci);
+        pDelete(&C1);
+        omFreeBin(t, slists_bin);
+         omFreeBin(field_names, slists_bin);
+    //           omUpdateInfo();
+    //   if(k==r-1){
+    //     std::cout << "used mem_SubLIFT: " << om_Info.UsedBytes << std::endl;
+    //   }
 
-          // Clean up temporary lists
-          omFreeBin(t, slists_bin);
-          omFreeBin(field_names, slists_bin);
-          omFreeBin(t0, slists_bin);
+      
     }
 
     // Prepare the final field names
@@ -2181,7 +2213,7 @@ std::pair<int, lists> SubLIFT_GPI(leftv args) {
 
     // Append "total_number_generator"
     final_field_names->m[r].rtyp = STRING_CMD;
-    final_field_names->m[r].data = strdup("total_number_generator");
+    final_field_names->m[r].data = omStrDup("total_number_generator");
     LLT->m[1].rtyp = LIST_CMD;  
     LLT->m[1].data = final_field_names;
 
@@ -2191,6 +2223,7 @@ std::pair<int, lists> SubLIFT_GPI(leftv args) {
     for (int k = 0; k < r; k++) {
         final_data->m[k].rtyp = LIST_CMD;
         final_data->m[k].data = temp->m[k].data;  // Transfer data from temp
+        temp->m[k].data=NULL;  temp->m[k].rtyp=DEF_CMD;
     }
 
     final_data->m[r].rtyp = INT_CMD;
@@ -2199,14 +2232,15 @@ std::pair<int, lists> SubLIFT_GPI(leftv args) {
     LLT->m[3].rtyp = LIST_CMD;
     LLT->m[3].data = final_data;
 
-       // Clean up sM and Ld
-       id_Delete(&sM, currRing);
-       omFreeBin(Ld, slists_bin);
+    // Clean up sM and Ld
+    id_Delete(&sM, currRing);
+   
+    omFreeBin(Ld, slists_bin);
+    temp->Clean(currRing);  // Clean up temp list
+  lL->Clean(currRing);
 
     return {r, LLT};  // Return success state and LLT
 }
-
-
 
 
 
@@ -2257,7 +2291,7 @@ std::tuple<std::vector<std::string>, int, long> singular_template_SUBLIFT(const 
     auto start_computation = std::chrono::high_resolution_clock::now();
      
     // std::string function_name = "SubLIFT_GPI";
-     //std::cout<<"function_name_LIFT:"<<function_name<< std:: endl;
+    //  std::cout<<"function_name_LIFT:"<<function_name<< std:: endl;
     // out = call_user_proc(function_name, needed_library, args);
      out = SubLIFT_GPI(args.leftV());  // Call  SubLIFT_GPI with the raw pointer
   //std::cout << "SubLIFT_Runtime: " << computation_time << " milliseconds" << std::endl;
@@ -2317,29 +2351,31 @@ std::tuple<std::vector<std::string>, int, long> singular_template_SUBLIFT(const 
   
 
      std::vector<std::string> vec;
-     int total_generator;
+     int total_generator=0;
     // Extract list from the output
     lists u=NULL;
-    u = (lists)out.second->m[3].CopyD();
+    // u = (lists)out.second->m[3].CopyD();
+   
+        u = (lists)out.second->m[3].CopyD();
+    
     // u= (lists)out.second->m[3].Data();
     //std::cout<<"m[3]:"<< out.second->m[3].Data()<< std::endl;
     //std::cout<<"ListOutside:"<<lSize(u)<< std::endl;
     if (lSize(u)==0)
      {
+        u->Clean(currRing);
     //std::cerr << "Error: SubLIFT_GPI returned a null list." << std::endl;
    ///return std::make_tuple(std::vector<std::string>(), 0, 0);// Early exit with default values
    return{{},0,0};
     } 
     
        //std::cerr << "Size of SubLIFT Token:" << lSize(u)+1<<std::endl;
-    // Iterate through each element of the list
-      for (int i = 0; i < lSize(u); i++)
-      {
-        auto  Outname=serialize((lists)u->m[i].Data(), base_filename);
+       total_generator = lSize(u);
+       for (int i = 0; i < total_generator; i++) {
+           vec.push_back(serialize((lists)u->m[i].Data(), base_filename));
+       }
+   
     
-      // std::cout<<"serialized:"<<Outname<< std::endl;
-        vec.push_back(Outname);
-     }
     auto end_computation = std::chrono::high_resolution_clock::now();
     auto computation_time =std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - start_computation).count();
     
@@ -2355,11 +2391,15 @@ std::tuple<std::vector<std::string>, int, long> singular_template_SUBLIFT(const 
   
    auto total_runtime=computation_time;
 //    std::cout << " total time_SubLIFT:= " << total_runtime<< std::endl;
-   total_generator = lSize(u); // Assuming u contains the computed generators
+ 
+  // Free memory after usage
+ u->Clean(currRing);
 
   return {vec, total_generator, total_runtime};
 
 }
+
+
 
 
 
@@ -2493,15 +2533,3 @@ std::pair<std::string, long> singular_template_reduce(const std::string& Red,
 
     return {out_filename, computation_time};
 }
-
-
-
-
-
-
-
-
-
-
-
-

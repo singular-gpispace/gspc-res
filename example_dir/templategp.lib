@@ -1221,7 +1221,7 @@ proc SubLIFT_GPI(token Token,token tok, token TT)
    def Lb=TT.data[5]; //Error here?
     int colmn = TT.data[4]; //column
     
-    string path = "/home/santosh/gspc-res/example_dir/temp/";  // Ensure the path ends with a "/"
+    string path = "/scratch/gnawali/Try/gspc-res/example_dir/temp/";  // Ensure the path ends with a "/"
     string filename = "SubLIFT.ssi";
      link l0 = "ssi:w " + path + filename;
             // write(l0, Bl, "matrix");
