@@ -1,10 +1,10 @@
 
 
- LIB "templategspc.lib";
+LIB "templategspc.lib";
 //LIB "/home/santosh/gspc-res/template/template/LIB/templategspc.lib";
 
 LIB "random.lib";
-  LIB "modstd.lib"; //testing if it is necessary
+LIB "modstd.lib"; //testing if it is necessary
   //following from Leadsyz;LIB "general.lib";LIB "monomialideal.lib"; LIB "homolog.lib";
    	
 
@@ -12,15 +12,26 @@ LIB "random.lib";
     
 // Configure GPI-Space	
 configToken gc = configure_gspc();
-gc.options.tmpdir = "/home/santosh/gspc-res/example_dir/temp";
-// gc.options.tmpdir = "/dev/shm/gnawali/temp";
+// gc.options.tmpdir = "/home/santosh/gspc-res/example_dir/temp";
+gc.options.tmpdir = "/dev/shm/gnawali/temp";
+
+// mkdir -p /dev/shm/gnawali/temp
+// ls -lh /dev/shm/gnawali/temp
+
+// rm -rf /dev/shm/gnawali/temp/*
+// find /dev/shm/gnawali/temp -type d | wc -l
+//ls -1 /dev/shm/gnawali/temp | wc -l
+
 
 gc.options.nodefile = "nodefile";
 gc.options.procspernode = 6;
 gc.options.loghost = "schipp";
-// gc.options.logport = 9876;
+gc.options.logport = 9876;
 
-<"ideal_M2.sing";
+// <"ideal_M2.sing";
+
+
+
  //Example from Singular book
 //  ring R=0, (x,y,z), dp;
 //  ideal J1=y*z+z^2,y^2 + x*z,x*y+z^2,z^3,x*z^2,x^2*z;
@@ -116,15 +127,15 @@ gc.options.loghost = "schipp";
 
 
 // Example 6 freezes for( for timing profilings)
-// ring R=0, (x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10),dp;
-// matrix m[3][4]=x0,x1,x2,x3,x4,x5,x1,x2,x4,x5,x3,x6;
-// ideal rNC=x0,x1,x2,x4,x5,x6,x3,x7,x8,x9,x10;
-// ideal I=randomid(maxideal(1),8,7);
-//  map f=R,I[1..8];
-// ideal RNC=f(rNC);
-// ideal J=std(RNC);
-// print("ideal J=");
-// J;
+ring R=0, (x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10),dp;
+matrix m[3][4]=x0,x1,x2,x3,x4,x5,x1,x2,x4,x5,x3,x6;
+ideal rNC=x0,x1,x2,x4,x5,x6,x3,x7,x8,x9,x10;
+ideal I=randomid(maxideal(1),8,7);
+ map f=R,I[1..8];
+ideal RNC=f(rNC);
+ideal J=std(RNC);
+print("ideal J=");
+J;
 
 //ForSingular
 // LIB "random.lib";
@@ -194,7 +205,6 @@ re;
 
 rtimer-t;
 print("timer");
-
 
 // Should Try
 // Define the polynomial ring

@@ -381,7 +381,7 @@ worker process (that is, the "inner" instances of SINGULAR).
   for (k = 1; k <=r; k++) {
     token Ld;
     Ld.fieldnames = list("generator", "Lead_Syz_Sparse_matrix");  
-    matrix sM[ro][size(LT)];
+    smatrix sM[ro][size(LT)];
     vector s_lift = LT[k];
     
     int l_k = leadexp(s_lift)[nvars(basering) + 1];
@@ -947,7 +947,7 @@ if(typeof(f)=="ideal"){
   for (k = 1; k <=r; k++) {
      token Ld;
     Ld.fieldnames = list("generator", "Sparse_matrix_Lift");  
-    matrix sM[r0][c];
+    smatrix sM[r0][c];
     
            
     vector s_lift = lL[k];
@@ -1161,14 +1161,14 @@ proc SubLIFT_GPI(token Token,token tok, token TT)
    def Lb=TT.data[5]; //Error here?
     int colmn = TT.data[4]; //column
     
-    string path = "/home/santosh/gspc-res/example_dir/temp/";  // Ensure the path ends with a "/"
-    string filename = "SubLIFT.ssi";
-     link l0 = "ssi:w " + path + filename;
-            // write(l0, Bl, "matrix");
-             write(l0, J, "SchFrame");
-              write(l0, f, "INPUT");
-              write(l0, Lb, "LeadSyz");
-             close(l0);
+    // string path = "/home/santosh/gspc-res/example_dir/temp/";  // Ensure the path ends with a "/"
+    // string filename = "SubLIFT.ssi";
+    //  link l0 = "ssi:w " + path + filename;
+    //         // write(l0, Bl, "matrix");
+    //          write(l0, J, "SchFrame");
+    //           write(l0, f, "INPUT");
+    //           write(l0, Lb, "LeadSyz");
+    //          close(l0);
 
 
 
@@ -1223,7 +1223,7 @@ if(typeof(f)=="ideal"){
   for (k = 1; k <=r; k++) {
      token Ld;
     Ld.fieldnames = list("generator", "Sparse_matrix_subLift");  
-    matrix sM[r0][c];
+    smatrix sM[r0][c];
     
            
     vector s_lift =lL[k];//added c_n
@@ -1343,6 +1343,53 @@ int r=size(f);
     smatrix temp[r][c]=J[k];
     C=C+temp;
 }
+
+   
+ 
+  //   write(l0,C,"reduce_gpi");
+  // close(l0);
+    token output;
+    output.fieldnames = list("generators","FirstSyz_matrix");
+   
+    output.data[1]=C;
+    output.data[2] = r;
+   
+    //print("q:column");
+    output.data[3]=c;
+  
+   
+   
+    return(output);
+}
+
+proc Add_GPI(token input, int N)
+"USAGE: reduce_GPI(input, Tok, tok);
+       RETURN: an token output containing a sum  of the two tokens Tok and tok.
+       NOTE  : The types token are defined . This procedure is intended to
+               be called as a transition procedure inside the worker process
+               (that is, the "inner" instances of SINGULAR).
+"          
+
+{
+    string path = "/home/santosh/gspc-res/example_dir/temp/";  // Ensure the path ends with a "/"
+   
+ def f=input.data[1];
+
+int r=size(f);
+smatrix C[r][8];
+for (int k=1; k<=N; k++){
+ string filename = "k.ssi";
+     link l0 = "ssi:w " + path + filename;
+     if(!l0){
+      continue;
+     }
+     token t=k.ssi;
+     smatrix sM[r][8]=t.data[2];
+     C=C+sM;
+}
+  
+        
+            
 
    
  

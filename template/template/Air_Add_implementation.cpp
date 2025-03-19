@@ -576,7 +576,7 @@ std::pair<int, lists> LEAD_GPI(leftv args) {
 
     ideal sM = idInit(c, r0);  // Initialize the smatrix
     lists Ld =nullptr; //(lists)omAlloc0Bin(slists_bin);  // Initialize Ld
-  
+     r=5;
     for (int k = 0; k < r; k++) {
         // Create a new token Ld
       id_Delete(&sM, currRing);  // Delete the existing sM

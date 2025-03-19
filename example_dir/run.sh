@@ -23,12 +23,21 @@ cp /home/santosh/gspc-res/install_dir/share/examples/templategp.lib /home/santos
 # Set GSPC_HOME
 export GSPC_HOME="/home/santosh/singular-gpispace/spack/opt/spack/linux-ubuntu22.04-skylake/gcc-11.4.0/gpi-space-24.12-ugaltunbzethad4p3szsepjqdbgthcch/"
 
-# Check if the package is available in Spack
-# spack find gpi-space@24.12 || { echo "Package gpi-space@24.12 not found. Installing..."; spack install gpi-space@24.12; }
-
-# Activate the Spack environment
-# spack env activate -p gpispace
+# Load GPI-Space
 spack load gpi-space@24.12 || { echo "Failed to load GPI-Space"; exit 1; }
 
-# Run Singular with the example script
-Singular example.sing ./run.sh
+
+Singular example.sing 
+# # Run Singular with GDB for debugging and show output in both terminal and file
+# echo "Running Singular inside GDB for debugging..."
+# gdb -ex run --args Singular example.sing 2>&1 | tee gdb_log.txt
+
+# # Display the GDB output location
+# echo "GDB session output saved to gdb_log.txt"
+
+# # Run Singular with Valgrind for memory leak detection
+# echo "Running Singular inside Valgrind for memory leak detection..."
+# valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose --log-file=valgrind_log.txt Singular example.sing 2>&1 | tee -a valgrind_log.txt
+
+# # Display the Valgrind output location
+# echo "Valgrind output saved to valgrind_log.txt"
