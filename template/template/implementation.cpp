@@ -18,6 +18,7 @@
 //for cached 
 #include <vector>
 #include <map>
+// #include <fstream>  // Add this to use std::ofstream
 #include <filesystem>
 #include <sstream>
 #include <string>
@@ -396,6 +397,9 @@ std::pair<int, lists> ALL_LEAD_GPI(leftv args) {
 
         temp->m[k].rtyp = LIST_CMD;
         temp->m[k].data = lCopy(Ld);
+          // Clean up temporary lists
+          omFreeBin(t, slists_bin);
+          omFreeBin(field_names, slists_bin);
     }
 
     // std::cout << "size of token Sch frame: After loop" << r << std::endl;
@@ -575,8 +579,8 @@ std::pair<int, lists> LEAD_GPI(leftv args) {
     temp->Init(r);
 
     ideal sM = idInit(c, r0);  // Initialize the smatrix
-    lists Ld =nullptr; //(lists)omAlloc0Bin(slists_bin);  // Initialize Ld
-  
+    lists Ld =NULL; //(lists)omAlloc0Bin(slists_bin);  // Initialize Ld
+
     for (int k = 0; k < r; k++) {
         // Create a new token Ld
       id_Delete(&sM, currRing);  // Delete the existing sM
@@ -2404,9 +2408,6 @@ std::tuple<std::vector<std::string>, int, long> singular_template_SUBLIFT(const 
 
 
 
-
-
-
 NO_NAME_MANGLING
 std::pair<std::string, long> singular_template_reduce(const std::string& Red, 
     unsigned long N,
@@ -2420,7 +2421,7 @@ std::pair<std::string, long> singular_template_reduce(const std::string& Red,
     std::filesystem::path basePath = std::filesystem::path(Red).parent_path();
     // std::cout << base_filename<< "base_filename" << std::endl;
     // std::cout <<Red<< "" << std::endl;
-    std::cout <<N<< "=:Reduce" << std::endl;
+    // std::cout <<N<< "=:Reduce" << std::endl;
     std::string ids = worker();
     std::pair<int, lists> Gb = deserialize(Red, ids);
 
@@ -2435,6 +2436,8 @@ std::pair<std::string, long> singular_template_reduce(const std::string& Red,
     poly vec = nullptr;
     leftv L = nullptr; leftv LL = nullptr;
     std::pair<int, lists> input_part;
+ 
+
     for (unsigned long  i = 1; i <= N; ++i) { // Iterate from 1 to N to match "1.ssi", "2.ssi", etc.
         // Construct the full path for i.ssi files within the same folder as Red
         std::string filename = (basePath / (std::to_string(i) + ".ssi")).string();
@@ -2479,7 +2482,7 @@ std::pair<std::string, long> singular_template_reduce(const std::string& Red,
           
            c = IDELEMS((ideal)L->Data());
         }
-        ideal A = idCopy((ideal)tmpL->m[1].Data());
+        ideal A = (ideal)tmpL->m[1].Data();
         // if (i %100==0) {
         //     auto start_addition = std::chrono::high_resolution_clock::now();
         //     if (C == nullptr) {
@@ -2507,13 +2510,13 @@ std::pair<std::string, long> singular_template_reduce(const std::string& Red,
         // }  
         if (C == nullptr) {
             C = idCopy(A);
-        } else {
-            ideal temp = idInit(IDELEMS(C), r);
-            temp = sm_Add(C, A, currRing);
-            idDelete(&C);
-            C = idCopy(temp);
-            idDelete(&temp);
         }
+        else {
+                ideal temp = sm_Add(C, A, currRing);
+                idDelete(&C);
+                C = temp; 
+            }
+        
         idDelete(&A);
 
         try {
@@ -2523,6 +2526,16 @@ std::pair<std::string, long> singular_template_reduce(const std::string& Red,
             std::cerr << "Failed to delete " << filename << ": " << e.what() << std::endl;
         }
     }
+   
+    // if(i % 100 == 0){
+    //     auto start_addition = std::chrono::high_resolution_clock::now();
+    //     ideal temp = sm_Add(C, A, currRing);
+    //     auto end_addition = std::chrono::high_resolution_clock::now();
+    //     auto addition_time = std::chrono::duration_cast<std::chrono::nanoseconds>(end_addition - start_addition).count();
+    //     std::cout << "Addition Time: " << addition_time << " at iteration " << i << std::endl;
+    //     idDelete(&C);
+    //     C = temp;
+    // }
 
     lists output = (lists)omAlloc0Bin(slists_bin);
     output->Init(4);
