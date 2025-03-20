@@ -2438,7 +2438,9 @@ std::pair<std::string, long> singular_template_reduce(const std::string& Red,
     std::pair<int, lists> input_part;
  
 
-    for (unsigned long  i = 1; i <= N; ++i) { // Iterate from 1 to N to match "1.ssi", "2.ssi", etc.
+    for (unsigned long i = N; i > 0; --i) {  
+        // Your code here  
+    // Iterate from 1 to N to match "1.ssi", "2.ssi", etc.
         // Construct the full path for i.ssi files within the same folder as Red
         std::string filename = (basePath / (std::to_string(i) + ".ssi")).string();
             // std::cout << "i:="<< i << std::endl;
@@ -2511,11 +2513,24 @@ std::pair<std::string, long> singular_template_reduce(const std::string& Red,
         if (C == nullptr) {
             C = idCopy(A);
         }
-        else {
-                ideal temp = sm_Add(C, A, currRing);
-                idDelete(&C);
-                C = temp; 
-            }
+    //     else {
+            
+    //           if(i % 100 == 0){
+    //     auto start_addition = std::chrono::high_resolution_clock::now();
+    //     ideal temp = sm_Add(C, A, currRing);
+    //     auto end_addition = std::chrono::high_resolution_clock::now();
+    //     auto addition_time = std::chrono::duration_cast<std::chrono::nanoseconds>(end_addition - start_addition).count();
+    //     std::cout << "Addition Time: " << addition_time << " at iteration " << i << std::endl;
+    //     idDelete(&C);
+    //     C = temp;
+    // } 
+    else {
+        ideal temp = sm_Add(C, A, currRing);
+        idDelete(&C);
+        C = temp; 
+    }
+             
+            
         
         idDelete(&A);
 
@@ -2527,15 +2542,7 @@ std::pair<std::string, long> singular_template_reduce(const std::string& Red,
         }
     }
    
-    // if(i % 100 == 0){
-    //     auto start_addition = std::chrono::high_resolution_clock::now();
-    //     ideal temp = sm_Add(C, A, currRing);
-    //     auto end_addition = std::chrono::high_resolution_clock::now();
-    //     auto addition_time = std::chrono::duration_cast<std::chrono::nanoseconds>(end_addition - start_addition).count();
-    //     std::cout << "Addition Time: " << addition_time << " at iteration " << i << std::endl;
-    //     idDelete(&C);
-    //     C = temp;
-    // }
+  
 
     lists output = (lists)omAlloc0Bin(slists_bin);
     output->Init(4);
