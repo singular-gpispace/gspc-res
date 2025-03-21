@@ -73,7 +73,7 @@ proc lcm_mod(module G) {
             t10 = leadmonomial(G[b]);
 
             if (i == j) {
-                l[a, b] = lcm(leadmonomial(G[a]), leadmonomial(G[b])) / lead(t10);
+                l[a, b] = lcm(leadmonomial(G[a]), leadmonomial(G[b])) / leadmonomial(t10);
             } else {
                 // If i is not equal to j, set l[a, b] to 0
                 l[a, b] = 0;
@@ -232,7 +232,7 @@ proc leadSyz(ideal f) {
 
     for (a = 1; a <= r; a++) {
         for (b = 1; b <= r; b++) {
-            m[a, b] = lcm(leadmonom(f[b]), leadmonom(f[a])) / lead(f[b]);
+            m[a, b] = lcm(leadmonom(f[b]), leadmonom(f[a])) / leadmonomial(f[b]);
         }
     }
 

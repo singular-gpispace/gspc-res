@@ -73,7 +73,7 @@ proc lcm_mod(module G) {
             t10 = leadmonomial(G[b]);
 
             if (i == j) {
-                l[a, b] = lcm(leadmonomial(G[a]), leadmonomial(G[b])) / lead(t10);
+                l[a, b] = lcm(leadmonomial(G[a]), leadmonomial(G[b])) / leadmonomial(t10);
             } else {
                 // If i is not equal to j, set l[a, b] to 0
                 l[a, b] = 0;
@@ -232,7 +232,7 @@ proc leadSyz(ideal f) {
 
     for (a = 1; a <= r; a++) {
         for (b = 1; b <= r; b++) {
-            m[a, b] = lcm(leadmonom(f[b]), leadmonom(f[a])) / lead(f[b]);
+            m[a, b] = lcm(leadmonom(f[b]), leadmonom(f[a])) / leadmonomial(f[b]);
         }
     }
 
@@ -1376,7 +1376,7 @@ proc Add_GPI(token input, int N)
  def f=input.data[1];
 
 int r=size(f);
-smatrix C[r][8];
+smatrix C;
 for (int k=1; k<=N; k++){
  string filename = "k.ssi";
      link l0 = "ssi:w " + path + filename;
@@ -1384,8 +1384,13 @@ for (int k=1; k<=N; k++){
       continue;
      }
      token t=k.ssi;
-     smatrix sM[r][8]=t.data[2];
-     C=C+sM;
+     smatrix sM=t.data[2];
+     if(C=="smatrix(0)"){
+      C=sM;
+     } else{
+      C=C+sM;
+     }
+    
 }
   
         
