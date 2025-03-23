@@ -1,4 +1,4 @@
-#include <pnetc/op/singular_template/reduce.hpp>
+#include <pnetc/op/singular_template/ADD.hpp>
 #include <string>
 #include <interface/template_interface.hpp>
 #include <util-generic/dynamic_linking.hpp>
@@ -11,7 +11,7 @@ namespace pnetc
   {
     namespace singular_template
     {
-      void reduce
+      void ADD
         ( const std::string& library_name
         , const std::string& base_filename
         , const std::string& input
@@ -19,7 +19,7 @@ namespace pnetc
         , std::string& s
         )
       {
-#line 941 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 940 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
              
                 auto computation_time = std::chrono::high_resolution_clock::now();

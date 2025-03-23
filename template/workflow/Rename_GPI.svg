@@ -1389,8 +1389,8 @@
 <!-- n12_modcall -->
 <g id="node116" class="node">
 <title>n12_modcall</title>
-<polygon fill="white" stroke="black" points="3187.9,-710 2988.9,-710 2988.9,-674 3187.9,-674 3187.9,-710"/>
-<text text-anchor="middle" x="3088.4" y="-688.3" font-family="Times,serif" font-size="14.00">singular_template.reduce</text>
+<polygon fill="white" stroke="black" points="3179.4,-710 2997.4,-710 2997.4,-674 3179.4,-674 3179.4,-710"/>
+<text text-anchor="middle" x="3088.4" y="-688.3" font-family="Times,serif" font-size="14.00">singular_template.ADD</text>
 </g>
 <!-- n13_condition -->
 <g id="node117" class="node">

@@ -91,9 +91,12 @@ std::string singular_template_Rename_File(const std::string&,int N,const std::st
 
 
 
+
+                                     
 NO_NAME_MANGLING
+
 std::pair<std::string, long> singular_template_ADD( std::string const&
-                                      ,unsigned long N
+                                      ,int const&  N
                                      , std::string const&
                                    
 						  , std::string const&

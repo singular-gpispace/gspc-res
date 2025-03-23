@@ -22,7 +22,7 @@ namespace pnetc
 #line 892 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
     
-    
+        std::cout << "N:= " <<N << "nanosecond" << std::endl;
   
       }
     }

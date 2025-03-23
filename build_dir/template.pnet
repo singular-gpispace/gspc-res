@@ -415,7 +415,7 @@ AAA=
 0
 
 AQAAAAAAAAA=
-4 Add1 0 17 singular_template 6 reduce 0 1 0 0 0 0 0 0 1 0 4 13 0
+4 Add1 0 17 singular_template 3 ADD 0 1 0 0 0 0 0 0 1 0 4 13 0
 
 BAAAAAAAAAA=
 5 input 0 0 6 string 0 15 0 0

@@ -1,5 +1,5 @@
-#ifndef _PNETC_OP_singular_template_reduce
-#define _PNETC_OP_singular_template_reduce
+#ifndef _PNETC_OP_singular_template_ADD
+#define _PNETC_OP_singular_template_ADD
 
 #include <string>
 
@@ -9,7 +9,7 @@ namespace pnetc
   {
     namespace singular_template
     {
-      void reduce
+      void ADD
         ( const std::string& library_name
         , const std::string& base_filename
         , const std::string& input

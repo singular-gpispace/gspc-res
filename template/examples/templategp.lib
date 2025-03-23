@@ -73,7 +73,7 @@ proc lcm_mod(module G) {
             t10 = leadmonomial(G[b]);
 
             if (i == j) {
-                l[a, b] = lcm(leadmonomial(G[a]), leadmonomial(G[b])) / leadmonomial(t10);
+                l[a, b] = lcm(leadmonomial(G[a]), leadmonomial(G[b])) / lead(t10);
             } else {
                 // If i is not equal to j, set l[a, b] to 0
                 l[a, b] = 0;
@@ -232,7 +232,7 @@ proc leadSyz(ideal f) {
 
     for (a = 1; a <= r; a++) {
         for (b = 1; b <= r; b++) {
-            m[a, b] = lcm(leadmonom(f[b]), leadmonom(f[a])) / leadmonomial(f[b]);
+            m[a, b] = lcm(leadmonom(f[b]), leadmonom(f[a])) / lead(f[b]);
         }
     }
 
@@ -1361,55 +1361,162 @@ int r=size(f);
    
     return(output);
 }
+// proc Add_GPI(token input, int N)
+// {
+//     def inputRing = basering;  // Save the input ring
+//     string path1 = "/home/santosh/gspc-res/example_dir/temp/";
+//     string filename = "Reduce.ssi";
+
+//     // Open a file for writing
+//     link l0 = "ssi:w " + path1 + filename;
+//     def f = input.data[1];  
+//     int r = size(f);        
+
+//     smatrix C;  // Initialize C
+
+//     write(l0, C, "C_initial");  // Log initial state of C
+
+//     int first_time = 0;  // Initialize first_time as 0 (false)
+//    int k=1;
+//     while(k <= N) {
+//         string file_k = string(k) + ".ssi";  
+//         link l = "ssi:r " + path1 + file_k;  
+
+//         if (status(l, "exists") == "no") {
+//             k = k + 1;  // Move to the next file if not found
+//             // continue;   // Skip to the next iteration
+//         }
+
+//         write(l0, file_k, "k.ssi");  
+
+//         def t = read(l);  //Read file
+//         close(l);  // Close  l after reading
+
+//         def nr = t.r_data;
+//         setring nr;
+
+//         write(l0, k, "k");
+//         smatrix sM = t.data[2];
+//         write(l0, sM, "smatrix");
+       
+//         write(l0, 1, "size_C_before");
+//         write(l0, size(sM), "size_sM");
+//         write(l0, inputRing, "inputRing");
+//         sM=fetch(inputRing,sM);
+//         // Logic to initialize or update C
+//         if (first_time == 0) {  
+//             write(l0, first_time, "first_time"); 
+//             write(l0, C, "C_in_if_loop"); 
+//             write(l0, sM, "sM_in_if_loop"); 
+            
+//             C = sM;  // Initialize C with sM
+//             write(l0, C, "smatrix_initial"); 
+//             first_time = 1;  // Set first_time to 1 (true) after initialization
+//         } else {
+//           // sM=fetch(inputRing,sM);
+//             C = C + sM;  
+//             write(l0, C, "smatrix_updated"); 
+//         }
+
+        
+        
+      
+//         write(l0, C, "size_C_after");
+
+//         // Clean up the ring data
+//         kill(nr);
+//         k=k+1;
+//     }
+
+//     close(l0); 
+
+//     token output;
+//     output.fieldnames = list("generators", "FirstSyz_matrix");   
+//     output.data[1] = C;  
+//     output.data[2] = r;   
+//     output.data[3] = 8;  
+
+//     return(output);
+// }
+
+
+
+
+
+
+
 
 proc Add_GPI(token input, int N)
-"USAGE: reduce_GPI(input, Tok, tok);
-       RETURN: an token output containing a sum  of the two tokens Tok and tok.
-       NOTE  : The types token are defined . This procedure is intended to
-               be called as a transition procedure inside the worker process
-               (that is, the "inner" instances of SINGULAR).
-"          
-
 {
-    string path = "/home/santosh/gspc-res/example_dir/temp/";  // Ensure the path ends with a "/"
+    def inputRing = basering;  // Save the input ring
+    string path1 = "/home/santosh/gspc-res/example_dir/temp/";
    
- def f=input.data[1];
+    // string filename = "Reduce.ssi";
 
-int r=size(f);
-smatrix C;
-for (int k=1; k<=N; k++){
- string filename = "k.ssi";
-     link l0 = "ssi:w " + path + filename;
-     if(!l0){
-      continue;
-     }
-     token t=k.ssi;
-     smatrix sM=t.data[2];
-     if(C=="smatrix(0)"){
-      C=sM;
-     } else{
-      C=C+sM;
-     }
-    
-}
   
-        
-            
+    // link l0 = "ssi:w " + path1 + filename;
+  
+    def f = input.data[1];  
+    int r = size(f);        
 
-   
+    smatrix C;  // Initialize C
+    module M;
+   int first_time = 0;  // Initialize first_time as 0 (false)
+   int k=1;
+    while(k <= N) {
+        string file_k = string(k) + ".ssi";  
+        link l = "ssi:r " + path1 + file_k;  
+
+        if (status(l, "exists") == "yes") 
+        {
+          def t = read(l);  //Read file
+          close(l);  // Close  l after reading
+  
+          def nr = t.r_data;
+          setring nr;
+          module M;
+          smatrix sM = t.data[2];
+          // write(l0,sM,"sM");
+          M=sM;
+          setring inputRing;
+           M = fetch(nr, M);
+           sM=M;
+          //  C = fetch(inputRing, C);
+          // Logic to initialize or update C
+         
+             if (first_time == 0) 
+             {  
+            // sM=fetch(inputRing,sM);
+              // write(l0,first_time,"first_time"); 
+                     C = sM;  // Initialize C with sM       
+                     first_time = 1;  // Set first_time to 1 (true) after initialization
+             } else {
+                  // sM=fetch(inputRing,sM);
+                     C = C + sM;           
+                 } 
+              
+            string command = "rm " + path1 + file_k;  // Construct the remove command
+            system("sh", command);  // Execute the shell command to remove the file
+
+           } else {
+
+                  k=k+1;
+                 
+          }
+            // Print C only when k == N (final iteration)
+        if (k == N) 
+        {
+            print("Final C after last iteration (k == N):");
+            print(C);  // Print the final matrix C
+        }    
+    }
+
  
-  //   write(l0,C,"reduce_gpi");
-  // close(l0);
     token output;
-    output.fieldnames = list("generators","FirstSyz_matrix");
-   
-    output.data[1]=C;
-    output.data[2] = r;
-   
-    //print("q:column");
-    output.data[3]=c;
-  
-   
-   
+    output.fieldnames = list("generators", "FirstSyz_matrix");   
+    output.data[1] = C;  
+    output.data[2] = r;   
+    output.data[3] = ncols(C);  
+
     return(output);
 }
