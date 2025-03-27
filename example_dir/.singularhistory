@@ -1077,3 +1077,689 @@ quit;
 quit;
 ;
 quit;
+;
+quit;
+quit;
+quit;
+quit;
+quit;
+quit;
+;
+link l="ssi:r temp/input";
+def m=read(l);
+def nr=m.r_data;
+setring nr;
+m.data;
+proc Add_GPI(token input, int N)
+{
+    def inputRing = basering;  // Save the input ring
+    string path1 = "/scratch/gnawali/Try/gspc-res/example_dir/temp/";
+   
+    // string filename = "Reduce.ssi";
+  
+    // link l0 = "ssi:w " + path1 + filename;
+  
+    def f = input.data[1];  
+    int r = size(f);        
+    smatrix C;  // Initialize C
+    module M;
+   int first_time = 0;  // Initialize first_time as 0 (false)
+   int k=1;
+   string command;
+   string file_k;
+   link l;
+    while(k <= N) {
+         file_k = string(k) + ".ssi";  
+         l = "ssi:r " + path1 + file_k;  
+        if (status(l, "exists") == "yes") 
+        {
+          def t = read(l);  //Read file
+          close(l);  // Close  l after reading
+  
+          def nr = t.r_data;
+          setring nr;
+          module M;
+          smatrix sM = t.data[2];
+          // write(l0,sM,"sM");
+          M=sM;
+          setring inputRing;
+           M = fetch(nr, M);
+           sM=M;
+          //  C = fetch(inputRing, C);
+          // Logic to initialize or update C
+         
+             if (first_time == 0) 
+             {  
+            // sM=fetch(inputRing,sM);
+              // write(l0,first_time,"first_time"); 
+                     C = sM;  // Initialize C with sM       
+                     first_time = 1;  // Set first_time to 1 (true) after initialization
+             } else {
+                  // sM=fetch(inputRing,sM);
+                     C = C + sM;           
+                 } 
+              
+            command = "rm " + path1 + file_k;  // Construct the remove command
+            system("sh", command);  // Execute the shell command to remove the file
+           } 
+                  k=k+1;
+                 
+          
+            // Print C only when k == N (final iteration)
+          
+    }
+ 
+    token output;
+    output.fieldnames = list("generators", "FirstSyz_matrix");   
+    output.data[1] = C;  
+    output.data[2] = r;   
+    output.data[3] = ncols(C);  
+    return(output);
+} 
+ rtimer=0;
+ system("--ticks-per-sec",1000); // set timer resolution to ms
+ int t=rtimer;
+def c= Add_GPI(m,60);
+c;
+rtimer-t;
+quit;
+quit;
+;
+link l="ssi:r temp/input";
+def m=read(l);
+def nr=m.r_data;
+setring nr;
+m.data;
+proc Add_GPI(token input, int N)
+{
+    def inputRing = basering;  // Save the input ring
+    string path1 = "/scratch/gnawali/Try/gspc-res/example_dir/temp/";
+   
+    // string filename = "Reduce.ssi";
+  
+    // link l0 = "ssi:w " + path1 + filename;
+  
+    def f = input.data[1];  
+    int r = size(f);        
+    smatrix C;  // Initialize C
+    module M;
+   int first_time = 0;  // Initialize first_time as 0 (false)
+   int k=1;
+   string command;
+   string file_k;
+   link l;
+    while(k <= N) {
+         file_k = string(k) + ".ssi";  
+         l = "ssi:r " + path1 + file_k;  
+        if (status(l, "exists") == "yes") 
+        {
+          def t = read(l);  //Read file
+          close(l);  // Close  l after reading
+  
+          def nr = t.r_data;
+          setring nr;
+          module M;
+          smatrix sM = t.data[2];
+          kill t;
+          // write(l0,sM,"sM");
+          M=sM;
+          setring inputRing;
+           M = fetch(nr, M);
+           sM=M;
+           kill M;
+          //  C = fetch(inputRing, C);
+          // Logic to initialize or update C
+         
+             if (first_time == 0) 
+             {  
+            // sM=fetch(inputRing,sM);
+              // write(l0,first_time,"first_time"); 
+                     C = sM;  // Initialize C with sM       
+                     first_time = 1;  // Set first_time to 1 (true) after initialization
+             } else {
+                  // sM=fetch(inputRing,sM);
+                     C = C + sM;           
+                 } 
+              kill sM;
+            command = "rm " + path1 + file_k;  // Construct the remove command
+            system("sh", command);  // Execute the shell command to remove the file
+           } 
+             kill nr;
+                  k=k+1;
+                 
+          
+            // Print C only when k == N (final iteration)
+          
+    }
+   print("C=");
+   print(C);
+ 
+    token output;
+    output.fieldnames = list("generators", "FirstSyz_matrix");   
+    output.data[1] = C;  
+    output.data[2] = r;   
+    output.data[3] = ncols(C);  
+    return(output);
+} 
+ rtimer=0;
+ system("--ticks-per-sec",1000); // set timer resolution to ms
+ int t=rtimer;
+def c= Add_GPI(m,583);
+c;
+rtimer-t;
+quit;
+;
+link l="ssi:r temp/input";
+def m=read(l);
+def nr=m.r_data;
+setring nr;
+m.data;
+proc Add_GPI(token input, int N)
+{
+    def inputRing = basering;  // Save the input ring
+    string path1 = "/scratch/gnawali/Try/gspc-res/example_dir/temp/";
+   
+    // string filename = "Reduce.ssi";
+  
+    // link l0 = "ssi:w " + path1 + filename;
+  
+    def f = input.data[1];  
+    int r = size(f);        
+    smatrix C;  // Initialize C
+    module M;
+   int first_time = 0;  // Initialize first_time as 0 (false)
+   int k=1;
+   string command;
+   string file_k;
+   link l;
+    while(k <= N) {
+         file_k = string(k) + ".ssi";  
+         l = "ssi:r " + path1 + file_k;  
+        if (status(l, "exists") == "yes") 
+        {
+          def t = read(l);  //Read file
+          close(l);  // Close  l after reading
+  
+          def nr = t.r_data;
+          setring nr;
+          module M;
+          smatrix sM = t.data[2];
+          kill t;
+          // write(l0,sM,"sM");
+          M=sM;
+          setring inputRing;
+           M = fetch(nr, M);
+           sM=M;
+           kill M;
+          //  C = fetch(inputRing, C);
+          // Logic to initialize or update C
+         
+             if (first_time == 0) 
+             {  
+            // sM=fetch(inputRing,sM);
+              // write(l0,first_time,"first_time"); 
+                     C = sM;  // Initialize C with sM       
+                     first_time = 1;  // Set first_time to 1 (true) after initialization
+             } else {
+                  // sM=fetch(inputRing,sM);
+                     C = C + sM;           
+                 } 
+              kill sM;
+            command = "rm " + path1 + file_k;  // Construct the remove command
+            system("sh", command);  // Execute the shell command to remove the file
+           } 
+             kill nr;
+                  k=k+1;
+                 
+          
+            // Print C only when k == N (final iteration)
+          
+    }
+   print("C=");
+   print(C);
+ 
+    token output;
+    output.fieldnames = list("generators", "FirstSyz_matrix");   
+    output.data[1] = C;  
+    output.data[2] = r;   
+    output.data[3] = ncols(C);  
+    return(output);
+} 
+ rtimer=0;
+ system("--ticks-per-sec",1000); // set timer resolution to ms
+ int t=rtimer;
+def c= Add_GPI(m,600);
+c;
+rtimer-t;
+quit;
+;
+link l="ssi:r temp/input";
+def m=read(l);
+def nr=m.r_data;
+setring nr;
+m.data;
+proc Add_GPI(token input, int N)
+{
+    def inputRing = basering;  // Save the input ring
+    string path1 = "/scratch/gnawali/Try/gspc-res/example_dir/temp/";
+   
+    // string filename = "Reduce.ssi";
+  
+    // link l0 = "ssi:w " + path1 + filename;
+  
+    def f = input.data[1];  
+    int r = size(f);        
+    smatrix C;  // Initialize C
+    module M;
+   int first_time = 0;  // Initialize first_time as 0 (false)
+   int k=1;
+   string command;
+   string file_k;
+   link l;
+    while(k <= N) {
+         file_k = string(k) + ".ssi";  
+         l = "ssi:r " + path1 + file_k;  
+        if (status(l, "exists") == "yes") 
+        {
+          def t = read(l);  //Read file
+          close(l);  // Close  l after reading
+  
+          def nr = t.r_data;
+          setring nr;
+          module M;
+          smatrix sM = t.data[2];
+          kill t;
+          // write(l0,sM,"sM");
+          M=sM;
+          setring inputRing;
+           M = fetch(nr, M);
+           sM=M;
+           kill M;
+          //  C = fetch(inputRing, C);
+          // Logic to initialize or update C
+         
+             if (first_time == 0) 
+             {  
+            // sM=fetch(inputRing,sM);
+              // write(l0,first_time,"first_time"); 
+                     C = sM;  // Initialize C with sM       
+                     first_time = 1;  // Set first_time to 1 (true) after initialization
+             } else {
+                  // sM=fetch(inputRing,sM);
+                     C = C + sM;           
+                 } 
+              kill sM;
+            command = "rm " + path1 + file_k;  // Construct the remove command
+            system("sh", command);  // Execute the shell command to remove the file
+           } 
+             kill nr;
+                  k=k+1;
+                 
+          
+            // Print C only when k == N (final iteration)
+          
+    }
+  //  print("C=");
+  //  print(C);
+ 
+    token output;
+    output.fieldnames = list("generators", "FirstSyz_matrix");   
+    output.data[1] = C;  
+    output.data[2] = r;   
+    output.data[3] = ncols(C);  
+    return(output);
+} 
+ rtimer=0;
+ system("--ticks-per-sec",1000); // set timer resolution to ms
+ int t=rtimer;
+def c= Add_GPI(m,4200);
+c;
+rtimer-t;
+quit;
+;
+link l="ssi:r temp/input";
+def m=read(l);
+def nr=m.r_data;
+setring nr;
+m.data;
+proc Add_GPI(token input, int N)
+{
+    def inputRing = basering;  // Save the input ring
+    string path1 = "/scratch/gnawali/Try/gspc-res/example_dir/temp/";
+   
+    // string filename = "Reduce.ssi";
+  
+    // link l0 = "ssi:w " + path1 + filename;
+  
+    def f = input.data[1];  
+    int r = size(f);        
+    smatrix C;  // Initialize C
+    module M;
+   int first_time = 0;  // Initialize first_time as 0 (false)
+   int k=1;
+   string command;
+   string file_k;
+   link l;
+    while(k <= N) {
+         file_k = string(k) + ".ssi";  
+         l = "ssi:r " + path1 + file_k;  
+        if (status(l, "exists") == "yes") 
+        {
+          def t = read(l);  //Read file
+          close(l);  // Close  l after reading
+  
+          def nr = t.r_data;
+          setring nr;
+          module M;
+          smatrix sM = t.data[2];
+          kill t;
+          // write(l0,sM,"sM");
+          M=sM;
+          setring inputRing;
+           M = fetch(nr, M);
+           sM=M;
+           kill M;
+          //  C = fetch(inputRing, C);
+          // Logic to initialize or update C
+         
+             if (first_time == 0) 
+             {  
+            // sM=fetch(inputRing,sM);
+              // write(l0,first_time,"first_time"); 
+                     C = sM;  // Initialize C with sM       
+                     first_time = 1;  // Set first_time to 1 (true) after initialization
+             } else {
+                  // sM=fetch(inputRing,sM);
+                     C = C + sM;           
+                 } 
+              kill sM;
+            command = "rm " + path1 + file_k;  // Construct the remove command
+            system("sh", command);  // Execute the shell command to remove the file
+           } 
+             kill nr;
+                  k=k+1;
+                 
+          
+            // Print C only when k == N (final iteration)
+          
+    }
+  //  print("C=");
+  //  print(C);
+ 
+    token output;
+    output.fieldnames = list("generators", "FirstSyz_matrix");   
+    output.data[1] = C;  
+    output.data[2] = r;   
+    output.data[3] = ncols(C);  
+    return(output);
+} 
+ rtimer=0;
+ system("--ticks-per-sec",1000); // set timer resolution to ms
+ int t=rtimer;
+def c= Add_GPI(m,3300);
+c;
+rtimer-t;
+quit;
+link l="ssi:r temp/input";
+def m=read(l);
+def nr=m.r_data;
+setring nr;
+m.data;
+proc Add_GPI(token input, int N)
+{
+    def inputRing = basering;  // Save the input ring
+    string path1 = "/scratch/gnawali/Try/gspc-res/example_dir/temp/";
+   
+    // string filename = "Reduce.ssi";
+  
+    // link l0 = "ssi:w " + path1 + filename;
+  
+    def f = input.data[1];  
+    int r = size(f);        
+    smatrix C;  // Initialize C
+    module M;
+   int first_time = 0;  // Initialize first_time as 0 (false)
+   int k=1;
+   string command;
+   string file_k;
+   link l;
+    while(k <= N) {
+         file_k = string(k) + ".ssi";  
+         l = "ssi:r " + path1 + file_k;  
+        if (status(l, "exists") == "yes") 
+        {
+          def t = read(l);  //Read file
+          close(l);  // Close  l after reading
+  
+          def nr = t.r_data;
+          setring nr;
+          module M;
+          smatrix sM = t.data[2];
+          kill t;
+          // write(l0,sM,"sM");
+          M=sM;
+          setring inputRing;
+           M = fetch(nr, M);
+           sM=M;
+           kill M;
+          //  C = fetch(inputRing, C);
+          // Logic to initialize or update C
+         
+             if (first_time == 0) 
+             {  
+            // sM=fetch(inputRing,sM);
+              // write(l0,first_time,"first_time"); 
+                     C = sM;  // Initialize C with sM       
+                     first_time = 1;  // Set first_time to 1 (true) after initialization
+             } else {
+                  // sM=fetch(inputRing,sM);
+                     C = C + sM;           
+                 } 
+              kill sM;
+            command = "rm " + path1 + file_k;  // Construct the remove command
+            system("sh", command);  // Execute the shell command to remove the file
+           } 
+             kill nr;
+                  k=k+1;
+                 
+          
+            // Print C only when k == N (final iteration)
+          
+    }
+  //  print("C=");
+  //  print(C);
+ 
+    token output;
+    output.fieldnames = list("generators", "FirstSyz_matrix");   
+    output.data[1] = C;  
+    output.data[2] = r;   
+    output.data[3] = ncols(C);  
+    return(output);
+} 
+ rtimer=0;
+ system("--ticks-per-sec",1000); // set timer resolution to ms
+ int t=rtimer;
+def c= Add_GPI(m,1749);
+c;
+rtimer-t;
+quit;
+;
+link l="ssi:r temp/input";
+def m=read(l);
+def nr=m.r_data;
+setring nr;
+m.data;
+proc Add_GPI(token input, int N)
+{
+    def inputRing = basering;  // Save the input ring
+    string path1 = "/scratch/gnawali/Try/gspc-res/example_dir/temp/";
+   
+    // string filename = "Reduce.ssi";
+  
+    // link l0 = "ssi:w " + path1 + filename;
+  
+    def f = input.data[1];  
+    int r = size(f);        
+    smatrix C;  // Initialize C
+    module M;
+   int first_time = 0;  // Initialize first_time as 0 (false)
+   int k=1;
+   string command;
+   string file_k;
+   link l;
+    while(k <= N) {
+         file_k = string(k) + ".ssi";  
+         l = "ssi:r " + path1 + file_k;  
+        if (status(l, "exists") == "yes") 
+        {
+          def t = read(l);  //Read file
+          close(l);  // Close  l after reading
+  
+          def nr = t.r_data;
+          setring nr;
+          module M;
+          smatrix sM = t.data[2];
+          kill t;
+          // write(l0,sM,"sM");
+          M=sM;
+          setring inputRing;
+           M = fetch(nr, M);
+           sM=M;
+           kill M;
+          //  C = fetch(inputRing, C);
+          // Logic to initialize or update C
+         
+             if (first_time == 0) 
+             {  
+            // sM=fetch(inputRing,sM);
+              // write(l0,first_time,"first_time"); 
+                     C = sM;  // Initialize C with sM       
+                     first_time = 1;  // Set first_time to 1 (true) after initialization
+             } else {
+                  // sM=fetch(inputRing,sM);
+                     C = C + sM;           
+                 } 
+              kill sM;
+            command = "rm " + path1 + file_k;  // Construct the remove command
+            system("sh", command);  // Execute the shell command to remove the file
+           } 
+             kill nr;
+                  k=k+1;
+                 
+          
+            // Print C only when k == N (final iteration)
+          
+    }
+  //  print("C=");
+  //  print(C);
+ 
+    token output;
+    output.fieldnames = list("generators", "FirstSyz_matrix");   
+    output.data[1] = C;  
+    output.data[2] = r;   
+    output.data[3] = ncols(C);  
+    return(output);
+} 
+ rtimer=0;
+ system("--ticks-per-sec",1000); // set timer resolution to ms
+ int t=rtimer;
+def c= Add_GPI(m,1200);
+c;
+rtimer-t;
+quit;
+;
+link l="ssi: r temp/input";
+def m=read(l);
+link l="ssi:r temp/input";
+def m=read(l);
+def nr=m.r_data;
+setring nr;
+m.data;
+
+
+proc Add_GPI(token input, int N)
+{
+    def inputRing = basering;  // Save the input ring
+    string path1 = "/scratch/gnawali/Try/gspc-res/example_dir/temp/";
+   
+    // string filename = "Reduce.ssi";
+
+  
+    // link l0 = "ssi:w " + path1 + filename;
+  
+    def f = input.data[1];  
+    int r = size(f);        
+
+    smatrix C;  // Initialize C
+    module M;
+   int first_time = 0;  // Initialize first_time as 0 (false)
+   int k=1;
+   string command;
+   string file_k;
+   link l;
+    while(k <= N) {
+         file_k = string(k) + ".ssi";  
+         l = "ssi:r " + path1 + file_k;  
+
+        if (status(l, "exists") == "yes") 
+        {
+          def t = read(l);  //Read file
+          close(l);  // Close  l after reading
+  
+          def nr = t.r_data;
+          setring nr;
+          module M;
+          smatrix sM = t.data[2];
+          kill t;
+          // write(l0,sM,"sM");
+          M=sM;
+          setring inputRing;
+           M = fetch(nr, M);
+           sM=M;
+           kill M;
+          //  C = fetch(inputRing, C);
+          // Logic to initialize or update C
+         
+             if (first_time == 0) 
+             {  
+            // sM=fetch(inputRing,sM);
+              // write(l0,first_time,"first_time"); 
+                     C = sM;  // Initialize C with sM       
+                     first_time = 1;  // Set first_time to 1 (true) after initialization
+             } else {
+                  // sM=fetch(inputRing,sM);
+                     C = C + sM;           
+                 } 
+              kill sM;
+            command = "rm " + path1 + file_k;  // Construct the remove command
+            system("sh", command);  // Execute the shell command to remove the file
+
+           } 
+             kill nr;
+                  k=k+1;
+                 
+          
+            // Print C only when k == N (final iteration)
+          
+    }
+  //  print("C=");
+  //  print(C);
+ 
+    token output;
+    output.fieldnames = list("generators", "FirstSyz_matrix");   
+    output.data[1] = C;  
+    output.data[2] = r;   
+    output.data[3] = ncols(C);  
+
+    return(output);
+} 
+
+
+ rtimer=0;
+ system("--ticks-per-sec",1000); // set timer resolution to ms
+ int t=rtimer;
+def c= Add_GPI(m,7500);
+c;
+
+rtimer-t;
+quit;

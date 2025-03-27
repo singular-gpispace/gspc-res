@@ -1282,7 +1282,10 @@ template/CMakeFiles/template_implementation.dir/implementation.cpp.o: \
  /scratch/gnawali/singular-gpispace/spack/opt/spack/linux-debian12-icelake/gcc-12.2.0/singular-4.4.0p2-f4kucmkjbh6zho27okeaxhwhwcickrfx/include/singular/Singular/newstruct.h \
  /usr/include/c++/12/iostream /usr/include/c++/12/chrono \
  /usr/include/c++/12/bits/chrono.h /usr/include/c++/12/ratio \
- /usr/include/c++/12/bits/parse_numbers.h /usr/include/c++/12/filesystem \
+ /usr/include/c++/12/bits/parse_numbers.h /usr/include/c++/12/fstream \
+ /usr/include/x86_64-linux-gnu/c++/12/bits/basic_file.h \
+ /usr/include/x86_64-linux-gnu/c++/12/bits/c++io.h \
+ /usr/include/c++/12/bits/fstream.tcc /usr/include/c++/12/filesystem \
  /usr/include/c++/12/bits/fs_fwd.h /usr/include/c++/12/bits/fs_path.h \
  /usr/include/c++/12/iomanip /usr/include/c++/12/bits/quoted_string.h \
  /usr/include/c++/12/codecvt /usr/include/c++/12/bits/fs_dir.h \

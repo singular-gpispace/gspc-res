@@ -381,7 +381,7 @@ worker process (that is, the "inner" instances of SINGULAR).
   for (k = 1; k <=r; k++) {
     token Ld;
     Ld.fieldnames = list("generator", "Lead_Syz_Sparse_matrix");  
-    matrix sM[ro][size(LT)];
+    smatrix sM[ro][size(LT)];
     vector s_lift = LT[k];
     
     int l_k = leadexp(s_lift)[nvars(basering) + 1];
@@ -670,7 +670,19 @@ proc coM2(module f, vector s, vector t, list J, int k) {
 
 
 
-
+proc phi(vector s, def f)
+{
+ 
+  number lc_s = leadcoef(s);  // leading coefficient of s
+  poly lm_s = leadmonomial(s);  // leading monomial of s
+  int n = nvars(basering);
+   int a = leadexp(s)[n + 1];
+  def g;
+ 
+  //s is a term
+  g = lc_s * lm_s * f[a]; 
+  return(g);
+}
 
 
 //First Level LiftTree
@@ -679,31 +691,12 @@ proc liftTree(ideal f, vector s) {
     list TT;  // Initialize TT as an empty list
     int r = size(f);
    // poly h, t, g;
-   poly t,g;
+   poly t;
     list T;
     int i, c,i0;
 
     
-    number lc_s = leadcoef(s);  // leading coefficient of s
-    poly lm_s = leadmonomial(s);  // leading monomial of s
-     int a = leadexp(s)[nvars(basering) + 1];
-
-    //  for (i = 1; i <= r; i++) {
-    //     if (s == lc_s * lm_s * gen(i)) {
-    //         h = lc_s * lm_s * f[i];  // Map to m * f[i]
-    //         break;  // Once found, break the loop early
-    //     }
-    // }
-
-
-    //    for (i = 1; i <= r; i++) {
-    //     if (a == i) {
-    //         h = lc_s * lm_s * f[i];  // Map to m * f[i]
-    //         break;  // Once found, break the loop early
-    //     }
-    // }
-   
-     g = lc_s * lm_s * f[a]; 
+  poly g = phi(s, f);
    poly T0 = g - LOT(g, f);
     //poly T0 =LOT(g, f);
     T = pOLY_List(T0);
@@ -778,28 +771,10 @@ proc liftTree2(module f, vector s, list J, int level) {
  vector g;
     list T;  
     int c;
+  
+
+    g = phi(s, f);
    
-    number lc_s = leadcoef(s);  // leading coefficient of s
-    poly lm_s = leadmonomial(s);  // leading monomial of s
-     int a0 = leadexp(s)[nvars(basering) + 1];
-
-    //  for (i = 1; i <= r; i++) {
-    //     if (s == lc_s * lm_s * gen(i)) {
-    //         h = lc_s * lm_s * f[i];  // Map to m * f[i]
-    //         break;  // Once found, break the loop early
-    //     }
-    // }
-
-
-    //    for (i = 1; i <= r; i++) {
-    //     if (a0 == i) {
-    //         h = lc_s * lm_s * f[i];  // Map to m * f[i]
-    //         break;  // Once found, break the loop early
-    //     }
-    // }
-
-    g = lc_s * lm_s * f[a0]; 
-    //list S = f;
      
 
 
@@ -972,7 +947,7 @@ if(typeof(f)=="ideal"){
   for (k = 1; k <=r; k++) {
      token Ld;
     Ld.fieldnames = list("generator", "Sparse_matrix_Lift");  
-    matrix sM[r0][c];
+    smatrix sM[r0][c];
     
            
     vector s_lift = lL[k];
@@ -1031,27 +1006,10 @@ proc oneSublift(ideal f, vector s) {
     list T;
     int k, q,i0;
 
-    number lc_s = leadcoef(s);  // leading coefficient of s
-    poly lm_s = leadmonomial(s);  // leading monomial of s
-     int a = leadexp(s)[nvars(basering) + 1];
+   
+    h = phi(s, f);
 
-    //  for (i = 1; i <= r; i++) {
-    //     if (s == lc_s * lm_s * gen(i)) {
-    //         h = lc_s * lm_s * f[i];  // Map to m * f[i]
-    //         break;  // Once found, break the loop early
-    //     }
-    // }
-
-
-    //    for (i = 1; i <= r; i++) {
-    //     if (a == i) {
-    //         h = lc_s * lm_s * f[i];  // Map to m * f[i]
-    //         break;  // Once found, break the loop early
-    //     }
-    // }
-
-
-    h = lc_s * lm_s * f[a];  // Map to m * f[i]
+  
     g =h- lead(h);
     poly T0 = g - LOT(g, f);
     
@@ -1121,29 +1079,11 @@ proc subLiftTree2(module f, vector s, list J, int level) {
      //ideal I_Gr=J[1];
      module f0=J[level];
      
-    number lc_s = leadcoef(s);  // leading coefficient of s
-    poly lm_s = leadmonomial(s);  // leading monomial of s
-     int a0 = leadexp(s)[nvars(basering) + 1];
- 
-    // for (i = 1; i <= r; i++) {
-    //     if (s == lc_s * lm_s * gen(i)) { // replacing leadmonomial by lead
-    //         h = lc_s * lm_s * f[i]; // psi: R^r --> R^s; g := psi(s);
-    //         H=lc_s * lm_s * f0[i]; // psi: R^r --> R^s; g := psi(s);
-    //           break;
-    //     }
-    // }
+     h= phi(s,f);//h:=psi(s)
 
+     H= phi(s,f0);//H:=psi(s)
 
-    //    for (i = 1; i <= r; i++) {
-    //     if (a0 == i) {
-    //         h = lc_s * lm_s * f[i];  // psi: R^r --> R^s; g := psi(s);
-    //          H=lc_s * lm_s * f0[i]; // psi: R^r --> R^s; g := psi(s);
-    //         break;  // Once found, break the loop early
-    //     }
-    // }
-
-     h = lc_s * lm_s * f[a0];  // psi: R^r --> R^s; h := psi(s);
-     H=lc_s * lm_s * f0[a0]; // psi: R^r --> R^s; H := LT(psi(s));
+   
  
     g = h - lead(H);
     
@@ -1221,14 +1161,7 @@ proc SubLIFT_GPI(token Token,token tok, token TT)
    def Lb=TT.data[5]; //Error here?
     int colmn = TT.data[4]; //column
     
-    string path = "/scratch/gnawali/Try/gspc-res/example_dir/temp/";  // Ensure the path ends with a "/"
-    string filename = "SubLIFT.ssi";
-     link l0 = "ssi:w " + path + filename;
-            // write(l0, Bl, "matrix");
-             write(l0, J, "SchFrame");
-              write(l0, f, "INPUT");
-              write(l0, Lb, "LeadSyz");
-             close(l0);
+  
 
 
 
@@ -1283,7 +1216,7 @@ if(typeof(f)=="ideal"){
   for (k = 1; k <=r; k++) {
      token Ld;
     Ld.fieldnames = list("generator", "Sparse_matrix_subLift");  
-    matrix sM[r0][c];
+    smatrix sM[r0][c];
     
            
     vector s_lift =lL[k];//added c_n
@@ -1381,9 +1314,7 @@ proc reduce_GPI(token input, token Tok)
 "          
 
 {
-    // string path = "/home/santosh/gspc-res/example_dir/temp/";  // Ensure the path ends with a "/"
-    // string filename = "Reduce.ssi";
-    //  link l0 = "ssi:w " + path + filename;
+  
  def f=input.data[1];
 
 int r=size(f);
@@ -1421,3 +1352,163 @@ int r=size(f);
    
     return(output);
 }
+// proc Add_GPI(token input, int N)
+// {
+//     def inputRing = basering;  // Save the input ring
+//     string path1 = "/home/santosh/gspc-res/example_dir/temp/";
+//     string filename = "Reduce.ssi";
+
+//     // Open a file for writing
+//     link l0 = "ssi:w " + path1 + filename;
+//     def f = input.data[1];  
+//     int r = size(f);        
+
+//     smatrix C;  // Initialize C
+
+//     write(l0, C, "C_initial");  // Log initial state of C
+
+//     int first_time = 0;  // Initialize first_time as 0 (false)
+//    int k=1;
+//     while(k <= N) {
+//         string file_k = string(k) + ".ssi";  
+//         link l = "ssi:r " + path1 + file_k;  
+
+//         if (status(l, "exists") == "no") {
+//             k = k + 1;  // Move to the next file if not found
+//             // continue;   // Skip to the next iteration
+//         }
+
+//         write(l0, file_k, "k.ssi");  
+
+//         def t = read(l);  //Read file
+//         close(l);  // Close  l after reading
+
+//         def nr = t.r_data;
+//         setring nr;
+
+//         write(l0, k, "k");
+//         smatrix sM = t.data[2];
+//         write(l0, sM, "smatrix");
+       
+//         write(l0, 1, "size_C_before");
+//         write(l0, size(sM), "size_sM");
+//         write(l0, inputRing, "inputRing");
+//         sM=fetch(inputRing,sM);
+//         // Logic to initialize or update C
+//         if (first_time == 0) {  
+//             write(l0, first_time, "first_time"); 
+//             write(l0, C, "C_in_if_loop"); 
+//             write(l0, sM, "sM_in_if_loop"); 
+            
+//             C = sM;  // Initialize C with sM
+//             write(l0, C, "smatrix_initial"); 
+//             first_time = 1;  // Set first_time to 1 (true) after initialization
+//         } else {
+//           // sM=fetch(inputRing,sM);
+//             C = C + sM;  
+//             write(l0, C, "smatrix_updated"); 
+//         }
+
+        
+        
+      
+//         write(l0, C, "size_C_after");
+
+//         // Clean up the ring data
+//         kill(nr);
+//         k=k+1;
+//     }
+
+//     close(l0); 
+
+//     token output;
+//     output.fieldnames = list("generators", "FirstSyz_matrix");   
+//     output.data[1] = C;  
+//     output.data[2] = r;   
+//     output.data[3] = 8;  
+
+//     return(output);
+// }
+
+
+
+
+
+
+proc Add_GPI(token input, int N)
+{
+    def inputRing = basering;  // Save the input ring
+    string path1 = "/scratch/gnawali/Try/gspc-res/example_dir/temp/";
+   
+    // string filename = "Reduce.ssi";
+
+  
+    // link l0 = "ssi:w " + path1 + filename;
+  
+    def f = input.data[1];  
+    int r = size(f);        
+
+    smatrix C;  // Initialize C
+    module M;
+   int first_time = 0;  // Initialize first_time as 0 (false)
+   int k=1;
+   string command;
+   string file_k;
+   link l;
+    while(k <= N) {
+         file_k = string(k) + ".ssi";  
+         l = "ssi:r " + path1 + file_k;  
+
+        if (status(l, "exists") == "yes") 
+        {
+          def t = read(l);  //Read file
+          close(l);  // Close  l after reading
+  
+          def nr = t.r_data;
+          setring nr;
+          module M;
+          smatrix sM = t.data[2];
+          kill t;
+          // write(l0,sM,"sM");
+          M=sM;
+          setring inputRing;
+           M = fetch(nr, M);
+           sM=M;
+           kill M;
+          //  C = fetch(inputRing, C);
+          // Logic to initialize or update C
+         
+             if (first_time == 0) 
+             {  
+            // sM=fetch(inputRing,sM);
+              // write(l0,first_time,"first_time"); 
+                     C = sM;  // Initialize C with sM       
+                     first_time = 1;  // Set first_time to 1 (true) after initialization
+             } else {
+                  // sM=fetch(inputRing,sM);
+                     C = C + sM;           
+                 } 
+              kill sM;
+            command = "rm " + path1 + file_k;  // Construct the remove command
+            system("sh", command);  // Execute the shell command to remove the file
+
+           } 
+             kill nr;
+                  k=k+1;
+                 
+          
+            // Print C only when k == N (final iteration)
+          
+    }
+  //  print("C=");
+  //  print(C);
+ 
+    token output;
+    output.fieldnames = list("generators", "FirstSyz_matrix");   
+    output.data[1] = C;  
+    output.data[2] = r;   
+    output.data[3] = ncols(C);  
+
+    return(output);
+} 
+

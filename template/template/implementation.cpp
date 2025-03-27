@@ -18,6 +18,7 @@
 //for cached 
 #include <vector>
 #include <map>
+#include <fstream>
 #include <filesystem>
 #include <sstream>
 #include <string>
@@ -575,8 +576,8 @@ std::pair<int, lists> LEAD_GPI(leftv args) {
     temp->Init(r);
 
     ideal sM = idInit(c, r0);  // Initialize the smatrix
-    lists Ld =nullptr; //(lists)omAlloc0Bin(slists_bin);  // Initialize Ld
-  
+    lists Ld =NULL; //(lists)omAlloc0Bin(slists_bin);  // Initialize Ld
+    // r=5;
     for (int k = 0; k < r; k++) {
         // Create a new token Ld
       id_Delete(&sM, currRing);  // Delete the existing sM
@@ -1706,12 +1707,12 @@ std::tuple<std::vector<std::string>, int, long> singular_template_LIFT(const std
     // Measure Computation Time
     auto start_computation = std::chrono::high_resolution_clock::now();
    
-//   std::string function_name = "LIFT_GPI";
+  std::string function_name = "LIFT_GPI";
   //    //std::cout<<"function_name_LIFT:"<<function_name<< std:: endl;
-    // out = call_user_proc(function_name, needed_library, args);
+    out = call_user_proc(function_name, needed_library, args);
    
     // Direct call to LIFT_GPI 
-   out = LIFT_GPI(args.leftV());  
+//    out = LIFT_GPI(args.leftV());  
   
 
     // Extract the result list from the output
@@ -2290,10 +2291,10 @@ std::tuple<std::vector<std::string>, int, long> singular_template_SUBLIFT(const 
      // Measure Computation Time
     auto start_computation = std::chrono::high_resolution_clock::now();
      
-    // std::string function_name = "SubLIFT_GPI";
+    std::string function_name = "SubLIFT_GPI";
     //  std::cout<<"function_name_LIFT:"<<function_name<< std:: endl;
-    // out = call_user_proc(function_name, needed_library, args);
-     out = SubLIFT_GPI(args.leftV());  // Call  SubLIFT_GPI with the raw pointer
+    out = call_user_proc(function_name, needed_library, args);
+    //  out = SubLIFT_GPI(args.leftV());  // Call  SubLIFT_GPI with the raw pointer
   //std::cout << "SubLIFT_Runtime: " << computation_time << " milliseconds" << std::endl;
     //std::cout<<"ListOutside_proc:"<<function_name<< std:: endl;
   //   lists Token = (lists)(args.leftV()->data);
@@ -2404,18 +2405,32 @@ std::tuple<std::vector<std::string>, int, long> singular_template_SUBLIFT(const 
 
 
 
+void sum_InplaceAdd(ideal a, ideal b, const ring R)
+{
+   
+
+    // Perform the addition in place, modifying 'a'
+    for (int k = IDELEMS(a) - 1; k >= 0; k--)
+    {
+        // Add corresponding elements of 'a' and 'b' and store the result back into 'a'
+        a->m[k] = p_Add_q(a->m[k], p_Copy(b->m[k], R), R);
+    }
+}
+
+
+
 
 
 
 NO_NAME_MANGLING
 std::pair<std::string, long> singular_template_reduce(const std::string& Red, 
-    unsigned long N,
+    const std::pair<int, int>& ranges,
     const std::string& needed_library,
     const std::string& base_filename) 
 {
     init_singular(config::singularLibrary().string());
     load_singular_library(needed_library);
-
+    // std::cout << "Reduce:= " <<N << std::endl;
     // Extract the folder path from the Red file's location
     std::filesystem::path basePath = std::filesystem::path(Red).parent_path();
     // std::cout << base_filename<< "base_filename" << std::endl;
@@ -2424,7 +2439,7 @@ std::pair<std::string, long> singular_template_reduce(const std::string& Red,
     std::string ids = worker();
     std::pair<int, lists> Gb = deserialize(Red, ids);
 
-    auto start_computation = std::chrono::high_resolution_clock::now();
+   
 
     lists Gb_data = (lists)(Gb.second);
     lists tmpL1 = (lists)(Gb_data->m[3].Data());
@@ -2432,61 +2447,79 @@ std::pair<std::string, long> singular_template_reduce(const std::string& Red,
     ideal C = nullptr;
     int counter = 0;
     int r=0;int c=0;
-    poly vec = nullptr;
-    leftv L = nullptr; leftv LL = nullptr;
-    for (unsigned long  i = 1; i <= N; ++i) { // Iterate from 1 to N to match "1.ssi", "2.ssi", etc.
-        // Construct the full path for i.ssi files within the same folder as Red
-        std::string filename = (basePath / (std::to_string(i) + ".ssi")).string();
-            // std::cout << filename<< "" << std::endl;
-          
-            if (!std::filesystem::exists(filename)) {
-                // std::cerr << "File not found: " << filename << ". Skipping this iteration." << std::endl;
-                continue;  // Skip to next iteration
-            }
-            
-        // Deserialize using the full path
-        std::pair<int, lists> input_part = deserialize(filename, ids);
+    poly vec = NULL;
+    leftv L = nullptr;
+    std::pair<int, lists> input_part;
+    std::string filename;
 
-        lists token = (lists)(input_part.second);
-        lists tmpL = (lists)(token->m[3].Data());
-     
-        vec = (poly)tmpL->m[0].Data();
-        counter = (int)(long)tmpL->m[5].Data();
-        if (tmpL1->m[0].Typ() == IDEAL_CMD) {
-            // Handle case where `f` is an ideal
-            r = IDELEMS((ideal)(tmpL1->m[0].Data()));
-          
-            L=&tmpL->m[4];
-          
-           c = IDELEMS((ideal)L->Data());
-         
-        } else if (tmpL1->m[0].Typ() == VECTOR_CMD) {
-            // Handle case where `f` is a vector
-            ideal t=(ideal)(tmpL1->m[4].Data());
-            r = IDELEMS(t);
-            L=&tmpL->m[4];
-          
-           c = IDELEMS((ideal)L->Data());
-        }
-        ideal A = idCopy((ideal)tmpL->m[1].Data());
-        if (C == nullptr) {
-            C = idCopy(A);
-        } else {
-            ideal temp = idInit(IDELEMS(C), r);
-            temp = sm_Add(C, A, currRing);
-            idDelete(&C);
-            C = idCopy(temp);
-            idDelete(&temp);
-        }
-        idDelete(&A);
 
-        try {
-            std::filesystem::remove(filename);
-            // std::cout << "Deleted file: " << filename << std::endl;
-        } catch (const std::filesystem::filesystem_error& e) {
-            std::cerr << "Failed to delete " << filename << ": " << e.what() << std::endl;
-        }
+          // Open a log file for timing information
+  // Full path to the log file
+  std::string logFilePath = "/scratch/gnawali/Try/gspc-res/example_dir/Smatrix_timing.log";
+ 
+  // Open the log file
+  std::ofstream logFile(logFilePath, std::ios::app);
+  if (!logFile.is_open()) {
+      std::cerr << "Error: Failed to open log file at " << logFilePath << "!" << std::endl;
+      return {"", 0};  // Exit early if file cannot be opened
+  } else {
+      std::cout << "Log file opened successfully at " << logFilePath << "." << std::endl;
+  }
+  // Start timing before the loop
+auto start_addition = std::chrono::high_resolution_clock::now();
+int start = ranges.first;  // Get the start value
+int end = ranges.second; 
+for (int i = start; i <=end; ++i) {  
+    filename = (basePath / (std::to_string(i) + ".ssi")).string();
+    
+    if (!std::filesystem::exists(filename)) {
+        continue;  // Skip to next iteration
     }
+
+    input_part = deserialize(filename, ids);
+    lists token = (lists)input_part.second;
+    lists tmpL = (lists)(token->m[3].Data());
+
+    vec = (poly)tmpL->m[0].Data();
+    counter = (int)(long)tmpL->m[5].Data();
+
+    if (tmpL1->m[0].Typ() == IDEAL_CMD) {
+        r = IDELEMS((ideal)(tmpL1->m[0].Data()));
+        L = &tmpL->m[4];
+        c = IDELEMS((ideal)L->Data());
+    } else if (tmpL1->m[0].Typ() == VECTOR_CMD) {
+        ideal t = (ideal)(tmpL1->m[4].Data());
+        r = IDELEMS(t);
+        L = &tmpL->m[4];
+        c = IDELEMS((ideal)L->Data());
+    }
+
+    ideal A = (ideal)tmpL->m[1].Data();
+
+    if (C == nullptr) {
+        C = idCopy(A);
+    } else {
+        sum_InplaceAdd(C, A, currRing);
+        id_Normalize(C, currRing);
+    }
+
+    idDelete(&A);
+
+    try {
+        std::filesystem::remove(filename);
+    } catch (const std::filesystem::filesystem_error& e) {
+        std::cerr << "Failed to delete " << filename << ": " << e.what() << std::endl;
+    }
+}
+
+// Stop timing after the loop
+auto end_addition = std::chrono::high_resolution_clock::now();
+auto addition_time = std::chrono::duration_cast<std::chrono::nanoseconds>(end_addition - start_addition).count();
+
+// Log total addition time
+logFile << "Total Addition Time: " << addition_time << " ns\n";
+logFile.flush();  // Ensure immediate write
+
 
     lists output = (lists)omAlloc0Bin(slists_bin);
     output->Init(4);
@@ -2507,17 +2540,13 @@ std::pair<std::string, long> singular_template_reduce(const std::string& Red,
     t->m[2].rtyp = INT_CMD; t->m[2].data = (void*)(long)r;
     t->m[3].rtyp = INT_CMD; t->m[3].data = (void*)(long)c;
 
-    if (tmpL1->m[0].Typ() == IDEAL_CMD && L != nullptr) {
-        t->m[4].rtyp = MODUL_CMD;
-        t->m[4].data = L->CopyD();
-    } else if (tmpL1->m[0].Typ() == VECTOR_CMD && LL != nullptr) {
-        t->m[4].rtyp = MODUL_CMD;
-        t->m[4].data = LL->CopyD();
-    } else {
-        std::cerr << "Error: L or LL is null. Cannot call CopyD." << std::endl;
-        throw std::runtime_error("Null pointer in CopyD call");
+    if (tmpL1->m[0].Typ() == IDEAL_CMD) {
+        t->m[4].rtyp=MODUL_CMD; t->m[4].data= L->CopyD();//Tok.data[5]
+
+    } 
+    else if (tmpL1->m[0].Typ() == VECTOR_CMD) {
+        t->m[4].rtyp=MODUL_CMD; t->m[4].data= L->CopyD();//Tok.data[5]
     }
-    
     t->m[5].rtyp = INT_CMD; t->m[5].data = (void*)(long)counter;
     t->m[6].rtyp = INT_CMD; t->m[6].data = (void*)(long)(counter + 1);
 
@@ -2528,8 +2557,160 @@ std::pair<std::string, long> singular_template_reduce(const std::string& Red,
 
     std::string out_filename = serialize(output, base_filename);
 
-    auto end_computation = std::chrono::high_resolution_clock::now();
-    auto computation_time = std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - start_computation).count();
-
-    return {out_filename, computation_time};
+    logFile.close();
+    rKill(currRing); 
+    return {out_filename, addition_time};
 }
+
+
+
+
+
+// NO_NAME_MANGLING
+// std::pair<std::string, long> singular_template_reduce(const std::string& Red, 
+//     unsigned long N,
+//     const std::string& needed_library,
+//     const std::string& base_filename) 
+// {
+//     init_singular(config::singularLibrary().string());
+//     load_singular_library(needed_library);
+//     // std::cout << "Reduce:= " <<N << std::endl;
+//     // Extract the folder path from the Red file's location
+//     std::filesystem::path basePath = std::filesystem::path(Red).parent_path();
+//     // std::cout << base_filename<< "base_filename" << std::endl;
+//     // std::cout <<Red<< "" << std::endl;
+//     // std::cout <<N<< "=:Reduce" << std::endl;
+//     std::string ids = worker();
+//     std::pair<int, lists> Gb = deserialize(Red, ids);
+
+//     auto start_computation = std::chrono::high_resolution_clock::now();
+
+//     lists Gb_data = (lists)(Gb.second);
+//     lists tmpL1 = (lists)(Gb_data->m[3].Data());
+   
+//     ideal C = nullptr;
+//     int counter = 0;
+//     int r=0;int c=0;
+//     poly vec = NULL;
+//     leftv L = nullptr;
+//     std::pair<int, lists> input_part;
+ 
+//     std::string filename;
+//     for (unsigned long i = N; i > 0; --i) {  
+//         // Your code here  
+//     // Iterate from 1 to N to match "1.ssi", "2.ssi", etc.
+//         // Construct the full path for i.ssi files within the same folder as Red
+//        filename = (basePath / (std::to_string(i) + ".ssi")).string();
+//             // std::cout << "i:="<< i << std::endl;
+          
+//             if (!std::filesystem::exists(filename)) {
+//                 // std::cerr << "File not found: " << filename << ". Skipping this iteration." << std::endl;
+//                 continue;  // Skip to next iteration
+//             }
+            
+      
+//         input_part = deserialize(filename, ids);
+
+//         lists token = (lists)input_part.second;
+//         lists tmpL = (lists)(token->m[3].Data());
+
+         
+
+
+//           // At this point, L might still point to tmpL or token, so  need to ensure it's safe to free it
+//           if (L != nullptr) {
+//             L = nullptr;  // Reset L to prevent any dangling pointers
+//         }
+
+//         vec = (poly)tmpL->m[0].Data();
+//         counter = (int)(long)tmpL->m[5].Data();
+//         if (tmpL1->m[0].Typ() == IDEAL_CMD) {
+//             // Handle case where `f` is an ideal
+//             r = IDELEMS((ideal)(tmpL1->m[0].Data()));
+          
+//             L=&tmpL->m[4];
+          
+//            c = IDELEMS((ideal)L->Data());
+         
+//         } else if (tmpL1->m[0].Typ() == VECTOR_CMD) {
+//             // Handle case where `f` is a vector
+//             ideal t=(ideal)(tmpL1->m[4].Data());
+//             r = IDELEMS(t);
+//             L=&tmpL->m[4];
+          
+//            c = IDELEMS((ideal)L->Data());
+//         }
+//         ideal A = (ideal)tmpL->m[1].Data();
+        
+//         if (C == nullptr) {
+//             C = idCopy(A);
+//         }
+  
+//     else {
+//         sum_InplaceAdd(C, A, currRing);  
+//         id_Normalize(C, currRing);
+        
+//     }
+             
+   
+    
+        
+//         idDelete(&A);
+        
+     
+ 
+
+//         try {
+//             std::filesystem::remove(filename);
+//             // std::cout << "Deleted file: " << filename << std::endl;
+//         } catch (const std::filesystem::filesystem_error& e) {
+//             std::cerr << "Failed to delete " << filename << ": " << e.what() << std::endl;
+//         }
+//     }
+   
+   
+  
+  
+
+//     lists output = (lists)omAlloc0Bin(slists_bin);
+//     output->Init(4);
+
+//     lists t = (lists)omAlloc0Bin(slists_bin);
+//     t->Init(2);
+//     t->m[0].rtyp = STRING_CMD; t->m[0].data = strdup("generators");
+//     t->m[1].rtyp = STRING_CMD; t->m[1].data = strdup("FirstSyz_smatrix");
+
+//     output->m[1].rtyp = LIST_CMD; output->m[1].data = t;
+//     output->m[0].rtyp = RING_CMD; output->m[0].data = currRing;
+//     output->m[2].rtyp = RING_CMD; output->m[2].data = currRing;
+
+//     t = (lists)omAlloc0Bin(slists_bin);
+//     t->Init(7);
+//     t->m[0].rtyp = VECTOR_CMD; t->m[0].data = vec;
+//     t->m[1].rtyp = SMATRIX_CMD; t->m[1].data = C;
+//     t->m[2].rtyp = INT_CMD; t->m[2].data = (void*)(long)r;
+//     t->m[3].rtyp = INT_CMD; t->m[3].data = (void*)(long)c;
+
+//     if (tmpL1->m[0].Typ() == IDEAL_CMD) {
+//         t->m[4].rtyp=MODUL_CMD; t->m[4].data= L->CopyD();//Tok.data[5]
+
+//     } 
+//     else if (tmpL1->m[0].Typ() == VECTOR_CMD) {
+//         t->m[4].rtyp=MODUL_CMD; t->m[4].data= L->CopyD();//Tok.data[5]
+//     }
+//     t->m[5].rtyp = INT_CMD; t->m[5].data = (void*)(long)counter;
+//     t->m[6].rtyp = INT_CMD; t->m[6].data = (void*)(long)(counter + 1);
+
+//     output->m[3].rtyp = LIST_CMD; output->m[3].data = t;
+
+//     int cmd_nr;
+//     blackboxIsCmd("token", cmd_nr);
+
+//     std::string out_filename = serialize(output, base_filename);
+
+//     auto end_computation = std::chrono::high_resolution_clock::now();
+//     auto computation_time = std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - start_computation).count();
+  
+//     rKill(currRing); 
+//     return {out_filename, computation_time};
+// }

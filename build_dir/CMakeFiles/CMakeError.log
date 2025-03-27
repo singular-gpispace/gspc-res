@@ -1,30 +1,30 @@
 Performing C++ SOURCE FILE Test CXX_COMPILER_SUPPORTS__Wundefined_reinterpret_cast failed with the following output:
-Change Dir: /scratch/gnawali/Try/gspc-res/build_dir/CMakeFiles/CMakeScratch/TryCompile-TiQETg
+Change Dir: /scratch/gnawali/Try/gspc-res/build_dir/CMakeFiles/CMakeScratch/TryCompile-fOAnAl
 
-Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_88b03/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_88b03.dir/build.make CMakeFiles/cmTC_88b03.dir/build
-gmake[1]: Entering directory '/scratch/gnawali/Try/gspc-res/build_dir/CMakeFiles/CMakeScratch/TryCompile-TiQETg'
-Building CXX object CMakeFiles/cmTC_88b03.dir/src.cxx.o
-/usr/bin/c++ -DCXX_COMPILER_SUPPORTS__Wundefined_reinterpret_cast  -Wall -Wextra -Werror    -Wundefined-reinterpret-cast -std=gnu++17 -o CMakeFiles/cmTC_88b03.dir/src.cxx.o -c /scratch/gnawali/Try/gspc-res/build_dir/CMakeFiles/CMakeScratch/TryCompile-TiQETg/src.cxx
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_e5b2f/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_e5b2f.dir/build.make CMakeFiles/cmTC_e5b2f.dir/build
+gmake[1]: Entering directory '/scratch/gnawali/Try/gspc-res/build_dir/CMakeFiles/CMakeScratch/TryCompile-fOAnAl'
+Building CXX object CMakeFiles/cmTC_e5b2f.dir/src.cxx.o
+/usr/bin/c++ -DCXX_COMPILER_SUPPORTS__Wundefined_reinterpret_cast  -Wall -Wextra -Werror    -Wundefined-reinterpret-cast -std=gnu++17 -o CMakeFiles/cmTC_e5b2f.dir/src.cxx.o -c /scratch/gnawali/Try/gspc-res/build_dir/CMakeFiles/CMakeScratch/TryCompile-fOAnAl/src.cxx
 c++: error: unrecognized command-line option '-Wundefined-reinterpret-cast'
-gmake[1]: *** [CMakeFiles/cmTC_88b03.dir/build.make:78: CMakeFiles/cmTC_88b03.dir/src.cxx.o] Error 1
-gmake[1]: Leaving directory '/scratch/gnawali/Try/gspc-res/build_dir/CMakeFiles/CMakeScratch/TryCompile-TiQETg'
-gmake: *** [Makefile:127: cmTC_88b03/fast] Error 2
+gmake[1]: *** [CMakeFiles/cmTC_e5b2f.dir/build.make:78: CMakeFiles/cmTC_e5b2f.dir/src.cxx.o] Error 1
+gmake[1]: Leaving directory '/scratch/gnawali/Try/gspc-res/build_dir/CMakeFiles/CMakeScratch/TryCompile-fOAnAl'
+gmake: *** [Makefile:127: cmTC_e5b2f/fast] Error 2
 
 
 Source file was:
 int main() { return 0; }
 
 Performing C++ SOURCE FILE Test CXX_COMPILER_SUPPORTS__Wextra_semi_stmt failed with the following output:
-Change Dir: /scratch/gnawali/Try/gspc-res/build_dir/CMakeFiles/CMakeScratch/TryCompile-T8jDfk
+Change Dir: /scratch/gnawali/Try/gspc-res/build_dir/CMakeFiles/CMakeScratch/TryCompile-IpOp5T
 
-Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_48fc9/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_48fc9.dir/build.make CMakeFiles/cmTC_48fc9.dir/build
-gmake[1]: Entering directory '/scratch/gnawali/Try/gspc-res/build_dir/CMakeFiles/CMakeScratch/TryCompile-T8jDfk'
-Building CXX object CMakeFiles/cmTC_48fc9.dir/src.cxx.o
-/usr/bin/c++ -DCXX_COMPILER_SUPPORTS__Wextra_semi_stmt  -Wall -Wextra -Werror    -Wextra-semi-stmt -std=gnu++17 -o CMakeFiles/cmTC_48fc9.dir/src.cxx.o -c /scratch/gnawali/Try/gspc-res/build_dir/CMakeFiles/CMakeScratch/TryCompile-T8jDfk/src.cxx
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_e93bb/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_e93bb.dir/build.make CMakeFiles/cmTC_e93bb.dir/build
+gmake[1]: Entering directory '/scratch/gnawali/Try/gspc-res/build_dir/CMakeFiles/CMakeScratch/TryCompile-IpOp5T'
+Building CXX object CMakeFiles/cmTC_e93bb.dir/src.cxx.o
+/usr/bin/c++ -DCXX_COMPILER_SUPPORTS__Wextra_semi_stmt  -Wall -Wextra -Werror    -Wextra-semi-stmt -std=gnu++17 -o CMakeFiles/cmTC_e93bb.dir/src.cxx.o -c /scratch/gnawali/Try/gspc-res/build_dir/CMakeFiles/CMakeScratch/TryCompile-IpOp5T/src.cxx
 c++: error: unrecognized command-line option '-Wextra-semi-stmt'; did you mean '-Wextra-semi'?
-gmake[1]: *** [CMakeFiles/cmTC_48fc9.dir/build.make:78: CMakeFiles/cmTC_48fc9.dir/src.cxx.o] Error 1
-gmake[1]: Leaving directory '/scratch/gnawali/Try/gspc-res/build_dir/CMakeFiles/CMakeScratch/TryCompile-T8jDfk'
-gmake: *** [Makefile:127: cmTC_48fc9/fast] Error 2
+gmake[1]: *** [CMakeFiles/cmTC_e93bb.dir/build.make:78: CMakeFiles/cmTC_e93bb.dir/src.cxx.o] Error 1
+gmake[1]: Leaving directory '/scratch/gnawali/Try/gspc-res/build_dir/CMakeFiles/CMakeScratch/TryCompile-IpOp5T'
+gmake: *** [Makefile:127: cmTC_e93bb/fast] Error 2
 
 
 Source file was:
