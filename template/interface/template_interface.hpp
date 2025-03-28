@@ -73,13 +73,20 @@ std::tuple<std::vector<std::string>, int,  long> singular_template_SUBLIFT ( std
                                       std::pair<std::string, long> singular_template_reduce(
                                           std::string const& Red,
                                           const std::pair<int, int>& ranges,
+                                          int N,
                                           std::string const& needed_library,
                                           std::string const& base_filename
                                       );
                                       
 
 
-                                      
+                                      NO_NAME_MANGLING
+                                      std::pair<std::string, long> singular_template_ADD_Seq( std::string const&
+                                                                            ,int N
+                                                                           , std::string const&
+                                                                         
+                                                                , std::string const&
+                                                                            );   
 
                                       
                                       NO_NAME_MANGLING

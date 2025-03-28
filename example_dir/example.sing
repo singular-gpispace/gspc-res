@@ -12,8 +12,8 @@ LIB "random.lib";
     
 // Configure GPI-Space	
 configToken gc = configure_gspc();
-gc.options.tmpdir = "/scratch/gnawali/Try/gspc-res/example_dir/temp";
-// gc.options.tmpdir = "/dev/shm/gnawali/temp";
+// gc.options.tmpdir = "/scratch/gnawali/Try/gspc-res/example_dir/temp";
+gc.options.tmpdir = "/dev/shm/gnawali/temp";
 gc.options.nodefile = "nodefile";
 gc.options.procspernode = 24;
 gc.options.loghost = "cipserv05";
@@ -51,13 +51,13 @@ gc.options.loghost = "cipserv05";
 // poly f3= xy + z2; 
 // ideal J=f1,f2,f3;
 
-//  <"ideal_M2.sing";
+ <"ideal_M2.sing";
 
 
  //Example 1:
 
-ring R= 0, (w,x,y,z), (dp,c);
-ideal J= w2-x*z, w*x- y*z, x2-w*y, x*y- z2, y2- w*z;
+// ring R= 0, (w,x,y,z), (dp,c);
+// ideal J= w2-x*z, w*x- y*z, x2-w*y, x*y- z2, y2- w*z;
 // module m;
 // vector s1=[-x,w,-z,0,0];
 // vector s2=[y,-x,w,0,0];
@@ -227,7 +227,7 @@ print("timer");
 
 // spack location -i gpi-space
 // spack find gpi-space
-//pnet: cat template.xpnet | pnetc  | pnet2dot | dot -Tsvg > First_LIFT_LEAD_GPI.svg
+//pnet: cat template.xpnet | pnetc  | pnet2dot | dot -Tsvg > Rename_GPI.svg
 
 //Starting monitor:gspc-monitor --port 9876 &
 

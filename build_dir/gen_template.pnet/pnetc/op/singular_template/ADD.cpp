@@ -17,10 +17,10 @@ namespace pnetc
         , const std::string& base_filename
         , const std::string& input
         , const std::string& range
-        , std::string& s
+        , const int& N
         )
       {
-#line 954 "/scratch/gnawali/Try/gspc-res/template/workflow/template.xpnet"
+#line 1020 "/scratch/gnawali/Try/gspc-res/template/workflow/template.xpnet"
 
              
                 auto computation_time = std::chrono::high_resolution_clock::now();
@@ -37,16 +37,16 @@ namespace pnetc
 
         std::vector<std::pair<int, int>> range_pair = {{start, end}};
 
-
-           auto result  = RESOLVE_INTERFACE_FUNCTION(singular_template_reduce)(input,{start, end},library_name, base_filename
+        std::cout << "Parsed range: {" << start << ", " << end << "}" << std::endl;
+           auto result  = RESOLVE_INTERFACE_FUNCTION(singular_template_reduce)(input,{start, end},N,library_name, base_filename
             ); 
             auto end_computation = std::chrono::high_resolution_clock::now();
             auto computation_duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - computation_time).count();
     
-              s = result.first;
+            auto  s = result.first;
            
          
-          // std::cout << "Reduce:" << s << std::endl;
+              std::cout << "Parsed range: {" << start << ", " << end << "}" << "for s="<<s<<std::endl;
              
 
 std::cout << "Reduce Duration: " <<computation_duration << "nanosecond" << std::endl;

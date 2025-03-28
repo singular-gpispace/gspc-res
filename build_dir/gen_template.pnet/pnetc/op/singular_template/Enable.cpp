@@ -21,6 +21,7 @@ namespace pnetc
         , const we::type::literal::control& IN
         , const int& r
         , std::list<pnet::type::value::value_type>& out
+        , we::type::literal::control& c
         )
       {
 #line 894 "/scratch/gnawali/Try/gspc-res/template/workflow/template.xpnet"
@@ -34,6 +35,7 @@ namespace pnetc
         for (int i = 0; i < r; ++i) {
           int end = start + n - 1 + (i < remainder ? 1 : 0);
           std::string range_str = "[" + std::to_string(start) + "," + std::to_string(end) + "]";
+          std::cout << "Generated range: " << range_str << std::endl;
           out.push_back(range_str);
           start = end + 1;
       }

@@ -14,7 +14,7 @@
 	<in name="base_filename" type="string" place="place_base_filename"/>
 	<in name="library_name" type="string" place="place_library_name"/>
   <in name="input" type="string" place="place_initiate"/>
-  <out name ="OUTPUT" type ="string" place ="place_Final_Syz"/>
+  <out name ="OUTPUT" type ="string" place ="place_Syz"/>
   
 	<net>
   <place name ="place_initiate" type ="string"/>
@@ -29,14 +29,14 @@
    
    
     <place name ="place_Syz" type ="string"/>
-    <place name ="place_Final_Syz" type ="string"/>
+  
   
     
  
 
 
     <place name="place_M" type="unsigned long">
-    <token><value>300UL</value></token>
+    <token><value>30UL</value></token>
   </place>
 
  
@@ -46,7 +46,7 @@
   </place>
    
   <place name="place_Init_N" type="unsigned long">
-  <token><value>300UL</value></token>
+  <token><value>30UL</value></token>
 </place>
 
 
@@ -184,7 +184,7 @@
     
       
         <condition>
-           ${k2} :lt: 300UL:and:${k1} :eq: 0UL
+           ${k2} :lt: 30UL:and:${k1} :eq: 0UL
         </condition>
       </defun>
       <connect-number-of-tokens port="k1" place="place_drainage_control"/>
@@ -328,7 +328,7 @@
                           
                           }
                       
-                        std::cout << "LeadSyzTiming:= " << computation_duration<< " nanoseconds" << std::endl;
+                        // std::cout << "LeadSyzTiming:= " << computation_duration<< " nanoseconds" << std::endl;
                          
                       
               
@@ -879,11 +879,11 @@
      <in name ="r" type ="int"/>
      <in name ="IN" type ="control"/>
      <out name="out" type="list"/>
-       
+     <out name="c" type="control"/>
   
     
     
-      <module name="singular_template" function="Enable(N,IN,r,out)">
+      <module name="singular_template" function="Enable(N,IN,r,out,c)">
       <cinclude href="interface/template_interface.hpp" />
       <cinclude href="util-generic/dynamic_linking.hpp"/>
        <cinclude href="vector"/>
@@ -901,6 +901,7 @@
         for (int i = 0; i < r; ++i) {
           int end = start + n - 1 + (i < remainder ? 1 : 0);
           std::string range_str = "[" + std::to_string(start) + "," + std::to_string(end) + "]";
+          std::cout << "Generated range: " << range_str << std::endl;
           out.push_back(range_str);
           start = end + 1;
       }
@@ -916,15 +917,80 @@
     
     
     <connect-in port="IN" place="place_Add_control"/>
-    <connect-in port="r" place="place_ncores"/>
+    <connect-read port="r" place="place_ncores"/>
     <connect-out-many port="out" place="place_Add_Enable"/>
     <connect-in port="N" place="place_start_pool"/>
-  
+    <connect-out port="c" place="place_control_Add_Seq"/>
    
   
   </transition>
   
 
+  <place name="place_control_Add_Seq" type="control">
+
+  </place>
+
+  <place name="place_Pool_Add" type="int">
+
+</place>
+
+<place name="place_startFill_control" type="control">
+<token><value>[]</value></token>
+</place>
+
+
+  <!-- Transition: StartFill_Sequential_ADD -->
+  <transition name="Fill_Seq_Add">
+    <defun>
+    
+      <out name="outgoing" type="list"/>
+      <in name="N" type="int"/> 
+      <in name="k1" type="control"/> 
+    
+     
+      <module name="singular_template" function="Fill_IN_Add(outgoing,N,k1)">
+        <cinclude href="interface/template_interface.hpp" />
+        <cinclude href="util-generic/dynamic_linking.hpp"/>
+        <cinclude href="iostream"/>
+        <cinclude href="chrono"/>
+        <code><![CDATA[
+       
+         // Fill outgoing with the next batch
+         for(int k =1; k <= N; k++) {
+          outgoing.emplace_back(k);
+          //  std::cout << "batch_start:"<<k << std::endl;
+        }
+        // Batch=N+1;
+     
+          // Fill outgoing with the next batch
+          // for(unsigned long k = Batch; k <= N; k++) {
+          //   outgoing.emplace_back(k);
+          //   //  std::cout << "batch_start:"<<k << std::endl;
+          // }
+          // Batch=N+1;
+          // N=N+M;
+       
+      // std::cout << "Last:"<<N << std::endl;
+        ]]></code>
+      </module>
+  
+    
+    
+    </defun>
+  
+  
+    <connect-read port="N" place="place_ncores"/>
+    <connect-in port ="k1" place="place_startFill_control"/>
+  
+   
+    <connect-out-many port="outgoing" place="place_Pool_Add"/>
+   
+  </transition>
+  
+    
+
+
+   
 
  
 
@@ -936,14 +1002,14 @@
   
    <in name="library_name" type="string"/>
    <in name="base_filename" type="string"/>
-      <out name="s" type="string"/>
+   <in name="N" type="int"/> 
       <in name="range" type="string"/>
      
       <in name="input" type="string"/>
      
    <module name="singular_template"
                 require_function_unloads_without_rest="false"
-                function="ADD(library_name, base_filename,input,s,range)">
+                function="ADD(library_name, base_filename,input,range,N)">
             <cinclude href="interface/template_interface.hpp" />
             <cinclude href="util-generic/dynamic_linking.hpp"/>
             <cinclude href="iostream"/>
@@ -967,19 +1033,19 @@
 
         std::vector<std::pair<int, int>> range_pair = {{start, end}};
 
-
-           auto result  = RESOLVE_INTERFACE_FUNCTION(singular_template_reduce)(input,{start, end},library_name, base_filename
+        // std::cout << "Parsed range: {" << start << ", " << end << "}" << std::endl;
+           auto result  = RESOLVE_INTERFACE_FUNCTION(singular_template_reduce)(input,{start, end},N,library_name, base_filename
             ); 
             auto end_computation = std::chrono::high_resolution_clock::now();
             auto computation_duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - computation_time).count();
     
-              s = result.first;
+            auto  s = result.first;
            
          
-          // std::cout << "Reduce:" << s << std::endl;
+              // std::cout << "Parsed range: {" << start << ", " << end << "}" << "for s="<<s<<std::endl;
              
 
-std::cout << "Reduce Duration: " <<computation_duration << "nanosecond" << std::endl;
+// std::cout << "Reduce Duration: " <<computation_duration << "nanosecond" << std::endl;
 
               ]]></code>
                
@@ -993,43 +1059,87 @@ std::cout << "Reduce Duration: " <<computation_duration << "nanosecond" << std::
     <connect-read port="input" place="place_input_GB"/>
    
     <connect-in port="range" place="place_Add_Enable"/> 
+    <connect-in port="N" place="place_Pool_Add"/>
    
+   
+    
+  </transition> 
+
+
+
+
+  <!-- Transition Seq_Add-->
+  <transition name="Add_seq">
+    <defun>
+    <require key="worker" mandatory="true"/>
   
+   <in name="library_name" type="string"/>
+   <in name="base_filename" type="string"/>
+      <out name="s" type="string"/>
+      <in name ="N" type ="int"/>
+      <in name="k2" type="unsigned long"/>
+      <in name="c" type="control"/>
+      <in name="input" type="string"/>
+     
+   <module name="singular_template"
+                require_function_unloads_without_rest="false"
+                function="ADD_Seq(library_name, base_filename,input,s,N,k2,c)">
+            <cinclude href="interface/template_interface.hpp" />
+            <cinclude href="util-generic/dynamic_linking.hpp"/>
+            <cinclude href="iostream"/>
+           <cinclude href="chrono"/>
+
+              <code><![CDATA[
+             
+                auto computation_time = std::chrono::high_resolution_clock::now();
+              
+              
+           auto result  = RESOLVE_INTERFACE_FUNCTION(singular_template_ADD_Seq)(input,N,library_name, base_filename
+            ); 
+            auto end_computation = std::chrono::high_resolution_clock::now();
+            auto computation_duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - computation_time).count();
+    
+              s = result.first;
+           
+         
+          std::cout << "Add_seq:" << s << std::endl;
+             
+
+// std::cout << "Reduce Duration: " <<computation_duration << "nanosecond" << std::endl;
+
+              ]]></code>
+               
+          </module>
+          <condition>
+  
+          ${k2} :eq: 0UL
+         
+        
+      
+      
+         
+        
+      
+       </condition>
+       
+    </defun>
+   
+    <connect-number-of-tokens port="k2" place="place_Pool_Add"/>
+    <connect-read port="library_name" place="place_library_name"/> 
+    <connect-read port="base_filename" place="place_base_filename"/>
+    <connect-read port="input" place="place_input_GB"/>
+   
+    <connect-in port="N" place="place_ncores"/>
+    <connect-in port="c" place="place_control_Add_Seq"/>
+   
     <connect-out port="s" place="place_Syz"/>
     
   </transition> 
 
-  <!-- Transition: EndTime -->
-  <transition name="EndTime_Syz">
-      <defun>
-          <in name="start_time" type="long"/>
-          <inout name="computed_output" type="string"/>
-        
-         
-           <module name="singular_template" function="EndTime_Syz(start_time,computed_output)">
-           <cinclude href="interface/template_interface.hpp" />
-        <cinclude href="util-generic/dynamic_linking.hpp"/>
-        <cinclude href="iostream"/>
-        <cinclude href="chrono"/>
-          <code><![CDATA[
-                  auto computation_time = std::chrono::high_resolution_clock::now();
-                  auto duration = computation_time.time_since_epoch();
-                  long current_time = std::chrono::duration_cast<std::chrono::nanoseconds>(duration).count();
-                 auto  end_timer = current_time - start_time; // Calculate elapsed time
-                
-                  std::cout << "Calculate Syz: = " << end_timer << " nanoseconds" << std::endl;
-              ]]></code>
-           </module>
-       
-      </defun>
-      
-      <connect-in port="start_time" place="place_StartTime"/>
-      <connect-in port="computed_output" place="place_Syz"/>
-     
-      <connect-out port="computed_output" place="place_Final_Syz"/>
-    
-      
-  </transition>
+
+
+
+
 
   </net>
 </defun>

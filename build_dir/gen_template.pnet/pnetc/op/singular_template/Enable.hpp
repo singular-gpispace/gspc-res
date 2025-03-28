@@ -16,6 +16,7 @@ namespace pnetc
         , const we::type::literal::control& IN
         , const int& r
         , std::list<pnet::type::value::value_type>& out
+        , we::type::literal::control& c
         );
     }
   }
