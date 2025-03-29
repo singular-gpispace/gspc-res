@@ -13,8 +13,8 @@ namespace pnetc
         ( const std::string& library_name
         , const std::string& base_filename
         , const std::string& input
-        , const std::string& range
-        , const int& N
+        , const unsigned long& N
+        , std::string& s
         );
     }
   }
