@@ -2445,12 +2445,12 @@ std::pair<std::string, long> singular_template_reduce(const std::string& Red,
     std::pair<int, lists> input_part;
     std::string filename;
 
-    std::string logFilePath = "/scratch/gnawali/Try/gspc-res/example_dir/Smatrix_timing.log";
-    std::ofstream logFile(logFilePath, std::ios::app);
-    if (!logFile.is_open()) {
-        std::cerr << "Error: Failed to open log file at " << logFilePath << "!" << std::endl;
-        return {"", 0};
-    }
+    // std::string logFilePath = "/scratch/gnawali/Try/gspc-res/example_dir/Smatrix_timing.log";
+    // std::ofstream logFile(logFilePath, std::ios::app);
+    // if (!logFile.is_open()) {
+    //     std::cerr << "Error: Failed to open log file at " << logFilePath << "!" << std::endl;
+    //     return {"", 0};
+    // }
     
     auto start_addition = std::chrono::high_resolution_clock::now();
     int start = ranges.first;
@@ -2491,6 +2491,7 @@ std::pair<std::string, long> singular_template_reduce(const std::string& Red,
 
         if (C == nullptr) {
             C = idCopy(A);
+            id_Normalize(C, currRing);
         } else {
             sum_InplaceAdd(C, A, currRing);
             id_Normalize(C, currRing);
@@ -2541,10 +2542,7 @@ std::pair<std::string, long> singular_template_reduce(const std::string& Red,
         return {empty_filename, 0};  // Return the empty list with 0 time
     }
     
-    auto end_addition = std::chrono::high_resolution_clock::now();
-    auto addition_time = std::chrono::duration_cast<std::chrono::nanoseconds>(end_addition - start_addition).count();
-    logFile << "Total Addition Time: " << addition_time << " ns\n";
-    logFile.flush();
+ 
     
     lists output = (lists)omAlloc0Bin(slists_bin);
     output->Init(4);
@@ -2576,8 +2574,12 @@ std::pair<std::string, long> singular_template_reduce(const std::string& Red,
     int cmd_nr;
     blackboxIsCmd("token", cmd_nr);
     std::string out_filename = serialize_with_N(output, base_filename,N);
-
-    logFile.close();
+    auto end_addition = std::chrono::high_resolution_clock::now();
+    auto addition_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_addition - start_addition).count();
+    // logFile << "Total Addition Time: " << addition_time << " ms\n";
+    // logFile.flush();
+    // logFile.close();
+   
     return {out_filename, addition_time};
 }
 
@@ -2770,10 +2772,17 @@ std::pair<std::string, long> singular_template_ADD_Seq(const std::string& Red,
     poly vec = NULL;
     leftv L = nullptr;
     std::pair<int, lists> input_part;
-
+    std::string logFilePath = "/scratch/gnawali/Try/gspc-res/example_dir/Smatrix_timing.log";
+    std::ofstream logFile(logFilePath, std::ios::app);
+    if (!logFile.is_open()) {
+        std::cerr << "Error: Failed to open log file at " << logFilePath << "!" << std::endl;
+        return {"", 0};
+    }
+    
+   
 
     for (int i =1; i<=N; i++) {  
-        // Your code here  
+     
     // Iterate from 1 to N to match "1.ssi", "2.ssi", etc.
         // Construct the full path for i.ssi files within the same folder as Red
         std::string filename = (basePath / (std::to_string(i) + ".ssi")).string();
@@ -2822,6 +2831,7 @@ std::pair<std::string, long> singular_template_ADD_Seq(const std::string& Red,
       
         if (C == nullptr) {
             C = idCopy(A);
+            id_Normalize(C, currRing);
         }
   
     else {
@@ -2884,8 +2894,11 @@ std::pair<std::string, long> singular_template_ADD_Seq(const std::string& Red,
    
     std::string out_filename=serialize(output,base_filename);
     auto end_computation = std::chrono::high_resolution_clock::now();
-    auto computation_time = std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - start_computation).count();
-    // logFile.close();
+    auto computation_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_computation - start_computation).count();
+    logFile << "Total Sequential Addition Time: " << computation_time << " ms\n";
+    logFile.flush();
+    logFile.close();
+
     rKill(currRing); 
     return {out_filename, computation_time};
 }

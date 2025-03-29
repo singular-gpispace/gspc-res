@@ -37,7 +37,7 @@ namespace pnetc
 
         std::vector<std::pair<int, int>> range_pair = {{start, end}};
 
-        std::cout << "Parsed range: {" << start << ", " << end << "}" << std::endl;
+        // std::cout << "Parsed range: {" << start << ", " << end << "}" << std::endl;
            auto result  = RESOLVE_INTERFACE_FUNCTION(singular_template_reduce)(input,{start, end},N,library_name, base_filename
             ); 
             auto end_computation = std::chrono::high_resolution_clock::now();
@@ -46,10 +46,10 @@ namespace pnetc
             auto  s = result.first;
            
          
-              std::cout << "Parsed range: {" << start << ", " << end << "}" << "for s="<<s<<std::endl;
+              // std::cout << "Parsed range: {" << start << ", " << end << "}" << "for s="<<s<<std::endl;
              
 
-std::cout << "Reduce Duration: " <<computation_duration << "nanosecond" << std::endl;
+// std::cout << "Reduce Duration: " <<computation_duration << "nanosecond" << std::endl;
 
               
       }

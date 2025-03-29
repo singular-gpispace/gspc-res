@@ -36,7 +36,7 @@
 
 
     <place name="place_M" type="unsigned long">
-    <token><value>30UL</value></token>
+    <token><value>300UL</value></token>
   </place>
 
  
@@ -46,7 +46,7 @@
   </place>
    
   <place name="place_Init_N" type="unsigned long">
-  <token><value>30UL</value></token>
+  <token><value>300UL</value></token>
 </place>
 
 
@@ -184,7 +184,7 @@
     
       
         <condition>
-           ${k2} :lt: 30UL:and:${k1} :eq: 0UL
+           ${k2} :lt: 300UL:and:${k1} :eq: 0UL
         </condition>
       </defun>
       <connect-number-of-tokens port="k1" place="place_drainage_control"/>
