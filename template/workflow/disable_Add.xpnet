@@ -914,11 +914,10 @@
   
 
 
+ 
   <place name="place_M2" type="control">
 
   </place>
- 
-
 
   <!-- Transition 5: Reduce-->
   <transition name="Add1">
@@ -927,9 +926,10 @@
   
    <in name="library_name" type="string"/>
    <in name="base_filename" type="string"/>
+    <in name="m2" type="control"/>
       <out name="s" type="string"/>
       <in name ="N" type ="unsigned long"/>
-      <in name="m2" type="control"/>
+     
       <in name="input" type="string"/>
      
    <module name="singular_template"
@@ -948,7 +948,7 @@
               //std::cout << "Reduce_l:" <<l << std::endl;
               //std::cout << "Reduce_r" <<r<< std::endl;
               // std::cout << "N in ADD:"<<N<< std::endl;
-           auto result  = RESOLVE_INTERFACE_FUNCTION(singular_template_ADD)(input,N,library_name, base_filename
+           auto result  = RESOLVE_INTERFACE_FUNCTION(singular_template_reduce)(input,N,library_name, base_filename
             ); 
             auto end_computation = std::chrono::high_resolution_clock::now();
             auto computation_duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - computation_time).count();

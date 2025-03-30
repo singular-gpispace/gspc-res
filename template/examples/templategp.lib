@@ -1463,9 +1463,12 @@ proc Add_GPI(token input, int N)
     module M;
    int first_time = 0;  // Initialize first_time as 0 (false)
    int k=1;
+   link l;
+   string command ;
+   string file_k;
     while(k <= N) {
-        string file_k = string(k) + ".ssi";  
-        link l = "ssi:r " + path1 + file_k;  
+        file_k = string(k) + ".ssi";  
+        l = "ssi:r " + path1 + file_k;  
 
         if (status(l, "exists") == "yes") 
         {
@@ -1476,11 +1479,13 @@ proc Add_GPI(token input, int N)
           setring nr;
           module M;
           smatrix sM = t.data[2];
+          kill t;
           // write(l0,sM,"sM");
           M=sM;
           setring inputRing;
            M = fetch(nr, M);
            sM=M;
+           kill M;
           //  C = fetch(inputRing, C);
           // Logic to initialize or update C
          
@@ -1494,21 +1499,17 @@ proc Add_GPI(token input, int N)
                   // sM=fetch(inputRing,sM);
                      C = C + sM;           
                  } 
-              
-            string command = "rm " + path1 + file_k;  // Construct the remove command
+              kill sM;
+             command = "rm " + path1 + file_k;  // Construct the remove command
             system("sh", command);  // Execute the shell command to remove the file
 
-           } else {
-
+           } 
+                 kill nr;
                   k=k+1;
                  
-          }
+          
             // Print C only when k == N (final iteration)
-        if (k == N) 
-        {
-            print("Final C after last iteration (k == N):");
-            print(C);  // Print the final matrix C
-        }    
+          
     }
 
  

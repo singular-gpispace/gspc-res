@@ -50,7 +50,7 @@ namespace pnetc
                           
                           }
                       
-                        std::cout << "LeadSyzTiming:= " << computation_duration<< " nanoseconds" << std::endl;
+                        // std::cout << "LeadSyzTiming:= " << computation_duration<< " nanoseconds" << std::endl;
                          
                       
               

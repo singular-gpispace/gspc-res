@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = -DBOOST_COROUTINES_NO_DEPRECATION_WARNING -DBOOST_TEST_DYN_LINK -DFMT_HEADER_ONLY -DGSPC_WITH_IML=1 -DSINGULAR_template_installation_EXPORTS
 
-CXX_INCLUDES = -I/home/santosh/gspc-res/template/src -I/home/santosh/gspc-res/template -I/home/santosh/gspc-res/build_dir/src -isystem /home/santosh/singular-gpispace/spack/opt/spack/linux-ubuntu22.04-skylake/gcc-11.4.0/gpi-space-24.12-ugaltunbzethad4p3szsepjqdbgthcch/include -isystem /home/santosh/singular-gpispace/spack/opt/spack/linux-ubuntu22.04-skylake/gcc-11.4.0/gpi-space-24.12-ugaltunbzethad4p3szsepjqdbgthcch/external/boost/include
+CXX_INCLUDES = -I/home/santosh/gspc-res/template/src -I/home/santosh/gspc-res/template -I/home/santosh/gspc-res/build_dir/src -isystem /home/santosh/singular-gpispace/spack/opt/spack/linux-ubuntu22.04-skylake/gcc-11.4.0/gpi-space-24.12-ugaltunbzethad4p3szsepjqdbgthcch/include -isystem /home/santosh/singular-gpispace/spack/opt/spack/linux-ubuntu22.04-skylake/gcc-11.4.0/boost-1.63.0-vhcolcnr37ae42wffo5xfk5dsnhmemb2/include
 
 CXX_FLAGS =  -Wall -Wextra -Werror -O3 -DNDEBUG -fPIC -fPIC -fno-gnu-unique -std=gnu++17
 
