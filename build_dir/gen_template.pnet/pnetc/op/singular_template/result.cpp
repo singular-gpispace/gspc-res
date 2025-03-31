@@ -26,7 +26,7 @@ namespace pnetc
 
         
          
-      std::cout << "Result_Success: " << s<< std::endl;
+      // std::cout << "Result_Success: " << s<< std::endl;
       //   std::cout << "counter: " <<counter<< std::endl;
       //   std::cout << "place_E: " <<E<< std::endl;
       //   std::cout << "place_N: " <<N<< std::endl;

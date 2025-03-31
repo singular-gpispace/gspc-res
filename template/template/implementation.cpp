@@ -362,7 +362,7 @@ std::pair<int, lists> ALL_LEAD_GPI(leftv args) {
         field_names->Init(r);
         for (int s = 0; s < r; s++) {
             field_names->m[s].rtyp = STRING_CMD;
-            field_names->m[s].data = strdup("generator");
+            field_names->m[s].data = omStrDup("generator");
            
         }
 
@@ -374,16 +374,16 @@ std::pair<int, lists> ALL_LEAD_GPI(leftv args) {
 
         LLT->m[2].rtyp = RING_CMD; LLT->m[2].data = currRing;
 
-        lists t0 = (lists)omAlloc0Bin(slists_bin);
+        // lists t0 = (lists)omAlloc0Bin(slists_bin);
       
-        t0->Init(r);
-        for (int s = 0; s < r; s++) {
-            t0->m[s].rtyp = LIST_CMD;
-            t0->m[s].data = lCopy(Ld);
-        }
+        // t0->Init(r);
+        // for (int s = 0; s < r; s++) {
+        //     t0->m[s].rtyp = LIST_CMD;
+        //     t0->m[s].data = lCopy(Ld);
+        // }
 
-        LLT->m[3].rtyp = LIST_CMD;
-        LLT->m[3].data = t0;
+        // LLT->m[3].rtyp = LIST_CMD;
+        // LLT->m[3].data = t0;
 
         temp->m[k].rtyp = LIST_CMD;
         temp->m[k].data = lCopy(Ld);
@@ -407,7 +407,7 @@ t->Init(r+1);
 
     // Append "total_number_generator"
    t->m[r].rtyp = STRING_CMD;
-   t->m[r].data = strdup("total_number_generator");
+   t->m[r].data = omStrDup("total_number_generator");
  
     LLT->m[1].rtyp = LIST_CMD;  
     LLT->m[1].data =t;
@@ -558,23 +558,28 @@ std::pair<int, lists> LEAD_GPI(leftv args) {
     LLT->Init(4); // Initialize with 4 fields
     lists temp = (lists)omAlloc0Bin(slists_bin);
     temp->Init(r);
+    ideal sM = idInit(c, r0); 
+    lists Ld =NULL; 
    // Iterate to fill in data
     for (int k = 0; k < r; k++) {
+
+        id_Delete(&sM, currRing);  // Delete the existing sM
+        sM = idInit(c, r0);
         // Create a new token Ld
-        lists Ld = (lists)omAlloc0Bin(slists_bin);
+         Ld = (lists)omAlloc0Bin(slists_bin);
         Ld->Init(4); // Initialize with 4 fields
 
         lists t = (lists)omAlloc0Bin(slists_bin);
         t->Init(2);
-        t->m[0].rtyp = STRING_CMD; t->m[0].data = strdup("generators");
-        t->m[1].rtyp = STRING_CMD; t->m[1].data = strdup("Sparse_LeadSyz_matrix");
+        t->m[0].rtyp = STRING_CMD; t->m[0].data = omStrDup("generators");
+        t->m[1].rtyp = STRING_CMD; t->m[1].data = omStrDup("Sparse_LeadSyz_matrix");
 
         Ld->m[1].rtyp = LIST_CMD; Ld->m[1].data = t;
         Ld->m[0].rtyp = RING_CMD; Ld->m[0].data = currRing;
         Ld->m[2].rtyp = RING_CMD; Ld->m[2].data = currRing;
          
          
-         ideal sM = idInit(c, r0);
+       
         // matrix sM = mpNew(r0, c);
         poly s_lift = (poly)LT->m[k]; // Retrieve the lifted polynomial
         //  std::cout << "#s_lift:=" <<pString(s_lift)<< std::endl;
@@ -630,7 +635,7 @@ sM->m[k]=C;
         field_names->Init(r);
         for (int s = 0; s < r; s++) {
             field_names->m[s].rtyp = STRING_CMD;
-            field_names->m[s].data = strdup("generator");
+            field_names->m[s].data = omStrDup("generator");
         }
 
         LLT->m[0].rtyp = RING_CMD; 
@@ -642,15 +647,15 @@ sM->m[k]=C;
         LLT->m[2].rtyp = RING_CMD; 
         LLT->m[2].data = currRing;
 
-        // Set data for LLT
-        lists t0 = (lists)omAlloc0Bin(slists_bin);
-        t0->Init(r);
-        for (int s = 0; s < r; s++) {
-            t0->m[s].rtyp = LIST_CMD;
-            t0->m[s].data = lCopy(Ld);
-        }
+    
         temp->m[k].rtyp = LIST_CMD;
         temp->m[k].data = lCopy(Ld);
+        // pDelete(&Ci);
+        // pDelete(&C1);
+      
+        //  // Clean up temporary lists
+        //  omFreeBin(t, slists_bin);
+        //  omFreeBin(field_names, slists_bin);
     }
 
     // Prepare the final field names
@@ -663,7 +668,7 @@ sM->m[k]=C;
 
     // Append "total_number_generator"
     final_field_names->m[r].rtyp = STRING_CMD;
-    final_field_names->m[r].data = strdup("total_number_generator");
+    final_field_names->m[r].data = omStrDup("total_number_generator");
     LLT->m[1].rtyp = LIST_CMD;  
     LLT->m[1].data = final_field_names;
 
@@ -680,6 +685,11 @@ sM->m[k]=C;
 
     LLT->m[3].rtyp = LIST_CMD;
     LLT->m[3].data = final_data;
+
+      // Clean up sM,Ld and temp
+    //   id_Delete(&sM, currRing);
+    //   omFreeBin(Ld, slists_bin);
+    //   temp->Clean(currRing);
 
     return {r, LLT};  // Return success state and LLT
 }
@@ -1136,7 +1146,7 @@ int coM2(ideal f, poly s, poly t, lists J, int k) { //poly s and poly t are sing
 
 NO_NAME_MANGLING
 //First Level LiftTree
-lists  liftTree(ideal f, poly s) { //poly s is singular vector
+lists liftTree(ideal f, poly s) { //poly s is singular vector
     
     int r = IDELEMS(f);
     //std::cout << "lift_ideal: " << r << std::endl;
@@ -1455,16 +1465,22 @@ std::pair<int, lists> LIFT_GPI(leftv args) {
     lists temp = (lists)omAlloc0Bin(slists_bin);
     temp->Init(r);
 
+    lists Ld = NULL;
     // Iterate to fill in data
+    ideal sM = idInit(c, r0);
     for (int k = 0; k < r; k++) {
+
+
+        id_Delete(&sM, currRing);  // Delete the existing sM
+        sM = idInit(c, r0);  
         // Create a new token Ld
-        lists Ld = (lists)omAlloc0Bin(slists_bin);
+         Ld = (lists)omAlloc0Bin(slists_bin);
         Ld->Init(4); // Initialize with 4 fields
 
         lists t = (lists)omAlloc0Bin(slists_bin);
         t->Init(2);
-        t->m[0].rtyp = STRING_CMD; t->m[0].data = strdup("generators");
-        t->m[1].rtyp = STRING_CMD; t->m[1].data = strdup("Sparse_matrix_Lift");
+        t->m[0].rtyp = STRING_CMD; t->m[0].data = omStrDup("generators");
+        t->m[1].rtyp = STRING_CMD; t->m[1].data = omStrDup("Sparse_matrix_Lift");
 
         Ld->m[1].rtyp = LIST_CMD; Ld->m[1].data = t;
         Ld->m[0].rtyp = RING_CMD; Ld->m[0].data = currRing;
@@ -1472,7 +1488,6 @@ std::pair<int, lists> LIFT_GPI(leftv args) {
 
       
   
-         ideal sM = idInit(c, r0);
         // matrix sM = mpNew(r0, c);
        poly s_lift = (poly)lL->m[k].Data(); // Retrieve the lifted polynomial
         int l_k = p_GetComp(s_lift, currRing);
@@ -1541,7 +1556,7 @@ C=p_Add_q(C, pCopy(C1), currRing);
         field_names->Init(r);
         for (int s = 0; s < r; s++) {
             field_names->m[s].rtyp = STRING_CMD;
-            field_names->m[s].data = strdup("generator");
+            field_names->m[s].data = omStrDup("generator");
         }
 
         LLT->m[0].rtyp = RING_CMD; 
@@ -1554,12 +1569,12 @@ C=p_Add_q(C, pCopy(C1), currRing);
         LLT->m[2].data = currRing;
 
         // Set data for LLT
-        lists t0 = (lists)omAlloc0Bin(slists_bin);
-        t0->Init(r);
-        for (int s = 0; s < r; s++) {
-            t0->m[s].rtyp = LIST_CMD;
-            t0->m[s].data = lCopy(Ld);
-        }
+        // lists t0 = (lists)omAlloc0Bin(slists_bin);
+        // t0->Init(r);
+        // for (int s = 0; s < r; s++) {
+        //     t0->m[s].rtyp = LIST_CMD;
+        //     t0->m[s].data = lCopy(Ld);
+        // }
         temp->m[k].rtyp = LIST_CMD;
         temp->m[k].data = lCopy(Ld);
     }
@@ -1574,7 +1589,7 @@ C=p_Add_q(C, pCopy(C1), currRing);
 
     // Append "total_number_generator"
     final_field_names->m[r].rtyp = STRING_CMD;
-    final_field_names->m[r].data = strdup("total_number_generator");
+    final_field_names->m[r].data = omStrDup("total_number_generator");
     LLT->m[1].rtyp = LIST_CMD;  
     LLT->m[1].data = final_field_names;
 
@@ -1992,22 +2007,62 @@ std::pair<int, lists> SubLIFT_GPI(leftv args) {
         r = lSize(lL) + 1;
     }
 
+
+    if (r == 0) {
+        // std::cerr << "Warning: lL is empty. Returning empty result." << std::endl;
+        
+        lists empty_list = (lists)omAlloc0Bin(slists_bin);
+        empty_list->Init(4);
+
+        empty_list->m[0].rtyp = RING_CMD;
+        empty_list->m[0].data = currRing;
+
+        // Initialize field names
+        lists field_names = (lists)omAlloc0Bin(slists_bin);
+        field_names->Init(1); // Initialize with 1 field
+        field_names->m[0].rtyp = STRING_CMD;
+        field_names->m[0].data = omStrDup("empty");
+
+        empty_list->m[1].rtyp = LIST_CMD;
+        empty_list->m[1].data = field_names;
+
+        empty_list->m[2].rtyp = RING_CMD;
+        empty_list->m[2].data = currRing;
+
+        // Create an empty list for `final_data`
+        lists final_data = (lists)omAlloc0Bin(slists_bin);
+        final_data->Init(1);
+        final_data->m[0].rtyp = INT_CMD;
+        final_data->m[0].data = (void*)(long)0;  // Indicate no generators found
+
+        empty_list->m[3].rtyp = LIST_CMD;
+        empty_list->m[3].data = final_data;
+
+        return {0, empty_list};
+    }
+
+
     // Prepare the LLT token
     lists LLT = (lists)omAlloc0Bin(slists_bin);
     LLT->Init(4); // Initialize with 4 fields
     lists temp = (lists)omAlloc0Bin(slists_bin);
     temp->Init(r);
 
-    // Iterate to fill in data
+       // Allocate sM and Ld outside the loop
+       ideal sM = idInit(c, r0);  // Initialize the submodule
+       lists Ld = NULL;  // Initialize Ld
     for (int k = 0; k < r; k++) {
         // Create a new token Ld
-        lists Ld = (lists)omAlloc0Bin(slists_bin);
-        Ld->Init(4); // Initialize with 4 fields
+        id_Delete(&sM, currRing);  // Delete the existing sM
+        sM = idInit(c, r0);  
+    
+        Ld = (lists)omAlloc0Bin(slists_bin);  // Reinitialize Ld
+        Ld->Init(4);  // Initialize with 4 fields
 
         lists t = (lists)omAlloc0Bin(slists_bin);
         t->Init(2);
-        t->m[0].rtyp = STRING_CMD; t->m[0].data = strdup("generators");
-        t->m[1].rtyp = STRING_CMD; t->m[1].data = strdup("Sparse_matrix_SubLIFT");
+        t->m[0].rtyp = STRING_CMD; t->m[0].data = omStrDup("generators");
+        t->m[1].rtyp = STRING_CMD; t->m[1].data = omStrDup("Sparse_matrix_SubLIFT");
 
         Ld->m[1].rtyp = LIST_CMD; Ld->m[1].data = t;
         Ld->m[0].rtyp = RING_CMD; Ld->m[0].data = currRing;
@@ -2015,7 +2070,7 @@ std::pair<int, lists> SubLIFT_GPI(leftv args) {
 
       
 
-        ideal sM = idInit(c, r0);
+      
         // matrix sM = mpNew(r0, c);
        poly s_lift = (poly)lL->m[k].Data(); // Retrieve the lifted polynomial
         int l_k = p_GetComp(s_lift, currRing);
@@ -2082,7 +2137,7 @@ C=p_Add_q(C, pCopy(C1), currRing);
         field_names->Init(r);
         for (int s = 0; s < r; s++) {
             field_names->m[s].rtyp = STRING_CMD;
-            field_names->m[s].data = strdup("generator");
+            field_names->m[s].data = omStrDup("generator");
         }
 
         LLT->m[0].rtyp = RING_CMD; 
@@ -2095,12 +2150,12 @@ C=p_Add_q(C, pCopy(C1), currRing);
         LLT->m[2].data = currRing;
 
         // Set data for LLT
-        lists t0 = (lists)omAlloc0Bin(slists_bin);
-        t0->Init(r);
-        for (int s = 0; s < r; s++) {
-            t0->m[s].rtyp = LIST_CMD;
-            t0->m[s].data = lCopy(Ld);
-        }
+        // lists t0 = (lists)omAlloc0Bin(slists_bin);
+        // t0->Init(r);
+        // for (int s = 0; s < r; s++) {
+        //     t0->m[s].rtyp = LIST_CMD;
+        //     t0->m[s].data = lCopy(Ld);
+        // }
         temp->m[k].rtyp = LIST_CMD;
         temp->m[k].data = lCopy(Ld);
     }
@@ -2115,7 +2170,7 @@ C=p_Add_q(C, pCopy(C1), currRing);
 
     // Append "total_number_generator"
     final_field_names->m[r].rtyp = STRING_CMD;
-    final_field_names->m[r].data = strdup("total_number_generator");
+    final_field_names->m[r].data = omStrDup("total_number_generator");
     LLT->m[1].rtyp = LIST_CMD;  
     LLT->m[1].data = final_field_names;
 
@@ -2327,17 +2382,17 @@ std::pair<int, lists> reduce_GPI(leftv arg1) {
     int counter=(int)(long)tmpL1->m[5].Data();//Tok.data[6]
   
 
-    ideal A = idInit(c, r);
-    ideal B = idInit(c, r);
+    // ideal A = idInit(c, r);
+    // ideal B = idInit(c, r);
     //leftv L2=(ideal)tmpL1->m[1];
     lists tmpl=(lists)(tok->m[3].Data()); //tok.data
     //leftv l=(ideal)(tmpl->m[1]);
-    A = (ideal)tmpL1->m[1].Data(); // Tok.data[2]
-    B = (ideal)tmpl->m[1].Data(); // tok.data[2]
+   ideal A = (ideal)tmpL1->m[1].Data(); // Tok.data[2]
+   ideal B = (ideal)tmpl->m[1].Data(); // tok.data[2]
     //smatrix A0=A;
-    ideal C = idInit(c, r);
+    // ideal C = idInit(c, r);
     // Perform the matrix addition using Singular's API function
-     C = sm_Add(A, B, currRing);
+    ideal C = sm_Add(A, B, currRing);
  
 //     std::cout << "Final in ADD transition _Reduce=" << std::endl;
 // for(int k = 1; k <= MATROWS(C); k++) {
@@ -2354,8 +2409,8 @@ std::pair<int, lists> reduce_GPI(leftv arg1) {
     // fieldnames
     lists t=(lists)omAlloc0Bin(slists_bin);
     t->Init(2);
-    t->m[0].rtyp=STRING_CMD; t->m[0].data=strdup("generators");
-    t->m[1].rtyp=STRING_CMD; t->m[1].data=strdup("FirstSyz_matrix");
+    t->m[0].rtyp=STRING_CMD; t->m[0].data=omStrDup("generators");
+    t->m[1].rtyp=STRING_CMD; t->m[1].data=omStrDup("FirstSyz_matrix");
     output->m[1].rtyp=LIST_CMD; output->m[1].data=t;
      output->m[0].rtyp=RING_CMD; output->m[0].data=currRing;
       output->m[2].rtyp=RING_CMD; output->m[2].data=currRing;
@@ -2420,7 +2475,7 @@ std::pair<std::string, long> singular_template_reduce(const std::string& Red,
     ScopedLeftv arg(args, lift_syz.first, lCopy(lift_syz.second));
     
 
-    std::string function_name = "reduce_GPI";
+    // std::string function_name = "reduce_GPI";
     // Measure Computation Time
     auto start_computation = std::chrono::high_resolution_clock::now();
 
