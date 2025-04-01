@@ -23,7 +23,7 @@ proc mod_init()
 {
     //Singular does not support fieldname containing underscore
        // LIB "libSINGULAR-template-module.so";
-      LIB "/home/santosh/gspc-res/build_dir/src/libSINGULAR-template-module.so";
+       LIB "/scratch/gnawali/Try/gspc-res/build_dir/src/libSINGULAR-template-module.so";
     newstruct("configToken", "string tokentype, def options");
     newstruct("gspcConfigToken", "string tmpdir, string nodefile, int procspernode, string rifstrategy, string rifstrategyparameters, string loghost, int logport, string loghostfile");
     newstruct("templateConfigToken", " string neededLibrary, string functionName");
@@ -160,7 +160,7 @@ static proc gspc_template(list l, configToken gc, configToken pc)
     return(sm_result);
 }
 
-proc gspc_template_SchRes(ideal I, configToken gc)
+proc gspc_template_SchRes(module I, configToken gc)
 {
     configToken ct = configure_template();
     ct.options.neededLibrary = "templategp.lib";
@@ -176,13 +176,12 @@ proc gspc_template_SchRes(ideal I, configToken gc)
         t.data[2] = r;
         inputlists[i] = t;
     }
-
     rtimer=0;
-    system("--ticks-per-sec",1000); // set timer resolution to ms
-    int t0=rtimer;
+ system("--ticks-per-sec",1000); // set timer resolution to ms
+ int t0=rtimer;
     def re = gspc_template(inputlists, gc, ct);
     rtimer-t0;
-    print("timer");
+print("timer");
     def inputRing = basering;
     // Access the first element in the list
     def resultToken = re[1];
@@ -193,8 +192,8 @@ proc gspc_template_SchRes(ideal I, configToken gc)
        setring resultRing;
     // Extract the data from resultToken
     def Result = resultToken.data;
-//    print("beforeReturn");
-  print(Result);
+   print("beforeReturn");
+//   print(Result);
     
 
 

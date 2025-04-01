@@ -280,7 +280,6 @@ rtimer=0;
  int t=rtimer;
 def re =mres(M,0);
 re;
-
 rtimer-t;
 print("timer");
 rtimer=0;
@@ -288,7 +287,6 @@ rtimer=0;
  int t=rtimer;
 def re =mres(M,2);
 re;
-
 rtimer-t;
 print("timer");
 ring R=(0,q),(x,y,z,u,v,w),dp;
@@ -301,11 +299,13 @@ rtimer=0;
  int t=rtimer;
 def re =mres(M,2);
 re;
-
 rtimer-t;
 print("timer");
 def r=syz(M);
 r;
 clear
 ;
+quit;
+quit;
+quit;
 quit;

@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/santosh/gspc-res/template/src/installation.cpp" "src/CMakeFiles/SINGULAR-template-installation.dir/installation.cpp.o" "gcc" "src/CMakeFiles/SINGULAR-template-installation.dir/installation.cpp.o.d"
+  "/scratch/gnawali/Try/gspc-res/template/src/installation.cpp" "src/CMakeFiles/SINGULAR-template-installation.dir/installation.cpp.o" "gcc" "src/CMakeFiles/SINGULAR-template-installation.dir/installation.cpp.o.d"
   )
 
 # Targets to which this target links.

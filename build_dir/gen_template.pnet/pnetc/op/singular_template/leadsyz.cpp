@@ -20,38 +20,41 @@ namespace pnetc
     {
       void leadsyz
         ( const std::string& input
-        , const we::type::literal::control& s
         , const std::string& library_name
         , const std::string& base_filename
-        , int& counter
+        , we::type::literal::control& s
         , std::list<pnet::type::value::value_type>& OUT
-        , std::list<pnet::type::value::value_type>& Sublift
         )
       {
-#line 175 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 236 "/scratch/gnawali/Try/gspc-res/template/workflow/template.xpnet"
 
             
-            
+              auto computation_time = std::chrono::high_resolution_clock::now();
                   std::tuple<std::vector<std::string>, int, long> out = RESOLVE_INTERFACE_FUNCTION(singular_template_LEAD)
                         (input, library_name, base_filename);
                       std::vector<std::string> vec = std::get<0>(out);
                       int total_generator = std::get<1>(out);
                     
                     
-                      counter=total_generator;
-                      
-                         for(int i (0); i<vec.size(); i++)
+              auto end_computation = std::chrono::high_resolution_clock::now();
+              auto computation_duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - computation_time).count();
+      
+              std::cout << "LeadSyzTiming:= " << computation_duration<< " nanoseconds" << std::endl;
+                        for(int i (0); i<total_generator; i++)
                                                                  {
                           //std::cout << "leadSyz_Success:"<<vec[i] << std::endl;
                           OUT.emplace_back(vec[i]);
-                          Sublift.emplace_back(vec[i]);
+                         
                          //std::cout << "leadSyz_Success:"<<vec[i] << std::endl;
                           //std::cout << "SubliftleadSyz_Success:"<<vec[i] << std::endl;
                           
                           }
                       
+                       
+                         
                       
-                          // std::cout << "#leadSyz="<<counter<< std::endl;
+              
+              
 
             
                    

@@ -1,8 +1,8 @@
-# Install script for directory: /home/santosh/gspc-res/template/workflow
+# Install script for directory: /scratch/gnawali/Try/gspc-res/template/workflow
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/santosh/gspc-res/install_dir")
+  set(CMAKE_INSTALL_PREFIX "/scratch/gnawali/Try/gspc-res/install_dir")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -42,11 +42,11 @@ if(NOT DEFINED CMAKE_OBJDUMP)
   set(CMAKE_OBJDUMP "/usr/bin/objdump")
 endif()
 
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/libexec/workflow" TYPE FILE FILES "/home/santosh/gspc-res/build_dir/template.pnet")
+if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/libexec/workflow" TYPE FILE FILES "/scratch/gnawali/Try/gspc-res/build_dir/template.pnet")
 endif()
 
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/libexec/workflow" TYPE FILE FILES "/home/santosh/gspc-res/build_dir/gen_template.pnet/pnetc/op/libsingular_template.so")
+if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/libexec/workflow" TYPE FILE FILES "/scratch/gnawali/Try/gspc-res/build_dir/gen_template.pnet/pnetc/op/libsingular_template.so")
 endif()
 

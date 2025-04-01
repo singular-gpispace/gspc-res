@@ -18,7 +18,10 @@
 //for cached 
 #include <vector>
 #include <map>
+#include <fstream>
 #include <filesystem>
+#include <sstream>
+#include <string>
 
 
 NO_NAME_MANGLING
@@ -61,54 +64,41 @@ std::string singular_template_Init( std::string const& input) {
 
 
 
-
-
-
-
-
-
-
-
-
-
 NO_NAME_MANGLING
 
 matrix lcm_mod(ideal G) {
     int a = 0, b = 0, i = 0, j = 0;
     ideal G_copy = idCopy(G);
     int r = IDELEMS(G_copy);
-    // for (int k = 0; k < r; k++) {
-    //     std::cout << "ideal G: " << pString((poly)G->m[k]) << std::endl;
-    // }
-    // std::cout << "r in lcm_mod:= " << r << std::endl;
-    // omUpdateInfo();
-    // std::cout << "used mem: " << om_Info.UsedBytes << std::endl;
+  
 
     matrix l = mpNew(r, r);
-    // std::cout << "pointer l: " << (long)l << std::endl;
-    // std::cout << "Row of l: " << MATROWS(l) << std::endl;
-    // std::cout << "Cols of l: " << MATCOLS(l) << std::endl;
+  
 
     poly s10 = NULL;
     poly t10 = NULL;
 
     for (a = 1; a < r+1; a++) {
         for (b = 1; b < r+1; b++) {
-            i = p_GetComp(G->m[a-1], currRing);
-            j = p_GetComp(G->m[b-1], currRing);
+          poly tmp1=p_Head(G->m[a-1],currRing);
+          poly tmp2=p_Head(G->m[b-1],currRing);
+            i = p_GetComp(tmp1, currRing);
+            j = p_GetComp(tmp2, currRing);
 
-            s10 = pHead(G->m[a-1]);
+            s10 = tmp1;
             pSetComp(s10, 0);
             pSetmComp(s10);
-
-            t10 = pHead(G->m[b-1]);
+            
+            t10 = tmp2;
             pSetComp(t10, 0);
             pSetmComp(t10);
-
+          
             poly lcm_poly = p_Lcm(s10, t10, currRing);
             pSetCoeff0(lcm_poly, nInit(1));
-
+            // std::cout << "polyLCM:" << pString(lcm_poly)<< std::endl;
             if (i == j) {
+              // std::cout << "poly t10:" << pString(t10)<< "j:="<<j<<std::endl;
+              // std::cout << "poly s10:" << pString(s10)<< "i:="<<i<<std::endl;
                 MATELEM(l, a, b) = pp_Divide(lcm_poly, t10, currRing);
             } else {
                 MATELEM(l, a, b) = NULL;
@@ -122,146 +112,89 @@ matrix lcm_mod(ideal G) {
     return l;
 }
 
-ideal leadSyz(ideal f) {
-    int a = 0, b = 0, j = 0, k = 0;
-    poly s = NULL, t = NULL;
-    ideal f_copy = idCopy(f);
-    int r = IDELEMS(f_copy);
-    ideal L = idInit(0, 1);
-    matrix M = mpNew(r, r);
 
-    for (a = 1; a < r+1; a++) {
-        for (b = 1; b < r+1; b++) {
-            poly lcm = p_Lcm(pHead(f_copy->m[b-1]), pHead(f_copy->m[a-1]), currRing);
-            pSetCoeff0(lcm, nInit(1));
-            MATELEM(M, a, b) = pp_Divide(lcm, pHead(f_copy->m[b-1]), currRing);
-        }
-    }
 
-    int cc = 0;
-    for (int i = 2; i < r+1; i++) {
-        for (j = 1; j < i; j++) {
-            poly t0 = pCopy(MATELEM(M, j, i));
-            p_SetComp(t0, i, currRing);
-            p_SetmComp(t0, currRing);
-            t = pCopy(t0);
 
-            for (k = 0; k < IDELEMS(L); k++) {
-                s = (poly)L->m[k];
-                bool c = p_DivisibleBy(pHead(s), t, currRing);
-                if (c == TRUE) {
-                    t = NULL;
-                    break;
-                } else {
-                    bool d = p_DivisibleBy(pHead(t), s, currRing);
-                    if (d == TRUE) {
-                        ideal tmp = id_Delete_Pos(L, k, currRing);
-                        idDelete(&L);
-                        L = tmp;
-                        k--;
-                        cc--;
-                    }
-                }
-            }
 
-            if (t != NULL) {
-                if (cc >= IDELEMS(L)) {
-                    ideal tmpL = idInit(cc + 1, 1);
-                    for (int i = 0; i < cc; i++) {
-                        tmpL->m[i] = pCopy(L->m[i]);
-                        L->m[i] = NULL;
-                    }
-                    idDelete(&L);
-                    L = tmpL;
-                }
-                L->m[cc] = pCopy(t);
-                cc++;
-                p_Delete(&t, currRing);
-            }
-        }
-    }
+NO_NAME_MANGLING
+//Answer match with Singular
+ideal leadSyz_ext(ideal f0) {
+  int r = IDELEMS(f0);
+  poly s = NULL, t = NULL;
+  int cc = 0;
+  ideal L = idInit(0, 1);
+  ideal f_copy = idCopy(f0);
+  matrix M = mpNew(r, r);
+ M= lcm_mod(f_copy);
 
-    // std::cout << "Final first leadsyz size: " << IDELEMS(L) << std::endl;
+  for (int i = 2; i < r+1; i++) {
+   
+      for (int j = 1; j < i; j++) {
+       
+          poly t0 = MATELEM(M, j, i);
+          if (t0 != NULL) {
+              p_SetComp(t0, i, currRing);
+              p_SetmComp(t0, currRing);
+              t = pCopy(t0);
+          }
 
-    return L;
+          for (int k = 0; k < IDELEMS(L); k++) {
+              s = (poly)L->m[k];
+              if (s != NULL && t != NULL) {
+                  if (p_DivisibleBy(pHead(s), t, currRing)) {
+                      t = NULL;
+                      break;
+                  } else if (p_DivisibleBy(t, pHead(s), currRing)) {
+                      ideal tmp = id_Delete_Pos(L, k, currRing);
+                      idDelete(&L);
+                      L = tmp;
+                      k--;
+                      cc--;
+                  }
+              }
+          }
+
+          if (t != NULL) {
+              if (cc >= IDELEMS(L)) {
+                  ideal tmpL = idInit(cc + 1, 1);
+                  for (int i = 0; i < cc; i++) {
+                      tmpL->m[i] = pCopy(L->m[i]);
+                      L->m[i] = NULL;
+                  }
+                  idDelete(&L);
+                  L = tmpL;
+              }
+              L->m[cc] = t;
+                // std::cout << "t survives:=" << pString(t)<< std::endl;
+              cc++;
+          }
+      }
+  }
+
+  idDelete((ideal*)&M);
+
+  // std::cout << "Final second-Leadsyz size: " << IDELEMS(L) << std::endl;
+
+  return L;
 }
 
-ideal Sec_leadSyz(ideal f0) {
-    int r = IDELEMS(f0);
-    poly s = NULL, t = NULL;
-    int cc = 0;
-    ideal L = idInit(0, 1);
-    ideal f_copy = idCopy(f0);
-    matrix M = lcm_mod(f_copy);
-
-    for (int i = 2; i < r+1; i++) {
-        for (int j = 1; j < i; j++) {
-            poly t0 = MATELEM(M, j, i);
-            if (t0 != NULL) {
-                p_SetComp(t0, i, currRing);
-                p_SetmComp(t0, currRing);
-                t = pCopy(t0);
-            }
-
-            for (int k = 0; k < IDELEMS(L); k++) {
-                s = (poly)L->m[k];
-                if (s != NULL && t != NULL) {
-                    if (p_DivisibleBy(pHead(s), t, currRing)) {
-                        t = NULL;
-                        break;
-                    } else if (p_DivisibleBy(t, pHead(s), currRing)) {
-                        ideal tmp = id_Delete_Pos(L, k, currRing);
-                        idDelete(&L);
-                        L = tmp;
-                        k--;
-                        cc--;
-                    }
-                }
-            }
-
-            if (t != NULL) {
-                if (cc >= IDELEMS(L)) {
-                    ideal tmpL = idInit(cc + 1, 1);
-                    for (int i = 0; i < cc; i++) {
-                        tmpL->m[i] = pCopy(L->m[i]);
-                        L->m[i] = NULL;
-                    }
-                    idDelete(&L);
-                    L = tmpL;
-                }
-                L->m[cc] = t;
-                cc++;
-            }
-        }
-    }
-
-    idDelete((ideal*)&M);
-
-    // std::cout << "Final second-Leadsyz size: " << IDELEMS(L) << std::endl;
-
-    return L;
-}
 
 lists aLL_LEAD(ideal f) {
     lists J = (lists)omAlloc0Bin(slists_bin);
-    J->Init(2);
-    ideal f_copy = idCopy(f);
+    J->Init(1);
+    ideal F_copy = idCopy(f);
     int n = rVar(currRing);
-    ideal F = leadSyz(f_copy);
-    // int g = IDELEMS(F);
-    // idDelete(&f);
-    ideal F_copy = idCopy(F);
+   
 
-    J->m[0].rtyp = IDEAL_CMD;
-    J->m[0].data = f_copy;
+   
 
-    J->m[1].rtyp = MODUL_CMD;
-    J->m[1].data = F_copy;
+    J->m[0].rtyp = MODUL_CMD;
+    J->m[0].data = F_copy;
 
-    int cc = 2;
+    int cc = 1;
 
     for (int t = 0; t < n; t++) {
-        ideal temp = Sec_leadSyz(F_copy);
+        ideal temp = leadSyz_ext(F_copy);
 
         bool b = idIs0(temp);
         if (b == FALSE) {
@@ -292,13 +225,6 @@ lists aLL_LEAD(ideal f) {
 
     return J;
 }
-
-
-
-
-
-
-
 
 NO_NAME_MANGLING
 std::pair<int, lists> ALL_LEAD_GPI(leftv args) {
@@ -333,17 +259,19 @@ std::pair<int, lists> ALL_LEAD_GPI(leftv args) {
     lists temp = (lists)omAlloc0Bin(slists_bin);
    
     temp->Init(r);
-
+    lists Ld = NULL; //(lists)omAlloc0Bin(slists_bin);  // Initialize Ld
     for(int k = 0; k < r; k++) {
-        lists Ld = (lists)omAlloc0Bin(slists_bin);
+
+        
+         Ld = (lists)omAlloc0Bin(slists_bin);
        
         Ld->Init(4); // type token
         
         lists t = (lists)omAlloc0Bin(slists_bin);
       
         t->Init(2);
-        t->m[0].rtyp = STRING_CMD; t->m[0].data = strdup("generators");
-        t->m[1].rtyp = STRING_CMD; t->m[1].data = strdup("SchFrame");
+        t->m[0].rtyp = STRING_CMD; t->m[0].data = omStrDup("generators");
+        t->m[1].rtyp = STRING_CMD; t->m[1].data = omStrDup("SchFrame");
 
         Ld->m[0].rtyp = RING_CMD; Ld->m[0].data = currRing;
         Ld->m[1].rtyp = LIST_CMD; Ld->m[1].data = t;
@@ -381,7 +309,10 @@ std::pair<int, lists> ALL_LEAD_GPI(leftv args) {
         //     t0->m[s].rtyp = LIST_CMD;
         //     t0->m[s].data = lCopy(Ld);
         // }
-
+//         omUpdateInfo();
+      
+//   std::cout << "used mem_SchFrame: " << om_Info.UsedBytes << std::endl;
+        
         // LLT->m[3].rtyp = LIST_CMD;
         // LLT->m[3].data = t0;
 
@@ -419,6 +350,7 @@ t->Init(r+1);
     for (int k = 0; k < r; k++) {
         final_data->m[k].rtyp = LIST_CMD;
         final_data->m[k].data = temp->m[k].data;  // Transfer data from temp
+        temp->m[k].data = NULL; temp->m[k].rtyp=DEF_CMD;
     }
 
     final_data->m[r].rtyp = INT_CMD;
@@ -426,6 +358,10 @@ t->Init(r+1);
 
     LLT->m[3].rtyp = LIST_CMD;
     LLT->m[3].data = final_data;
+       // Clean up sM,Ld and temp
+     
+       omFreeBin(Ld, slists_bin);
+       temp->Clean(currRing);
 
     return {r, LLT};  // Return success state and LLT
 }
@@ -433,20 +369,8 @@ t->Init(r+1);
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 NO_NAME_MANGLING
-std::tuple<std::vector<std::string>, int, long> singular_template_ALL_LEAD(std::string const& input_filename 
+std::tuple<std::vector<std::string>, int,  long>  singular_template_ALL_LEAD( std::string const& input_filename 
 										, std::string const& needed_library
             							, std::string const& base_filename)
 {
@@ -455,19 +379,21 @@ std::tuple<std::vector<std::string>, int, long> singular_template_ALL_LEAD(std::
 	std::pair<int,lists> input;
 	std::pair<int, lists> out;
 	std::string ids;
-	
+	std::string out_filename;
 	ids = worker();
 	//std::cout << ids << " in singular_..._compute" << std::endl;
 	input = deserialize(input_filename,ids);
   
 	ScopedLeftv args( input.first, lCopy(input.second));
-//   std::string function_name = "all_leadsyz_GpI";
- auto start_computation = std::chrono::high_resolution_clock::now();
+//   std::string function_name = "all_leadsyz_GpI_Ext";
 
+
+  auto start_computation = std::chrono::high_resolution_clock::now();
 	// out = call_user_proc(function_name, needed_library, args);
-     out =  ALL_LEAD_GPI(args.leftV());
 
-  // std::cout << "SchFrame_Runtime:_implementation " << computation_time << " milliseconds" << std::endl;
+    out =  ALL_LEAD_GPI(args.leftV());
+
+
     lists u = (lists)out.second->m[3].Data();
     // std::cout<<"m[3]:"<< out.second->m[3].Data()<< std::endl;
     // std::cout<<"ListOutside:"<<lSize(u)<< std::endl;
@@ -486,89 +412,245 @@ std::tuple<std::vector<std::string>, int, long> singular_template_ALL_LEAD(std::
     //std::cout<<"Check the output:"<<Outname<< std::endl;
     vec.push_back(Outname);
   } 
-    auto end_computation = std::chrono::high_resolution_clock::now();
-  auto computation_time =std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - start_computation).count();
+  auto end_computation = std::chrono::high_resolution_clock::now();
+   auto computation_time =std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - start_computation).count();
    total_generator = lSize(u); // Assuming u contains the computed generators
    auto total_runtime=computation_time;
-    // std::cout << "total_runtime_SchFrame:=" << total_runtime<<" "<<"nanoseconds"<< std::endl;
-  return {vec, total_generator,total_runtime};
+
+  return {vec, total_generator, total_runtime};
 }
 
 
+// poly lcm_mod_EXT(poly v, poly w) {
+//     int i = 0, j = 0;
+//     poly answer = NULL;
+//     poly tmp1 = p_Head(v, currRing);
+//     poly tmp2 = p_Head(w, currRing);
+
+//     // std::cout << "tmp1:=" << pString(tmp1) << std::endl;
+//     // std::cout << "tmp2:=" << pString(tmp2) << std::endl;
+
+//     if (tmp1 == NULL || tmp2 == NULL) {
+//         if (tmp1 != NULL) p_Delete(&tmp1, currRing);
+//         if (tmp2 != NULL) p_Delete(&tmp2, currRing);
+//         return NULL;
+//     }
+
+//     i = p_GetComp(tmp1, currRing);
+//     j = p_GetComp(tmp2, currRing);
+
+//     if (i == j) {
+//         poly answer1 = p_Lcm(tmp1, tmp2, currRing);
+//         if (answer1 != NULL) {
+//             // std::cout << "answer1:=" << pString(answer1) << std::endl;
+//             pSetCoeff0(answer1, nInit(1));
+//             // std::cout << "answer1:=" << pString(answer1) << std::endl;
+
+//             poly tmp = p_CopyPowerProduct0(answer1, NULL, currRing);
+//             if (tmp != NULL) {
+//                 p_ExpVectorSub(tmp, tmp1, currRing);
+//                 p_SetCoeff0(tmp, nDiv(pGetCoeff(tmp1), pGetCoeff(answer1)), currRing);
+//                 answer = tmp;
+//                 // std::cout << "LCM:=" << pString(answer) << std::endl;
+//             }
+
+//             p_Delete(&answer1, currRing);
+//         }
+//     }
+
+//     p_Delete(&tmp1, currRing);
+//     p_Delete(&tmp2, currRing);
+
+//     return answer;
+// }
+
+// ideal lead_syz_ext(ideal f0) {
+   
+//     poly s = NULL, t = NULL;
+//     int cc = 0;
+//     ideal L = idInit(0, 1);  // Initialize the ideal L
+//     ideal f_copy = idCopy(f0);  // Copy the input ideal f0
+//     int r = IDELEMS(f_copy);
+//     poly pi = NULL, pj = NULL;
+//     poly Li = NULL, Lj = NULL, t0 = NULL;
+//     // std::cout << "r:=" <<r<< std::endl;
+//     std::cout << "Starting lead_syz_ext" << std::endl;
+
+//     // Loop over i from 2 to r + 1
+//     for (int i = 2; i < r + 1; i++) {
+//         pi = (poly)f_copy->m[i-1];
+//         if (pi == NULL) {
+//             // std::cout << "Skipping pi at index " << i << " (NULL)" << std::endl;
+//             continue;
+//         }
+//         // std::cout << "Processing pi at index " << i << ": " << pString(pi) << std::endl;
+
+//         // Loop over j from 1 to i - 1
+//         for (int j = 1; j < i; j++) {
+//             pj = (poly)f_copy->m[j-1];
+//             if (pj == NULL) {
+//                 // std::cout << "Skipping pj at index " << j << " (NULL)" << std::endl;
+//                 continue;
+//             }
+//             // std::cout << "Processing pj at index " << j << ": " << pString(pj) << std::endl;
+
+//             // Create Li and Lj
+//             Li = p_Head(pi, currRing);
+//             Lj = p_Head(pj, currRing);
+//             // std::cout << "Li: " << pString(Li) << ", Lj: " << pString(Lj) << std::endl;
+
+//             // Check if Li and Lj are valid
+//             if (Li == NULL || Lj == NULL) {
+//                 // std::cout << "Li or Lj is NULL, skipping this pair." << std::endl;
+//                 if (Li != NULL) p_Delete(&Li, currRing);
+//                 if (Lj != NULL) p_Delete(&Lj, currRing);
+//                 continue;  // Skip this iteration if Li or Lj is NULL
+//             }
+
+//             int a = p_GetComp(Li, currRing);
+//             int b = p_GetComp(Lj, currRing);
+//             // std::cout << "Comparing components: a = " << a << ", b = " << b << std::endl;
+            
+
+//             if (a == b) {
+//                 // std::cout << "a = " << a << "= " << b <<"b"<< std::endl;
+//                 poly lcm_poly = lcm_mod_EXT(Li, Lj);
+
+//                 if (lcm_poly != NULL) {
+//                     // std::cout << "lcm_poly: " << pString(lcm_poly) << std::endl;
+
+//                     t0 = lcm_poly;
+//                     p_SetComp(t0, i, currRing);
+//                     p_SetmComp(t0, currRing);
+//                     t = pCopy(t0);
+//                     // std::cout << "t: " << pString(t) << std::endl;
+
+//                     // Loop through elements of L and handle divisibility
+//                     for (int k = 0; k < IDELEMS(L); k++) {
+//                         s = (poly)L->m[k];
+//                         if (s != NULL && t != NULL) {
+//                             if (p_DivisibleBy(pHead(s), t, currRing)) {
+//                                 t = NULL;  // Break if divisibility conditions are met
+//                                 break;
+//                             } else if (p_DivisibleBy(t, pHead(s), currRing)) {
+//                                 ideal tmp = id_Delete_Pos(L, k, currRing);
+//                                 idDelete(&L);
+//                                 L = tmp;
+//                                 k--;
+//                                 cc--;
+//                             }
+//                         }
+//                     }
+
+//                     // Add t to L if it survives the checks
+//                     if (t != NULL) {
+//                         if (cc >= IDELEMS(L)) {
+//                             ideal tmpL = idInit(cc + 1, 1);
+//                             for (int i = 0; i < cc; i++) {
+//                                 tmpL->m[i] = pCopy(L->m[i]);
+//                                 L->m[i] = NULL;
+//                             }
+//                             idDelete(&L);
+//                             L = tmpL;
+//                         }
+//                         L->m[cc] = t;
+//                         // std::cout << "if t survives: " << pString(t) << std::endl;
+//                         cc++;
+//                     }
+
+//                     p_Delete(&lcm_poly, currRing);  // Safely delete LCM poly
+//                 }
+//             }
+
+//             // Delete Li and Lj at the end of each inner loop iteration
+//             if (Li != NULL) p_Delete(&Li, currRing);
+//             if (Lj != NULL) p_Delete(&Lj, currRing);
+//         }
+//     }
+
+//     // idDelete(&f_copy); // Free f_copy to avoid memory leaks
+
+//     std::cout << "Exiting lead_syz_ext" << std::endl;
+//     return L;  // Return the ideal L
+// }
+
+
+
 NO_NAME_MANGLING
-std::pair<int, lists> LEAD_GPI(leftv args) {
+std::pair<int, lists> LEAD_ExT_GPI(leftv args) {
     // Extract Token
     lists Token = (lists)(args->Data());
-    
+
     // Extract the first element (f)
     lists tmp = (lists)(Token->m[3].Data());
-    // ideal f = (ideal)(tmp->m[0].Data());
-     //std::cout << "ideal from tokesn:" << IDELEMS(f)<< std::endl;
-    int counter =0;
-    int r0 =0;
-    int r=0;
-    int c=0;
-    // ideal LT=NULL;
-    ideal LT = nullptr;
-    
-    // Check if f is an ideal or a vector
-    if (tmp->m[0].Typ() == IDEAL_CMD) {
-       ideal f_copy = idCopy((ideal)(tmp->m[0].Data()));  // Create a deep copy of f
-      //  std::cout << "ideal:" <<tmp->m[0].Typ()<< std::endl;
-        // If it's an ideal, call leadSyz
-        LT = leadSyz(f_copy);
-     
-        r = IDELEMS(LT); 
-         c=r;
+    ideal f_copy = idCopy((ideal)(tmp->m[0].Data()));  // Create a deep copy of f
 
-        r0 = IDELEMS(f_copy); 
-       
-        idDelete(&f_copy);  // Clean up copy
-    // for(int k=0; k< IDELEMS(LT); k++){
-    //          std::cout << "leadsyz:" << pString((poly)LT->m[k])<< std::endl;
-    //      }
+    // Call leadSyz_ext
+    // auto start_computation = std::chrono::high_resolution_clock::now();
+    ideal LT = leadSyz_ext(f_copy);
+    // auto end_computation = std::chrono::high_resolution_clock::now();
+    // auto computation_time = std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - start_computation).count();
+    // std::cout << "lead_syz_ext: " << computation_time << " nanoseconds" << std::endl;
 
+    int r = IDELEMS(LT);  // Number of elements in LT
+    int r0 = IDELEMS(f_copy);
+    int c = r;
 
-        counter = 1;//counter=1
-    } else if (tmp->m[0].Typ() == VECTOR_CMD) {
-        // If it's a vector, handle it using Sec_leadSyz
-        // std::cout << "vector:" <<tmp->m[0].Typ()<< std::endl;
-        ideal mM = (ideal)(tmp->m[4].Data()); 
-         ideal mM_copy =idCopy(mM); 
-        //    for(int k=0; k< IDELEMS(mM); k++){
-        //      std::cout << "First_leadsyz:from GPI=" << pString((poly)mM->m[k])<< std::endl;
-        //  }
-        r0 =IDELEMS(mM_copy);  // Set row count for matrix
-      
-       
-        LT = Sec_leadSyz(mM_copy);
-        r = IDELEMS(LT); 
-        c=r;
-          idDelete(&mM_copy);
-        //   for(int k=0; k< IDELEMS(LT); k++){
-        //      std::cout << "Second_leadsyz:" << pString((poly)LT->m[k])<< std::endl;
-        //  }
+    idDelete(&f_copy);  // Free f_copy
 
-        counter = (int)(long)tmp->m[6].Data();
-    }
-    
-//  std::cout << "#LeadSyz_GPI:=" <<r<< std::endl;
+    // Debugging: Print the last element of LT
+    // std::cout << "last leadSyz_GPI: " << pString((poly)LT->m[r - 1]) << ", r: " << r << std::endl;
+
     // Prepare the LLT token
     lists LLT = (lists)omAlloc0Bin(slists_bin);
-    LLT->Init(4); // Initialize with 4 fields
+    LLT->Init(4);  // Initialize with 4 fields
     lists temp = (lists)omAlloc0Bin(slists_bin);
-    temp->Init(r);
-    ideal sM = idInit(c, r0); 
-    lists Ld =NULL; 
-   // Iterate to fill in data
+    temp->Init(r);  // Initialize with r fields
+
+   
+
+
+
+
+    // Allocate sM and Ld outside the loop
+    ideal sM = idInit(c, r0);  // Initialize the smatrix
+    lists Ld = NULL; //(lists)omAlloc0Bin(slists_bin);  // Initialize Ld
+    //Ld->Init(4);  // Initialize with 4 fields
+//   r=300;
+    // Process each element in LT
     for (int k = 0; k < r; k++) {
-
+       
         id_Delete(&sM, currRing);  // Delete the existing sM
-        sM = idInit(c, r0);
-        // Create a new token Ld
-         Ld = (lists)omAlloc0Bin(slists_bin);
-        Ld->Init(4); // Initialize with 4 fields
+        sM = idInit(c, r0);        // Reinitialize sM
 
+        // omUpdateInfo();
+        // if(k==494){
+        //     std::cout << "used mem: " << om_Info.UsedBytes << std::endl;
+        // }
+    
+       // Reset Ld for the current iteration (without reallocating)
+       //omFreeBin(Ld, slists_bin);  // Free the existing Ld
+       Ld = (lists)omAlloc0Bin(slists_bin);  // Reinitialize Ld
+       Ld->Init(4);  // Initialize with 4 fields
+
+        // Retrieve the lifted polynomial
+        poly s_lift = (poly)LT->m[k];  // s_lift is reassigned in each iteration
+
+       
+        int l_k = p_GetComp(s_lift, currRing);
+        poly lm = pHead(s_lift);
+        pSetComp(lm, 0);
+        pSetmComp(lm);
+        poly C = sM->m[k];
+        poly Ci = p_Vec2Poly(C, l_k, currRing);
+        C = p_Sub(C, Ci, currRing);
+        poly C1 = pCopy(lm);
+        p_SetComp(C1, l_k, currRing);
+        p_SetmComp(C1, currRing);
+        C = p_Add_q(C, pCopy(C1), currRing);
+        sM->m[k] = C;
+
+     
         lists t = (lists)omAlloc0Bin(slists_bin);
         t->Init(2);
         t->m[0].rtyp = STRING_CMD; t->m[0].data = omStrDup("generators");
@@ -577,58 +659,16 @@ std::pair<int, lists> LEAD_GPI(leftv args) {
         Ld->m[1].rtyp = LIST_CMD; Ld->m[1].data = t;
         Ld->m[0].rtyp = RING_CMD; Ld->m[0].data = currRing;
         Ld->m[2].rtyp = RING_CMD; Ld->m[2].data = currRing;
-         
-         
-       
-        // matrix sM = mpNew(r0, c);
-        poly s_lift = (poly)LT->m[k]; // Retrieve the lifted polynomial
-        //  std::cout << "#s_lift:=" <<pString(s_lift)<< std::endl;
-        int l_k = p_GetComp(s_lift, currRing);
 
-        poly lm = pHead(s_lift);
-        pSetComp(lm, 0);
-        pSetmComp(lm);
-        poly C=sM->m[k];
-        //  std::cout << "#poly C:=" <<pString(C)<< std::endl;
-        poly Ci=p_Vec2Poly(C,l_k,currRing);
-       
-        C=p_Sub(C,Ci,currRing);
-        //  std::cout << "after C-Ci:=" <<pString(C)<< std::endl;
-         poly C1= pCopy(lm);
-                   p_SetComp(C1,l_k,currRing);
-                   p_SetmComp(C1,currRing);
-                   
-//        std::cout << "Before addition C: " << pString(C) << std::endl;
-// std::cout << "Before addition C1: " << pString(C1) << std::endl;
-
-C=p_Add_q(C, pCopy(C1), currRing);
-
-// std::cout << "After addition C: " << pString(C) << std::endl;
-sM->m[k]=C;
-        // Prepare Ld data
         t = (lists)omAlloc0Bin(slists_bin);
-        t->Init(7);
-        t->m[0].rtyp = VECTOR_CMD; 
-        t->m[0].data = pCopy(s_lift);
-        t->m[1].rtyp = SMATRIX_CMD; 
-        t->m[1].data = sM;
-        t->m[2].rtyp = INT_CMD; 
-        t->m[2].data = (void*)(long)l_k;
-        t->m[3].rtyp = INT_CMD; 
-        t->m[3].data = (void*)(long)(k+1);
+        t->Init(5);
+        t->m[0].rtyp = VECTOR_CMD; t->m[0].data = pCopy(s_lift);
+        t->m[1].rtyp = SMATRIX_CMD; t->m[1].data = sM;
+        t->m[2].rtyp = INT_CMD; t->m[2].data = (void*)(long)(k + 1);
+        t->m[3].rtyp = MODUL_CMD; t->m[3].data = idCopy(LT);
+        t->m[4].rtyp = INT_CMD; t->m[4].data = (void*)(long)(1);  // counter = 1
 
-    
-            t->m[4].rtyp = MODUL_CMD; 
-            t->m[4].data = idCopy(LT);
-        
-
-        t->m[5].rtyp = INT_CMD;  
-        t->m[5].data = (void*)(long)(counter);
-        t->m[6].rtyp = INT_CMD; 
-        t->m[6].data = (void*)(long)(counter);
-
-        Ld->m[3].rtyp = LIST_CMD; 
-        Ld->m[3].data = t;
+        Ld->m[3].rtyp = LIST_CMD; Ld->m[3].data = t;
 
         // Set fieldnames[k] to "generator"
         lists field_names = (lists)omAlloc0Bin(slists_bin);
@@ -638,24 +678,26 @@ sM->m[k]=C;
             field_names->m[s].data = omStrDup("generator");
         }
 
-        LLT->m[0].rtyp = RING_CMD; 
-        LLT->m[0].data = currRing;
+        LLT->m[0].rtyp = RING_CMD; LLT->m[0].data = currRing;
+        LLT->m[1].rtyp = LIST_CMD; LLT->m[1].data = field_names;
+        LLT->m[2].rtyp = RING_CMD; LLT->m[2].data = currRing;
 
-        // Assign fieldnames to LLT
-        LLT->m[1].rtyp = LIST_CMD;
-        LLT->m[1].data = field_names;
-        LLT->m[2].rtyp = RING_CMD; 
-        LLT->m[2].data = currRing;
-
-    
+        // // // Set data for LLT
+        // lists t0 = (lists)omAlloc0Bin(slists_bin);
+        // t0->Init(r);
+        // for (int s = 0; s < r; s++) {
+        //     t0->m[s].rtyp = LIST_CMD;
+        //     t0->m[s].data = Ld;
+        // }
         temp->m[k].rtyp = LIST_CMD;
         temp->m[k].data = lCopy(Ld);
-        // pDelete(&Ci);
-        // pDelete(&C1);
+
+        pDelete(&Ci);
+        pDelete(&C1);
       
-        //  // Clean up temporary lists
-        //  omFreeBin(t, slists_bin);
-        //  omFreeBin(field_names, slists_bin);
+         // Clean up temporary lists
+         omFreeBin(t, slists_bin);
+         omFreeBin(field_names, slists_bin);
     }
 
     // Prepare the final field names
@@ -666,11 +708,11 @@ sM->m[k]=C;
         final_field_names->m[s].data = omStrDup((const char*)LLT->m[1].data);
     }
 
+
     // Append "total_number_generator"
     final_field_names->m[r].rtyp = STRING_CMD;
     final_field_names->m[r].data = omStrDup("total_number_generator");
-    LLT->m[1].rtyp = LIST_CMD;  
-    LLT->m[1].data = final_field_names;
+    LLT->m[1].rtyp = LIST_CMD; LLT->m[1].data = final_field_names;
 
     // Final data preparation
     lists final_data = (lists)omAlloc0Bin(slists_bin);
@@ -678,25 +720,23 @@ sM->m[k]=C;
     for (int k = 0; k < r; k++) {
         final_data->m[k].rtyp = LIST_CMD;
         final_data->m[k].data = temp->m[k].data;  // Transfer data from temp
+        temp->m[k].data=NULL; temp->m[k].rtyp=DEF_CMD;
+
     }
 
     final_data->m[r].rtyp = INT_CMD;
-    final_data->m[r].data = (void*)(long)(r + 1); // Set total count
+    final_data->m[r].data = (void*)(long)(r + 1);  // Set total count
 
     LLT->m[3].rtyp = LIST_CMD;
     LLT->m[3].data = final_data;
 
-      // Clean up sM,Ld and temp
-    //   id_Delete(&sM, currRing);
-    //   omFreeBin(Ld, slists_bin);
-    //   temp->Clean(currRing);
+    // Clean up sM and Ld
+    id_Delete(&sM, currRing);
+    omFreeBin(Ld, slists_bin);
+    temp->Clean(currRing);
 
     return {r, LLT};  // Return success state and LLT
 }
-
-
-
-
 
 NO_NAME_MANGLING
 std::tuple<std::vector<std::string>, int,  long> singular_template_LEAD(const std::string& input_filename,
@@ -733,27 +773,35 @@ std::tuple<std::vector<std::string>, int,  long> singular_template_LEAD(const st
 
     // Call Singular procedure
     std::pair<int, lists> out;
-//    std::string function_name = "leadsyz_GpI";
+ 
  auto start_computation = std::chrono::high_resolution_clock::now();
-
-	// out = call_user_proc(function_name, needed_library, args);
+//  std::string function_name = "lead_syz_GpI";
+// 	out = call_user_proc(function_name, needed_library, args);
    
-    out =  LEAD_GPI(args.leftV());
+    out =  LEAD_ExT_GPI(args.leftV());
     //std::cout<<"ListOutside_proc:"<<function_name<< std:: endl;
-  
-  //std::cout << "LEADSYZ_Runtime: " << computation_time << " milliseconds" << std::endl;
+    // auto end_computation1 = std::chrono::high_resolution_clock::now();
+    // auto computation_time1 =std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation1 - start_computation).count();
+    // std::cout << "LEADSYZ_Runtime: " << computation_time1 << " nanoseconds" << std::endl;
     // Extract list from the output
     lists u = (lists)out.second->m[3].Data();
     // std::cout<<"m[3]:"<< out.second->m[3].Data()<< std::endl;
     // std::cout<<"ListOutside:"<<lSize(u)<< std::endl;
-    
+    // lists Token1 = (lists)out.second->m[3].Data();
+   
+    // int L_si = lSize(Token1)+1;
+    // std::cout << "Size of J in the transition: " << L_si << std::endl;
+    // for (int i = 0; i < L_si; i++) {
+    //         sleftv& listElement = Token1->m[i];  // Access each element as `leftv`
+    //     std::cout << "LEAD: " << listElement.String()  << std::endl;
+    // }
    
      std::vector<std::string> vec;
      int total_generator;
 
     // // Iterate through each element of the outer list
      //auto start_serialize = std::chrono::high_resolution_clock::now();
-      // std::cout<<"GPI_LEADSYZ_tokens="<<lSize(u)<< std::endl;
+    //   std::cout<<"GPI_LEADSYZ_tokens="<<lSize(u)<< std::endl;
      
     for(int i (0); i<lSize(u); i++)
 
@@ -776,70 +824,10 @@ auto total_runtime=computation_time;
 
 //  std::cout << "total_runtime_LeadSYZ:=" << total_runtime<<" "<<"nanoseconds"<< std::endl;
    total_generator = lSize(u); // Assuming u contains the computed generators
-
+// std::cout << "#LeadSyz_GPI:=" <<total_generator<< std::endl;
   return {vec, total_generator, total_runtime};
 
 }
-
-
-
-
-
-NO_NAME_MANGLING
-
-lists pOLY_List(poly f0) 
-{
-    int r = pLength(f0); 
-    lists S = (lists)omAlloc0Bin(slists_bin);
-
-    if (r == 0) 
-    {
-        S->Init(0); 
-        return S;
-    }
-
-    S->Init(r);
-
-    for (int k = 0; k < r; k++) 
-    {
-        // Set the type of the entry
-        S->m[k].rtyp = POLY_CMD;
-        //std::cout << "Entry " << k << " rtyp: " << S->m[k].rtyp << std::endl;
-
-        // Ensure rtyp matches POLY_CMD
-        // bool bl = (S->m[k].Typ() == POLY_CMD);
-        // std::cout << "rtyp matches POLY_CMD: " << bl << std::endl;
-
-        // Get the current leading term (monomial)
-        poly headTerm = pHead(f0);
-        if (headTerm != NULL) {
-            S->m[k].data = headTerm;
-            //std::cout << "Adding term: " << pString((poly)S->m[k].data) << " at index " << k << std::endl;
-        } else {
-            std::cout << "Warning: pHead(f0) returned NULL at index " << k << std::endl;
-        }
-
-        // Move to the next term in the polynomial
-        f0 = pNext(f0);
-
-        // Check if f0 is NULL before accessing it
-        if (f0 == NULL) 
-        {
-           // std::cout << "No more terms, breaking loop." << std::endl;
-            break;
-        }
-    }
-
-    return S;
-}
-
-
-
-
-
-
-
-
 NO_NAME_MANGLING
 // For vectors
 lists vector_List(poly f0) 
@@ -894,10 +882,6 @@ lists vector_List(poly f0)
 
 
 
-
-
-
-NO_NAME_MANGLING
 poly LOT(poly g0, ideal S1) 
 {
     // std::cout << "LOT_g= " << pString(g0) << std::endl;
@@ -932,50 +916,6 @@ poly LOT(poly g0, ideal S1)
 
     return LOT;
 }
-
-NO_NAME_MANGLING
-poly LOT_2(poly g0, ideal S1, lists J, int level) 
-{
-   // std::cout << "levelin LOT_2= " << level<< std::endl;
-    //std::cout << "Size of FirstSyz= " << IDELEMS(S1) << std::endl;
-    int r = IDELEMS(S1);  // Get the number of generators in F0
-    ideal F0 = (ideal)J->m[level-1].Data(); // Get the module F0 from J[level]
-    poly LOT = pCopy(g0);
-    poly t = NULL;
-    int i = 0;
-   
-
-    // std::cout << "LOT_initialize: " << pString(LOT) << std::endl;
-    
-
-    while (g0!= NULL) 
-    {
-        for (i = 0; i < r; i++) 
-        {
-            t = pHead(g0); // Leading term of g0
-          
-            bool c = p_DivisibleBy(pHead(F0->m[i]), t, currRing);
-            // std::cout << "Divisibility check result: " << c << std::endl;
-           
-            if (c == TRUE)
-             { // Check normal form
-                //std::cout << "LOT_found _t :" << pString(t) << std::endl;
-
-                LOT = p_Sub(LOT, pCopy(t), currRing);
-                break;
-            }
-        }
-        
-        g0 = p_Sub(g0, pCopy(t), currRing);
-        // std::cout << "LOT_return :" << pString(LOT) << std::endl;
-    }
-
-    return LOT;
-}
-
-
-
-
 
 NO_NAME_MANGLING
 int coM(ideal f, poly s, poly t) {//poly s and poly t are singular vectors
@@ -1027,126 +967,7 @@ int coM(ideal f, poly s, poly t) {//poly s and poly t are singular vectors
 
 
 
-NO_NAME_MANGLING
-int coM2(ideal f, poly s, poly t, lists J, int k) { //poly s and poly t are singular vectors
-//ideal f is singular module
-
-          // std::cout << "Level in coM2="<<k<< std::endl;                   
-  
-    int i=0;
-    int j=0;
-    int isTrue = 0;
-    poly f1=NULL;
-    poly g1=NULL;
-    poly F1=NULL;
-     poly G1=NULL;  // Declare vectors for transformations
-    int l=0;
-    int i1=0;
-    int i2=0;  // Loop and index variables
-    f=f;
-                      
-    //ideal I_Gr=(ideal)J->m[0].Data();
-
-    // Compute initial indices and monomials for the vectors s and t
-     i= p_GetComp(s,currRing);
-     j= p_GetComp(t,currRing);
-      //  std::cout << "get comp of s="<<i<< std::endl; 
-      //    std::cout << "get comp of t="<<j<< std::endl;    
-    poly s10= pHead(s);
-    pSetComp(s10,0);
-    pSetmComp(s10);
-    pSetCoeff(s10,nInit(1));
-    poly t10= pHead(t);
-    pSetComp(t10,0);
-    pSetmComp(t10);
-    pSetCoeff(t10,nInit(1));
-    ideal M=(ideal)J->m[k-1].Data();// M =J[2]
-    f1 = pp_Mult_qq(s10, M->m[i-1],currRing);//should be leadmonomial
-    g1 = pp_Mult_qq(t10, M->m[j-1],currRing);
-    
-    // Iterate from level k down to 2
-    for (l = k; l >= 2; l--) {
-        // Print current level for debugging
-       
-           i1 = p_GetComp(f1,currRing);
-           i2 = p_GetComp(g1,currRing);
-        //  std::cout << "get comp of f1="<<i1<< std::endl; 
-        //  std::cout << "get comp of g1="<<i2<< std::endl; 
-        // Compute indices for current level
-        if (l == k) {
-            // First iteration: use f1 and g1
-           
-            ideal N=(ideal)J->m[l-2].Data();
-            // Update F1 and G1 based on f1 and g1
-            poly f10= pHead(f1);
-            pSetComp(f10,0);
-            pSetmComp(f10);
-            pSetCoeff(f10,nInit(1));
-            poly g10= pHead(g1);
-            pSetComp(g10,0);
-            pSetmComp(g10);
-            pSetCoeff(g10,nInit(1));
-            F1 = pp_Mult_qq(pHead(f10),N->m[i1-1],currRing);//should leadmonomial
-            G1 = pp_Mult_qq(pHead(g10), N->m[i2-1],currRing);//should leadmonomial
-        } else {
-            ideal K=(ideal)J->m[l-2].Data();
-            // Subsequent iterations: use F1 and G1 from the previous iteration
-           i1 = p_GetComp(F1,currRing);
-           i2 = p_GetComp(G1,currRing);
-
-                  poly F10= pHead(F1);
-                  pSetComp(F10,0);
-                  pSetmComp(F10);
-                  pSetCoeff(F10,nInit(1));
-                  poly G10= pHead(G1);
-                  pSetComp(G10,0);
-                  pSetmComp(G10); 
-                  pSetCoeff(G10,nInit(1));
-            F1 = pp_Mult_qq(pHead(F10), K->m[i1-1],currRing); //chnage from f1 to F1
-            //should leadmonomial
-            G1 = pp_Mult_qq(pHead(G10), K->m[i2-1],currRing); //change from g1 to G1
-            
-        //should monomial
-           
-        }
-    }
-    //std::cout << "Leadsyz s="<<pString(s)<<":reduced s to f1"<<pString(f1)<<" lead t="<<pString(t)<<" reduce  t to g1="<<pString(g1)<< std::endl;
-   
-   // bool d0= p_ComparePolys(f1,g1,currRing);
-   F1=pHead(F1);
-   G1=pHead(G1);
-    //std::cout << "Leadsyz s="<<pString(s)<<":reduced final s to F1"<<pString(F1)<<" lead t="<<pString(t)<<":reduce final t to G1="<<pString(G1)<< std::endl;
-    //bool d1=p_ComparePolys(F1,G1,currRing);
-    //bool d=p_EqualPolys(F1,G1,currRing);
-   int d= p_Cmp(F1,G1,currRing);
-    // Perform final comparison using coM
-   //std::cout << "Leadsyz s="<<pString(s)<<":reduced final s to F1"<<pString(F1)<<" lead t="<<pString(t)<<":reduce final t to G1="<<pString(G1)<< ":coM2"<<d<<std::endl;
-        // General case: compare F1 and G1 after iteration
-        
-        if (d == 1) {
-            isTrue = 1;
-        } else {
-            if ((d==0) && (i > j)) {  //it was i1>i2
-                isTrue = 1;
-            } else {
-              isTrue=1;
-            }
-        
-        }
-      
-    
-  
-    //std::cout << "Leadsyz s="<<pString(s)<<":coM2(s,t, f, j)="<<isTrue<<" 0f s= "<<pString(s)<<" and t="<<pString(t)<< std::endl;
-  
-    return isTrue;
-}
-
-
-
-
-NO_NAME_MANGLING
-//First Level LiftTree
-lists liftTree(ideal f, poly s) { //poly s is singular vector
+lists  liftTree(ideal f, poly s) { //poly s is singular vector
     
     int r = IDELEMS(f);
     //std::cout << "lift_ideal: " << r << std::endl;
@@ -1159,22 +980,22 @@ lists liftTree(ideal f, poly s) { //poly s is singular vector
    
     
     poly lm_s = pHead(s); // Get the leading monomial of s including coefficient
-   
+    // std::cout<<"lm_s=pHeads)"<<pString(lm_s)<<std::endl;
     pSetComp(lm_s,0);
     pSetmComp(lm_s);
-      
+      // std::cout<<"lm_s=pHeads)"<<pString(lm_s)<<std::endl;
     int g1= p_GetComp(s,currRing);
      
   
     g=pp_Mult_qq(lm_s,f->m[g1-1],currRing);//g:=psi(s)
-     //std::cout<<"g=psi(s)" << pString(g) <<": s="<<pString(s)<<std::endl;
+    //  std::cout<<"g=psi(s)" << pString(g) <<": s="<<pString(s)<<std::endl;
     poly g_copy = pCopy(g);
     poly lOT=LOT(g_copy, f);//poly T0 = LOT(g, f); 
      //std::cout<<"LOT=" << pString(lOT) <<std::endl;
      //poly T0 = g-LOT(g, f); 
     poly T0=p_Sub(pCopy(g),pCopy(lOT),currRing);
     //std::cout << "g-LOT_in LIFT: " << pString(T0) << std::endl;
-    lists T=pOLY_List(pCopy(T0));  //lists T = (lists)pOLY_List(T0)->Data(); 
+    lists T=vector_List(pCopy(T0));  //lists T = (lists)pOLY_List(T0)->Data(); 
     
     poly m1 = NULL;
     poly m = NULL;
@@ -1195,23 +1016,29 @@ lists liftTree(ideal f, poly s) { //poly s is singular vector
       TT->Init(t_size); // Initialize TT with size t_size
     
     
-  
+
     for ( k = 0; k < t_size; k++) {
         poly t = (poly)T->m[k].Data();// poly t=T[k]
        poly s_v = NULL;//vector s_v
-       //std::cout << "t in LIFT:"<<pString(t)<< ": given leadsyz:s="<<pString(s)<<std::endl;
+      //  std::cout << "t in LIFT:"<<pString(t)<< ": given leadsyz:s="<<pString(s)<<std::endl;
         for (q = 0; q < r; q++) {
-        
-            bool c = p_DivisibleBy(pHead(f->m[q]), t, currRing);
+    
+
+            bool c = p_DivisibleBy(f->m[q], t, currRing);
 
 
-           //ideal Gb_t=idInit(1,1);
-           //Gb_t->m[0]=t;
-           //C = (kNF(Gb_t,NULL, pHead(f->m[q])) == NULL); 
+          
 
             if (c == TRUE) {
-                  m1=pp_Divide(t,pHead(f->m[q]), currRing);
-                 
+               //check sign: 
+               poly L=pHead(f->m[q]);
+              //  std::cout << "c="<<c<< "t in LIFT:"<<pString(t)<< "L="<<pString(L)<<std::endl;
+              //  m1 =t/lead(L); 
+                poly tmp=p_CopyPowerProduct0(t,NULL,currRing);
+                p_ExpVectorSub(tmp,L, currRing);
+                p_SetCoeff0(tmp,nDiv(pGetCoeff(L),pGetCoeff(t)),currRing);
+                //   std::cout << "tmp "<<pString(tmp)<<std::endl;
+                  m1=tmp;
                    m = pCopy(m1);//m=m1;
                    p_SetComp(m,q+1,currRing);
                    p_SetmComp(m,currRing);
@@ -1223,7 +1050,7 @@ lists liftTree(ideal f, poly s) { //poly s is singular vector
                   
                    TT->m[k].rtyp = VECTOR_CMD;
                    TT->m[k].data=pCopy(s_v);  //TT[cl]=m*f[lambda]
-                  
+                //    std::cout << "s_v in LIFT_COM:="<<pString(s_v)<<std::endl;
                     
                     break;
                 }
@@ -1231,7 +1058,7 @@ lists liftTree(ideal f, poly s) { //poly s is singular vector
              
         } 
             
-        
+      
             
     }   
        
@@ -1243,239 +1070,78 @@ lists liftTree(ideal f, poly s) { //poly s is singular vector
 
 
 
-NO_NAME_MANGLING
-//iterative liftTree
 
-lists liftTree2(ideal f, poly s, lists J, int level) {
-
-//ideal f is singular module
-// poly s is singular vector
-
-  //std::cout<<"lift2_vector s=" << pString(s) <<std::endl;
-
-   //ideal f is singular module
-    int r = IDELEMS(f);
-    poly g=NULL;  //vector g
-  
-    //int i=0;
-
- 
-   
-   // number lc_s = leadcoef(s);
-    poly lm_s =  pHead(s); //leading monomial including coefficient
-   
-   
-    pSetComp(lm_s,0);
-    pSetmComp(lm_s);
-    int g1= p_GetComp(s,currRing);
-
-   
-        
-    
-  g = pp_Mult_qq(lm_s, f->m[g1-1],currRing);//g:=psi(s)
-
- // std::cout<<"g=psi(s)in LIFT2" << pString(pCopy(g)) <<std::endl;
-  poly g_copy = pCopy(g);
-
-// vector t0=LOT_2(g,f,J,level)
-   poly lOT=LOT_2(g_copy,f,J,level);
-
-    
-
-   
-   //std::cout<<"LOT=" << pString(lOT) <<std::endl;
-     //poly T0 = g-LOT(g, f); 
-    poly T0=p_Sub(pCopy(g),pCopy(lOT),currRing);
-    //poly T0 = p_Sub(g_copy, pCopy(t0),currRing);//vector T0=g - LOT_2(g, f, J, level)
-
-   //std::cout<<"g-LOT=" << pString(T0) <<std::endl;
-      lists T = vector_List(T0); //list T =vector_List(T0)
-
-    
-      int t_size = lSize(T)+1;
-  
-  //     std::cout << "see T: for vector=" <<pString(s)<< std::endl;
-  //  for(int k=0;k< t_size; k++){
-  //   std::cout << "T[k]=: " <<pString((poly)T->m[k].Data())<< std::endl;
-  //  }
-
-     poly s_v=NULL; //vector s_v
-     poly m=NULL;
-     poly m1=NULL;
-    int lambda=0;
-   
-    int k=0;
-    lists TT = (lists)omAlloc0Bin(slists_bin);
-  
-   
-       TT->Init(t_size); 
-     
-   
-    //ideal I_Gr=J[1];
-    //module f0= leadSyz(I_Gr);//changing to lead syz
-      ideal f0=(ideal)J->m[level-1].Data();//
-  
-     
-
-    for (k = 0; k < t_size; k++){
-           poly t = (poly)T->m[k].Data(); //vector t=T[k]
-           //std::cout << "t in LIFT2:"<<pString(t)<< std::endl;
-            
-          for (lambda = 0; lambda <= r; lambda++) {
-           
-            int a = p_GetComp(t,currRing);
-            int b = p_GetComp(f0->m[lambda],currRing);
-           //ideal Gb_t=idInit(1,1);
-          // Gb_t->m[0]=t;
-            
-    
-
-            if(a==b){
-                   
-              //int C = (kNF(Gb_t,NULL, pHead(f0->m[lambda])) == 0);
-                bool d = p_DivisibleBy(pHead(f0->m[lambda]), t, currRing);
-                 //std::cout << "bool d in LIFT2:"<<d<< std::endl;
-               if (d==TRUE) {
-                   //std::cout << "bool d in LIFT2:"<<d<< std::endl;
-                   m1 = pp_Divide(pHead(t), pHead(f0->m[lambda]), currRing);
-                   m = pCopy(m1);//m=m1;
-                   p_SetComp(m,lambda+1,currRing);
-                   p_SetmComp(m,currRing);
-                   s_v=pCopy(m);
-   
-              
-                      int c= coM2(f0, s, s_v, J,level);
-                      if (c==1)
-                       {
-                     //std::cout <<"in LIFT2 s="<<pString(s)<<":correspond t="<<pString(t)<< ":found s_v=:"<<pString(s_v)<< std::endl;
-                      TT->m[k].rtyp = VECTOR_CMD;
-                      TT->m[k].data=pCopy(s_v);;  //TT[cl]=m*f[lambda]
-                   // std::cout <<"in LIFT2 s="<<pString(s)<<":correspond t="<<pString(t)<< ":found s_v=:"<<pString(s_v)<< std::endl;
-  
-                    break;
-                }
-                
-              
-            } 
-        }
-        
-      }    
-                
-                
-    
-           
-
-          
-            
-            
-   }   
- 
-
-    return TT;
-
-}
 
 
 NO_NAME_MANGLING
-std::pair<int, lists> LIFT_GPI(leftv args) {
+std::pair<int, lists> LIFT_Ext_GPI(leftv args) {
     // Extract the Token
     lists Token = (lists)(args->Data());
   
 
     // Extract tok
     lists tok = (lists)(args->next->Data());
-    // Extract TT
-    lists TT = (lists)(args->next->next->Data());
+   
 
     // Token.data
     lists tmp = (lists)(Token->m[3].Data());
     // tok.data
     lists tmp1 = (lists)(tok->m[3].Data());
-    // TT.data
-    lists tmp2 = (lists)(TT->m[3].Data());
-
-    // TT.data[6]
-    int counter = (int)(long)tmp2->m[5].Data();
-    int colmn = (int)(long)tmp2->m[3].Data();
+  
+ 
+    // vector s = tok.data[1]
+    poly s = (poly)tmp1->m[0].Data();
+    // tmp1.data[5]
+    int counter = (int)(long)tmp1->m[4].Data();
+     // tmp1.data[3]
+    int colmn = (int)(long)tmp1->m[2].Data();
+   ideal LT=(ideal)tmp1->m[3].Data();
    
-    // J = tok.data[1]
-    lists J = (lists)(tmp1->m[0].Data());
   
 
-    // vector s = TT.data[1]
-    poly s = (poly)tmp2->m[0].Data();
+   
     
     
-    ideal l = nullptr;
-    ideal LL = nullptr;
-   int r0 = 0, c = 0, l_size = 0;
-    // Determine the ideal or vector type and get the corresponding data
-    if (tmp->m[0].Typ() == IDEAL_CMD) {
-        l = (ideal)J->m[1].Data();
-        // for(int k=0;k<IDELEMS(l);k++){
-        //     std::cout <<"ideal l in LIFT:"<<""<<pString((poly)l->m[k])<< std::endl;
-        // }
-         l_size = IDELEMS(l);
-        r0 = IDELEMS((ideal)(tmp->m[0].Data()));
-        c = l_size;
-    } else if (tmp->m[0].Typ() == VECTOR_CMD) {
-        int level = counter;
-        //Since J in C++; level should be counter -1??
-         l = (ideal)J->m[level - 1].Data();
-        l_size = IDELEMS(l);
-        r0 = l_size;
-        LL = (ideal)J->m[level].Data();
-        c = IDELEMS(LL);
-    } else {
-        std::cerr << "Error: Unsupported command type." << std::endl;
-        return {0, nullptr};
-    }
-
-    lists lL = nullptr;
-    int r = 0;
-
-    if (tmp->m[0].Typ() == IDEAL_CMD) {
+  
+  
+   int r0 = 0, c = 0;
+    
+ 
+   r0 = IDELEMS((ideal)(tmp->m[0].Data()));
+   c = IDELEMS(LT);
+  
         ideal f_copy = idCopy((ideal)(tmp->m[0].Data()));  // Create a deep copy of f
         poly s_copy = pCopy(s);  // Copy polynomial s to prevent modification
           // std::cout << "vector s:="<<pString(s_copy)<<"-"<<"at"<<"-"<<colmn<<std::endl;
-        lL = liftTree(f_copy, s_copy); // Call liftTree with copies
+       lists lL = liftTree(f_copy, s_copy); // Call liftTree with copies
         idDelete(&f_copy);  // Clean up copy
         pDelete(&s_copy);    // Clean up polynomial copy
 
-        r = lSize(lL) + 1;
-    } else if (tmp->m[0].Typ() == VECTOR_CMD) {
-        ideal M_copy = idCopy((ideal)tmp->m[1].Data());  //M_copy is smatrix
-      
-        poly s_copy = pCopy(s);  // Copy polynomial s
-        lists J_copy = lCopy(J); // Deep copy of lists J
-
-        lL = liftTree2(M_copy, s_copy, J_copy, counter);
-
-        // Clean up copies
-        idDelete(&M_copy);
-        pDelete(&s_copy);
-        //lDelete(&J_copy);
-
-        r = lSize(lL) + 1;
-    }
+       int r = lSize(lL) + 1;
+  
 
     // Prepare the LLT token
     lists LLT = (lists)omAlloc0Bin(slists_bin);
     LLT->Init(4); // Initialize with 4 fields
     lists temp = (lists)omAlloc0Bin(slists_bin);
     temp->Init(r);
-
     lists Ld = NULL;
     // Iterate to fill in data
     ideal sM = idInit(c, r0);
     for (int k = 0; k < r; k++) {
-
-
         id_Delete(&sM, currRing);  // Delete the existing sM
         sM = idInit(c, r0);  
         // Create a new token Ld
-         Ld = (lists)omAlloc0Bin(slists_bin);
-        Ld->Init(4); // Initialize with 4 fields
+      
+   
+       
+
+      
+      
+        Ld = (lists)omAlloc0Bin(slists_bin);  // Reinitialize Ld
+        Ld->Init(4);  // Initialize with 4 fields
+
+
 
         lists t = (lists)omAlloc0Bin(slists_bin);
         t->Init(2);
@@ -1486,12 +1152,10 @@ std::pair<int, lists> LIFT_GPI(leftv args) {
         Ld->m[0].rtyp = RING_CMD; Ld->m[0].data = currRing;
         Ld->m[2].rtyp = RING_CMD; Ld->m[2].data = currRing;
 
-      
-  
-        // matrix sM = mpNew(r0, c);
-       poly s_lift = (poly)lL->m[k].Data(); // Retrieve the lifted polynomial
+       
+        poly s_lift = (poly)lL->m[k].Data(); // Retrieve the lifted polynomial
         int l_k = p_GetComp(s_lift, currRing);
-
+        // std::cout << "s_lift in LIFT:="<<pString(s_lift)<<std::endl;
         poly lm = pHead(s_lift);
         pSetComp(lm, 0);
         pSetmComp(lm);
@@ -1506,47 +1170,34 @@ std::pair<int, lists> LIFT_GPI(leftv args) {
                    p_SetComp(C1,l_k,currRing);
                    p_SetmComp(C1,currRing);
                    
-//        std::cout << "Before addition C: " << pString(C) << std::endl;
-// std::cout << "Before addition C1: " << pString(C1) << std::endl;
 
-C=p_Add_q(C, pCopy(C1), currRing);
+
+    C=p_Add_q(C, pCopy(C1), currRing);
 
 // std::cout << "After addition C: " << pString(C) << std::endl;
-   sM->m[colmn-1]=C;
-
-
-
-
-
-
+       sM->m[colmn-1]=C;
 
 
         // Prepare Ld data
         t = (lists)omAlloc0Bin(slists_bin);
-        t->Init(7);
+        t->Init(5);
         t->m[0].rtyp = VECTOR_CMD; 
         t->m[0].data = pCopy(p_Mult_q(pISet(-1), s_lift, currRing));
         t->m[1].rtyp = SMATRIX_CMD; 
-        t->m[1].data = sM;
+        t->m[1].data = sM ;
         t->m[2].rtyp = INT_CMD; 
-        t->m[2].data = (void*)(long)l_k;
-        t->m[3].rtyp = INT_CMD; 
-        t->m[3].data = (void*)(long)colmn;
+        t->m[2].data = (void*)(long)colmn;
+   
 
         // Assign data to Ld based on the command type
-        if (tmp->m[0].Typ() == IDEAL_CMD) {
-            t->m[4].rtyp = MODUL_CMD; 
-            t->m[4].data = J->m[1].Data(); // J[2]
-        } else if (tmp->m[0].Typ() == VECTOR_CMD) {
-            int level = counter;
-            t->m[4].rtyp = MODUL_CMD; 
-            t->m[4].data = J->m[level].Data(); // Ld.data[5]=J[level+1];
-        }
+      
+            t->m[3].rtyp = MODUL_CMD; 
+            t->m[3].data = LT; //LT
+       
 
-        t->m[5].rtyp = INT_CMD;  
-        t->m[5].data = (void*)(long)counter;
-        t->m[6].rtyp = INT_CMD; 
-        t->m[6].data = (void*)(long)counter;
+        t->m[4].rtyp = INT_CMD;  
+        t->m[4].data = (void*)(long)counter;
+     
 
         Ld->m[3].rtyp = LIST_CMD; 
         Ld->m[3].data = t;
@@ -1568,7 +1219,7 @@ C=p_Add_q(C, pCopy(C1), currRing);
         LLT->m[2].rtyp = RING_CMD; 
         LLT->m[2].data = currRing;
 
-        // Set data for LLT
+        // // Set data for LLT
         // lists t0 = (lists)omAlloc0Bin(slists_bin);
         // t0->Init(r);
         // for (int s = 0; s < r; s++) {
@@ -1577,6 +1228,15 @@ C=p_Add_q(C, pCopy(C1), currRing);
         // }
         temp->m[k].rtyp = LIST_CMD;
         temp->m[k].data = lCopy(Ld);
+
+        pDelete(&Ci);
+        pDelete(&C1);
+     
+     
+  
+        //  // Clean up temporary lists
+         omFreeBin(t, slists_bin);
+         omFreeBin(field_names, slists_bin);
     }
 
     // Prepare the final field names
@@ -1599,6 +1259,7 @@ C=p_Add_q(C, pCopy(C1), currRing);
     for (int k = 0; k < r; k++) {
         final_data->m[k].rtyp = LIST_CMD;
         final_data->m[k].data = temp->m[k].data;  // Transfer data from temp
+        temp->m[k].data=NULL; temp->m[k].rtyp=DEF_CMD;
     }
 
     final_data->m[r].rtyp = INT_CMD;
@@ -1606,18 +1267,27 @@ C=p_Add_q(C, pCopy(C1), currRing);
 
     LLT->m[3].rtyp = LIST_CMD;
     LLT->m[3].data = final_data;
+    
+       // Clean up sM and Ld
+    id_Delete(&sM, currRing);
+    omFreeBin(Ld, slists_bin);
+    temp->Clean(currRing);
+    lL->Clean(currRing);
 
     return {r, LLT};  // Return success state and LLT
 }
 
 
 
+
+
+
 NO_NAME_MANGLING
 std::tuple<std::vector<std::string>, int, long> singular_template_LIFT(const std::string& input_filename,
-                                                                       const std::string& all_lead,
+                                                                      
                                                                        const std::string& lead,
                                                                        const std::string& needed_library,
-                                                                       const std::string& base_filename)
+                                                                       const std::string& base_filename,unsigned long N)
 {
     // Initialize Singular and load the necessary library
     init_singular(config::singularLibrary().string());
@@ -1637,35 +1307,79 @@ std::tuple<std::vector<std::string>, int, long> singular_template_LIFT(const std
     // Deserialize input data
     std::pair<int, lists> input;
     std::pair<int, lists> Lead;
-    std::pair<int, lists> All_Lead;
+
 
     input = deserialize(input_filename, ids);
-    All_Lead = deserialize(all_lead, ids);
+   
     Lead = deserialize(lead, ids);
 
     // Prepare arguments
     ScopedLeftv args(input.first, lCopy(input.second));
-    ScopedLeftv arg(args, All_Lead.first, lCopy(All_Lead.second));
-    ScopedLeftv arg1(arg, Lead.first, lCopy(Lead.second));
+  
+    ScopedLeftv arg1(args, Lead.first, lCopy(Lead.second));
     //std::cout << arg1.leftV()->String() <<std::endl;
    
+
+//          lists Token = (lists)(args.leftV()->data);
+   
+//   int L_size = lSize(Token)+1;
+//   std::cout << "Size of J in the transition: " << L_size << std::endl;
+//   for (int i = 0; i < L_size; i++) {
+//           sleftv& listElement = Token->m[i];  // Access each element as `leftv`
+//       if(listElement.data==NULL) {
+//         std::cout << "Input: NULL"  << std::endl;
+//       }
+//    else
+//    std::cout << "INPUT: " << listElement.String()  << std::endl;
+     
+//   }
+
+//     lists Token1 = (lists)(arg1.leftV()->data);
+   
+//   int L_si = lSize(Token1)+1;
+//   std::cout << "Size of J in the transition: " << L_si << std::endl;
+//   for (int i = 0; i < L_si; i++) {
+//           sleftv& listElement = Token1->m[i];  // Access each element as `leftv`
+//       std::cout << "LEAD: " << listElement.String()  << std::endl;
+//   }
+
+
+
+
     // Call the Singular procedure directly (LIFT_GPI) without using name mangling
     std::pair<int, lists> out;
     
     // Measure Computation Time
     auto start_computation = std::chrono::high_resolution_clock::now();
+     // Direct call to LIFT_GPI 
+  // std::string function_name = "LIFT_Ext_GPI";
+  //   //  std::cout<<"function_name_LIFT:"<<function_name<< std:: endl;
+  //   out = call_user_proc(function_name, needed_library, args);
    
-//   std::string function_name = "LIFT_GPI";
-  //    //std::cout<<"function_name_LIFT:"<<function_name<< std:: endl;
-    // out = call_user_proc(function_name, needed_library, args);
-   
-    // Direct call to LIFT_GPI 
-   out = LIFT_GPI(args.leftV());  
   
+      // Direct call to LIFT_GPI 
+      out = LIFT_Ext_GPI(args.leftV());  
 
     // Extract the result list from the output
     lists u = (lists)out.second->m[3].Data();
+    std::filesystem::path oldPath(lead);
+
+    if (std::filesystem::exists(oldPath)) {
+        std::filesystem::path newPath = oldPath.parent_path() / (std::to_string(N) + ".ssi");
     
+        if (!std::filesystem::exists(newPath)) {
+            try {
+                std::filesystem::rename(oldPath, newPath);
+              //   std::cout << "Renamed " << lead << " to " << newPath.string() << std::endl;
+            } catch (const std::filesystem::filesystem_error& e) {
+                std::cerr << "Error renaming file: " << e.what() << std::endl;
+            }
+        } else {
+            std::cerr << "File with new name already exists: " << newPath.string() << std::endl;
+        }
+    } else {
+        std::cerr << "File does not exist: " << lead << std::endl;
+    }
     
     std::vector<std::string> vec;
     int total_generator;
@@ -1683,11 +1397,12 @@ std::tuple<std::vector<std::string>, int, long> singular_template_LIFT(const std
     auto computation_time =std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - start_computation).count();
     auto total_runtime=computation_time;
 // std::cout << " total gen " << total_generator<< std::endl;
-// std::cout << " total time_LIFT:= " << total_runtime<< std::endl;
+// std::cout << " total time " << total_runtime<< std::endl;
   //std::cout << arg1.leftV()->String() <<std::endl;
 
     return {vec, total_generator, total_runtime};
 }
+
 
 
 
@@ -1735,7 +1450,7 @@ lists oneSublift(ideal f, poly s)
 
     //std::cout << "g-LOT: " << pString(T0) << std::endl;
 
-    lists T=pOLY_List(pCopy(T0)); 
+    lists T=vector_List(pCopy(T0)); 
    
     // std::cout << "Input_pOLY_LIST: "<< std::endl;
     // for(int k=0; k<lSize(T)+1; k++){
@@ -1793,9 +1508,14 @@ lists oneSublift(ideal f, poly s)
 
           if (c == TRUE) 
           {
-            // Perform polynomial division
-            //m1 = p_PolyDiv(t, lead_terms[q], currRing); 
-            m1=pp_Divide(t,pHead(f->m[q]), currRing);
+            poly L=pHead(f->m[q]);
+              //  std::cout << "c="<<c<< "t in SubLIFT:"<<pString(t)<< "L="<<pString(L)<<std::endl;
+              //  m1 =t/lead(L); 
+                poly tmp=p_CopyPowerProduct0(t,NULL,currRing);
+                p_ExpVectorSub(tmp,L, currRing);
+                p_SetCoeff0(tmp,nDiv(pGetCoeff(L),pGetCoeff(t)),currRing);
+                  // std::cout << "tmp "<<pString(tmp)<<std::endl;
+                  m1=tmp;
                  
             m = pCopy(m1); //m=m1;
             p_SetComp(m,q+1,currRing);
@@ -1818,197 +1538,54 @@ lists oneSublift(ideal f, poly s)
 
 
 
-
-lists subLiftTree2(ideal f, poly s, lists J, int level) {
-    // Initialize variables
-    int r = IDELEMS(f);      
-    poly g = NULL;                    
-    poly h = NULL;                    
-    poly H = NULL;                    
-    //std::cout << "vector in SubLIFT2:"<<pString(s)<< std::endl;
-    // Get the ideal f0 from the list J at the current level
-    ideal f0 = (ideal)J->m[level-1].Data();
-    
-    // Get the leading monomial of s, including the coefficient
-    poly lm_s = pHead(s);
-    pSetComp(lm_s,0);
-    pSetmComp(lm_s);
-    // Get the component of the vector s
-    int g1 = p_GetComp(s, currRing);
-
-    // Multiply the leading monomial by the corresponding elements in f and f0
-    h = pp_Mult_qq(lm_s, f->m[g1-1], currRing);    // h = lm_s * f[g1]
-    H = pp_Mult_qq(lm_s, f0->m[g1-1], currRing);   // H = lm_s * f0[g1]
-
-    // Subtract the head of H from h
-    g = p_Sub(h, pHead(H), currRing); // g = h - lead(H)
-    poly g_copy = pCopy(g);
-    // Compute the LOT (List of Terms) of g with respect to f and J at the given level
-    poly t0 = LOT_2(g_copy, f, J, level);
-
-    // Subtract the LOT from g to get T0
-    poly T0 = p_Sub(g, pCopy(t0), currRing);            // T0 = g - LOT_2(g, f, J, level)
-
-    // Convert T0 into a list of vectors
-    lists T = vector_List(T0);
-
-
-    //  std::cout << "Input_Vector_LIST: "<< std::endl;
-    // for(int k=0; k<lSize(T)+1; k++){
-    //     poly lm=(poly)T->m[k].Data();
-    //     std::cout << "vector_List:size" << lSize(T)+1
-    //     <<"pOLY_LIST;"<<pString(lm) << std::endl;
-
-    // }
-
-    // Initialize the result list TT with the size of T
-    int t_size = lSize(T)+1;                       // Get the size of T
-    lists TT = (lists)omAlloc0Bin(slists_bin);   // Allocate memory for TT
-    if (t_size==0) 
-    {
-     TT->Init(0);
-     // std::cout << "TT is empty, stopping algorithm." << std::endl;
-      return TT;
-   
-    
-    } else
-    {
-       TT->Init(t_size); 
-     
-    }                          // Initialize TT with size t_size
-
-    // Initialize temporary variables
-    poly s_v = NULL;   // Temporary vector for storing the result
-    poly m = NULL;
-    poly m1 = NULL;
-    //int counter = 0;   // Counter to track the number of terms in TT
-
-    // Main loop for sub-lifting each term in T
-    for (int k = 0; k < lSize(T)+1; k++) {
-        poly t = (poly)T->m[k].Data();           // Get the k-th term in T
-
-        for (int lambda = 0; lambda < r; lambda++) {
-            // Get the components of the current term t and f0[lambda]
-            int a = p_GetComp(t, currRing);
-            int b = p_GetComp(f0->m[lambda], currRing);
-            
-            // // Initialize Gb_t for normal form check
-            // ideal Gb_t = idInit(1, 1);
-            // Gb_t->m[0] = t;
-
-            // Check if the components match and if the normal form is 0
-            if (a == b) {
-                //int C = (kNF(Gb_t, NULL, pHead(f0->m[lambda])) == 0);
-                 bool c = p_DivisibleBy(pHead(f0->m[lambda]), t, currRing);
-                if (c==TRUE) {
-                    // Compute m1 as the quotient of leading terms
-                    m1 = pp_Divide(pHead(t), pHead(f0->m[lambda]), currRing);
-
-                    // Copy m1 to m and set its component
-                    m = pCopy(m1);
-                    p_SetComp(m, lambda+1, currRing);
-                    p_SetmComp(m, currRing);
-
-                    // Set s_v as m and store in TT
-                    s_v =pCopy(m);
-                    TT->m[k].rtyp = VECTOR_CMD;
-                    TT->m[k].data = pCopy(s_v);
-                    //std::cout << "vector s_v in SubLIFT:2"<<pString(s_v)<< std::endl;
-                   // counter++;  // Increment the counter
-                    break;
-                }
-            }
-        }
-    }
-
-    // Return the result list TT
-    return TT;
-}
-
-
-
-std::pair<int, lists> SubLIFT_GPI(leftv args) {
+NO_NAME_MANGLING
+std::pair<int, lists> SubLIFT_Ext_GPI(leftv args) {
     // Extract the Token
     lists Token = (lists)(args->Data());
-    // if (Token == nullptr) {
-    //     std::cerr << "Error: Token is null." << std::endl;
-    //     return {0, nullptr};
-    // }
+  
 
     // Extract tok
     lists tok = (lists)(args->next->Data());
-    // Extract TT
-    lists TT = (lists)(args->next->next->Data());
+   
 
     // Token.data
     lists tmp = (lists)(Token->m[3].Data());
     // tok.data
     lists tmp1 = (lists)(tok->m[3].Data());
-    // TT.data
-    lists tmp2 = (lists)(TT->m[3].Data());
-
-    // TT.data[6]
-    int counter = (int)(long)tmp2->m[5].Data();
-    int colmn = (int)(long)tmp2->m[3].Data();
-    
-    // J = tok.data[1]
-    lists J = (lists)(tmp1->m[0].Data());
+  
+ 
+    // vector s = tok.data[1]
+    poly s = (poly)tmp1->m[0].Data();
+    // tmp1.data[5]
+    int counter = (int)(long)tmp1->m[4].Data();
+     // tmp1.data[3]
+    int colmn = (int)(long)tmp1->m[2].Data();
+   ideal LT=(ideal)tmp1->m[3].Data();
+   
   
 
-    // vector s = TT.data[1]
-    poly s = (poly)tmp2->m[0].Data();
+   
     
-    ideal l = nullptr;
-    ideal LL = nullptr;
-   int r0 = 0, c = 0, l_size = 0;
-    // Determine the ideal or vector type and get the corresponding data
-    if (tmp->m[0].Typ() == IDEAL_CMD) {
-        l = (ideal)J->m[1].Data();
-         l_size = IDELEMS(l);
-        r0 = IDELEMS((ideal)(tmp->m[0].Data()));
-        c = l_size;
-    } else if (tmp->m[0].Typ() == VECTOR_CMD) {
-        int level = counter;
-         l = (ideal)J->m[level - 1].Data();
-        l_size = IDELEMS(l);
-        r0 = l_size;
-        LL = (ideal)J->m[level].Data();
-        c = IDELEMS(LL);
-    } else {
-        std::cerr << "Error: Unsupported command type." << std::endl;
-        return {0, nullptr};
-    }
-
-    lists lL = nullptr;
-    int r = 0;
-
-    if (tmp->m[0].Typ() == IDEAL_CMD) {
+    
+  
+  
+   int r0 = 0, c = 0;
+    
+ 
+   r0 = IDELEMS((ideal)(tmp->m[0].Data()));
+   c = IDELEMS(LT);
+  
         ideal f_copy = idCopy((ideal)(tmp->m[0].Data()));  // Create a deep copy of f
         poly s_copy = pCopy(s);  // Copy polynomial s to prevent modification
-
-        lL =oneSublift(f_copy, s_copy); // Call liftTree with copies
+          // std::cout << "vector s:="<<pString(s_copy)<<"-"<<"at"<<"-"<<colmn<<std::endl;
+       lists lL = oneSublift(f_copy, s_copy); // Call liftTree with copies
         idDelete(&f_copy);  // Clean up copy
         pDelete(&s_copy);    // Clean up polynomial copy
 
-        r = lSize(lL) + 1;
-    } else if (tmp->m[0].Typ() == VECTOR_CMD) {
-        ideal M_copy  = idCopy((ideal)tmp->m[1].Data());  //M_copy is smatrix
-       
-        poly s_copy = pCopy(s);  // Copy polynomial s
-        lists J_copy = lCopy(J); // Deep copy of lists J
-
-        lL = subLiftTree2(M_copy, s_copy, J_copy, counter);
-
-        // Clean up copies
-        idDelete(&M_copy);
-        pDelete(&s_copy);
-        //lDelete(&J_copy);
-
-        r = lSize(lL) + 1;
-    }
-
-
-    if (r == 0) {
+       int r = lSize(lL) + 1;
+  
+    
+       if (r == 0) {
         // std::cerr << "Warning: lL is empty. Returning empty result." << std::endl;
         
         lists empty_list = (lists)omAlloc0Bin(slists_bin);
@@ -2041,38 +1618,38 @@ std::pair<int, lists> SubLIFT_GPI(leftv args) {
         return {0, empty_list};
     }
 
-
     // Prepare the LLT token
     lists LLT = (lists)omAlloc0Bin(slists_bin);
     LLT->Init(4); // Initialize with 4 fields
     lists temp = (lists)omAlloc0Bin(slists_bin);
     temp->Init(r);
-
        // Allocate sM and Ld outside the loop
        ideal sM = idInit(c, r0);  // Initialize the submodule
-       lists Ld = NULL;  // Initialize Ld
+       lists Ld = NULL; // Initialize Ld
+
+  
+    // Iterate to fill in data
     for (int k = 0; k < r; k++) {
-        // Create a new token Ld
+        
         id_Delete(&sM, currRing);  // Delete the existing sM
         sM = idInit(c, r0);  
     
+        // Reset Ld for the current iteration (without reallocating)
+     
         Ld = (lists)omAlloc0Bin(slists_bin);  // Reinitialize Ld
         Ld->Init(4);  // Initialize with 4 fields
 
         lists t = (lists)omAlloc0Bin(slists_bin);
         t->Init(2);
         t->m[0].rtyp = STRING_CMD; t->m[0].data = omStrDup("generators");
-        t->m[1].rtyp = STRING_CMD; t->m[1].data = omStrDup("Sparse_matrix_SubLIFT");
+        t->m[1].rtyp = STRING_CMD; t->m[1].data = omStrDup("Sparse_matrix_SubLift");
 
         Ld->m[1].rtyp = LIST_CMD; Ld->m[1].data = t;
         Ld->m[0].rtyp = RING_CMD; Ld->m[0].data = currRing;
         Ld->m[2].rtyp = RING_CMD; Ld->m[2].data = currRing;
 
-      
-
-      
-        // matrix sM = mpNew(r0, c);
-       poly s_lift = (poly)lL->m[k].Data(); // Retrieve the lifted polynomial
+       
+        poly s_lift = (poly)lL->m[k].Data(); // Retrieve the lifted polynomial
         int l_k = p_GetComp(s_lift, currRing);
 
         poly lm = pHead(s_lift);
@@ -2089,45 +1666,34 @@ std::pair<int, lists> SubLIFT_GPI(leftv args) {
                    p_SetComp(C1,l_k,currRing);
                    p_SetmComp(C1,currRing);
                    
-//        std::cout << "Before addition C: " << pString(C) << std::endl;
-// std::cout << "Before addition C1: " << pString(C1) << std::endl;
 
-C=p_Add_q(C, pCopy(C1), currRing);
+
+    C=p_Add_q(C, pCopy(C1), currRing);
 
 // std::cout << "After addition C: " << pString(C) << std::endl;
-   sM->m[colmn-1]=C;
-
-
-
-
+       sM->m[colmn-1]=C;
 
 
         // Prepare Ld data
         t = (lists)omAlloc0Bin(slists_bin);
-        t->Init(7);
+        t->Init(5);
         t->m[0].rtyp = VECTOR_CMD; 
         t->m[0].data = pCopy(p_Mult_q(pISet(-1), s_lift, currRing));
         t->m[1].rtyp = SMATRIX_CMD; 
-        t->m[1].data = sM;
+        t->m[1].data = sM ;
         t->m[2].rtyp = INT_CMD; 
-        t->m[2].data = (void*)(long)l_k;
-        t->m[3].rtyp = INT_CMD; 
-        t->m[3].data = (void*)(long)colmn;
+        t->m[2].data = (void*)(long)colmn;
+   
 
         // Assign data to Ld based on the command type
-        if (tmp->m[0].Typ() == IDEAL_CMD) {
-            t->m[4].rtyp = MODUL_CMD; 
-            t->m[4].data = J->m[1].Data(); // J[2]
-        } else if (tmp->m[0].Typ() == VECTOR_CMD) {
-            int level = counter;
-            t->m[4].rtyp = MODUL_CMD; 
-            t->m[4].data = J->m[level].Data(); // Ld.data[5]=J[level+1];
-        }
+      
+            t->m[3].rtyp = MODUL_CMD; 
+            t->m[3].data = LT; //LT
+       
 
-        t->m[5].rtyp = INT_CMD;  
-        t->m[5].data = (void*)(long)counter;
-        t->m[6].rtyp = INT_CMD; 
-        t->m[6].data = (void*)(long)(counter);
+        t->m[4].rtyp = INT_CMD;  
+        t->m[4].data = (void*)(long)counter;
+     
 
         Ld->m[3].rtyp = LIST_CMD; 
         Ld->m[3].data = t;
@@ -2158,6 +1724,14 @@ C=p_Add_q(C, pCopy(C1), currRing);
         // }
         temp->m[k].rtyp = LIST_CMD;
         temp->m[k].data = lCopy(Ld);
+        pDelete(&Ci);
+        pDelete(&C1);
+     
+      
+  
+        //  // Clean up temporary lists
+         omFreeBin(t, slists_bin);
+         omFreeBin(field_names, slists_bin);
     }
 
     // Prepare the final field names
@@ -2180,6 +1754,7 @@ C=p_Add_q(C, pCopy(C1), currRing);
     for (int k = 0; k < r; k++) {
         final_data->m[k].rtyp = LIST_CMD;
         final_data->m[k].data = temp->m[k].data;  // Transfer data from temp
+        temp->m[k].data=NULL; temp->m[k].rtyp=DEF_CMD;
     }
 
     final_data->m[r].rtyp = INT_CMD;
@@ -2187,23 +1762,22 @@ C=p_Add_q(C, pCopy(C1), currRing);
 
     LLT->m[3].rtyp = LIST_CMD;
     LLT->m[3].data = final_data;
+      // Clean up sM and Ld
+      id_Delete(&sM, currRing);
+      omFreeBin(Ld, slists_bin);
+      temp->Clean(currRing);
+      lL->Clean(currRing);
 
     return {r, LLT};  // Return success state and LLT
 }
 
-
-
-
-
-
-
 NO_NAME_MANGLING
 std::tuple<std::vector<std::string>, int, long> singular_template_SUBLIFT(const std::string& input_filename,
-                                                                 const std::string& all_lead,
+                                                              
                                                                 const std::string& lead,
                                                                
                                                   const std::string& needed_library,
-                                                   const std::string& base_filename)
+                                                   const std::string& base_filename,unsigned long N)
 { // Initialize Singular and load library
     init_singular(config::singularLibrary().string());
     load_singular_library(needed_library);
@@ -2215,11 +1789,11 @@ std::tuple<std::vector<std::string>, int, long> singular_template_SUBLIFT(const 
     // Deserialize input data
     std::pair<int, lists> input;
     std::pair<int, lists> Lead;
-    std::pair<int, lists> All_Lead;
+    
     
     //auto start_deserialize = std::chrono::high_resolution_clock::now();
     input = deserialize(input_filename, ids);
-    All_Lead = deserialize(all_lead, ids);
+  
     Lead = deserialize(lead, ids);
   //auto end_deserialize = std::chrono::high_resolution_clock::now();
   //auto computation_time_deserialize = std::chrono::duration_cast<std::chrono::milliseconds>( end_deserialize - start_deserialize).count();
@@ -2230,10 +1804,32 @@ std::tuple<std::vector<std::string>, int, long> singular_template_SUBLIFT(const 
     
     // Prepare arguments
     ScopedLeftv args(input.first, lCopy(input.second));
-    ScopedLeftv arg(args,All_Lead.first, lCopy(All_Lead.second));
-    ScopedLeftv arg1(arg,Lead.first, lCopy(Lead.second));
+ 
+    ScopedLeftv arg1(args,Lead.first, lCopy(Lead.second));
     
     
+//          lists Token = (lists)(args.leftV()->data);
+   
+//   int L_size = lSize(Token)+1;
+//   std::cout << "Size of J in the transition: " << L_size << std::endl;
+//   for (int i = 0; i < L_size; i++) {
+//           sleftv& listElement = Token->m[i];  // Access each element as `leftv`
+//       if(listElement.data==NULL) {
+//         std::cout << "Input: NULL"  << std::endl;
+//       }
+//    else
+//    std::cout << "INPUT: " << listElement.String()  << std::endl;
+     
+//   }
+
+//     lists Token1 = (lists)(arg1.leftV()->data);
+   
+//   int L_si = lSize(Token1)+1;
+//   std::cout << "Size of J in the transition: " << L_si << std::endl;
+//   for (int i = 0; i < L_si; i++) {
+//           sleftv& listElement = Token1->m[i];  // Access each element as `leftv`
+//       std::cout << "LIFT: " << listElement.String()  << std::endl;
+//   }
     // Call Singular procedure
     std::pair<int, lists> out;
     
@@ -2241,45 +1837,32 @@ std::tuple<std::vector<std::string>, int, long> singular_template_SUBLIFT(const 
      // Measure Computation Time
     auto start_computation = std::chrono::high_resolution_clock::now();
      
-    // std::string function_name = "SubLIFT_GPI";
-     //std::cout<<"function_name_LIFT:"<<function_name<< std:: endl;
-    // out = call_user_proc(function_name, needed_library, args);
-     out = SubLIFT_GPI(args.leftV());  // Call  SubLIFT_GPI with the raw pointer
-  //std::cout << "SubLIFT_Runtime: " << computation_time << " milliseconds" << std::endl;
-    //std::cout<<"ListOutside_proc:"<<function_name<< std:: endl;
-  //   lists Token = (lists)(args.leftV()->data);
-   
-  // int L_size = lSize(Token)+1;
-  // std::cout << "Size of J in the transition: " << L_size << std::endl;
-  // for (int i = 0; i < L_size; i++) {
-  //         sleftv& listElement = Token->m[i];  // Access each element as `leftv`
-  //     if(listElement.data==NULL) {
-  //       std::cout << "Input: NULL"  << std::endl;
-  //     }
-  //  else
-  //  std::cout << "INPUT: " << listElement.String()  << std::endl;
-     
-  // }
-
-  //   lists Token1 = (lists)(arg.leftV()->data);
-   
-  // int L_si = lSize(Token1)+1;
-  // std::cout << "Size of J in the transition: " << L_si << std::endl;
-  // for (int i = 0; i < L_si; i++) {
-  //         sleftv& listElement = Token1->m[i];  // Access each element as `leftv`
-  //     std::cout << "LIFT: " << listElement.String()  << std::endl;
-  // }
+    // std::string function_name = "SubLIFT_Ext_GPI";
+    //  //std::cout<<"function_name_LIFT:"<<function_name<< std:: endl;
+    // out = call_user_proc(function_name, needed_library, args);// Call  SubLIFT_GPI with the raw pointer
+  
+    out = SubLIFT_Ext_GPI(args.leftV());  
 
 
 
-  //   lists Token2 = (lists)(arg1.leftV()->data);
-   
-  // int L = lSize(Token2)+1;
-  // std::cout << "Size of J in the transition: " << L << std::endl;
-  // for (int i = 0; i < L; i++) {
-  //         sleftv& listElement = Token2->m[i];  // Access each element as `leftv`
-  //     std::cout << "All_lead: " << listElement.String()  << std::endl;
-  // }
+    std::filesystem::path oldPath(lead);
+
+    if (std::filesystem::exists(oldPath)) {
+        std::filesystem::path newPath = oldPath.parent_path() / (std::to_string(N) + ".ssi");
+    
+        if (!std::filesystem::exists(newPath)) {
+            try {
+                std::filesystem::rename(oldPath, newPath);
+              //   std::cout << "Renamed " << lead << " to " << newPath.string() << std::endl;
+            } catch (const std::filesystem::filesystem_error& e) {
+                std::cerr << "Error renaming file: " << e.what() << std::endl;
+            }
+        } else {
+            std::cerr << "File with new name already exists: " << newPath.string() << std::endl;
+        }
+    } else {
+        std::cerr << "File does not exist: " << lead << std::endl;
+    }
 
 
      std::vector<std::string> vec;
@@ -2292,6 +1875,7 @@ std::tuple<std::vector<std::string>, int, long> singular_template_SUBLIFT(const 
     //std::cout<<"ListOutside:"<<lSize(u)<< std::endl;
     if (lSize(u)==0)
      {
+        u->Clean(currRing);
     //std::cerr << "Error: SubLIFT_GPI returned a null list." << std::endl;
    ///return std::make_tuple(std::vector<std::string>(), 0, 0);// Early exit with default values
    return{{},0,0};
@@ -2318,11 +1902,10 @@ std::tuple<std::vector<std::string>, int, long> singular_template_SUBLIFT(const 
    //auto end_serialize = std::chrono::high_resolution_clock::now();
    //auto  serialization_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_serialize - start_serialize).count(); // Convert to milliseconds
    //auto total_runtime=computation_time_deserialize+computation_time+serialization_time;
-  
-   auto total_runtime=computation_time;
-//    std::cout << " total time_SubLIFT:= " << total_runtime<< std::endl;
-   total_generator = lSize(u); // Assuming u contains the computed generators
 
+   auto total_runtime=computation_time;
+   total_generator = lSize(u); // Assuming u contains the computed generators
+   u->Clean(currRing);
   return {vec, total_generator, total_runtime};
 
 }
@@ -2336,111 +1919,19 @@ std::tuple<std::vector<std::string>, int, long> singular_template_SUBLIFT(const 
 
 
 
-
-
-
-
-
-
-
-NO_NAME_MANGLING
-std::pair<int, lists> reduce_GPI(leftv arg1) {
-
-    // std::cout << "Type of 1.arg:" << arg1->Typ() <<std::endl;
-    lists input = (lists)(arg1->Data()); //extract input
-    //std::cout << "Type of 2.arg:" << arg1->next->Typ() <<std::endl;
-    lists Tok = (lists)(arg1->next->Data()); // extract Tok
-    //std::cout << "Type of 3.arg:" << arg1->next->next->Typ() <<std::endl;
-    lists tok = (lists)(arg1->next->next->Data()); //extract tok
-
-    lists tmp = (lists)(input->m[3].Data()); // input.data
+void sum_InplaceAdd(ideal a, ideal b, const ring R)
+{
    
 
-     int r=0; int c=0;
-     leftv L = nullptr; leftv LL = nullptr;
-   
-    if (tmp->m[0].Typ() == IDEAL_CMD) {
-        // Handle case where `f` is an ideal
-       r = IDELEMS((ideal)(tmp->m[0].Data()));
-       lists tmpL = (lists)(Tok->m[3].Data()); // Tok.data
-        L=&tmpL->m[4];
-        r=r;
-       c = IDELEMS((ideal)L->Data());
-       c=c;
-    } else if (tmp->m[0].Typ() == VECTOR_CMD) {
-        // Handle case where `f` is a vector
-        ideal t=(ideal)(tmp->m[4].Data());
-        r = IDELEMS(t);
-        r=r;
-        lists tmpLL = (lists)(Tok->m[3].Data()); // Tok.data
-        LL=&tmpLL->m[4]; //Tok.data[5]
-       c = IDELEMS((ideal)LL->Data());
-       c=c;
+    // Perform the addition in place, modifying 'a'
+    for (int k = IDELEMS(a) - 1; k >= 0; k--)
+    {
+        // Add corresponding elements of 'a' and 'b' and store the result back into 'a'
+        a->m[k] = p_Add_q(a->m[k], p_Copy(b->m[k], R), R);
     }
-
-    lists tmpL1 = (lists)(Tok->m[3].Data()); // Tok.data
-    int counter=(int)(long)tmpL1->m[5].Data();//Tok.data[6]
-  
-
-    // ideal A = idInit(c, r);
-    // ideal B = idInit(c, r);
-    //leftv L2=(ideal)tmpL1->m[1];
-    lists tmpl=(lists)(tok->m[3].Data()); //tok.data
-    //leftv l=(ideal)(tmpl->m[1]);
-   ideal A = (ideal)tmpL1->m[1].Data(); // Tok.data[2]
-   ideal B = (ideal)tmpl->m[1].Data(); // tok.data[2]
-    //smatrix A0=A;
-    // ideal C = idInit(c, r);
-    // Perform the matrix addition using Singular's API function
-    ideal C = sm_Add(A, B, currRing);
- 
-//     std::cout << "Final in ADD transition _Reduce=" << std::endl;
-// for(int k = 1; k <= MATROWS(C); k++) {
-//     for(int l = 1; l <= MATCOLS(C); l++) {
-//         poly entr = MATELEM(C, k, l);
-//         std::cout << "Entry at position (" << k << ", " << l << ") = " << pString(entr) << std::endl;
-//     }
-// }
-
-
-  // Prepare the output token
-    lists output=(lists)omAlloc0Bin(slists_bin);
-    output->Init(4);// type token
-    // fieldnames
-    lists t=(lists)omAlloc0Bin(slists_bin);
-    t->Init(2);
-    t->m[0].rtyp=STRING_CMD; t->m[0].data=omStrDup("generators");
-    t->m[1].rtyp=STRING_CMD; t->m[1].data=omStrDup("FirstSyz_matrix");
-    output->m[1].rtyp=LIST_CMD; output->m[1].data=t;
-     output->m[0].rtyp=RING_CMD; output->m[0].data=currRing;
-      output->m[2].rtyp=RING_CMD; output->m[2].data=currRing;
-    //data
-    t=(lists)omAlloc0Bin(slists_bin);
-    t->Init(7);
-    t->m[0].rtyp = tmpL1->m[0].rtyp;t->m[0].data=tmpL1->m[0].CopyD(); // copy Tok.data[1]
-    t->m[1].rtyp=SMATRIX_CMD; t->m[1].data=C;
-    t->m[2].rtyp=INT_CMD;  t->m[2].data = (void*)(long)r;
-    t->m[3].rtyp=INT_CMD; t->m[3].data = (void*)(long)c;
-    
-   
-
-   if (tmp->m[0].Typ() == IDEAL_CMD) {
-         t->m[4].rtyp=MODUL_CMD; t->m[4].data= L->CopyD();//Tok.data[5]
-
-     } 
-     else if (tmp->m[0].Typ() == VECTOR_CMD) {
-         t->m[4].rtyp=MODUL_CMD; t->m[4].data= LL->CopyD();//Tok.data[5]
-     }
-
-    t->m[5].rtyp=INT_CMD;  t->m[5].data = (void*)(long)counter;
-   t->m[6].rtyp=INT_CMD; t->m[6].data = (void*)(long)(counter + 1);
-   output->m[3].rtyp=LIST_CMD; output->m[3].data=t;//data is in postion 4
-    
-     int cmd_nr;
-     blackboxIsCmd("token",cmd_nr); // get the type id of "token"
-     
-     return {cmd_nr,output};
 }
+
+
 
 
 
@@ -2448,125 +1939,302 @@ std::pair<int, lists> reduce_GPI(leftv arg1) {
 
 NO_NAME_MANGLING
 std::pair<std::string, long> singular_template_reduce(const std::string& Red, 
-                                                      const std::string& input_filename,
-                                                      const std::string& lift,
-                                                      const std::string& needed_library,
-                                                      const std::string& base_filename) 
+    const std::pair<int, int>& ranges,
+    int N,
+    const std::string& needed_library,
+    const std::string& base_filename) 
+{
+    init_singular(config::singularLibrary().string());
+    load_singular_library(needed_library);
+    std::filesystem::path basePath = std::filesystem::path(Red).parent_path();
+    std::string ids = worker();
+    std::pair<int, lists> Gb = deserialize(Red, ids);
+
+    lists Gb_data = (lists)(Gb.second);
+    lists tmpL1 = (lists)(Gb_data->m[3].Data());
+   
+    ideal C = nullptr;
+    int counter = 0;
+    int r=0; int c=0;
+    poly vec = NULL;
+    leftv L = nullptr;
+    std::pair<int, lists> input_part;
+    std::string filename;
+
+    // std::string logFilePath = "/scratch/gnawali/Try/gspc-res/example_dir/Smatrix_timing.log";
+    // std::ofstream logFile(logFilePath, std::ios::app);
+    // if (!logFile.is_open()) {
+    //     std::cerr << "Error: Failed to open log file at " << logFilePath << "!" << std::endl;
+    //     return {"", 0};
+    // }
+    
+    auto start_computation = std::chrono::high_resolution_clock::now();
+    int start = ranges.first;
+    int end = ranges.second; 
+    bool foundValidFile = false;
+
+    for (int i = start; i <= end; ++i) {  
+        filename = (basePath / (std::to_string(i) + ".ssi")).string();
+        if (!std::filesystem::exists(filename)) {
+            continue;
+        }
+        foundValidFile = true;
+        // Deserialize using the full path
+        input_part = deserialize(filename, ids);
+
+        lists token = (lists)(input_part.second);
+        lists tmpL = (lists)(token->m[3].Data());
+     
+
+        if (L != nullptr) {
+            L = nullptr;
+        }
+        if (vec != NULL) {
+            vec = NULL;
+        }
+
+        vec = (poly)tmpL->m[0].Data();
+        counter = (int)(long)tmpL->m[4].Data();
+      
+         
+            r = IDELEMS((ideal)(tmpL1->m[0].Data()));
+          
+            L=&tmpL->m[3];
+          
+           c = IDELEMS((ideal)L->Data());
+         
+      
+        
+           ideal A = (ideal)tmpL->m[1].Data();
+        if (C == nullptr) {
+            C = idCopy(A);
+        } else {
+           
+            sum_InplaceAdd(C, A, currRing);
+           
+        }
+
+        idDelete(&A);
+
+        try {
+            std::filesystem::remove(filename);
+        } catch (const std::filesystem::filesystem_error& e) {
+            std::cerr << "Failed to delete " << filename << ": " << e.what() << std::endl;
+        }
+    }
+
+      // If no valid files were found in the range, return an empty list structure
+      if (!foundValidFile) {
+        // std::cerr << "Warning: No valid files found in range [" << start << "," << end << "]!" << std::endl;
+
+        // Create an empty list
+        lists empty_list = (lists)omAlloc0Bin(slists_bin);
+        empty_list->Init(4);
+
+        empty_list->m[0].rtyp = RING_CMD;
+        empty_list->m[0].data = currRing;
+
+        // Initialize field names
+        lists field_names = (lists)omAlloc0Bin(slists_bin);
+        field_names->Init(1);  // Initialize with 1 field
+        field_names->m[0].rtyp = STRING_CMD;
+        field_names->m[0].data = omStrDup("empty");
+
+        empty_list->m[1].rtyp = LIST_CMD;
+        empty_list->m[1].data = field_names;
+
+        empty_list->m[2].rtyp = RING_CMD;
+        empty_list->m[2].data = currRing;
+
+        // Create an empty list for `final_data`
+        lists final_data = (lists)omAlloc0Bin(slists_bin);
+        final_data->Init(1);
+        final_data->m[0].rtyp = INT_CMD;
+        final_data->m[0].data = (void*)(long)0;  // Indicate no generators found
+
+        empty_list->m[3].rtyp = LIST_CMD;
+        empty_list->m[3].data = final_data;
+
+        std::string empty_filename = "empty_data";
+        return {empty_filename, 0};  // Return the empty list with 0 time
+    }
+    
+ 
+    
+    r=r;
+    //   std::cout<<"Smatrix"<<pString((poly)C->m[0])<<std::endl;
+    lists output = (lists)omAlloc0Bin(slists_bin);
+    output->Init(4);
+
+    lists t = (lists)omAlloc0Bin(slists_bin);
+    t->Init(2);
+    t->m[0].rtyp = STRING_CMD; t->m[0].data = omStrDup("generators");
+    t->m[1].rtyp = STRING_CMD; t->m[1].data = omStrDup("FirstSyz_smatrix");
+
+    output->m[1].rtyp = LIST_CMD; output->m[1].data = t;
+    output->m[0].rtyp = RING_CMD; output->m[0].data = currRing;
+    output->m[2].rtyp = RING_CMD; output->m[2].data = currRing;
+
+    t = (lists)omAlloc0Bin(slists_bin);
+    t->Init(5);
+    t->m[0].rtyp = VECTOR_CMD; t->m[0].data = vec;
+    t->m[1].rtyp = SMATRIX_CMD; t->m[1].data = C;
+    
+    t->m[2].rtyp = INT_CMD; t->m[2].data = (void*)(long)c;
+
+
+  
+        t->m[3].rtyp=MODUL_CMD; t->m[3].data= L->CopyD();//Tok.data[5]
+
+    
+   
+    t->m[4].rtyp = INT_CMD; t->m[4].data = (void*)(long)(counter + 1);
+   
+
+    output->m[3].rtyp = LIST_CMD; output->m[3].data = t;
+
+    int cmd_nr;
+    blackboxIsCmd("token", cmd_nr);
+
+    std::string out_filename = serialize_with_N(output, base_filename,N);
+
+    auto end_computation = std::chrono::high_resolution_clock::now();
+    auto computation_time = std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - start_computation).count();
+
+    return {out_filename, computation_time};
+}
+
+
+
+NO_NAME_MANGLING
+std::pair<std::string, long> singular_template_ADD_Seq(const std::string& Red, 
+    int N,
+    const std::string& needed_library,
+    const std::string& base_filename) 
 {
     init_singular(config::singularLibrary().string());
     load_singular_library(needed_library);
 
-    std::pair<int, lists> out;
-    std::string ids;
-    std::string out_filename;
-    ids = worker();
-    
+    // Extract the folder path from the Red file's location
+    std::filesystem::path basePath = std::filesystem::path(Red).parent_path();
+    // std::cout << base_filename<< "base_filename" << std::endl;
+    // std::cout <<Red<< "" << std::endl;
+    // std::cout <<N<< "=:Reduce" << std::endl;
+    std::string ids = worker();
     std::pair<int, lists> Gb = deserialize(Red, ids);
-    std::pair<int, lists> input = deserialize(input_filename, ids);
-    std::pair<int, lists> lift_syz = deserialize(lift, ids);
-      
 
-        // std::cout << "input.reduce:-= " << Gb.second<< std::endl;
-
-
-    // Prepare arguments
-    ScopedLeftv arg1(Gb.first, lCopy(Gb.second));
-    ScopedLeftv args(arg1, input.first, lCopy(input.second));
-    ScopedLeftv arg(args, lift_syz.first, lCopy(lift_syz.second));
-    
-
-    // std::string function_name = "reduce_GPI";
-    // Measure Computation Time
     auto start_computation = std::chrono::high_resolution_clock::now();
 
-    // out = call_user_proc(function_name, needed_library, arg1);
-    out = reduce_GPI(arg1.leftV());  // Call reduce_GPI with the raw pointer
-
-
-
-
-  //   lists Token1 = (lists)(arg1.leftV()->data);
+    lists Gb_data = (lists)(Gb.second);
+    lists tmpL1 = (lists)(Gb_data->m[3].Data());
    
-  // int L_si = lSize(Token1)+1;
-  // std::cout << "Size of J in the transition: " << L_si << std::endl;
-  // for (int i = 0; i < L_si; i++) {
-  //         sleftv& listElement = Token1->m[i];  // Access each element as `leftv`
-  //     std::cout << "Input: " << listElement.String()  << std::endl;
-  // }
-
-  //   lists Token2 = (lists)(args.leftV()->data);
-   
-  // int L = lSize(Token2)+1;
-  // std::cout << "Size of J in the transition: " << L << std::endl;
-  // for (int i = 0; i < L; i++) {
-  //         sleftv& listElement = Token2->m[i];  // Access each element as `leftv`
-  //     std::cout << "LHS: " << listElement.String()  << std::endl;
-  // }
+    ideal C = nullptr;
+    int counter = 0;
+   int c=0; int r=0;
+    poly vec = NULL;
+    leftv L = nullptr;
+    std::string logFilePath = "/scratch/gnawali/Try/gspc-res/example_dir/Smatrix_timing.log";
+    std::ofstream logFile(logFilePath, std::ios::app);
+    if (!logFile.is_open()) {
+        std::cerr << "Error: Failed to open log file at " << logFilePath << "!" << std::endl;
+        return {"", 0};
+    }
 
 
-  //   lists Token3 = (lists)(arg.leftV()->data);
-   
-  // int L0 = lSize(Token3)+1;
-  // std::cout << "Size of J in the transition: " << L0 << std::endl;
-  // for (int i = 0; i < L0; i++) {
-  //         sleftv& listElement = Token3->m[i];  // Access each element as `leftv`
-  //     std::cout << "RHS: " << listElement.String()  << std::endl;
-  // }
+    for (int i = 1; i <= N; ++i) { // Iterate from 1 to N to match "1.ssi", "2.ssi", etc.
+        // Construct the full path for i.ssi files within the same folder as Red
+        std::string filename = (basePath / (std::to_string(i) + ".ssi")).string();
+            // std::cout << filename<< "" << std::endl;
+          
+            if (!std::filesystem::exists(filename)) {
+                // std::cerr << "File not found: " << filename << ". Skipping this iteration." << std::endl;
+                continue;  // Skip to next iteration
+            }
+            
+        // Deserialize using the full path
+        std::pair<int, lists> input_part = deserialize(filename, ids);
+
+        lists token = (lists)(input_part.second);
+        lists tmpL = (lists)(token->m[3].Data());
+     
+
+        if (L != nullptr) {
+            L = nullptr;
+        }
+        if (vec != NULL) {
+            vec = NULL;
+        }
+
+        vec = (poly)tmpL->m[0].Data();
+        counter = (int)(long)tmpL->m[4].Data();
+      
+         
+            r = IDELEMS((ideal)(tmpL1->m[0].Data()));
+          
+            L=&tmpL->m[3];
+          
+           c = IDELEMS((ideal)L->Data());
+         
+      
+        
+           ideal A = (ideal)tmpL->m[1].Data();
+        if (C == nullptr) {
+            C = idCopy(A);
+        } else {
+           
+            sum_InplaceAdd(C, A, currRing);
+           
+        }
+        idDelete(&A);
+
+        try {
+            std::filesystem::remove(filename);
+            // std::cout << "Deleted file: " << filename << std::endl;
+        } catch (const std::filesystem::filesystem_error& e) {
+            std::cerr << "Failed to delete " << filename << ": " << e.what() << std::endl;
+        }
+    }
+   r=r;
+    //   std::cout<<"Smatrix"<<pString((poly)C->m[0])<<std::endl;
+    lists output = (lists)omAlloc0Bin(slists_bin);
+    output->Init(4);
+
+    lists t = (lists)omAlloc0Bin(slists_bin);
+    t->Init(2);
+    t->m[0].rtyp = STRING_CMD; t->m[0].data = omStrDup("generators");
+    t->m[1].rtyp = STRING_CMD; t->m[1].data = omStrDup("FirstSyz_smatrix");
+
+    output->m[1].rtyp = LIST_CMD; output->m[1].data = t;
+    output->m[0].rtyp = RING_CMD; output->m[0].data = currRing;
+    output->m[2].rtyp = RING_CMD; output->m[2].data = currRing;
+
+    t = (lists)omAlloc0Bin(slists_bin);
+    t->Init(5);
+    t->m[0].rtyp = VECTOR_CMD; t->m[0].data = vec;
+    t->m[1].rtyp = SMATRIX_CMD; t->m[1].data = C;
+    
+    t->m[2].rtyp = INT_CMD; t->m[2].data = (void*)(long)c;
 
 
+  
+        t->m[3].rtyp=MODUL_CMD; t->m[3].data= L->CopyD();//Tok.data[5]
 
     
-    out_filename = serialize(out.second, base_filename);
+   
+    t->m[4].rtyp = INT_CMD; t->m[4].data = (void*)(long)(counter + 1);
+   
+
+    output->m[3].rtyp = LIST_CMD; output->m[3].data = t;
+
+    int cmd_nr;
+    blackboxIsCmd("token", cmd_nr);
+
+    std::string out_filename = serialize(output, base_filename);
+
     auto end_computation = std::chrono::high_resolution_clock::now();
     auto computation_time = std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - start_computation).count();
-    auto total_runtime = computation_time;
-    
-  //  std::cout << " total gen " << total_generator<< std::endl;
-// std::cout << " total time " << total_runtime<< std::endl;
-//   std::cout << arg1.leftV()->String() <<std::endl;
-    return {out_filename, total_runtime};
-}
-
-
-
-NO_NAME_MANGLING
-std::string singular_template_Generate(const std::string& res,
-                                       const std::string& syz,
-										                   const std::string & needed_library,
-            							             const std::string& base_filename)
-{
-	init_singular (config::singularLibrary().string());
-	load_singular_library(needed_library);
-	std::pair<int,lists> Res;
-  std::pair<int,lists> Syz;
-	std::pair<int, lists> out;
-	std::string ids;
-	std::string out_filename;
-	ids = worker();
-	//std::cout << ids << " in singular_..._compute" << std::endl;
-	Res = deserialize(res,ids);
-  Syz = deserialize(syz,ids);
-  
-	ScopedLeftv args( Res.first, lCopy(Res.second));
-  ScopedLeftv arg(args,Syz.first, lCopy(Syz.second));
-  std::string function_name = "Generate_GPI";
-	out = call_user_proc(function_name, needed_library, args);
-  out_filename = serialize(out.second, base_filename);
-    
-	return out_filename;
-}
-NO_NAME_MANGLING
-// Define singular_template_removeFiles instead of delete
-std::string singular_template_removeFiles(const std::string& Red, const std::string& lift) {
-    try {
-        if (std::filesystem::exists(Red)) {
-            std::filesystem::remove(Red); // Delete the file represented by Red
-        }
-        if (std::filesystem::exists(lift)) {
-            std::filesystem::remove(lift); // Delete the file represented by lift
-        }
-    } catch (const std::filesystem::filesystem_error& e) {
-        std::cerr << "Error deleting file: " << e.what() << std::endl;
-    }
-    return {};
+    logFile << "Total Sequential Addition Time: " << computation_time << " ms\n";
+    logFile.flush();
+    logFile.close();
+    return {out_filename, computation_time};
 }

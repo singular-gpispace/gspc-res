@@ -1,5 +1,5 @@
-LDFLAGS += -L/home/santosh/gspc-res/build_dir
-LDFLAGS += -L/home/santosh/gspc-res/build_dir/src/util-generic
+LDFLAGS += -L/scratch/gnawali/Try/gspc-res/build_dir
+LDFLAGS += -L/scratch/gnawali/Try/gspc-res/build_dir/src/util-generic
 LDFLAGS += -Wl,-rpath='$$ORIGIN'
-LDFLAGS += -Wl,-rpath='/home/santosh/singular-gpispace/spack/opt/spack/linux-ubuntu22.04-skylake/gcc-11.4.0/gpi-space-24.12-ugaltunbzethad4p3szsepjqdbgthcch/lib'
-LDFLAGS += -Wl,-rpath='/home/santosh/singular-gpispace/spack/opt/spack/linux-ubuntu22.04-skylake/gcc-11.4.0/gpi-space-24.12-ugaltunbzethad4p3szsepjqdbgthcch/external/boost/lib'
+LDFLAGS += -Wl,-rpath='/scratch/gnawali/singular-gpispace/spack/opt/spack/linux-debian12-icelake/gcc-12.2.0/gpi-space-24.12-n522f32zjepvd2hhefibm4liumbmbuyu/lib'
+LDFLAGS += -Wl,-rpath='/scratch/gnawali/singular-gpispace/spack/opt/spack/linux-debian12-icelake/gcc-12.2.0/gpi-space-24.12-n522f32zjepvd2hhefibm4liumbmbuyu/external/boost/lib'

@@ -1,34 +1,35 @@
 #!/bin/bash
 
 # Ensure that LD_LIBRARY_PATH is set correctly for library resolution
-export LD_LIBRARY_PATH=/home/santosh/gspc-res/build_dir/src:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/scratch/gnawali/Try/gspc-res/build_dir/src:$LD_LIBRARY_PATH
 
 # Set the SINGULARPATH environment variable
-export SINGULARPATH=/home/santosh/gspc-res/install_dir
+export SINGULARPATH=/scratch/gnawali/Try/gspc-res/install_dir
 
-# Get the path for the correct Singular version installed by Spack
+# Specify the version of Singular to use
 SINGULAR_VERSION="4.4.0p2"
-SINGULAR_BIN=$(spack location -i singular@$SINGULAR_VERSION)/bin
-SINGULAR_LIB=$(spack location -i singular@$SINGULAR_VERSION)/lib
 
-# Ensure that the Spack-managed Singular is in the PATH
+# Set the paths for Singular binaries and libraries
+SINGULAR_BIN=/scratch/gnawali/singular-gpispace/spack/opt/spack/linux-debian12-icelake/gcc-12.2.0/singular-4.4.0p2-f4kucmkjbh6zho27okeaxhwhwcickrfx/bin
+SINGULAR_LIB=/scratch/gnawali/singular-gpispace/spack/opt/spack/linux-debian12-icelake/gcc-12.2.0/singular-4.4.0p2-f4kucmkjbh6zho27okeaxhwhwcickrfx/lib
+
+# Ensure that the Singular binaries are in your PATH
 export PATH=$SINGULAR_BIN:$PATH
 
 # Ensure that the library path for Singular is correctly set
 export LD_LIBRARY_PATH=$SINGULAR_LIB:$LD_LIBRARY_PATH
 
 # Copy the example library to the example directory
-cp /home/santosh/gspc-res/install_dir/share/examples/templategp.lib /home/santosh/gspc-res/example_dir
+cp /scratch/gnawali/Try/gspc-res/install_dir/share/examples/templategp.lib /scratch/gnawali/Try/gspc-res/example_dir
+
+# cp /home/santosh/gspc-res/install_dir/share/examples/templategp.lib /home/santosh/gspc-res/example_dir
 
 # Set GSPC_HOME
-export GSPC_HOME="/home/santosh/singular-gpispace/spack/opt/spack/linux-ubuntu22.04-skylake/gcc-11.4.0/gpi-space-24.12-ugaltunbzethad4p3szsepjqdbgthcch/"
+export GSPC_HOME="/scratch/gnawali/singular-gpispace/spack/opt/spack/linux-debian12-icelake/gcc-12.2.0/gpi-space-24.12-n522f32zjepvd2hhefibm4liumbmbuyu"
 
-# Check if the package is available in Spack
-# spack find gpi-space@24.12 || { echo "Package gpi-space@24.12 not found. Installing..."; spack install gpi-space@24.12; }
-
-# Activate the Spack environment
-# spack env activate -p gpispace
+# Load the gpi-space package via Spack (if needed)
 spack load gpi-space@24.12 || { echo "Failed to load GPI-Space"; exit 1; }
 
 # Run Singular with the example script
-Singular example.sing ./run.sh
+Singular example.sing
+# "$SINGULAR_BIN" example.sing

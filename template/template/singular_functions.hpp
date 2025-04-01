@@ -50,6 +50,7 @@ void ssi_write_newstruct (si_link, std::string const&, lists);
 // added int
 void ssi_write_newstruct (si_link, int, lists); 
 std::string serialize (lists, std::string const&);
+std::string serialize_with_N(lists, std::string const&,int);
 si_link ssi_open_for_read (std::string const& );
 lists ssi_read_newstruct (si_link , std::string const& );
 std::pair<int, lists> deserialize (std::string const&, std::string const&);

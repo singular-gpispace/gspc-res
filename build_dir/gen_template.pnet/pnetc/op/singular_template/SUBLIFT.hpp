@@ -14,11 +14,10 @@ namespace pnetc
       void SUBLIFT
         ( const std::string& input_name
         , const std::string& place_Tau
-        , const std::string& all_lead
         , const std::string& needed_library
         , const std::string& base_filename
+        , const unsigned long& N
         , std::list<pnet::type::value::value_type>& LIFT
-        , std::string& SUBLIFT
         );
     }
   }

@@ -1,5 +1,4 @@
 #include <pnetc/op/singular_template/LIFT.hpp>
-#include <we/type/literal/control.hpp>
 #include <list>
 #include <we/type/value.hpp>
 #include <string>
@@ -20,19 +19,18 @@ namespace pnetc
       void LIFT
         ( const std::string& input_name
         , const std::string& lead
-        , const std::string& all_lead
         , const std::string& needed_library
         , const std::string& base_filename
+        , const unsigned long& N
         , std::list<pnet::type::value::value_type>& LIFT
-        , we::type::literal::control& D
         )
       {
-#line 252 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 365 "/scratch/gnawali/Try/gspc-res/template/workflow/template.xpnet"
 
                   //  std::cout << "in singular _PetriNet_.._LIFT" << std::endl;
                    
                    std::tuple<std::vector<std::string>, int, long> out = RESOLVE_INTERFACE_FUNCTION(singular_template_LIFT)
-                  (input_name,all_lead, lead, needed_library, base_filename);
+                  (input_name, lead, needed_library, base_filename,N);
                        
 
                        std::vector<std::string> vec = std::get<0>(out);
@@ -49,13 +47,14 @@ namespace pnetc
                          
       
                     }
+                 
                
-              // std::cout << "LIFT_COUNT_Parent:"<< N << std::endl;
+              // std::cout << "LIFT::"<<  SUBLIFT << std::endl;
               // std::cout << "LIFT_COUNT_Child:"<< E << std::endl;
               
 
 
-// std::cout << "LIFT Duration: " << runtime << " milliseconds" << std::endl;
+// std::cout << "LIFT: " << N << "" << std::endl;
               
 
             

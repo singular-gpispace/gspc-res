@@ -6,7 +6,7 @@
 #include <cstdlib> // for std::getenv
 
 #ifndef SP_INSTALL_PATH
-#define SP_INSTALL_PATH "/home/santosh/gspc-res/install_dir"
+#define SP_INSTALL_PATH "/scratch/gnawali/Try/gspc-res/install_dir"
 #endif
 
 namespace singular_template
