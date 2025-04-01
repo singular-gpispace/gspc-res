@@ -194,7 +194,7 @@ proc gspc_template_SchRes(ideal I, configToken gc)
     // Extract the data from resultToken
     def Result = resultToken.data;
 //    print("beforeReturn");
-//   print(Result);
+  print(Result);
     
 
 

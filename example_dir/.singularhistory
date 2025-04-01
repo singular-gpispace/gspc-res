@@ -256,3 +256,56 @@ quit;
 quit;
 quit;
 quit;
+ring R=(0,q),(x,y,z,u,v,w),dp;
+ def e = Exterior(); setring e;
+resolution T1=mres(maxideal(1),0);
+module M=T1[6];
+M=std(M);
+ring R=(0,q),(x,y,z,u,v,w),dp;
+ def e = Exterior(); setring e;
+resolution T1=mres(maxideal(1),0);
+module M=T1[6];
+M=std(M);
+ring R=(0,q),(x,y,z,u,v,w),dp;
+ def e = Exterior(); setring e;
+resolution T1=mres(maxideal(1),0);
+LIB "nctools.lib";
+ring R=(0,q),(x,y,z,u,v,w),dp;
+ def e = Exterior(); setring e;
+resolution T1=mres(maxideal(1),0);
+module M=T1[6];
+M=std(M);
+rtimer=0;
+ system("--ticks-per-sec",1000); // set timer resolution to ms
+ int t=rtimer;
+def re =mres(M,0);
+re;
+
+rtimer-t;
+print("timer");
+rtimer=0;
+ system("--ticks-per-sec",1000); // set timer resolution to ms
+ int t=rtimer;
+def re =mres(M,2);
+re;
+
+rtimer-t;
+print("timer");
+ring R=(0,q),(x,y,z,u,v,w),dp;
+ def e = Exterior(); setring e;
+resolution T1=mres(maxideal(1),0);
+module M=T1[8];
+M=std(M);
+rtimer=0;
+ system("--ticks-per-sec",1000); // set timer resolution to ms
+ int t=rtimer;
+def re =mres(M,2);
+re;
+
+rtimer-t;
+print("timer");
+def r=syz(M);
+r;
+clear
+;
+quit;
