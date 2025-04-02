@@ -548,7 +548,7 @@ std::pair<int, lists> LEAD_GPI(leftv args) {
         counter = 1;//counter=1
     } else if (tmp->m[0].Typ() == VECTOR_CMD) {
         // If it's a vector, handle it using Sec_leadSyz
-        std::cout << "vector:" <<tmp->m[0].Typ()<< std::endl;
+        // std::cout << "vector:" <<tmp->m[0].Typ()<< std::endl;
         ideal mM = (ideal)(tmp->m[4].Data()); 
          ideal mM_copy =idCopy(mM); 
         //    for(int k=0; k< IDELEMS(mM); k++){
@@ -567,6 +567,41 @@ std::pair<int, lists> LEAD_GPI(leftv args) {
 
         counter = (int)(long)tmp->m[6].Data();
     }
+
+   
+    // if (r == 0) {
+    //     // std::cerr << "Warning: lL is empty. Returning empty result." << std::endl;
+        
+    //     lists empty_list = (lists)omAlloc0Bin(slists_bin);
+    //     empty_list->Init(4);
+
+    //     empty_list->m[0].rtyp = RING_CMD;
+    //     empty_list->m[0].data = currRing;
+
+    //     // Initialize field names
+    //     lists field_names = (lists)omAlloc0Bin(slists_bin);
+    //     field_names->Init(1); // Initialize with 1 field
+    //     field_names->m[0].rtyp = STRING_CMD;
+    //     field_names->m[0].data = omStrDup("empty");
+
+    //     empty_list->m[1].rtyp = LIST_CMD;
+    //     empty_list->m[1].data = field_names;
+
+    //     empty_list->m[2].rtyp = RING_CMD;
+    //     empty_list->m[2].data = currRing;
+
+    //     // Create an empty list for `final_data`
+    //     lists final_data = (lists)omAlloc0Bin(slists_bin);
+    //     final_data->Init(1);
+    //     final_data->m[0].rtyp = INT_CMD;
+    //     final_data->m[0].data = (void*)(long)0;  // Indicate no generators found
+
+    //     empty_list->m[3].rtyp = LIST_CMD;
+    //     empty_list->m[3].data = final_data;
+
+    //     return {0, empty_list};
+    // }
+
     
 //  std::cout << "#LeadSyz_GPI:=" <<r<< std::endl;
     // Prepare the LLT token
@@ -1474,8 +1509,7 @@ std::pair<int, lists> LIFT_GPI(leftv args) {
 
         r = lSize(lL) + 1;
     } else if (tmp->m[0].Typ() == VECTOR_CMD) {
-        matrix A = (matrix)tmp->m[1].Data();  // Deep copy matrix A
-        ideal M_copy = id_Matrix2Module(mp_Copy(A,currRing), currRing);
+        ideal M_copy = idCopy((ideal)tmp->m[1].Data());  //M_copy is smatrix
         poly s_copy = pCopy(s);  // Copy polynomial s
         lists J_copy = lCopy(J); // Deep copy of lists J
 
@@ -2049,8 +2083,8 @@ std::pair<int, lists> SubLIFT_GPI(leftv args) {
 
         r = lSize(lL) + 1;
     } else if (tmp->m[0].Typ() == VECTOR_CMD) {
-        matrix A = (matrix)tmp->m[1].Data();  // Deep copy matrix A
-        ideal M_copy = id_Matrix2Module(mp_Copy(A,currRing), currRing);
+        ideal M_copy = idCopy((ideal)tmp->m[1].Data());  //M_copy is smatrix
+
         poly s_copy = pCopy(s);  // Copy polynomial s
         lists J_copy = lCopy(J); // Deep copy of lists J
 
@@ -2901,4 +2935,32 @@ std::pair<std::string, long> singular_template_ADD_Seq(const std::string& Red,
 
     rKill(currRing); 
     return {out_filename, computation_time};
+}
+
+
+NO_NAME_MANGLING
+std::string singular_template_Generate(const std::string& res,
+                                       const std::string& syz,
+										                   const std::string & needed_library,
+            							             const std::string& base_filename)
+{
+	init_singular (config::singularLibrary().string());
+	load_singular_library(needed_library);
+	std::pair<int,lists> Res;
+  std::pair<int,lists> Syz;
+	std::pair<int, lists> out;
+	std::string ids;
+	std::string out_filename;
+	ids = worker();
+	//std::cout << ids << " in singular_..._compute" << std::endl;
+	Res = deserialize(res,ids);
+  Syz = deserialize(syz,ids);
+  
+	ScopedLeftv args( Res.first, lCopy(Res.second));
+  ScopedLeftv arg(args,Syz.first, lCopy(Syz.second));
+  std::string function_name = "Generate_GPI";
+	out = call_user_proc(function_name, needed_library, args);
+  out_filename = serialize(out.second, base_filename);
+    
+	return out_filename;
 }

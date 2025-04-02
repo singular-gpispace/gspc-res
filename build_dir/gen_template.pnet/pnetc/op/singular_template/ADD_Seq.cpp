@@ -22,7 +22,7 @@ namespace pnetc
         , std::string& s
         )
       {
-#line 1092 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 935 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
              
                 auto computation_time = std::chrono::high_resolution_clock::now();
@@ -36,7 +36,7 @@ namespace pnetc
               s = result.first;
            
          
-          std::cout << "Add_seq:" << s << std::endl;
+          // std::cout << "Add_seq:" << s << std::endl;
              
 
 // std::cout << "Reduce Duration: " <<computation_duration << "nanosecond" << std::endl;

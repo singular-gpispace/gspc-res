@@ -20,14 +20,14 @@ namespace pnetc
     {
       void All_Lead
         ( const std::string& init
+        , const we::type::literal::control& C
         , const std::string& library_name
         , const std::string& base_filename
-        , we::type::literal::control& C
         , std::list<pnet::type::value::value_type>& OUTPUT
         , int& counter
         )
       {
-#line 239 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 272 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
           //std::cout <<"All_LeadSyz_Input:"<<init<< std::endl;
            auto start_computation = std::chrono::high_resolution_clock::now();

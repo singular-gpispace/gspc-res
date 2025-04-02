@@ -1,5 +1,4 @@
 #include <pnetc/op/singular_template/StartTime.hpp>
-#include <we/type/literal/control.hpp>
 #include <string>
 #include <interface/template_interface.hpp>
 #include <util-generic/dynamic_linking.hpp>
@@ -14,7 +13,6 @@ namespace pnetc
     {
       void StartTime
         ( const std::string& input
-        , we::type::literal::control& c
         , std::string& output
         , long& start_time
         )

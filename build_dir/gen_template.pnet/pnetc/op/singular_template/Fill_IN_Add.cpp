@@ -19,7 +19,7 @@ namespace pnetc
         , std::list<pnet::type::value::value_type>& outgoing
         )
       {
-#line 956 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 799 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
        
          // Fill outgoing with the next batch

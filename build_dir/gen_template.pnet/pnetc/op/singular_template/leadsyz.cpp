@@ -20,13 +20,14 @@ namespace pnetc
     {
       void leadsyz
         ( const std::string& input
-        , const we::type::literal::control& s
         , const std::string& library_name
         , const std::string& base_filename
+        , const int& len
+        , we::type::literal::control& s
         , std::list<pnet::type::value::value_type>& OUT
         )
       {
-#line 308 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 341 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
             
               auto computation_time = std::chrono::high_resolution_clock::now();

@@ -23,7 +23,7 @@ namespace pnetc
         , we::type::literal::control& drain
         )
       {
-#line 786 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 629 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
     //  std::cout << "Empty:"<<""<< std::endl; 
     

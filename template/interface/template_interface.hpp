@@ -86,7 +86,14 @@ std::tuple<std::vector<std::string>, int,  long> singular_template_SUBLIFT ( std
                                                                            , std::string const&
                                                                          
                                                                 , std::string const&
-                                                                            );   
+                                                                            );  
+                                                                            
+    NO_NAME_MANGLING
+std::string singular_template_Generate (std::string const&
+                                      , std::string const&
+                                      , std::string const&
+						  , std::string const&
+                                      );  
 
                                       
                                       NO_NAME_MANGLING

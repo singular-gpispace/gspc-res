@@ -1277,39 +1277,39 @@ if(typeof(f)=="ideal"){
 
 
 
-proc Generate_GPI(token input, token Tok){
-  //  string path = "/home/santosh/gspc-res/example_dir/temp/";  // Ensure the path ends with a "/"
-  //   string filename = "Generate.ssi";
-  //    link l0 = "ssi:w " + path + filename;
+// proc Generate_GPI(token input, token Tok){
+//   //  string path = "/home/santosh/gspc-res/example_dir/temp/";  // Ensure the path ends with a "/"
+//   //   string filename = "Generate.ssi";
+//   //    link l0 = "ssi:w " + path + filename;
 
 
- def L0=input.data[2];
- def Syz=Tok.data[2];
-list L=L0;
+//  def L0=input.data[2];
+//  def Syz=Tok.data[2];
+// list L=L0;
 
-def Sch=Tok.data[5];
-int c=size(Sch);
- list L1;
- for(int i=1; i<=size(L); i++){
-  L1[i]=L[i];
- }
- L1[size(L)+1]=Syz;
+// def Sch=Tok.data[5];
+// int c=size(Sch);
+//  list L1;
+//  for(int i=1; i<=size(L); i++){
+//   L1[i]=L[i];
+//  }
+//  L1[size(L)+1]=Syz;
 
 
  
-  // write(l0,L1,"generate_gpi");
-  // close(l0);
-    token output;
-    output.fieldnames = list("generators","list_Syz_matrices");
-     output.data[1]=c;
-    output.data[2] =L1;
+//   // write(l0,L1,"generate_gpi");
+//   // close(l0);
+//     token output;
+//     output.fieldnames = list("generators","list_Syz_matrices");
+//      output.data[1]=c;
+//     output.data[2] =L1;
    
    
    
    
   
-    return(output);
-}
+//     return(output);
+// }
 
 
 proc reduce_GPI(token input, token Tok)
@@ -1521,3 +1521,22 @@ proc Add_GPI(token input, int N)
 
     return(output);
 }
+
+proc Generate_GPI(token input, token Tok){
+  def res=input.data[1];
+  def Syz=Tok.data[2];
+  list L=res;
+  list L1;
+  for(int i=1; i<=size(L); i++){
+   L1[i]=L[i];
+  }
+  L1[size(L)+1]=Syz;
+  
+     token output;
+     output.fieldnames = list("generators","list_Syz_matrices");
+     output.data[1] = L1;
+     output.data[2]=size(L1);
+    
+   
+     return(output);
+ }

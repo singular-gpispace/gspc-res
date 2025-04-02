@@ -24,7 +24,7 @@ namespace pnetc
         , we::type::literal::control& c
         )
       {
-#line 894 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 737 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
     
         int n = N / r; 
