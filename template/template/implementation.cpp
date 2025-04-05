@@ -1145,7 +1145,7 @@ int coM2(ideal f, poly s, poly t, lists J, int k) { //poly s and poly t are sing
 
 
 NO_NAME_MANGLING
-//First Level LiftTree
+ //First Level LiftTree
 lists liftTree(ideal f, poly s) { //poly s is singular vector
     
     int r = IDELEMS(f);
@@ -1188,7 +1188,7 @@ lists liftTree(ideal f, poly s) { //poly s is singular vector
   //  for(int k=0;k< t_size; k++){
   //   std::cout << "T[k]=: " <<pString((poly)T->m[k].Data())<< std::endl;
   //  }
-    lists TT = (lists)omAlloc0Bin(slists_bin); // Allocate memory for empty list TT
+     lists TT = (lists)omAlloc0Bin(slists_bin); // Allocate memory for empty list TT
   
 
 
@@ -1500,26 +1500,19 @@ std::pair<int, lists> LIFT_GPI(leftv args) {
         //  std::cout << "#poly C:=" <<pString(C)<< std::endl;
         poly Ci=p_Vec2Poly(C,l_k,currRing);
        
-      C= p_Sub(C,Ci,currRing);
+        C= p_Sub(C,Ci,currRing);
         //  std::cout << "after C-Ci:=" <<pString(C)<< std::endl;
          poly C1= pCopy(p_Mult_q(pISet(-1), pCopy(lm), currRing));
                    p_SetComp(C1,l_k,currRing);
                    p_SetmComp(C1,currRing);
                    
-//        std::cout << "Before addition C: " << pString(C) << std::endl;
-// std::cout << "Before addition C1: " << pString(C1) << std::endl;
+       //        std::cout << "Before addition C: " << pString(C) << std::endl;
+       // std::cout << "Before addition C1: " << pString(C1) << std::endl;
 
-C=p_Add_q(C, pCopy(C1), currRing);
+        C=p_Add_q(C, pCopy(C1), currRing);
 
-// std::cout << "After addition C: " << pString(C) << std::endl;
-   sM->m[colmn-1]=C;
-
-
-
-
-
-
-
+       // std::cout << "After addition C: " << pString(C) << std::endl;
+        sM->m[colmn-1]=C;
 
         // Prepare Ld data
         t = (lists)omAlloc0Bin(slists_bin);
@@ -1655,12 +1648,12 @@ std::tuple<std::vector<std::string>, int, long> singular_template_LIFT(const std
     // Measure Computation Time
     auto start_computation = std::chrono::high_resolution_clock::now();
    
-//   std::string function_name = "LIFT_GPI";
-  //    //std::cout<<"function_name_LIFT:"<<function_name<< std:: endl;
+    //   std::string function_name = "LIFT_GPI";
+    //    //std::cout<<"function_name_LIFT:"<<function_name<< std:: endl;
     // out = call_user_proc(function_name, needed_library, args);
    
     // Direct call to LIFT_GPI 
-   out = LIFT_GPI(args.leftV());  
+    out = LIFT_GPI(args.leftV());  
   
 
     // Extract the result list from the output
@@ -1960,7 +1953,7 @@ std::pair<int, lists> SubLIFT_GPI(leftv args) {
     
     ideal l = nullptr;
     ideal LL = nullptr;
-   int r0 = 0, c = 0, l_size = 0;
+    int r0 = 0, c = 0, l_size = 0;
     // Determine the ideal or vector type and get the corresponding data
     if (tmp->m[0].Typ() == IDEAL_CMD) {
         l = (ideal)J->m[1].Data();
@@ -2083,19 +2076,19 @@ std::pair<int, lists> SubLIFT_GPI(leftv args) {
         //  std::cout << "#poly C:=" <<pString(C)<< std::endl;
         poly Ci=p_Vec2Poly(C,l_k,currRing);
        
-      C= p_Sub(C,Ci,currRing);
+        C= p_Sub(C,Ci,currRing);
         //  std::cout << "after C-Ci:=" <<pString(C)<< std::endl;
          poly C1= pCopy(p_Mult_q(pISet(-1), pCopy(lm), currRing));
                    p_SetComp(C1,l_k,currRing);
                    p_SetmComp(C1,currRing);
                    
-//        std::cout << "Before addition C: " << pString(C) << std::endl;
-// std::cout << "Before addition C1: " << pString(C1) << std::endl;
+        //std::cout << "Before addition C: " << pString(C) << std::endl;
+        // std::cout << "Before addition C1: " << pString(C1) << std::endl;
 
-C=p_Add_q(C, pCopy(C1), currRing);
+       C=p_Add_q(C, pCopy(C1), currRing);
 
-// std::cout << "After addition C: " << pString(C) << std::endl;
-   sM->m[colmn-1]=C;
+       // std::cout << "After addition C: " << pString(C) << std::endl;
+       sM->m[colmn-1]=C;
 
 
 
@@ -2245,15 +2238,15 @@ std::tuple<std::vector<std::string>, int, long> singular_template_SUBLIFT(const 
      //std::cout<<"function_name_LIFT:"<<function_name<< std:: endl;
     // out = call_user_proc(function_name, needed_library, args);
      out = SubLIFT_GPI(args.leftV());  // Call  SubLIFT_GPI with the raw pointer
-  //std::cout << "SubLIFT_Runtime: " << computation_time << " milliseconds" << std::endl;
+   //std::cout << "SubLIFT_Runtime: " << computation_time << " milliseconds" << std::endl;
     //std::cout<<"ListOutside_proc:"<<function_name<< std:: endl;
-  //   lists Token = (lists)(args.leftV()->data);
+   //   lists Token = (lists)(args.leftV()->data);
    
-  // int L_size = lSize(Token)+1;
-  // std::cout << "Size of J in the transition: " << L_size << std::endl;
-  // for (int i = 0; i < L_size; i++) {
-  //         sleftv& listElement = Token->m[i];  // Access each element as `leftv`
-  //     if(listElement.data==NULL) {
+   // int L_size = lSize(Token)+1;
+   // std::cout << "Size of J in the transition: " << L_size << std::endl;
+   // for (int i = 0; i < L_size; i++) {
+   //         sleftv& listElement = Token->m[i];  // Access each element as `leftv`
+   //     if(listElement.data==NULL) {
   //       std::cout << "Input: NULL"  << std::endl;
   //     }
   //  else
@@ -2545,7 +2538,7 @@ std::string singular_template_Generate(const std::string& res,
 	ids = worker();
 	//std::cout << ids << " in singular_..._compute" << std::endl;
 	Res = deserialize(res,ids);
-  Syz = deserialize(syz,ids);
+   Syz = deserialize(syz,ids);
   
 	ScopedLeftv args( Res.first, lCopy(Res.second));
   ScopedLeftv arg(args,Syz.first, lCopy(Syz.second));

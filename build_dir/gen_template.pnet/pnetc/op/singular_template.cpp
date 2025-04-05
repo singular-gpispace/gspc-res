@@ -1,6 +1,6 @@
 #include <we/loader/macros.hpp>
 
-#include <pnetc/op/singular_template/Init.hpp>
+#include <pnetc/op/singular_template/result.hpp>
 #include <we/type/literal/control.hpp>
 #include <string>
 
@@ -10,7 +10,119 @@ namespace pnetc
   {
     namespace singular_template
     {
-      static void Init
+      static void result
+        ( drts::worker::context *
+        , expr::eval::context const&_pnetc_input
+        , expr::eval::context&_pnetc_output
+        , std::map<std::string, void*> const&
+        )
+      {
+        const unsigned long & k1 (::boost::get< unsigned long > (_pnetc_input.value (std::list<std::string> (1, "k1"))));
+        const unsigned long & k2 (::boost::get< unsigned long > (_pnetc_input.value (std::list<std::string> (1, "k2"))));
+        const unsigned long & k3 (::boost::get< unsigned long > (_pnetc_input.value (std::list<std::string> (1, "k3"))));
+        const unsigned long & k4 (::boost::get< unsigned long > (_pnetc_input.value (std::list<std::string> (1, "k4"))));
+        const int & nleads (::boost::get< int > (_pnetc_input.value (std::list<std::string> (1, "nleads"))));
+        std::string s (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "s"))));
+        we::type::literal::control ctrl (::boost::get< we::type::literal::control > (_pnetc_input.value (std::list<std::string> (1, "ctrl"))));
+        int d_back (::boost::get< int > (_pnetc_input.value (std::list<std::string> (1, "d_back"))));
+        ::pnetc::op::singular_template::result (k1, k2, k3, k4, nleads, s, ctrl, d_back);
+        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "s"), s);
+        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "ctrl"), ctrl);
+        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "d_back"), d_back);
+      }
+    }
+  }
+}
+#include <pnetc/op/singular_template/resolution.hpp>
+#include <string>
+
+namespace pnetc
+{
+  namespace op
+  {
+    namespace singular_template
+    {
+      static void resolution
+        ( drts::worker::context *
+        , expr::eval::context const&_pnetc_input
+        , expr::eval::context&_pnetc_output
+        , std::map<std::string, void*> const&
+        )
+      {
+        const int & len (::boost::get< int > (_pnetc_input.value (std::list<std::string> (1, "len"))));
+        std::string s (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "s"))));
+        ::pnetc::op::singular_template::resolution (len, s);
+        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "s"), s);
+      }
+    }
+  }
+}
+#include <pnetc/op/singular_template/EndTime_Resolutions.hpp>
+#include <string>
+
+namespace pnetc
+{
+  namespace op
+  {
+    namespace singular_template
+    {
+      static void EndTime_Resolutions
+        ( drts::worker::context *
+        , expr::eval::context const&_pnetc_input
+        , expr::eval::context&_pnetc_output
+        , std::map<std::string, void*> const&
+        )
+      {
+        const long & start_time (::boost::get< long > (_pnetc_input.value (std::list<std::string> (1, "start_time"))));
+        std::string computed_output (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "computed_output"))));
+        ::pnetc::op::singular_template::EndTime_Resolutions (start_time, computed_output);
+        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "computed_output"), computed_output);
+      }
+    }
+  }
+}
+#include <pnetc/op/singular_template/reduce.hpp>
+#include <string>
+
+namespace pnetc
+{
+  namespace op
+  {
+    namespace singular_template
+    {
+      static void reduce
+        ( drts::worker::context *
+        , expr::eval::context const&_pnetc_input
+        , expr::eval::context&_pnetc_output
+        , std::map<std::string, void*> const&
+        )
+      {
+        const std::string & library_name (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "library_name"))));
+        const std::string & base_filename (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "base_filename"))));
+        const std::string & input (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "input"))));
+        const std::string & l (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "l"))));
+        const std::string & r (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "r"))));
+        std::string s;
+        std::string RHS_delete;
+        std::string LHS_delete;
+        ::pnetc::op::singular_template::reduce (library_name, base_filename, input, l, r, s, RHS_delete, LHS_delete);
+        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "s"), s);
+        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "RHS_delete"), RHS_delete);
+        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "LHS_delete"), LHS_delete);
+      }
+    }
+  }
+}
+#include <pnetc/op/singular_template/StartTime.hpp>
+#include <string>
+
+namespace pnetc
+{
+  namespace op
+  {
+    namespace singular_template
+    {
+      static void StartTime
         ( drts::worker::context *
         , expr::eval::context const&_pnetc_input
         , expr::eval::context&_pnetc_output
@@ -18,13 +130,11 @@ namespace pnetc
         )
       {
         const std::string & input (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "input"))));
-        std::string res;
-        we::type::literal::control c;
         std::string output;
-        ::pnetc::op::singular_template::Init (input, res, c, output);
-        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "res"), res);
-        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "c"), c);
+        long start_time;
+        ::pnetc::op::singular_template::StartTime (input, output, start_time);
         _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "output"), output);
+        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "start_time"), start_time);
       }
     }
   }
@@ -121,6 +231,35 @@ namespace pnetc
     }
   }
 }
+#include <pnetc/op/singular_template/Init.hpp>
+#include <we/type/literal/control.hpp>
+#include <string>
+
+namespace pnetc
+{
+  namespace op
+  {
+    namespace singular_template
+    {
+      static void Init
+        ( drts::worker::context *
+        , expr::eval::context const&_pnetc_input
+        , expr::eval::context&_pnetc_output
+        , std::map<std::string, void*> const&
+        )
+      {
+        const std::string & input (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "input"))));
+        std::string res;
+        we::type::literal::control c;
+        std::string output;
+        ::pnetc::op::singular_template::Init (input, res, c, output);
+        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "res"), res);
+        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "c"), c);
+        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "output"), output);
+      }
+    }
+  }
+}
 #include <pnetc/op/singular_template/All_Lead.hpp>
 #include <we/type/literal/control.hpp>
 #include <list>
@@ -185,7 +324,7 @@ namespace pnetc
     }
   }
 }
-#include <pnetc/op/singular_template/resolution.hpp>
+#include <pnetc/op/singular_template/plus.hpp>
 #include <string>
 
 namespace pnetc
@@ -194,22 +333,21 @@ namespace pnetc
   {
     namespace singular_template
     {
-      static void resolution
+      static void plus
         ( drts::worker::context *
         , expr::eval::context const&_pnetc_input
         , expr::eval::context&_pnetc_output
         , std::map<std::string, void*> const&
         )
       {
-        const int & len (::boost::get< int > (_pnetc_input.value (std::list<std::string> (1, "len"))));
-        std::string s (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "s"))));
-        ::pnetc::op::singular_template::resolution (len, s);
-        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "s"), s);
+        std::string a (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "a"))));
+        ::pnetc::op::singular_template::plus (a);
+        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "a"), a);
       }
     }
   }
 }
-#include <pnetc/op/singular_template/reduce.hpp>
+#include <pnetc/op/singular_template/count.hpp>
 #include <string>
 
 namespace pnetc
@@ -218,25 +356,16 @@ namespace pnetc
   {
     namespace singular_template
     {
-      static void reduce
+      static void count
         ( drts::worker::context *
         , expr::eval::context const&_pnetc_input
         , expr::eval::context&_pnetc_output
         , std::map<std::string, void*> const&
         )
       {
-        const std::string & library_name (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "library_name"))));
-        const std::string & base_filename (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "base_filename"))));
-        const std::string & input (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "input"))));
-        const std::string & l (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "l"))));
-        const std::string & r (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "r"))));
-        std::string s;
-        std::string RHS_delete;
-        std::string LHS_delete;
-        ::pnetc::op::singular_template::reduce (library_name, base_filename, input, l, r, s, RHS_delete, LHS_delete);
-        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "s"), s);
-        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "RHS_delete"), RHS_delete);
-        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "LHS_delete"), LHS_delete);
+        std::string a (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "a"))));
+        ::pnetc::op::singular_template::count (a);
+        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "a"), a);
       }
     }
   }
@@ -275,29 +404,6 @@ namespace pnetc
     }
   }
 }
-#include <pnetc/op/singular_template/count.hpp>
-#include <string>
-
-namespace pnetc
-{
-  namespace op
-  {
-    namespace singular_template
-    {
-      static void count
-        ( drts::worker::context *
-        , expr::eval::context const&_pnetc_input
-        , expr::eval::context&_pnetc_output
-        , std::map<std::string, void*> const&
-        )
-      {
-        std::string a (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "a"))));
-        ::pnetc::op::singular_template::count (a);
-        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "a"), a);
-      }
-    }
-  }
-}
 #include <pnetc/op/singular_template/removeFiles.hpp>
 #include <string>
 
@@ -325,76 +431,22 @@ namespace pnetc
     }
   }
 }
-#include <pnetc/op/singular_template/plus.hpp>
-#include <string>
-
-namespace pnetc
-{
-  namespace op
-  {
-    namespace singular_template
-    {
-      static void plus
-        ( drts::worker::context *
-        , expr::eval::context const&_pnetc_input
-        , expr::eval::context&_pnetc_output
-        , std::map<std::string, void*> const&
-        )
-      {
-        std::string a (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "a"))));
-        ::pnetc::op::singular_template::plus (a);
-        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "a"), a);
-      }
-    }
-  }
-}
-#include <pnetc/op/singular_template/result.hpp>
-#include <we/type/literal/control.hpp>
-#include <string>
-
-namespace pnetc
-{
-  namespace op
-  {
-    namespace singular_template
-    {
-      static void result
-        ( drts::worker::context *
-        , expr::eval::context const&_pnetc_input
-        , expr::eval::context&_pnetc_output
-        , std::map<std::string, void*> const&
-        )
-      {
-        const unsigned long & k1 (::boost::get< unsigned long > (_pnetc_input.value (std::list<std::string> (1, "k1"))));
-        const unsigned long & k2 (::boost::get< unsigned long > (_pnetc_input.value (std::list<std::string> (1, "k2"))));
-        const unsigned long & k3 (::boost::get< unsigned long > (_pnetc_input.value (std::list<std::string> (1, "k3"))));
-        const unsigned long & k4 (::boost::get< unsigned long > (_pnetc_input.value (std::list<std::string> (1, "k4"))));
-        const int & nleads (::boost::get< int > (_pnetc_input.value (std::list<std::string> (1, "nleads"))));
-        std::string s (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "s"))));
-        we::type::literal::control ctrl (::boost::get< we::type::literal::control > (_pnetc_input.value (std::list<std::string> (1, "ctrl"))));
-        int d_back (::boost::get< int > (_pnetc_input.value (std::list<std::string> (1, "d_back"))));
-        ::pnetc::op::singular_template::result (k1, k2, k3, k4, nleads, s, ctrl, d_back);
-        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "s"), s);
-        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "ctrl"), ctrl);
-        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "d_back"), d_back);
-      }
-    }
-  }
-}
 WE_MOD_INITIALIZE_START()
 {
-  WE_REGISTER_FUN_AS (::pnetc::op::singular_template::Init,"Init");
+  WE_REGISTER_FUN_AS (::pnetc::op::singular_template::result,"result");
+  WE_REGISTER_FUN_AS (::pnetc::op::singular_template::resolution,"resolution");
+  WE_REGISTER_FUN_AS (::pnetc::op::singular_template::EndTime_Resolutions,"EndTime_Resolutions");
+  WE_REGISTER_FUN_AS (::pnetc::op::singular_template::reduce,"reduce");
+  WE_REGISTER_FUN_AS (::pnetc::op::singular_template::StartTime,"StartTime");
   WE_REGISTER_FUN_AS (::pnetc::op::singular_template::LIFT,"LIFT");
   WE_REGISTER_FUN_AS (::pnetc::op::singular_template::Generate,"Generate");
   WE_REGISTER_FUN_AS (::pnetc::op::singular_template::count_LIFT,"count_LIFT");
+  WE_REGISTER_FUN_AS (::pnetc::op::singular_template::Init,"Init");
   WE_REGISTER_FUN_AS (::pnetc::op::singular_template::All_Lead,"All_Lead");
   WE_REGISTER_FUN_AS (::pnetc::op::singular_template::SUBLIFT,"SUBLIFT");
-  WE_REGISTER_FUN_AS (::pnetc::op::singular_template::resolution,"resolution");
-  WE_REGISTER_FUN_AS (::pnetc::op::singular_template::reduce,"reduce");
-  WE_REGISTER_FUN_AS (::pnetc::op::singular_template::leadsyz,"leadsyz");
-  WE_REGISTER_FUN_AS (::pnetc::op::singular_template::count,"count");
-  WE_REGISTER_FUN_AS (::pnetc::op::singular_template::removeFiles,"removeFiles");
   WE_REGISTER_FUN_AS (::pnetc::op::singular_template::plus,"plus");
-  WE_REGISTER_FUN_AS (::pnetc::op::singular_template::result,"result");
+  WE_REGISTER_FUN_AS (::pnetc::op::singular_template::count,"count");
+  WE_REGISTER_FUN_AS (::pnetc::op::singular_template::leadsyz,"leadsyz");
+  WE_REGISTER_FUN_AS (::pnetc::op::singular_template::removeFiles,"removeFiles");
 }
 WE_MOD_INITIALIZE_END()

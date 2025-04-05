@@ -13,12 +13,12 @@
 
 	<in name="base_filename" type="string" place="place_base_filename"/>
 	<in name="library_name" type="string" place="place_library_name"/>
-  <in name="input" type="string" place="place_input"/>
-  <out name ="OUTPUT" type ="string" place ="place_Schres"/>
+  <in name="input" type="string" place="place_initiate"/>
+  <out name ="OUTPUT" type ="string" place ="place_list_syzygies"/>
   
 	<net>
   <place name ="place_input" type ="string"/>
- 
+  <place name ="place_initiate" type ="string"/>
     <place name ="place_input_GB" type ="string"/>
 		<place name="place_base_filename" type="string"/>
 		<place name="place_library_name" type="string"/>
@@ -34,6 +34,42 @@
 
 
 
+ <place name ="place_StartTime" type ="long"/>
+
+ <!-- Transition: StartTime -->
+   <transition name="StartTransition">
+     <defun>
+    
+     <in name="input" type="string"/>
+       <out name="output" type="string"/>
+      
+       <out name="start_time" type="long"/>
+       <module name="singular_template" function="StartTime(input,output,start_time)">
+        <cinclude href="interface/template_interface.hpp" />
+     <cinclude href="util-generic/dynamic_linking.hpp"/>
+     <cinclude href="iostream"/>
+     <cinclude href="chrono"/>
+       <code><![CDATA[
+         auto computation_time = std::chrono::high_resolution_clock::now();
+         auto duration = computation_time.time_since_epoch();
+     
+         start_time= std::chrono::duration_cast<std::chrono::nanoseconds>(duration).count();
+       
+    output=input;
+   ]]></code>
+    </module>
+    
+ 
+   
+   
+     </defun>
+     <connect-in port="input" place="place_initiate"/>
+   
+      <connect-out port="output" place="place_input"/>
+      
+     
+       <connect-out port="start_time" place="place_StartTime"/>
+   </transition>
 
 
     <!-- transition_Init-->
@@ -712,7 +748,7 @@
 
 
 
-
+<place name ="place_list_syzygies" type="string"/>
 
 <place name="place_Schres" type="string">
   
@@ -732,7 +768,7 @@
        <cinclude href="iostream"/>
       <code><![CDATA[
         
-         //std::cout << "Res_length:"<<len<< std::endl;
+         std::cout << "Res_length:"<<len<< std::endl;
          
          std::cout << "Resolution:"<<s<< std::endl;
       ]]></code>
@@ -756,7 +792,37 @@
 
 
 
-
+<!-- Transition: EndTime -->
+<transition name="EndTime_Resolutions">
+    <defun>
+        <in name="start_time" type="long"/>
+        <inout name="computed_output" type="string"/>
+      
+       
+         <module name="singular_template" function="EndTime_Resolutions(start_time,computed_output)">
+         <cinclude href="interface/template_interface.hpp" />
+      <cinclude href="util-generic/dynamic_linking.hpp"/>
+      <cinclude href="iostream"/>
+      <cinclude href="chrono"/>
+        <code><![CDATA[
+                auto computation_time = std::chrono::high_resolution_clock::now();
+                auto duration = computation_time.time_since_epoch();
+                long current_time = std::chrono::duration_cast<std::chrono::nanoseconds>(duration).count();
+               auto  end_timer = current_time - start_time; // Calculate elapsed time
+              
+                std::cout << "Calculate Res: = " << end_timer << " nanoseconds" << std::endl;
+            ]]></code>
+         </module>
+     
+    </defun>
+    
+    <connect-in port="start_time" place="place_StartTime"/>
+    <connect-in port="computed_output" place="place_Schres"/>
+   
+    <connect-out port="computed_output" place="place_list_syzygies"/>
+  
+    
+</transition>
 
 
 

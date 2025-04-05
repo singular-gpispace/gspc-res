@@ -32,11 +32,11 @@ gc.options.logport = 9876;
 //  ideal J=std(J1);
 
 // //Example 0
-ring S= 0, (w,x,y,z), (lp,c);
-poly f1 = wx + wz + x2 + 2xz - z2;
-poly f2 = wy - wz - xz - yz - 2z2;
-poly f3= xy + z2; 
-ideal J=f1,f2,f3;
+// ring S= 0, (w,x,y,z), (lp,c);
+// poly f1 = wx + wz + x2 + 2xz - z2;
+// poly f2 = wy - wz - xz - yz - 2z2;
+// poly f3= xy + z2; 
+// ideal J=f1,f2,f3;
 
 //Koszul
 // ring R=0, (x1,x2,x3,x4),dp;
@@ -46,8 +46,8 @@ ideal J=f1,f2,f3;
 
  //Example 1:
  
-// ring R= 0, (w,x,y,z), (dp,c);
-// ideal J= w2-x*z, w*x- y*z, x2-w*y, x*y- z2, y2- w*z;
+ring R= 0, (w,x,y,z), (dp,c);
+ideal J= w2-x*z, w*x- y*z, x2-w*y, x*y- z2, y2- w*z;
 //module m;
 // vector s1=[-x,w,-z,0,0];
 // vector s2=[y,-x,w,0,0];
@@ -122,6 +122,9 @@ ideal J=f1,f2,f3;
 //  ideal J=std(J1);
 
 
+
+
+//Example 6
 // ring R=0, (x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10),dp;
 // ideal J;
 
@@ -222,7 +225,7 @@ print("timer");
 
 // spack location -i gpi-space
 // spack find gpi-space
-//pnet: cat template.xpnet | pnetc  | pnet2dot | dot -Tsvg > First_LIFT_LEAD_GPI.svg
+//pnet: cat template.xpnet | pnetc  | pnet2dot | dot -Tsvg > Res_GPI.svg
 
 //Starting monitor:gspc-monitor --port 9876 &
 
