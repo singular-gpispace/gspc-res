@@ -14,7 +14,9 @@ namespace pnetc
       void Fill_IN_Add
         ( const int& N
         , const we::type::literal::control& k1
+        , const unsigned long& n
         , std::list<pnet::type::value::value_type>& outgoing
+        , we::type::literal::control& c
         );
     }
   }

@@ -19,16 +19,17 @@ namespace pnetc
         , const int& N
         , const unsigned long& k2
         , const we::type::literal::control& c
+        , const unsigned long& Nplus
         , std::string& s
         )
       {
-#line 935 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 939 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
              
                 auto computation_time = std::chrono::high_resolution_clock::now();
               
               
-           auto result  = RESOLVE_INTERFACE_FUNCTION(singular_template_ADD_Seq)(input,N,library_name, base_filename
+           auto result  = RESOLVE_INTERFACE_FUNCTION(singular_template_ADD_Seq)(input,N,Nplus,library_name, base_filename
             ); 
             auto end_computation = std::chrono::high_resolution_clock::now();
             auto computation_duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - computation_time).count();

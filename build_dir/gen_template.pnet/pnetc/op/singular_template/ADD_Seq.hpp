@@ -17,6 +17,7 @@ namespace pnetc
         , const int& N
         , const unsigned long& k2
         , const we::type::literal::control& c
+        , const unsigned long& Nplus
         , std::string& s
         );
     }

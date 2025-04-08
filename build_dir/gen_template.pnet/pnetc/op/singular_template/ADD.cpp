@@ -20,38 +20,38 @@ namespace pnetc
         , const int& N
         )
       {
-#line 863 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 866 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
-             
-                auto computation_time = std::chrono::high_resolution_clock::now();
-              
-              
-        int start, end;
-        char discard;
-       
-
-        // Parse single range "[n,n+k]"
-        std::istringstream range_stream(range);
-        range_stream >> discard >> start >> discard >> end >> discard;
-        
-
-        std::vector<std::pair<int, int>> range_pair = {{start, end}};
-
-        // std::cout << "Parsed range: {" << start << ", " << end << "}" << std::endl;
-           auto result  = RESOLVE_INTERFACE_FUNCTION(singular_template_reduce)(input,{start, end},N,library_name, base_filename
-            ); 
-            auto end_computation = std::chrono::high_resolution_clock::now();
-            auto computation_duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - computation_time).count();
-    
-            auto  s = result.first;
            
+              auto computation_time = std::chrono::high_resolution_clock::now();
+            
+            
+      int start, end;
+      char discard;
+     
+
+      // Parse single range "[n,n+k]"
+      std::istringstream range_stream(range);
+      range_stream >> discard >> start >> discard >> end >> discard;
+      
+
+      std::vector<std::pair<int, int>> range_pair = {{start, end}};
+
+      // std::cout << "Parsed range: {" << start << ", " << end << "}" << std::endl;
+         auto result  = RESOLVE_INTERFACE_FUNCTION(singular_template_reduce)(input,{start, end},N,library_name, base_filename
+          ); 
+          auto end_computation = std::chrono::high_resolution_clock::now();
+          auto computation_duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - computation_time).count();
+  
+          auto  s = result.first;
          
-              // std::cout << "Parsed range: {" << start << ", " << end << "}" << "for s="<<s<<std::endl;
-             
+       
+            // std::cout << "Parsed range: {" << start << ", " << end << "}" << "for s="<<s<<std::endl;
+           
 
-// std::cout << "Reduce Duration: " <<computation_duration << "nanosecond" << std::endl;
+// std::cout << "pool_add_N:=" <<N << "" << std::endl;
 
-              
+            
       }
     }
   }

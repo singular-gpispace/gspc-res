@@ -83,10 +83,11 @@ std::tuple<std::vector<std::string>, int,  long> singular_template_SUBLIFT ( std
                                       NO_NAME_MANGLING
                                       std::pair<std::string, long> singular_template_ADD_Seq( std::string const&
                                                                             ,int N
+                                                                            ,int Nplus
                                                                            , std::string const&
                                                                          
                                                                 , std::string const&
-                                                                            );  
+                                                                            );   
                                                                             
     NO_NAME_MANGLING
 std::string singular_template_Generate (std::string const&

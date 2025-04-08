@@ -2780,7 +2780,7 @@ std::pair<std::string, long> singular_template_reduce(const std::string& Red,
 
 NO_NAME_MANGLING
 std::pair<std::string, long> singular_template_ADD_Seq(const std::string& Red, 
-    int N,
+    int N,int Nplus,
     const std::string& needed_library,
     const std::string& base_filename) 
 {
@@ -2815,7 +2815,7 @@ std::pair<std::string, long> singular_template_ADD_Seq(const std::string& Red,
     
    
 
-    for (int i =1; i<=N; i++) {  
+    for (int i = Nplus+1; i <= N+Nplus; i++) {  
      
     // Iterate from 1 to N to match "1.ssi", "2.ssi", etc.
         // Construct the full path for i.ssi files within the same folder as Red

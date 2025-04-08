@@ -12,11 +12,10 @@ namespace pnetc
     namespace singular_template
     {
       void Enable
-        ( const unsigned long& N
-        , const we::type::literal::control& IN
+        ( const we::type::literal::control& IN
         , const int& r
+        , unsigned long& N
         , std::list<pnet::type::value::value_type>& out
-        , we::type::literal::control& c
         );
     }
   }

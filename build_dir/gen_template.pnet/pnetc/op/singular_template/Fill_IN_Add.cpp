@@ -16,29 +16,31 @@ namespace pnetc
       void Fill_IN_Add
         ( const int& N
         , const we::type::literal::control& k1
+        , const unsigned long& n
         , std::list<pnet::type::value::value_type>& outgoing
+        , we::type::literal::control& c
         )
       {
-#line 799 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 801 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
-       
-         // Fill outgoing with the next batch
-         for(int k =1; k <= N; k++) {
-          outgoing.emplace_back(k);
-          //  std::cout << "batch_start:"<<k << std::endl;
-        }
-        // Batch=N+1;
      
-          // Fill outgoing with the next batch
-          // for(unsigned long k = Batch; k <= N; k++) {
-          //   outgoing.emplace_back(k);
-          //   //  std::cout << "batch_start:"<<k << std::endl;
-          // }
-          // Batch=N+1;
-          // N=N+M;
-       
-      // std::cout << "Last:"<<N << std::endl;
-        
+       // Fill outgoing with the next batch
+       for(int k =n+1; k <= n+N; k++) {
+        outgoing.emplace_back(k);
+        //  std::cout << "batch_start:"<<k << std::endl;
+      }
+      // Batch=N+1;
+   
+        // Fill outgoing with the next batch
+        // for(unsigned long k = Batch; k <= N; k++) {
+        //   outgoing.emplace_back(k);
+        //   //  std::cout << "batch_start:"<<k << std::endl;
+        // }
+        // Batch=N+1;
+        // N=N+M;
+     
+    // std::cout << "Last:"<<N << std::endl;
+      
       }
     }
   }
