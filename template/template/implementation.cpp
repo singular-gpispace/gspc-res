@@ -2860,12 +2860,12 @@ std::pair<std::string, long> singular_template_ADD_Seq(const std::string& Red,
     poly vec = NULL;
     leftv L = nullptr;
     std::pair<int, lists> input_part;
-    std::string logFilePath = "/home/santosh/gspc-res/example_dir/Smatrix_timing.log";
-    std::ofstream logFile(logFilePath, std::ios::app);
-    if (!logFile.is_open()) {
-        std::cerr << "Error: Failed to open log file at " << logFilePath << "!" << std::endl;
-        return {"", 0};
-    }
+    // std::string logFilePath = "/home/santosh/gspc-res/example_dir/Smatrix_timing.log";
+    // std::ofstream logFile(logFilePath, std::ios::app);
+    // if (!logFile.is_open()) {
+    //     std::cerr << "Error: Failed to open log file at " << logFilePath << "!" << std::endl;
+    //     return {"", 0};
+    // }
     
    
 
@@ -2983,9 +2983,9 @@ std::pair<std::string, long> singular_template_ADD_Seq(const std::string& Red,
     std::string out_filename=serialize(output,base_filename);
     auto end_computation = std::chrono::high_resolution_clock::now();
     auto computation_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_computation - start_computation).count();
-    logFile << "Total Sequential Addition Time: " << computation_time << " ms\n";
-    logFile.flush();
-    logFile.close();
+    // logFile << "Total Sequential Addition Time: " << computation_time << " ms\n";
+    // logFile.flush();
+    // logFile.close();
 
     rKill(currRing); 
     return {out_filename, computation_time};

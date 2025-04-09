@@ -76,7 +76,7 @@ ideal J= w2-x*z, w*x- y*z, x2-w*y, x*y- z2, y2- w*z;
 // ring R= 0, (x(1),x(2),x(3),x(4),x(5),x(6),x(7),x(8)), (lp,c);
 // matrix mS[2][4]= x(4)+ x(6), x(6)+ x(3), x(8)+ x(3), x(1)-x(3), x(2)-x(4), x(5)-x(7), x(8)-x(7), x(2)+ x(3);
 // ideal I_minor= minor(mS,2);
-// I_minor;
+
 // ideal J = std(I_minor);
 
 
@@ -102,10 +102,10 @@ ideal J= w2-x*z, w*x- y*z, x2-w*y, x*y- z2, y2- w*z;
 // poly Q10 = x3*x4 - x0*x1;
 
 // // Define the ideal
-// ideal J1= Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10;
-// J1;
+// ideal J0= Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10;
+
 // print("GB");
-// ideal J=std(J1);
+// ideal J=std(J0);
 // print(size(J));
 
  //Example4
@@ -116,10 +116,9 @@ ideal J= w2-x*z, w*x- y*z, x2-w*y, x*y- z2, y2- w*z;
 // poly f3 = x0*x2 + x1*x3 + x4*x0;
 // poly f4 = x0*x3 + x1*x4 + x2*x0;
 // poly f5 = x0*x4 + x1*x2 + x3*x1;
-// ideal J1= f1,f2,f3,f4,f5;
-// J1;
-// print("GB");
-// ideal J= std(J1);
+// ideal J0= f1,f2,f3,f4,f5;
+
+// ideal J= std(J0);
 
 
 
@@ -131,8 +130,8 @@ ideal J= w2-x*z, w*x- y*z, x2-w*y, x*y- z2, y2- w*z;
 // poly f3 = x0*x2 + x1*x3;
 // poly f4 = x0*x3 + x1*x4 + x2*x5;
 // poly f5 = x0*x4 + x1*x5;
-// ideal J1 = f1, f2, f3, f4, f5;
-// ideal J=std(J1);
+// ideal J0 = f1, f2, f3, f4, f5;
+// ideal J=std(J0);
 
 
 
@@ -172,34 +171,7 @@ ideal J= w2-x*z, w*x- y*z, x2-w*y, x*y- z2, y2- w*z;
 //  rtimer-t;
 // print("timer");
 
-//Example 7
-// ring R=0,(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10),dp;
-// matrix m[2][10]=x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10;
-// ideal rNC=minor(m,2);
-// ideal I=randomid(maxideal(1),9,7);
-//  map f=R,I[1..9];
-// ideal RNC=f(rNC);
-// ideal J=std(RNC);
-// print("ideal J=");
-// print(J);
 
-//Example 8
-// LIB "random.lib";
-// ring R=0,(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12),dp;
-// matrix m[2][12]=x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12;
-// ideal rNC=minor(m,2);
-// ideal I=randomid(maxideal(1),11,7);
-//  map f=R,I[1..11];
-// ideal RNC=f(rNC);
-// ideal J=std(RNC);
-// print("ideal J=");
-// print(size(J));
-// rtimer=0;
-//  system("--ticks-per-sec",1000); // set timer resolution to ms
-//  int t=rtimer;
-//  def f0=fres(J,0);
-//  rtimer-t;
-// print("timer");
 
 // ring r = (0,q),(x,y,z),dp;
 //   def e = Exterior(); setring e;
