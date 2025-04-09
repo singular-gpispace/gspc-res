@@ -13,10 +13,12 @@
 
 	<in name="base_filename" type="string" place="place_base_filename"/>
 	<in name="library_name" type="string" place="place_library_name"/>
-  <in name="input" type="string" place="place_initiate"/>
+  <in name="input" type="string" place="place_initiate_GB"/>
   <out name ="OUTPUT" type ="string" place ="place_list_syzygies"/>
   
 	<net>
+  <place name ="place_initiate_GB" type ="string"/>
+  <place name ="place_homological_degree" type ="int"/>
   <place name ="place_initiate" type ="string"/>
  
     <place name ="place_input_GB" type ="string"/>
@@ -51,8 +53,51 @@
 
 
   <place name="place__Pool" type="unsigned long">
- 
 </place>
+
+
+
+<!-- Transition: Start_transition -->
+<transition name="Start">
+  <defun>
+  <require key="worker" mandatory="true"/>
+  <in name="library_name" type="string"/>
+  <in name="base_filename" type="string"/>
+  <in name="input" type="string"/>
+    <out name="output" type="string"/>
+    <out name="degree" type="int"/>
+    
+    <module name="singular_template"
+    require_function_unloads_without_rest="false" function="Initiate_transition(input,output,degree,library_name,base_filename)">
+    <cinclude href="interface/template_interface.hpp" />
+    <cinclude href="util-generic/dynamic_linking.hpp"/>
+  <cinclude href="iostream"/>
+  <cinclude href="chrono"/>
+    <code><![CDATA[
+    // std::cout<<"Starting.."<<std::endl;
+      output = RESOLVE_INTERFACE_FUNCTION(singular_template_compute_StdBasis)
+      (input, library_name, base_filename);
+      // std::cout<<"Starting1.."<<std::endl;
+      degree=RESOLVE_INTERFACE_FUNCTION(singular_template_compute_getHomological_degree)(input, library_name);
+      // degree=1;
+      std::cout<<"homological degree:="<<degree<<std::endl;
+]]></code>
+ </module>
+ 
+
+
+
+  </defun>
+  <connect-read port="library_name" place="place_library_name"/>
+  <connect-read port="base_filename" place="place_base_filename"/>
+  <connect-in port="input" place="place_initiate_GB"/>
+  <connect-out port="degree" place="place_homological_degree"/>
+ 
+   <connect-out port="output" place="place_initiate"/>
+  
+</transition>
+
+
 
 <place name ="place_StartTime" type ="long"/>
 
@@ -253,14 +298,14 @@
         		
         <in name="library_name" type="string"/>
         <in name="base_filename" type="string"/>
-				   
+        <in name ="degree" type="int"/>
         		<out name="OUTPUT" type="list"/>
            <in name ="C" type="control"/>
            <out name ="counter" type="int"/>
            <in name ="init" type ="string"/>
         		<module name="singular_template"
               		require_function_unloads_without_rest="false"
-              		function="All_Lead(init, OUTPUT,C, counter,library_name, base_filename)">
+              		function="All_Lead(init, OUTPUT,C, counter,library_name, base_filename,degree)">
           		<cinclude href="interface/template_interface.hpp" />
           		<cinclude href="util-generic/dynamic_linking.hpp"/>
         <cinclude href="vector"/>
@@ -272,7 +317,7 @@
           			<code><![CDATA[
           //std::cout <<"All_LeadSyz_Input:"<<init<< std::endl;
            auto start_computation = std::chrono::high_resolution_clock::now();
-				std::tuple<std::vector<std::string>, int, long> out = RESOLVE_INTERFACE_FUNCTION( singular_template_ALL_LEAD) (init,library_name, base_filename);
+				std::tuple<std::vector<std::string>, int, long> out = RESOLVE_INTERFACE_FUNCTION( singular_template_ALL_LEAD) (init,degree,library_name, base_filename);
               
 
                 std::vector<std::string> vec = std::get<0>(out);
@@ -297,7 +342,7 @@
         <connect-read port="base_filename" place="place_base_filename"/>
 			  <connect-read port="init" place="place_input_GB"/>
         <connect-in port="C" place="place_control_All_Lead"/>
-
+        <connect-in port="degree" place="place_homological_degree"/>
        
        <connect-out port="counter" place="place_length_Res"/>
 			  <connect-out-many port="OUTPUT" place="place_All_Lead"/>

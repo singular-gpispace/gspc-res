@@ -160,19 +160,22 @@ static proc gspc_template(list l, configToken gc, configToken pc)
     return(sm_result);
 }
 
-proc gspc_template_SchRes(ideal I, configToken gc)
+proc gspc_template_SchRes(list I, configToken gc)
 {
     configToken ct = configure_template();
     ct.options.neededLibrary = "templategp.lib";
     ct.options.functionName = "stdBasis";
-    int r= size(I);
+    ideal I0=I[1];
+    // print("input:=");
+    // print(I0);
+    int r= I[2];
     //intvec primeiv = primeList(I, nb_prime);
     list inputlists;
     token t;
     for (int i = 1; i <=1; i++)
     {
         t.fieldnames = list("generators","Input");
-        t.data[1] = I;
+        t.data[1] = I0;
         t.data[2] = r;
         inputlists[i] = t;
     }

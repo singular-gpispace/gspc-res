@@ -16,11 +16,17 @@
 
 
 
-NO_NAME_MANGLING
-std::string singular_template_compute_StdBasis ( std::string const&
-                                      , std::string const&
-									  , std::string const&
-                                      );
+      NO_NAME_MANGLING
+      std::string singular_template_compute_StdBasis ( std::string const&
+                                            , std::string const&
+                                            , std::string const&
+                                            );
+      
+      NO_NAME_MANGLING
+      int singular_template_compute_getHomological_degree ( std::string const&
+                                            , std::string const&
+                                            
+                                            );
 
 
 
@@ -38,7 +44,7 @@ std::string singular_template_Init( std::string const& );
 NO_NAME_MANGLING
 std::tuple<std::vector<std::string>, int,  long>  singular_template_ALL_LEAD( std::string const&
                                                     
-                                                         , std::string const&
+                                                         , int degree,std::string const&
 									  , std::string const&
                                       );
 

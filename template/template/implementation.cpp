@@ -24,26 +24,57 @@
 #include <string>
 
 NO_NAME_MANGLING
-std::string singular_template_compute_StdBasis(std::string const& input_filename 
+std::string singular_template_compute_StdBasis(std::string const& res
+    , std::string const& needed_library
+    , std::string const& base_filename)
+{
+    init_singular(config::singularLibrary().string());
+    load_singular_library(needed_library);
+    std::pair<int, lists> Res;
+    std::pair<int, lists> out;
+    std::string ids;
+    std::string out_filename;
+    ids = worker();
+    //std::cout << ids << " in singular_..._compute" << std::endl;
+    Res = deserialize(res, ids);
+
+    ScopedLeftv args(Res.first, lCopy(Res.second));
+    std::string function_name = "stdBasis";
+    out = call_user_proc(function_name, needed_library, args);
+    out_filename = serialize(out.second, base_filename);
+
+    return out_filename;
+}
+
+
+
+NO_NAME_MANGLING
+int singular_template_compute_getHomological_degree(std::string const& input_filename 
 										, std::string const& needed_library
-            							, std::string const& base_filename)
+            							)
 {
 	init_singular (config::singularLibrary().string());
 	load_singular_library(needed_library);
 	std::pair<int,lists> input;
 	std::pair<int, lists> out;
 	std::string ids;
-	std::string out_filename;
+	// std::string out_filename;
 	ids = worker();
 	//std::cout << ids << " in singular_..._compute" << std::endl;
 	input = deserialize(input_filename,ids);
   
 	ScopedLeftv args( input.first, lCopy(input.second));
-  std::string function_name2 = "stdBasis";
+   std::string function_name2 = "getHomological_degree";
 	out = call_user_proc(function_name2, needed_library, args);
-  out_filename = serialize(out.second, base_filename);
+    lists u = (lists)out.second->m[3].Data(); //token data
+    sleftv& listElement = u->m[0];
+    auto out_filename1 = listElement.String();
+    int ss = std::stoi(out_filename1);
+    // base_filename=base_filename;
+    std::cout<<"ss="<<ss<<std::endl;
+    // out_filename = serialize(out.second, base_filename);
     
-	return out_filename;
+	return ss;
 }
 
 
@@ -247,40 +278,41 @@ ideal Sec_leadSyz(ideal f0) {
     return L;
 }
 
-lists aLL_LEAD(ideal f) {
+
+lists aLL_LEAD(ideal f, int hom_degree) {
     lists J = (lists)omAlloc0Bin(slists_bin);
-    J->Init(2);
+    J->Init(2);  // Initial size
+
     ideal f_copy = idCopy(f);
     int n = rVar(currRing);
     ideal F = leadSyz(f_copy);
-    // int g = IDELEMS(F);
-    // idDelete(&f);
     ideal F_copy = idCopy(F);
 
+    int cc = 2;  // We already have two elements
+
+    // First element in J
     J->m[0].rtyp = IDEAL_CMD;
     J->m[0].data = f_copy;
 
+    // Second element in J
     J->m[1].rtyp = MODUL_CMD;
     J->m[1].data = F_copy;
 
-    int cc = 2;
-
+    // Now, loop to compute additional elements
     for (int t = 0; t < n; t++) {
         ideal temp = Sec_leadSyz(F_copy);
-
-        bool b = idIs0(temp);
-        if (b == FALSE) {
-            F_copy = idCopy(temp);
-            temp = NULL;
-        } else {
-            break;
+        if (idIs0(temp)) {
+            break;  // If we encounter zero ideal, stop computation
         }
-
+        F_copy = idCopy(temp);
+        
+        // Resize J if necessary
         if (cc >= lSize(J) + 1) {
             int newSize = cc + 1;
             lists tmpL = (lists)omAlloc0Bin(slists_bin);
             tmpL->Init(newSize);
 
+            // Copy existing elements to new list
             for (int i = 0; i < cc; i++) {
                 tmpL->m[i].rtyp = J->m[i].rtyp;
                 tmpL->m[i].data = J->m[i].data;
@@ -290,13 +322,32 @@ lists aLL_LEAD(ideal f) {
             J = tmpL;
         }
 
+        // Add the new element to J
         J->m[cc].rtyp = MODUL_CMD;
         J->m[cc].data = F_copy;
         cc++;
     }
 
-    return J;
+    // Cap the return size based on hom_degree
+    int final_size = (cc > hom_degree) ? hom_degree : cc;
+
+    // Create a new list with the required size
+    lists final_J = (lists)omAlloc0Bin(slists_bin);
+    final_J->Init(final_size);
+
+    // Copy the appropriate number of elements
+    for (int i = 0; i < final_size; ++i) {
+        final_J->m[i].rtyp = J->m[i].rtyp;
+        final_J->m[i].data = J->m[i].data;
+    }
+
+    // Clean up
+    omFreeBin(J, slists_bin);
+
+    return final_J;
 }
+
+
 
 
 
@@ -309,7 +360,7 @@ NO_NAME_MANGLING
 std::pair<int, lists> ALL_LEAD_GPI(leftv args) {
     // Extract Token
     lists Token = (lists)(args->Data());
-    
+    int hom_degree = (int)(long)(args->next->Data());
     // Extract Token.data
     lists tmp = (lists)(Token->m[3].Data());
     // Extract def f=Token.data[1]
@@ -320,8 +371,9 @@ std::pair<int, lists> ALL_LEAD_GPI(leftv args) {
     //     std::cout << "Generator input aLL_LEAD" << k << ": " << pString((poly)f_copy->m[k]) << std::endl;
     // }
    
-    lists J = aLL_LEAD(f_copy);
+    lists J = aLL_LEAD(f_copy,hom_degree);
     int r = lSize(J) + 1;
+ 
     // std::cout << "lSize(J):=" << r << std::endl;
 
     // for(int k = 0; k < r; k++) {
@@ -462,7 +514,7 @@ t->Init(r+1);
 
 NO_NAME_MANGLING
 std::tuple<std::vector<std::string>, int, long> singular_template_ALL_LEAD(std::string const& input_filename 
-										, std::string const& needed_library
+										,int degree, std::string const& needed_library
             							, std::string const& base_filename)
 {
 	init_singular (config::singularLibrary().string());
@@ -474,8 +526,10 @@ std::tuple<std::vector<std::string>, int, long> singular_template_ALL_LEAD(std::
 	ids = worker();
 	//std::cout << ids << " in singular_..._compute" << std::endl;
 	input = deserialize(input_filename,ids);
+    void* p = (char*)(long)(degree);
   
 	ScopedLeftv args( input.first, lCopy(input.second));
+    ScopedLeftv arg(args, INT_CMD, p);
 //   std::string function_name = "all_leadsyz_GpI";
  auto start_computation = std::chrono::high_resolution_clock::now();
 
