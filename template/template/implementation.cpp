@@ -48,35 +48,6 @@ std::string singular_template_compute_StdBasis(std::string const& res
 
 
 
-NO_NAME_MANGLING
-int singular_template_compute_getHomological_degree(std::string const& input_filename 
-										, std::string const& needed_library
-            							)
-{
-	init_singular (config::singularLibrary().string());
-	load_singular_library(needed_library);
-	std::pair<int,lists> input;
-	std::pair<int, lists> out;
-	std::string ids;
-	// std::string out_filename;
-	ids = worker();
-	//std::cout << ids << " in singular_..._compute" << std::endl;
-	input = deserialize(input_filename,ids);
-  
-	ScopedLeftv args( input.first, lCopy(input.second));
-   std::string function_name2 = "getHomological_degree";
-	out = call_user_proc(function_name2, needed_library, args);
-    lists u = (lists)out.second->m[3].Data(); //token data
-    sleftv& listElement = u->m[0];
-    auto out_filename1 = listElement.String();
-    int ss = std::stoi(out_filename1);
-    // base_filename=base_filename;
-    std::cout<<"ss="<<ss<<std::endl;
-    // out_filename = serialize(out.second, base_filename);
-    
-	return ss;
-}
-
 
 
 
@@ -279,40 +250,40 @@ ideal Sec_leadSyz(ideal f0) {
 }
 
 
-lists aLL_LEAD(ideal f, int hom_degree) {
+lists aLL_LEAD(ideal f) {
     lists J = (lists)omAlloc0Bin(slists_bin);
-    J->Init(2);  // Initial size
-
+    J->Init(2);
     ideal f_copy = idCopy(f);
     int n = rVar(currRing);
     ideal F = leadSyz(f_copy);
+    // int g = IDELEMS(F);
+    // idDelete(&f);
     ideal F_copy = idCopy(F);
 
-    int cc = 2;  // We already have two elements
-
-    // First element in J
     J->m[0].rtyp = IDEAL_CMD;
     J->m[0].data = f_copy;
 
-    // Second element in J
     J->m[1].rtyp = MODUL_CMD;
     J->m[1].data = F_copy;
 
-    // Now, loop to compute additional elements
+    int cc = 2;
+
     for (int t = 0; t < n; t++) {
         ideal temp = Sec_leadSyz(F_copy);
-        if (idIs0(temp)) {
-            break;  // If we encounter zero ideal, stop computation
+
+        bool b = idIs0(temp);
+        if (b == FALSE) {
+            F_copy = idCopy(temp);
+            temp = NULL;
+        } else {
+            break;
         }
-        F_copy = idCopy(temp);
-        
-        // Resize J if necessary
+
         if (cc >= lSize(J) + 1) {
             int newSize = cc + 1;
             lists tmpL = (lists)omAlloc0Bin(slists_bin);
             tmpL->Init(newSize);
 
-            // Copy existing elements to new list
             for (int i = 0; i < cc; i++) {
                 tmpL->m[i].rtyp = J->m[i].rtyp;
                 tmpL->m[i].data = J->m[i].data;
@@ -322,32 +293,13 @@ lists aLL_LEAD(ideal f, int hom_degree) {
             J = tmpL;
         }
 
-        // Add the new element to J
         J->m[cc].rtyp = MODUL_CMD;
         J->m[cc].data = F_copy;
         cc++;
     }
 
-    // Cap the return size based on hom_degree
-    int final_size = (cc > hom_degree) ? hom_degree : cc;
-
-    // Create a new list with the required size
-    lists final_J = (lists)omAlloc0Bin(slists_bin);
-    final_J->Init(final_size);
-
-    // Copy the appropriate number of elements
-    for (int i = 0; i < final_size; ++i) {
-        final_J->m[i].rtyp = J->m[i].rtyp;
-        final_J->m[i].data = J->m[i].data;
-    }
-
-    // Clean up
-    omFreeBin(J, slists_bin);
-
-    return final_J;
+    return J;
 }
-
-
 
 
 
@@ -360,7 +312,7 @@ NO_NAME_MANGLING
 std::pair<int, lists> ALL_LEAD_GPI(leftv args) {
     // Extract Token
     lists Token = (lists)(args->Data());
-    int hom_degree = (int)(long)(args->next->Data());
+    
     // Extract Token.data
     lists tmp = (lists)(Token->m[3].Data());
     // Extract def f=Token.data[1]
@@ -371,9 +323,8 @@ std::pair<int, lists> ALL_LEAD_GPI(leftv args) {
     //     std::cout << "Generator input aLL_LEAD" << k << ": " << pString((poly)f_copy->m[k]) << std::endl;
     // }
    
-    lists J = aLL_LEAD(f_copy,hom_degree);
+    lists J = aLL_LEAD(f_copy);
     int r = lSize(J) + 1;
- 
     // std::cout << "lSize(J):=" << r << std::endl;
 
     // for(int k = 0; k < r; k++) {
@@ -390,19 +341,17 @@ std::pair<int, lists> ALL_LEAD_GPI(leftv args) {
     lists temp = (lists)omAlloc0Bin(slists_bin);
    
     temp->Init(r);
-    lists Ld = NULL; //(lists)omAlloc0Bin(slists_bin);  // Initialize Ld
-    for(int k = 0; k < r; k++) {
 
-        
-         Ld = (lists)omAlloc0Bin(slists_bin);
+    for(int k = 0; k < r; k++) {
+        lists Ld = (lists)omAlloc0Bin(slists_bin);
        
         Ld->Init(4); // type token
         
         lists t = (lists)omAlloc0Bin(slists_bin);
       
         t->Init(2);
-        t->m[0].rtyp = STRING_CMD; t->m[0].data = omStrDup("generators");
-        t->m[1].rtyp = STRING_CMD; t->m[1].data = omStrDup("SchFrame");
+        t->m[0].rtyp = STRING_CMD; t->m[0].data = strdup("generators");
+        t->m[1].rtyp = STRING_CMD; t->m[1].data = strdup("SchFrame");
 
         Ld->m[0].rtyp = RING_CMD; Ld->m[0].data = currRing;
         Ld->m[1].rtyp = LIST_CMD; Ld->m[1].data = t;
@@ -440,10 +389,7 @@ std::pair<int, lists> ALL_LEAD_GPI(leftv args) {
         //     t0->m[s].rtyp = LIST_CMD;
         //     t0->m[s].data = lCopy(Ld);
         // }
-//         omUpdateInfo();
-      
-//   std::cout << "used mem_SchFrame: " << om_Info.UsedBytes << std::endl;
-        
+
         // LLT->m[3].rtyp = LIST_CMD;
         // LLT->m[3].data = t0;
 
@@ -481,7 +427,6 @@ t->Init(r+1);
     for (int k = 0; k < r; k++) {
         final_data->m[k].rtyp = LIST_CMD;
         final_data->m[k].data = temp->m[k].data;  // Transfer data from temp
-        temp->m[k].data = NULL; temp->m[k].rtyp=DEF_CMD;
     }
 
     final_data->m[r].rtyp = INT_CMD;
@@ -489,10 +434,6 @@ t->Init(r+1);
 
     LLT->m[3].rtyp = LIST_CMD;
     LLT->m[3].data = final_data;
-       // Clean up sM,Ld and temp
-     
-       omFreeBin(Ld, slists_bin);
-       temp->Clean(currRing);
 
     return {r, LLT};  // Return success state and LLT
 }
@@ -504,17 +445,9 @@ t->Init(r+1);
 
 
 
-
-
-
-
-
-
-
-
 NO_NAME_MANGLING
 std::tuple<std::vector<std::string>, int, long> singular_template_ALL_LEAD(std::string const& input_filename 
-										,int degree, std::string const& needed_library
+										, std::string const& needed_library
             							, std::string const& base_filename)
 {
 	init_singular (config::singularLibrary().string());
@@ -526,10 +459,8 @@ std::tuple<std::vector<std::string>, int, long> singular_template_ALL_LEAD(std::
 	ids = worker();
 	//std::cout << ids << " in singular_..._compute" << std::endl;
 	input = deserialize(input_filename,ids);
-    void* p = (char*)(long)(degree);
   
 	ScopedLeftv args( input.first, lCopy(input.second));
-    ScopedLeftv arg(args, INT_CMD, p);
 //   std::string function_name = "all_leadsyz_GpI";
  auto start_computation = std::chrono::high_resolution_clock::now();
 
@@ -558,7 +489,6 @@ std::tuple<std::vector<std::string>, int, long> singular_template_ALL_LEAD(std::
     auto end_computation = std::chrono::high_resolution_clock::now();
   auto computation_time =std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - start_computation).count();
    total_generator = lSize(u); // Assuming u contains the computed generators
-   u->Clean(currRing);
    auto total_runtime=computation_time;
     // std::cout << "total_runtime_SchFrame:=" << total_runtime<<" "<<"nanoseconds"<< std::endl;
   return {vec, total_generator,total_runtime};

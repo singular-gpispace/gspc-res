@@ -21,7 +21,7 @@ namespace pnetc
         , we::type::literal::control& c
         )
       {
-#line 846 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 806 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
      
        // Fill outgoing with the next batch

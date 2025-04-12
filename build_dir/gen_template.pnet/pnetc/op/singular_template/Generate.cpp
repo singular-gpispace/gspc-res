@@ -27,7 +27,7 @@ namespace pnetc
         , unsigned long& N
         )
       {
-#line 1058 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 1018 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
        //std::cout << "Generate_Input:"<<input<< std::endl;
        //std::cout << "Generate_Syz:"<<syz<< std::endl;

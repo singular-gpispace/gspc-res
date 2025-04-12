@@ -55,32 +55,6 @@ OVERVIEW:
   
   
   }
-  
-  proc getHomological_degree(token input)
-  "USAGE: stdBasis(input); input token
-  RETURN: an token output containing a standard basis 
-  output.generators of the ideal input.generators in a ring
-  with prescribed characteristic input.modulus
-  NOTE: The types token are defined . This procedure is 
-  intended to be called as a transition procedure inside the
-  worker process (that is, the "inner" instances of SINGULAR).
-  "
-  {
-      int p = input.data[2];
-    
-      
-     
-      
-      token output;
-      output.fieldnames = list("generators","Homological_degree");
-      output.data[1] = p;
-     
-     
-      return(output);
-  
-  
-  }
-
 
 //lcm for vectors
 proc lcm_mod(module G) {

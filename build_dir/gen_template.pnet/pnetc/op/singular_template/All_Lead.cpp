@@ -23,16 +23,15 @@ namespace pnetc
         , const we::type::literal::control& C
         , const std::string& library_name
         , const std::string& base_filename
-        , const int& degree
         , std::list<pnet::type::value::value_type>& OUTPUT
         , int& counter
         )
       {
-#line 317 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 277 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
           //std::cout <<"All_LeadSyz_Input:"<<init<< std::endl;
            auto start_computation = std::chrono::high_resolution_clock::now();
-				std::tuple<std::vector<std::string>, int, long> out = RESOLVE_INTERFACE_FUNCTION( singular_template_ALL_LEAD) (init,degree,library_name, base_filename);
+				std::tuple<std::vector<std::string>, int, long> out = RESOLVE_INTERFACE_FUNCTION( singular_template_ALL_LEAD) (init,library_name, base_filename);
               
 
                 std::vector<std::string> vec = std::get<0>(out);

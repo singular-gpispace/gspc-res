@@ -15,7 +15,7 @@ namespace pnetc
         , std::string& s
         )
       {
-#line 1112 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 1072 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
         
          std::cout << "Res_length:"<<len<< std::endl;

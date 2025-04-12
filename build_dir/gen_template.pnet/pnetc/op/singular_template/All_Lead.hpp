@@ -17,7 +17,6 @@ namespace pnetc
         , const we::type::literal::control& C
         , const std::string& library_name
         , const std::string& base_filename
-        , const int& degree
         , std::list<pnet::type::value::value_type>& OUTPUT
         , int& counter
         );

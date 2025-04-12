@@ -26,7 +26,7 @@ namespace pnetc
         , std::list<pnet::type::value::value_type>& LIFT
         )
       {
-#line 570 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 530 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
 
              
