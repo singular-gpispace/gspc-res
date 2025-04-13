@@ -1087,7 +1087,13 @@ int coM2(ideal f, poly s, poly t, lists J, int k) { //poly s and poly t are sing
     ideal M=(ideal)J->m[k-1].Data();// M =J[2]
     f1 = pp_Mult_qq(s10, M->m[i-1],currRing);//should be leadmonomial
     g1 = pp_Mult_qq(t10, M->m[j-1],currRing);
-    
+
+
+    //If t=constant*gen(k), then s>t
+    int c0=p_IsConstantPoly(t,currRing);
+    if(c0==1){
+     return 1;
+    }
     // Iterate from level k down to 2
     for (l = k; l >= 2; l--) {
         // Print current level for debugging
