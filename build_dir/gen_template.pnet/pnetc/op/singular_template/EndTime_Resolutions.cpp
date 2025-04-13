@@ -16,14 +16,14 @@ namespace pnetc
         , std::string& computed_output
         )
       {
-#line 1111 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 1115 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
                 auto computation_time = std::chrono::high_resolution_clock::now();
                 auto duration = computation_time.time_since_epoch();
                 long current_time = std::chrono::duration_cast<std::chrono::nanoseconds>(duration).count();
                auto  end_timer = current_time - start_time; // Calculate elapsed time
               
-                std::cout << "Calculate Syz: = " << end_timer << " nanoseconds" << std::endl;
+                std::cout << "Res: = " << end_timer << " nanoseconds" << std::endl;
             
       }
     }

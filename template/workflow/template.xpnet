@@ -17,7 +17,7 @@
   <out name ="OUTPUT" type ="string" place ="place_list_syzygies"/>
   
 	<net>
-
+ 
   <place name ="place_initiate" type ="string"/>
  
     <place name ="place_input_GB" type ="string"/>
@@ -52,6 +52,7 @@
 
 
   <place name="place__Pool" type="unsigned long">
+ 
 </place>
 
 
@@ -241,75 +242,79 @@
 
 
 
-<place name="place_control_All_Lead" type="control">
-  <token><value>[]</value></token>
-</place>
 
-
- <place name="place_length_Res" type="int">
+    <place name="place_control_All_Lead" type="control">
+    <token><value>[]</value></token>
+  </place>
   
-</place>
-
-    <!-- transition_compute-->
   
-     <transition name="All_Lead">
-      <defun>
-        <require key="worker" mandatory="true"/>
-        		
-        <in name="library_name" type="string"/>
-        <in name="base_filename" type="string"/>
-       
-        		<out name="OUTPUT" type="list"/>
-           <in name ="C" type="control"/>
-           <out name ="counter" type="int"/>
-           <in name ="init" type ="string"/>
-        		<module name="singular_template"
-              		require_function_unloads_without_rest="false"
-              		function="All_Lead(init, OUTPUT,C, counter,library_name, base_filename)">
-          		<cinclude href="interface/template_interface.hpp" />
-          		<cinclude href="util-generic/dynamic_linking.hpp"/>
-        <cinclude href="vector"/>
-        <cinclude href="iostream"/>
-        <cinclude href ="string"/>
-        <cinclude href="list"/>
-        <cinclude href="numeric"/> 
-         <cinclude href="chrono"/>
-          			<code><![CDATA[
-          //std::cout <<"All_LeadSyz_Input:"<<init<< std::endl;
-           auto start_computation = std::chrono::high_resolution_clock::now();
-				std::tuple<std::vector<std::string>, int, long> out = RESOLVE_INTERFACE_FUNCTION( singular_template_ALL_LEAD) (init,library_name, base_filename);
+   <place name="place_length_Res" type="int">
+    
+  </place>
+  
+      <!-- transition_compute-->
+    
+       <transition name="All_Lead">
+        <defun>
+          <require key="worker" mandatory="true"/>
               
-
-                std::vector<std::string> vec = std::get<0>(out);
-                     counter = std::get<1>(out);
-                    //  auto runtime = std::get<2>(out);
+          <in name="library_name" type="string"/>
+          <in name="base_filename" type="string"/>
              
-                    
-                 for(int i (0); i<vec.size(); i++)
-                                                                 {
-                        // std::cout << "SchFrame_Success:"<<vec[i] << std::endl;
-                       
-                          OUTPUT.emplace_back(vec[i]);
-
-                    }
-            std::cout << "place_SchFrame_counter: " << counter << std::endl;
-            // std::cout << "total_runtime_SchFrame = " << runtime << " nanoseconds" << std::endl;
+              <out name="OUTPUT" type="list"/>
+             <in name ="C" type="control"/>
           
-            		]]></code>
-        		</module>
-      		</defun>
-      	<connect-read port="library_name" place="place_library_name"/>
-        <connect-read port="base_filename" place="place_base_filename"/>
-			  <connect-read port="init" place="place_input_GB"/>
-        <connect-in port="C" place="place_control_All_Lead"/>
+             <out name ="counter" type="int"/>
+             <in name ="init" type ="string"/>
+              <module name="singular_template"
+                    require_function_unloads_without_rest="false"
+                    function="All_Lead(init, OUTPUT,C, counter,library_name, base_filename)">
+                <cinclude href="interface/template_interface.hpp" />
+                <cinclude href="util-generic/dynamic_linking.hpp"/>
+          <cinclude href="vector"/>
+          <cinclude href="iostream"/>
+          <cinclude href ="string"/>
+          <cinclude href="list"/>
+          <cinclude href="numeric"/> 
+           <cinclude href="chrono"/>
+                  <code><![CDATA[
+            //std::cout <<"All_LeadSyz_Input:"<<init<< std::endl;
+             auto start_computation = std::chrono::high_resolution_clock::now();
+          std::tuple<std::vector<std::string>, int, long> out = RESOLVE_INTERFACE_FUNCTION( singular_template_ALL_LEAD) (init,library_name, base_filename);
+                
+  
+                  std::vector<std::string> vec = std::get<0>(out);
+                       counter = std::get<1>(out);
+                      //  auto runtime = std::get<2>(out);
+               
+                      
+                   for(int i (0); i<vec.size(); i++)
+                                                                   {
+                          // std::cout << "SchFrame_Success:"<<vec[i] << std::endl;
+                         
+                            OUTPUT.emplace_back(vec[i]);
+  
+                      }
+              // std::cout << "place_SchFrame_counter: " << counter << std::endl;
+              // std::cout << "place_homological degree: " << degree<< std::endl;
+              // std::cout << "total_runtime_SchFrame = " << runtime << " nanoseconds" << std::endl;
+            
+                  ]]></code>
+              </module>
+            </defun>
+          <connect-read port="library_name" place="place_library_name"/>
+          <connect-read port="base_filename" place="place_base_filename"/>
+          <connect-read port="init" place="place_input_GB"/>
+          <connect-in port="C" place="place_control_All_Lead"/>
         
-       
-       <connect-out port="counter" place="place_length_Res"/>
-			  <connect-out-many port="OUTPUT" place="place_All_Lead"/>
-       
-       
-        
-  		  </transition>
+         
+         <connect-out port="counter" place="place_length_Res"/>
+          <connect-out-many port="OUTPUT" place="place_All_Lead"/>
+         
+         
+          
+          </transition>
+
 
 
 
@@ -440,7 +445,7 @@
                   //  std::cout << "in singular _PetriNet_.._LIFT" << std::endl;
                    
                    std::tuple<std::vector<std::string>, int, long> out = RESOLVE_INTERFACE_FUNCTION(singular_template_LIFT)
-                  (input_name,all_lead, lead, needed_library, base_filename,N);
+                  (input_name, lead,all_lead, needed_library, base_filename,N);
                        
 
                        std::vector<std::string> vec = std::get<0>(out);
@@ -533,7 +538,7 @@
                   //  std::cout << "in singular _PetriNet_.._SubLIFT" << std::endl;
                            
                  std::tuple<std::vector<std::string>, int, long> out = RESOLVE_INTERFACE_FUNCTION(singular_template_SUBLIFT)
-                 (input_name,all_lead,place_Tau, needed_library, base_filename,N);
+                 (input_name,place_Tau,all_lead, needed_library, base_filename,N);
                        
                      std::vector<std::string> vec = std::get<0>(out);
                       int total_generator = std::get<1>(out);
@@ -594,7 +599,6 @@
  
   
   </transition> 
-
 
 
 
@@ -665,6 +669,7 @@
     
   
   </transition>
+
   
   
   <!-- Transition: Drainage-->
@@ -718,59 +723,60 @@
 </place>
 
 
-<!-- Transition: Enable_Add-->
-<transition name="Enable_Add">
-  <defun>
+
+  <!-- Transition: Enable_Add-->
+  <transition name="Enable_Add">
+    <defun>
+   
+     <inout name ="N" type ="unsigned long"/>
+     <in name ="r" type ="int"/>
+     <in name ="IN" type ="control"/>
+     <out name="out" type="list"/>
+    
+  
+    
+    
+      <module name="singular_template" function="Enable(N,IN,r,out)">
+      <cinclude href="interface/template_interface.hpp" />
+      <cinclude href="util-generic/dynamic_linking.hpp"/>
+       <cinclude href="vector"/>
+       <cinclude href="iostream"/>
+       <cinclude href ="string"/>
+       <cinclude href="list"/>
+       <cinclude href="chrono"/>
+      <code><![CDATA[
+    
+        int n = N / r; 
+        int remainder = N % r; 
+        // std::vector<std::pair<int, int>> ranges;
+        
+        int start = 1;
+        for (int i = 0; i < r; ++i) {
+          int end = start + n - 1 + (i < remainder ? 1 : 0);
+          std::string range_str = "[" + std::to_string(start) + "," + std::to_string(end) + "]";
+          // std::cout << "Generated range: " << range_str << std::endl;
+          out.push_back(range_str);
+          start = end + 1;
+      }
+  ]]></code>
+   </module>
  
-   <inout name ="N" type ="unsigned long"/>
-   <in name ="r" type ="int"/>
-   <in name ="IN" type ="control"/>
-   <out name="out" type="list"/>
-  
-
-  
-  
-    <module name="singular_template" function="Enable(N,IN,r,out)">
-    <cinclude href="interface/template_interface.hpp" />
-    <cinclude href="util-generic/dynamic_linking.hpp"/>
-     <cinclude href="vector"/>
-     <cinclude href="iostream"/>
-     <cinclude href ="string"/>
-     <cinclude href="list"/>
-     <cinclude href="chrono"/>
-    <code><![CDATA[
-  
-      int n = N / r; 
-      int remainder = N % r; 
-      // std::vector<std::pair<int, int>> ranges;
-      
-      int start = 1;
-      for (int i = 0; i < r; ++i) {
-        int end = start + n - 1 + (i < remainder ? 1 : 0);
-        std::string range_str = "[" + std::to_string(start) + "," + std::to_string(end) + "]";
-        // std::cout << "Generated range: " << range_str << std::endl;
-        out.push_back(range_str);
-        start = end + 1;
-    }
-]]></code>
- </module>
-
-
-
-
-
-  </defun>
-
-  
-  
-  <connect-in port="IN" place="place_Add_control"/>
-  <connect-read port="r" place="place_ncores"/>
-  <connect-out-many port="out" place="place_Add_Enable"/>
-  <connect-in port="N" place="place_start_pool"/>
  
-  <connect-out port="N" place="place_nplusN"/>
-
-</transition>
+  
+  
+  
+    </defun>
+  
+    
+    
+    <connect-in port="IN" place="place_Add_control"/>
+    <connect-read port="r" place="place_ncores"/>
+    <connect-out-many port="out" place="place_Add_Enable"/>
+    <connect-in port="N" place="place_start_pool"/>
+   
+    <connect-out port="N" place="place_nplusN"/>
+  
+  </transition>
   
 
   <place name="place_control_Add_Seq" type="control">
@@ -785,57 +791,56 @@
 <token><value>[]</value></token>
 </place>
 
-
 <place name="place_nplusN" type="unsigned long">
 </place>
 
-<!-- Transition: StartFill_Sequential_ADD -->
-<transition name="Fill_Seq_Add">
-  <defun>
-  
-    <out name="outgoing" type="list"/>
-    <in name="N" type="int"/> 
-    <in name="k1" type="control"/> 
-    <in name="n" type="unsigned long"/> 
-    <out name="c" type="control"/>
-    <module name="singular_template" function="Fill_IN_Add(outgoing,N,k1,n,c)">
-      <cinclude href="interface/template_interface.hpp" />
-      <cinclude href="util-generic/dynamic_linking.hpp"/>
-      <cinclude href="iostream"/>
-      <cinclude href="chrono"/>
-      <code><![CDATA[
-     
-       // Fill outgoing with the next batch
-       for(int k =n+1; k <= n+N; k++) {
-        outgoing.emplace_back(k);
-        //  std::cout << "batch_start:"<<k << std::endl;
-      }
-      // Batch=N+1;
-   
-        // Fill outgoing with the next batch
-        // for(unsigned long k = Batch; k <= N; k++) {
-        //   outgoing.emplace_back(k);
-        //   //  std::cout << "batch_start:"<<k << std::endl;
-        // }
+  <!-- Transition: StartFill_Sequential_ADD -->
+  <transition name="Fill_Seq_Add">
+    <defun>
+    
+      <out name="outgoing" type="list"/>
+      <in name="N" type="int"/> 
+      <in name="k1" type="control"/> 
+      <in name="n" type="unsigned long"/> 
+      <out name="c" type="control"/>
+      <module name="singular_template" function="Fill_IN_Add(outgoing,N,k1,n,c)">
+        <cinclude href="interface/template_interface.hpp" />
+        <cinclude href="util-generic/dynamic_linking.hpp"/>
+        <cinclude href="iostream"/>
+        <cinclude href="chrono"/>
+        <code><![CDATA[
+       
+         // Fill outgoing with the next batch
+         for(int k =n+1; k <= n+N; k++) {
+          outgoing.emplace_back(k);
+          //  std::cout << "batch_start:"<<k << std::endl;
+        }
         // Batch=N+1;
-        // N=N+M;
      
-    // std::cout << "Last:"<<N << std::endl;
-      ]]></code>
-    </module>
-
+          // Fill outgoing with the next batch
+          // for(unsigned long k = Batch; k <= N; k++) {
+          //   outgoing.emplace_back(k);
+          //   //  std::cout << "batch_start:"<<k << std::endl;
+          // }
+          // Batch=N+1;
+          // N=N+M;
+       
+      // std::cout << "Last:"<<N << std::endl;
+        ]]></code>
+      </module>
+  
+    
+    
+    </defun>
   
   
-  </defun>
-
-
-  <connect-read port="N" place="place_ncores"/>
-  <connect-in port ="k1" place="place_startFill_control"/>
-  <connect-read port="n" place="place_nplusN"/>
-  <connect-out port="c" place="place_control_Add_Seq"/>
-  <connect-out-many port="outgoing" place="place_Pool_Add"/>
- 
-</transition>
+    <connect-read port="N" place="place_ncores"/>
+    <connect-in port ="k1" place="place_startFill_control"/>
+    <connect-read port="n" place="place_nplusN"/>
+    <connect-out port="c" place="place_control_Add_Seq"/>
+    <connect-out-many port="outgoing" place="place_Pool_Add"/>
+   
+  </transition>
   
     
 
@@ -845,76 +850,75 @@
  
 
 
- 
-<!-- Transition 5: ADD-->
-<transition name="Add1">
-  <defun>
-  <require key="worker" mandatory="true"/>
-
- <in name="library_name" type="string"/>
- <in name="base_filename" type="string"/>
- <in name="N" type="int"/> 
-    <in name="range" type="string"/>
-   
-    <in name="input" type="string"/>
-   
- <module name="singular_template"
-              require_function_unloads_without_rest="false"
-              function="ADD(library_name, base_filename,input,range,N)">
-          <cinclude href="interface/template_interface.hpp" />
-          <cinclude href="util-generic/dynamic_linking.hpp"/>
-          <cinclude href="iostream"/>
-          <cinclude href="sstream"/>
-         
-         <cinclude href="chrono"/>
-
-            <code><![CDATA[
-           
-              auto computation_time = std::chrono::high_resolution_clock::now();
-            
-            
-      int start, end;
-      char discard;
-     
-
-      // Parse single range "[n,n+k]"
-      std::istringstream range_stream(range);
-      range_stream >> discard >> start >> discard >> end >> discard;
-      
-
-      std::vector<std::pair<int, int>> range_pair = {{start, end}};
-
-      // std::cout << "Parsed range: {" << start << ", " << end << "}" << std::endl;
-         auto result  = RESOLVE_INTERFACE_FUNCTION(singular_template_reduce)(input,{start, end},N,library_name, base_filename
-          ); 
-          auto end_computation = std::chrono::high_resolution_clock::now();
-          auto computation_duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - computation_time).count();
+  <!-- Transition 5: ADD-->
+  <transition name="Add1">
+    <defun>
+    <require key="worker" mandatory="true"/>
   
-          auto  s = result.first;
-         
-       
-            // std::cout << "Parsed range: {" << start << ", " << end << "}" << "for s="<<s<<std::endl;
+   <in name="library_name" type="string"/>
+   <in name="base_filename" type="string"/>
+   <in name="N" type="int"/> 
+      <in name="range" type="string"/>
+     
+      <in name="input" type="string"/>
+     
+   <module name="singular_template"
+                require_function_unloads_without_rest="false"
+                function="ADD(library_name, base_filename,input,range,N)">
+            <cinclude href="interface/template_interface.hpp" />
+            <cinclude href="util-generic/dynamic_linking.hpp"/>
+            <cinclude href="iostream"/>
+            <cinclude href="sstream"/>
            
+           <cinclude href="chrono"/>
+
+              <code><![CDATA[
+             
+                auto computation_time = std::chrono::high_resolution_clock::now();
+              
+              
+        int start, end;
+        char discard;
+       
+
+        // Parse single range "[n,n+k]"
+        std::istringstream range_stream(range);
+        range_stream >> discard >> start >> discard >> end >> discard;
+        
+
+        std::vector<std::pair<int, int>> range_pair = {{start, end}};
+
+        // std::cout << "Parsed range: {" << start << ", " << end << "}" << std::endl;
+           auto result  = RESOLVE_INTERFACE_FUNCTION(singular_template_reduce)(input,{start, end},N,library_name, base_filename
+            ); 
+            auto end_computation = std::chrono::high_resolution_clock::now();
+            auto computation_duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end_computation - computation_time).count();
+    
+            auto  s = result.first;
+           
+         
+              // std::cout << "Parsed range: {" << start << ", " << end << "}" << "for s="<<s<<std::endl;
+             
 
 // std::cout << "pool_add_N:=" <<N << "" << std::endl;
 
-            ]]></code>
-             
-        </module>
-     
-  </defun>
- 
-
-  <connect-read port="library_name" place="place_library_name"/> 
-  <connect-read port="base_filename" place="place_base_filename"/>
-  <connect-read port="input" place="place_input_GB"/>
- 
-  <connect-in port="range" place="place_Add_Enable"/> 
-  <connect-in port="N" place="place_Pool_Add"/>
- 
- 
+              ]]></code>
+               
+          </module>
+       
+    </defun>
+   
   
-</transition> 
+    <connect-read port="library_name" place="place_library_name"/> 
+    <connect-read port="base_filename" place="place_base_filename"/>
+    <connect-read port="input" place="place_input_GB"/>
+   
+    <connect-in port="range" place="place_Add_Enable"/> 
+    <connect-in port="N" place="place_Pool_Add"/>
+   
+   
+    
+  </transition> 
 
 
 
@@ -1027,7 +1031,7 @@
         c={};
       len=len-1;
       // std::cout << "Iterative_level_syz: "<<len<< std::endl;
-      // std::cout << "Generate_Syz:"<< Res<< std::endl;
+      std::cout << "Generate_Syz:"<< Res<< std::endl;
       ]]></code>
     </module>
 
@@ -1071,9 +1075,9 @@
        <cinclude href="iostream"/>
       <code><![CDATA[
         
-         std::cout << "Res_length:"<<len<< std::endl;
+        //  std::cout << "Res_length:"<<len<< std::endl;
          
-         std::cout << "Resolution:"<<s<< std::endl;
+        //  std::cout << "Resolution:"<<s<< std::endl;
       ]]></code>
     </module>
        <condition>
@@ -1114,7 +1118,7 @@
                 long current_time = std::chrono::duration_cast<std::chrono::nanoseconds>(duration).count();
                auto  end_timer = current_time - start_time; // Calculate elapsed time
               
-                std::cout << "Calculate Syz: = " << end_timer << " nanoseconds" << std::endl;
+                std::cout << "Res: = " << end_timer << " nanoseconds" << std::endl;
             ]]></code>
          </module>
      

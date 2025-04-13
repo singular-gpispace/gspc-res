@@ -160,7 +160,7 @@ static proc gspc_template(list l, configToken gc, configToken pc)
     return(sm_result);
 }
 
-proc gspc_template_SchRes(ideal I, configToken gc)
+proc gspc_template_SchRes(module I, configToken gc)
 {
     configToken ct = configure_template();
     ct.options.neededLibrary = "templategp.lib";
@@ -196,7 +196,7 @@ print("timer");
     // Extract the data from resultToken
     def Result = resultToken.data;
 //    print("beforeReturn");
-//   print(Result);
+  print(Result);
     
 
 

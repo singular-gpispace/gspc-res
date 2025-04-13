@@ -21,26 +21,26 @@ namespace pnetc
         , we::type::literal::control& c
         )
       {
-#line 806 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 811 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
-     
-       // Fill outgoing with the next batch
-       for(int k =n+1; k <= n+N; k++) {
-        outgoing.emplace_back(k);
-        //  std::cout << "batch_start:"<<k << std::endl;
-      }
-      // Batch=N+1;
-   
-        // Fill outgoing with the next batch
-        // for(unsigned long k = Batch; k <= N; k++) {
-        //   outgoing.emplace_back(k);
-        //   //  std::cout << "batch_start:"<<k << std::endl;
-        // }
+       
+         // Fill outgoing with the next batch
+         for(int k =n+1; k <= n+N; k++) {
+          outgoing.emplace_back(k);
+          //  std::cout << "batch_start:"<<k << std::endl;
+        }
         // Batch=N+1;
-        // N=N+M;
      
-    // std::cout << "Last:"<<N << std::endl;
-      
+          // Fill outgoing with the next batch
+          // for(unsigned long k = Batch; k <= N; k++) {
+          //   outgoing.emplace_back(k);
+          //   //  std::cout << "batch_start:"<<k << std::endl;
+          // }
+          // Batch=N+1;
+          // N=N+M;
+       
+      // std::cout << "Last:"<<N << std::endl;
+        
       }
     }
   }

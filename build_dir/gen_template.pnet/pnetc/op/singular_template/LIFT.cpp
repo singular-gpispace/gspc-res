@@ -26,12 +26,12 @@ namespace pnetc
         , std::list<pnet::type::value::value_type>& LIFT
         )
       {
-#line 439 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 444 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
                   //  std::cout << "in singular _PetriNet_.._LIFT" << std::endl;
                    
                    std::tuple<std::vector<std::string>, int, long> out = RESOLVE_INTERFACE_FUNCTION(singular_template_LIFT)
-                  (input_name,all_lead, lead, needed_library, base_filename,N);
+                  (input_name, lead,all_lead, needed_library, base_filename,N);
                        
 
                        std::vector<std::string> vec = std::get<0>(out);
