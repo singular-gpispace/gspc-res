@@ -1148,8 +1148,8 @@ int coM2(ideal f, poly s, poly t, lists J, int k) { //poly s and poly t are sing
     //std::cout << "Leadsyz s="<<pString(s)<<":reduced final s to F1"<<pString(F1)<<" lead t="<<pString(t)<<":reduce final t to G1="<<pString(G1)<< std::endl;
     //bool d1=p_ComparePolys(F1,G1,currRing);
     //bool d=p_EqualPolys(F1,G1,currRing);
-    k=1;
-   int d= coM(f, F1, G1, J,k);
+    // k=1;
+   int d= coM(f, F1, G1, J,1);
 //    int d= p_Cmp(F1,G1,currRing);
     // Perform final comparison using coM
    //std::cout << "Leadsyz s="<<pString(s)<<":reduced final s to F1"<<pString(F1)<<" lead t="<<pString(t)<<":reduce final t to G1="<<pString(G1)<< ":coM2"<<d<<std::endl;
@@ -2103,8 +2103,8 @@ std::pair<int, lists> SubLIFT_GPI(leftv args) {
         t = (lists)omAlloc0Bin(slists_bin);
         t->Init(5);
         t->m[0].rtyp = VECTOR_CMD; 
-        // t->m[0].data = pCopy(p_Mult_q(pISet(-1), s_lift, currRing));
-        t->m[0].data = pCopy(s_lift);
+        t->m[0].data = pCopy(p_Mult_q(pISet(-1), s_lift, currRing));
+        // t->m[0].data = pCopy(s_lift);
         t->m[1].rtyp = SMATRIX_CMD; 
         t->m[1].data = sM ;
         t->m[2].rtyp = INT_CMD; 
