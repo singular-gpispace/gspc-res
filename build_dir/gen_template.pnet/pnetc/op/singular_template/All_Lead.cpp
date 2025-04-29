@@ -27,29 +27,30 @@ namespace pnetc
         , int& counter
         )
       {
-#line 277 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 280 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
-          //std::cout <<"All_LeadSyz_Input:"<<init<< std::endl;
-           auto start_computation = std::chrono::high_resolution_clock::now();
-				std::tuple<std::vector<std::string>, int, long> out = RESOLVE_INTERFACE_FUNCTION( singular_template_ALL_LEAD) (init,library_name, base_filename);
-              
-
-                std::vector<std::string> vec = std::get<0>(out);
-                     counter = std::get<1>(out);
-                    //  auto runtime = std::get<2>(out);
-             
-                    
-                 for(int i (0); i<vec.size(); i++)
-                                                                 {
-                        // std::cout << "SchFrame_Success:"<<vec[i] << std::endl;
-                       
-                          OUTPUT.emplace_back(vec[i]);
-
-                    }
-            std::cout << "place_SchFrame_counter: " << counter << std::endl;
-            // std::cout << "total_runtime_SchFrame = " << runtime << " nanoseconds" << std::endl;
-          
-            		
+            //std::cout <<"All_LeadSyz_Input:"<<init<< std::endl;
+             auto start_computation = std::chrono::high_resolution_clock::now();
+          std::tuple<std::vector<std::string>, int, long> out = RESOLVE_INTERFACE_FUNCTION( singular_template_ALL_LEAD) (init,library_name, base_filename);
+                
+  
+                  std::vector<std::string> vec = std::get<0>(out);
+                       counter = std::get<1>(out);
+                      //  auto runtime = std::get<2>(out);
+               
+                      
+                   for(int i (0); i<vec.size(); i++)
+                                                                   {
+                          // std::cout << "SchFrame_Success:"<<vec[i] << std::endl;
+                         
+                            OUTPUT.emplace_back(vec[i]);
+  
+                      }
+              // std::cout << "place_SchFrame_counter: " << counter << std::endl;
+              // std::cout << "place_homological degree: " << degree<< std::endl;
+              // std::cout << "total_runtime_SchFrame = " << runtime << " nanoseconds" << std::endl;
+            
+                  
       }
     }
   }

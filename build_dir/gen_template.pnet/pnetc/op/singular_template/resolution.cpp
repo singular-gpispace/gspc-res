@@ -15,12 +15,12 @@ namespace pnetc
         , std::string& s
         )
       {
-#line 1072 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 1076 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
         
-         std::cout << "Res_length:"<<len<< std::endl;
+        //  std::cout << "Res_length:"<<len<< std::endl;
          
-         std::cout << "Resolution:"<<s<< std::endl;
+        //  std::cout << "Resolution:"<<s<< std::endl;
       
       }
     }

@@ -196,13 +196,13 @@ print("timer");
     // Extract the data from resultToken
     def Result = resultToken.data;
 //    print("beforeReturn");
-//   print(Result);
+  print(Result);
     
 
 
-    setring inputRing;
- def Result=fetch(resultRing,Result);
+//     setring inputRing;
+//  def Result=fetch(resultRing,Result);
 //  print("After fetch");
 //   print(Result);
-    return(Result);
+    return("Result");
 }
