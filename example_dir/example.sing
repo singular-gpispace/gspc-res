@@ -47,7 +47,7 @@ gc.options.logport = 9876;
 //  ideal J0=std(J1);
 //  module J=J0;
 
-// //Example From the ppaer refined algorithms to compute syzygies
+// //Example From the paper refined algorithms to compute syzygies
 // ring S= 0, (w,x,y,z), (lp,c);
 // poly f1 = wx + wz + x2 + 2xz - z2;
 // poly f2 = wy - wz - xz - yz - 2z2;

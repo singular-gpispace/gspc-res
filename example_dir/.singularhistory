@@ -4471,3 +4471,5 @@ system("--ticks-per-sec", 1000000000); // set timer resolution to ns
 print("timer");
 quit;
 quit;
+ LIB "IterativeRes.lib";
+quit;

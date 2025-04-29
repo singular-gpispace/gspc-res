@@ -51,12 +51,12 @@ proc leadSyz(def f) {
         s = L[k];
 
         // Check if s divides t
-        if (NF(t, s) == 0) {
+        if (NF(t, s,1) == 0) {
           t = 0;
           break;
         } else {
           // Check if t divides s
-          if (NF(s, t) == 0) {
+          if (NF(s, t,1) == 0) {
             L = delete(L, k);
             k = k - 1;
             cc = cc - 1;
@@ -87,8 +87,8 @@ proc lead_Sparse_Syz(def f) {
     
     int l_k = leadexp(s_lift)[nvars(basering) + 1];
 
-    sM[l_k, k] = leadcoef(s_lift) * leadmonomial(s_lift);
-    
+    sM[l_k, k] = leadmonomial(s_lift);
+     //sM[l_k, k] = leadcoef(s_lift) * leadmonomial(s_lift);
     
     Ld.vec= s_lift;
     
@@ -131,7 +131,7 @@ proc LOT(poly g0, ideal S1) {
   for (k = 1; k <= size(g0); k++) {
     isDivisible = 0;
     for (i = 1; i <= r; i++) {
-      if (S1[i] != poly(0) && NF(lead(g0[k]), lead(S1[i])) == poly(0)) {
+      if (S1[i] != poly(0) && NF(lead(g0[k]), lead(S1[i]),1) == poly(0)) {
         isDivisible = 1;
         break;
       }
@@ -161,7 +161,9 @@ proc coM(def f, vector s, vector t) {
     if ((sfi == tfj) && (i > j)) {
       isTrue = 1;
     }
-  }
+  }else{
+    isTrue=0;
+   }
   return (isTrue);
 }
 
@@ -172,34 +174,46 @@ proc liftTree(ideal f, sparse_sublift TT) {
     int c_n =TT.sign ; 
     list TT_list;
     int r = size(f);
-    poly h, t, g;
+    //poly h, t, g;
+    poly t, g;
     list T;
     int c;
     module l = leadSyz(f);
     int l_size = size(l);
-     int i,k,q,kk;
-    for (i = 1; i <= r; i++) {
-        if (s == leadcoef(s) * leadmonomial(s) * gen(i)) {
-            h = leadcoef(s) * leadmonomial(s) * f[i];
-            break;
-        }
-    }
-    g = h;
+     int k,q,kk;
+
+    number lc_s=leadcoef(s);//leading coefficient of s
+  poly lm_s=leadmonomial(s);//leading monomial of s
+  int a=leadexp(s)[nvars(basering)+1];
+
+    //for (i = 1; i <= r; i++) {
+        //if (s == leadcoef(s) * leadmonomial(s) * gen(i)) {
+            //h = leadcoef(s) * leadmonomial(s) * f[i];
+            //break;
+        //}
+    //}
+    g = lc_s * lm_s * f[a];
     poly T0 = g - LOT(g, f);
     T = pOLY_List(T0);
-    vector s_bar = s;
+    //vector s_bar = s;//s not used 
     poly m1, m;
     int lambda1;
     vector s_v;
     int C;
     int cl = 1;
-
+    list lead_terms;
+    int i0;
+    for (i0 = 1; i0 <= r; i0++) {
+        lead_terms[i0] = lead(f[i0]);
+    }
+    ideal temp;
     for (k = 1; k <= size(T); k++) {
         t = T[k];
         for (q = 1; q <= r; q++) {
-            C = (NF(t, lead(f[q])) == poly(0));
+         temp=lead_terms[q];
+            C = (NF(t, temp,1) == poly(0));
             if (C == 1) {
-                m1 = t / lead(f[q]);
+                m1 = t / lead_terms[q];
                 s_v = m1 * gen(q);
                 c = coM(f, s, s_v);
                 if (c == 1) {
@@ -219,7 +233,9 @@ proc liftTree(ideal f, sparse_sublift TT) {
         smatrix sM[size(f)][l_size];
         vector s_lift = TT_list[kk];
         int l_k = leadexp(s_lift)[nvars(basering) + 1];
-        sM[l_k, colmn] = (-1)*leadcoef(s_lift) * leadmonomial(s_lift);
+         //sM[l_k, colmn] = (-1)*leadcoef(s_lift) * leadmonomial(s_lift);
+         sM[l_k, colmn] = (-1)*leadcoef(s_lift) * leadmonomial(s_lift);
+
         Token.A = sM; //smatrix
         
 
@@ -231,6 +247,7 @@ proc liftTree(ideal f, sparse_sublift TT) {
     }
     return (sL);
 }
+
 
 proc oneSublift(ideal f, sparse_sublift TT_list) {
     vector s = TT_list.vec;
@@ -245,31 +262,42 @@ proc oneSublift(ideal f, sparse_sublift TT_list) {
   int i, k, lambda,kk;
   poly g, h;
   list T;
-  for (i = 1; i <= r; i++) {
-    if (s == leadcoef(s) * leadmonomial(s) * gen(i)) {
-      h = leadcoef(s) * leadmonomial(s) * f[i];
-      break;
-    }
-  }
+  number lc_s=leadcoef(s);//leading coefficient of s
+  poly lm_s=leadmonomial(s);//leading monomial of s
+  int a=leadexp(s)[nvars(basering)+1];
+  //for (i = 1; i <= r; i++) {
+    //if (s == leadcoef(s) * leadmonomial(s) * gen(i)) {
+      //h = leadcoef(s) * leadmonomial(s) * f[i];
+      //break;
+    //}
+  //}
+  h = lc_s * lm_s * f[a];
   g = h - lead(h);
   
   poly T0 = g - LOT(g, f);
   
   T = pOLY_List(T0);
-  vector s_hat = s;
+  //vector s_hat = s; //no used
+
+   // Precompute leading terms of f[q]
+    list lead_terms;
+    int i0;
+    for (i0 = 1; i0 <= r; i0++) {
+        lead_terms[i0] = lead(f[i0]);
+    }
   poly t, m1;
   poly m;
   int lambda1;
   vector s_v;
   int cl = 1;
- 
+ ideal temp;
   for (k = 1; k <= size(T); k++) {
     t = T[k];
     for (lambda = 1; lambda <= r; lambda++) {
       
-    
-      if ((NF(t, lead(f[lambda])) == poly(0))) {
-        m1 = t /lead(f[lambda]);
+      temp=lead_terms[lambda];
+      if ((NF(t, temp,1) == poly(0))) {
+        m1 = t /lead_terms[lambda];
         s_v = m1 * gen(lambda);
         lambda1 = lambda;
         m = m1;
