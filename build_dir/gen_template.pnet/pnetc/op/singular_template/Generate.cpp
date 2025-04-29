@@ -1,6 +1,6 @@
 #include <pnetc/op/singular_template/Generate.hpp>
-#include <we/type/literal/control.hpp>
 #include <string>
+#include <we/type/literal/control.hpp>
 #include <interface/template_interface.hpp>
 #include <util-generic/dynamic_linking.hpp>
 #include <iostream>
@@ -12,7 +12,8 @@ namespace pnetc
     namespace singular_template
     {
       void Generate
-        ( const std::string& res
+        ( const we::type::literal::control& ds
+        , const std::string& res
         , const std::string& library_name
         , const std::string& base_filename
         , const std::string& input
@@ -27,7 +28,7 @@ namespace pnetc
         , unsigned long& N
         )
       {
-#line 1022 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 1025 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
        //std::cout << "Generate_Input:"<<input<< std::endl;
        //std::cout << "Generate_Syz:"<<syz<< std::endl;

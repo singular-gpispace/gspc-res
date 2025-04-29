@@ -1,8 +1,8 @@
 #ifndef _PNETC_OP_singular_template_Generate
 #define _PNETC_OP_singular_template_Generate
 
-#include <we/type/literal/control.hpp>
 #include <string>
+#include <we/type/literal/control.hpp>
 
 namespace pnetc
 {
@@ -11,7 +11,8 @@ namespace pnetc
     namespace singular_template
     {
       void Generate
-        ( const std::string& res
+        ( const we::type::literal::control& ds
+        , const std::string& res
         , const std::string& library_name
         , const std::string& base_filename
         , const std::string& input

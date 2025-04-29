@@ -103,8 +103,8 @@ namespace pnetc
   }
 }
 #include <pnetc/op/singular_template/Generate.hpp>
-#include <we/type/literal/control.hpp>
 #include <string>
+#include <we/type/literal/control.hpp>
 
 namespace pnetc
 {
@@ -119,6 +119,7 @@ namespace pnetc
         , std::map<std::string, void*> const&
         )
       {
+        const we::type::literal::control & ds (::boost::get< we::type::literal::control > (_pnetc_input.value (std::list<std::string> (1, "ds"))));
         const std::string & res (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "res"))));
         const std::string & library_name (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "library_name"))));
         const std::string & base_filename (::boost::get< std::string > (_pnetc_input.value (std::list<std::string> (1, "base_filename"))));
@@ -132,7 +133,7 @@ namespace pnetc
         we::type::literal::control addFill;
         unsigned long M;
         unsigned long N;
-        ::pnetc::op::singular_template::Generate (res, library_name, base_filename, input, syz, drainage, len, Res, Input, c, addFill, M, N);
+        ::pnetc::op::singular_template::Generate (ds, res, library_name, base_filename, input, syz, drainage, len, Res, Input, c, addFill, M, N);
         _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "len"), len);
         _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "Res"), Res);
         _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "Input"), Input);
