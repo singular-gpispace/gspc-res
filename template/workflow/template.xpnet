@@ -995,9 +995,7 @@
 
  
     
-  <place name="disable_generate" type="control">
-  
-  </place>   
+      
  
 <!-- Transition 11: Generate-->
 <transition name="Generate">
@@ -1007,7 +1005,6 @@
      <in name="base_filename" type="string"/>
     <inout name="len" type="int"/>
     <in name="syz" type="string"/>
-    <in name="ds" type="control"/>
     <in name="res" type="string"/>
     <out name="Res" type ="string"/>
     <in name="input" type="string"/>
@@ -1018,7 +1015,7 @@
    
     <in name="drainage" type ="control"/>
     <out name="addFill" type ="control"/>
-    <module name="singular_template" function="Generate(ds,res,library_name, base_filename, Res, input,Input,len, c,syz,addFill,M,N,drainage)">
+    <module name="singular_template" function="Generate(res,library_name, base_filename, Res, input,Input,len, c,syz,addFill,M,N,drainage)">
       <cinclude href="interface/template_interface.hpp" />
       <cinclude href="util-generic/dynamic_linking.hpp"/>
        <cinclude href="iostream"/>
@@ -1045,7 +1042,6 @@
   <connect-in port="input" place="place_input_GB"/>
   <connect-in port="res" place="place_Res"/>
   <connect-in port="syz" place="place_Syz"/>
-  <connect-in port="ds" place="disable_generate"/>
   <connect-out port="Input" place="place_input_GB"/>
   <connect-out port="c" place="place_control"/>
   <connect-out port="Res" place="place_Res"/>
@@ -1129,7 +1125,7 @@
     </defun>
     
     <connect-in port="start_time" place="place_StartTime"/>
-    <connect-in port="computed_output" place="place_Syz"/>
+    <connect-in port="computed_output" place="place_Schres"/>
    
     <connect-out port="computed_output" place="place_list_syzygies"/>
   
