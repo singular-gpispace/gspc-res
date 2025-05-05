@@ -1,6 +1,5 @@
 # Template Singular/GPI-Space
 
-This repository provide an introduction example of a Singular/GPI-Space framework with two places and one transition.
 
 One place serves as an input place, the other as an output place and the transition as the "Computer". The input place is filled up The transition calls a procedure from Singular to perform the computation.
 
