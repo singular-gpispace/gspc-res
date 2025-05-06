@@ -137,9 +137,9 @@ spack install
 Note, this may take quite a bit of time, when doing the initial installation, as it needs to build GPI-Space and Singular
 including dependencies. Installing further components of the framework or updating is then typically quick.
 
-## Load modular_res
+## Load gspc_res
 
-Once modular_res is installed, to use modular_res load the package via:
+Once gspc_res is installed, to use gspc_res load the package via:
 ```bash
 spack load gspc_res
 
