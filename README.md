@@ -155,7 +155,7 @@ spack env deactivate
 
 ```
 
-Note, that this command needs to be executed again if you open a new terminal session. In particular, the environment variable `MODULAR_INSTALL_DIR` is available only after executing this command.
+Note, that this command needs to be executed again if you open a new terminal session. In particular, the environment variable `GSPC-RES_INSTALL_DIR` is available only after executing this command.
 
 ## Set up ssh
 
