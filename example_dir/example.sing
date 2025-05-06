@@ -1,59 +1,83 @@
 
 
- LIB "templategspc.lib";
+LIB "templategspc.lib";
 //LIB "/home/santosh/gspc-res/template/template/LIB/templategspc.lib";
 
 LIB "random.lib";
-  LIB "modstd.lib"; //testing if it is necessary
+LIB "modstd.lib"; //testing if it is necessary
   //following from Leadsyz;LIB "general.lib";LIB "monomialideal.lib"; LIB "homolog.lib";
-  
+   	
+
+
     
 // Configure GPI-Space	
 configToken gc = configure_gspc();
 gc.options.tmpdir = "/home/santosh/gspc-res/example_dir/temp";
+// gc.options.tmpdir = "/dev/shm/gnawali/temp";
+
+// mkdir -p /dev/shm/gnawali/temp
+// ls -lh /dev/shm/gnawali/temp
+
+// rm -rf /dev/shm/gnawali/temp/*
+// find /dev/shm/gnawali/temp -type d | wc -l
+//ls -1 /dev/shm/gnawali/temp | wc -l
+//find /dev/shm/gnawali/temp -type f -delete
+
 gc.options.nodefile = "nodefile";
 gc.options.procspernode = 6;
 gc.options.loghost = "schipp";
 gc.options.logport = 9876;
 
+// <"ideal_M2.sing";
+
+
+
+// link l = "ssi:r temp/999.ssi"; // A file that doesn't exist
+// print(status(l, "exists"));  // This will print "no" if the file does not exist
+// if (status(l, "exists") == "no") {
+//     print("Santosh");  // This will execute because the file doesn't exist
+// }
+
+
+
 
  //Example from Singular book
-//  ring S=0, (x,y,z), (c,dp);
+//  ring R=0, (x,y,z), dp;
 //  ideal J1=y*z+z^2,y^2 + x*z,x*y+z^2,z^3,x*z^2,x^2*z;
 //  ideal J=std(J1);
 
-// //Example 0
+// //Example From the ppaer refined algorithms to compute syzygies
 // ring S= 0, (w,x,y,z), (lp,c);
 // poly f1 = wx + wz + x2 + 2xz - z2;
 // poly f2 = wy - wz - xz - yz - 2z2;
 // poly f3= xy + z2; 
 // ideal J=f1,f2,f3;
 
-//Koszul
-// ring R=0, (x(1..4)),dp;
-//  ideal I=randomid(maxideal(1),4,3);
-//  ideal J=std(I);
+// //Koszul
+// ring R=0, (x1,x2,x3,x4),dp;
+//  ideal J=x1,x2,x3,x4;
 // print("ideal J=");
 // print(J);
+// module m;
+// vector s1=x1*gen(2)-x2*gen(1);
+// vector s2=x1*gen(3)-x3*gen(1);
+// vector s3=x2*gen(3)-x3*gen(2);
+// vector s4=x1*gen(4)-x4*gen(1);
+// vector s5=x2*gen(4)-x4*gen(2);
+// vector s6=x3*gen(4)-x4*gen(3);
+// m=s1,s2,s3,s4,s5,s6;
+
  //Example 1:
  
 ring R= 0, (w,x,y,z), (dp,c);
 ideal J= w2-x*z, w*x- y*z, x2-w*y, x*y- z2, y2- w*z;
-//module m;
-// vector s1=[-x,w,-z,0,0];
-// vector s2=[y,-x,w,0,0];
-// vector s3=[0,-y,0,w,-z];
-// vector s4=[-z,0,-y,x,-w];
-// vector s5=[-y^2+w*z, z^2,0,-yz,w^2];
-// vector s6=[0,z,0,-y,x];
-// module m=s1,s2,s3,s4,s5,s6;
 
-  // Example2:
-// ring R= 0, (x(1..10)), lp;
-// matrix mS[2][4]= x(4)+ x(6), x(6)+ x(3), x(8)+ x(3), x(1)-x(3), x(2)-x(4), x(5)-x(7), x(8)-x(7), 
-// x(2)+ x(3), x(5)- x(7), x(10)+ x(8), x(1) -x(2);
+
+//   // Example2:
+// ring R= 0, (x(1),x(2),x(3),x(4),x(5),x(6),x(7),x(8)), (lp,c);
+// matrix mS[2][4]= x(4)+ x(6), x(6)+ x(3), x(8)+ x(3), x(1)-x(3), x(2)-x(4), x(5)-x(7), x(8)-x(7), x(2)+ x(3);
 // ideal I_minor= minor(mS,2);
-// I_minor;
+
 // ideal J = std(I_minor);
 
 
@@ -79,12 +103,13 @@ ideal J= w2-x*z, w*x- y*z, x2-w*y, x*y- z2, y2- w*z;
 // poly Q10 = x3*x4 - x0*x1;
 
 // // Define the ideal
-// ideal J1= Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10;
-// J1;
-// print("GB");
-// ideal J=std(J1);
+// ideal J0= Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10;
 
-//  //Example4
+// print("GB");
+// ideal J=std(J0);
+// print(size(J));
+
+ //Example4
 //  ring R = 0, (x0, x1, x2, x3, x4), (dp,c); // Example for n+1 = 5 variables
 // // Step 2: Generate a regular sequence
 // poly f1 = x0^2 + x1^2 + x2^2 + x3^2 + x4^2;
@@ -92,41 +117,76 @@ ideal J= w2-x*z, w*x- y*z, x2-w*y, x*y- z2, y2- w*z;
 // poly f3 = x0*x2 + x1*x3 + x4*x0;
 // poly f4 = x0*x3 + x1*x4 + x2*x0;
 // poly f5 = x0*x4 + x1*x2 + x3*x1;
-// ideal J1= f1,f2,f3,f4,f5;
-// J1;
-// print("GB");
-// ideal J= std(J1);
+// ideal J0= f1,f2,f3,f4,f5;
+
+// ideal J= std(J0);
 
 
 
 //Example 5
 
 // ring R = 0, (x0, x1, x2, x3, x4, x5), (dp,c);
-
-// // Step 2: Generate a regular sequence with 5 polynomials
 // poly f1 = x0 + x1 + x2 + x3;
 // poly f2 = x0*x1 + x2*x3 + x4*x5;
 // poly f3 = x0*x2 + x1*x3;
 // poly f4 = x0*x3 + x1*x4 + x2*x5;
 // poly f5 = x0*x4 + x1*x5;
+// ideal J0 = f1, f2, f3, f4, f5;
+// ideal J=std(J0);
 
 
-// ideal J1 = f1, f2, f3, f4, f5;
-//  ideal J=std(J1);
+
+
+//Example 6
+
+// ring R=0, (x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10),dp;
+// ideal J;
+
+// J[1]=5478184*x7+17974881*x8+10172252*x9+3606363*x10;
+// J[2]=181233*x6+896498*x7+2615211*x8+1387366*x9+625050*x10;
+// J[3]=4925*x5-237*x6-17222*x7-54504*x8-28574*x9-11575*x10;
+// J[4]=132*x4-31*x5+213*x6+826*x7+2346*x8+1222*x9+629*x10;
+// J[5]=336*x3+164*x4+821*x5+537*x6-462*x7-1774*x8-866*x9-263*x10;
+// J[6]=254*x2+177*x3-27*x4+5*x5+123*x6+217*x7+306*x8+172*x9+137*x10;
+// J[7]=x1-6*x2-4*x3-3*x6-4*x7-6*x8-3*x9-3*x10;
+// J[8]=x0-39*x2-28*x3+4*x4-x5-19*x6-33*x7-48*x8-26*x9-21*x10;
+// print("ideal J=");
 
 
 
-//Example 6 [Koszul Case ]
+//ForSingular
+// LIB "random.lib";
 // ring R=0,(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10),dp;
-// ideal J=x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10;
+// matrix m[2][10]=x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10;
+// ideal rNC=minor(m,2);
+// ideal I=randomid(maxideal(1),9,7);
+//  map f=R,I[1..9];
+// ideal RNC=f(rNC);
+// ideal J=std(RNC);
+// print("ideal J=");
+// print(size(J));
+// rtimer=0;
+//  system("--ticks-per-sec",1000); // set timer resolution to ms
+//  int t=rtimer;
+//  def f0=fres(J,0);
+//  rtimer-t;
+// print("timer");
 
-// ring R=0, (w,x,y,z), dp;
-// matrix m[2][3]=w,x,y,x,y,z;
-// ideal I = minor(m,2);
-//  ideal J=std(I);
-//  print(I);
+
+
+// ring r = (0,q),(x,y,z),dp;
+//   def e = Exterior(); setring e;
+//   print("Exterior ring");
+//   print(e);
+//   vector f1 = [x,y,0,z,0,0];
+//   vector f2 = [0,x,y,0,z,0];
+//   vector f3 = [0,0,0,x,y,z];
+//   module J = f1,f2,f3;
+//   J= std(J);
+// print("size of J=");
+// print(size(J));
 // Call gspc_template_mod with proper arguments
-int nb_prime; // Specify the number of primes
+
 rtimer=0;
  system("--ticks-per-sec",1000); // set timer resolution to ms
  int t=rtimer;
@@ -135,6 +195,11 @@ re;
 
 rtimer-t;
 print("timer");
+
+
+
+
+
 
 
 // Should Try
@@ -159,3 +224,5 @@ print("timer");
 //./gspc-logging-to-stdout.exe --port 9876
 //: /home/santosh/singular-gpispace/spack/opt/spack/linux-ubuntu22.04-skylake/gcc-11.4.0/gpi-space-23.06-b5pl6a6kj26mfyhsrvxse2gnk4riv5os/bin/gspc-logging-to-stdout.exe --port=9876
 //:~/singular-gpispace/spack/opt/spack/linux-ubuntu22.04-skylake/gcc-11.4.0/gpi-space-23.06-b5pl6a6kj26mfyhsrvxse2gnk4riv5os/bin$ ./gspc-logging-to-stdout.exe --port 9876
+
+// : /home/santosh/singular-gpispace/spack/opt/spack/linux-ubuntu22.04-skylake/gcc-11.4.0/gpi-space-24.12-ugaltunbzethad4p3szsepjqdbgthcch/bin$ ./gspc-logging-to-stdout.exe --port 9876

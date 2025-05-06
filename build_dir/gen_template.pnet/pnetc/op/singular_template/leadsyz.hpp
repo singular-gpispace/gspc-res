@@ -14,14 +14,10 @@ namespace pnetc
     {
       void leadsyz
         ( const std::string& input
-        , const we::type::literal::control& s
         , const std::string& library_name
         , const std::string& base_filename
-        , int& nleads
-        , int& counter
-        , int& N
-        , std::list<pnet::type::value::value_type>& Sublift
-        , long& runtime
+        , const int& len
+        , we::type::literal::control& s
         , std::list<pnet::type::value::value_type>& OUT
         );
     }

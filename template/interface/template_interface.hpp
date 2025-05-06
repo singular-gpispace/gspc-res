@@ -16,15 +16,33 @@
 
 
 
-NO_NAME_MANGLING
-std::string singular_template_compute_StdBasis ( std::string const&
-                                      , std::string const&
-									  , std::string const&
-                                      );
+      NO_NAME_MANGLING
+      std::string singular_template_compute_StdBasis ( std::string const&
+                                            , std::string const&
+                                            , std::string const&
+                                            );
+      
+    
+
+
+
 
 
 NO_NAME_MANGLING
 std::string singular_template_Init( std::string const& );
+
+
+
+
+
+
+
+NO_NAME_MANGLING
+std::tuple<std::vector<std::string>, int,  long>  singular_template_ALL_LEAD( std::string const&
+                                                    
+                                                         ,std::string const&
+									  , std::string const&
+                                      );
 
 
 NO_NAME_MANGLING
@@ -34,26 +52,13 @@ std::tuple<std::vector<std::string>, int,  long> singular_template_LEAD( std::st
 									  , std::string const&
                                       );
 
-
-
-
-NO_NAME_MANGLING
-std::tuple<std::vector<std::string>, int,  long>   singular_template_ALL_LEAD( std::string const&
-                                                    
-                                                         , std::string const&
-									  , std::string const&
-                                      );
-
-
-
-
 NO_NAME_MANGLING
 std::tuple<std::vector<std::string>, int,  long> singular_template_LIFT( std::string const&
                                       , std::string const&
                                      , std::string const&
                                      ,std::string const&
                                       , std::string const&
-						
+						 , unsigned long N
                                       );
 
           
@@ -63,27 +68,40 @@ std::tuple<std::vector<std::string>, int,  long> singular_template_SUBLIFT ( std
                                      , std::string const&
                                      ,std::string const&
                                       , std::string const&
-						
+						 , unsigned long N
                                       );
 
-NO_NAME_MANGLING
-std::pair<std::string, long> singular_template_reduce( std::string const&
-                                     , std::string const&
-                                     , std::string const&
-                                      , std::string const&
-						  , std::string const&
-                                      );   
-
-
+                                      NO_NAME_MANGLING
+                                      std::pair<std::string, long> singular_template_reduce(
+                                          std::string const& Red,
+                                          const std::pair<int, int>& ranges,
+                                          int N,
+                                          std::string const& needed_library,
+                                          std::string const& base_filename
+                                      );
                                       
-NO_NAME_MANGLING
+
+
+                                      NO_NAME_MANGLING
+                                      std::pair<std::string, long> singular_template_ADD_Seq( std::string const&
+                                                                            ,int N
+                                                                            ,int Nplus
+                                                                           , std::string const&
+                                                                         
+                                                                , std::string const&
+                                                                            );   
+                                                                            
+    NO_NAME_MANGLING
 std::string singular_template_Generate (std::string const&
                                       , std::string const&
                                       , std::string const&
 						  , std::string const&
-                                      );   
+                                      );  
 
                                       
                                       NO_NAME_MANGLING
 std::string  singular_template_removeFiles(const std::string&,
-                                      const std::string&);                     
+                                      const std::string&);   
+
+                                      NO_NAME_MANGLING
+std::string singular_template_Rename_File(const std::string&,int N,const std::string&,const std::string&);                   

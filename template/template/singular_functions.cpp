@@ -97,6 +97,25 @@ std::string serialize(lists lst, std::string const& base_filename) {
     return out_filename;
 }
 
+
+
+std::string serialize_with_N(lists lst, std::string const& base_filename, int N) {
+    // Construct the new filename based on N, e.g., "N.ssi"
+    std::string out_filename = base_filename + std::to_string(N)
+ + ".ssi";
+    
+    // Open the file for writing
+    si_link l = ssi_open_for_write(out_filename);
+    
+    // Write the new structure to the file
+    ssi_write_newstruct(l, STRUCT_NAME, lst);
+    
+    // Close and remove the file after writing
+    ssi_close_and_remove(l);
+
+    return out_filename;
+}
+
 // implementation
 bool register_struct(std::string const& name, std::string const& desc) {
     int tok;
