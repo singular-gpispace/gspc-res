@@ -83,7 +83,7 @@ Note that Spack can be uninstalled by just deleting its directory and its config
 #rm -rf .spack
 
 ```
-## Install gspc_res
+## Install gspc-res
 
 Once you have installed Spack, our package can be installed with just three lines of code.
 
@@ -99,12 +99,12 @@ spack repo add $software_ROOT/spack-packages
 
 ```
 
-Finally, install gspc_res:
+Finally, install gspc-res:
 ```bash
-spack install gspc_res
+spack install gspc-res
 
 ```
-Optionally, the gspc_res framework can be installed in a Spack environment by replacing the last command by the following commands.
+Optionally, the gspc-res framework can be installed in a Spack environment by replacing the last command by the following commands.
 
 Create an environment:
 ```bash
@@ -116,10 +116,10 @@ Activate the environment:
 spack env activate -p myenv
 
 ```
-Add the abstract specs of gspc_res to the environment:
+Add the abstract specs of gspc-res to the environment:
 
 ```bash
-spack add gspc_res
+spack add gspc-res
 
 ```
 
@@ -137,14 +137,14 @@ spack install
 Note, this may take quite a bit of time, when doing the initial installation, as it needs to build GPI-Space and Singular
 including dependencies. Installing further components of the framework or updating is then typically quick.
 
-## Load gspc_res
+## Load gspc-res
 
-Once gspc_res is installed, to use gspc_res load the package via:
+Once gspc-res is installed, to use gspc-res load the package via:
 ```bash
-spack load gspc_res
+spack load gspc-res
 
 ```
-If gspc_res is installed in an environment, run the following command to activate the environment:
+If gspc-res is installed in an environment, run the following command to activate the environment:
 ```bash
 spack env activate -p myenv
 
@@ -188,7 +188,7 @@ If you start in a new terminal session (and did not configure your terminal to d
 ```bash
 export software_ROOT=~/singular-gpispace
 . $software_ROOT/spack/share/spack/setup-env.sh
-spack load gspc_res
+spack load gspc-res
 
 ```
 ## Setup directories and example files
