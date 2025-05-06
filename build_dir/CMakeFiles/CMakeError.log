@@ -1,14 +1,14 @@
 Performing C++ SOURCE FILE Test CXX_COMPILER_SUPPORTS__Wundefined_reinterpret_cast failed with the following output:
 Change Dir: /home/santosh/gspc-res/build_dir/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_7cf24/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_7cf24.dir/build.make CMakeFiles/cmTC_7cf24.dir/build
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_85773/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_85773.dir/build.make CMakeFiles/cmTC_85773.dir/build
 gmake[1]: Entering directory '/home/santosh/gspc-res/build_dir/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_7cf24.dir/src.cxx.o
-/usr/bin/c++ -DCXX_COMPILER_SUPPORTS__Wundefined_reinterpret_cast  -Wall -Wextra -Werror    -Wundefined-reinterpret-cast -std=gnu++17 -o CMakeFiles/cmTC_7cf24.dir/src.cxx.o -c /home/santosh/gspc-res/build_dir/CMakeFiles/CMakeTmp/src.cxx
+Building CXX object CMakeFiles/cmTC_85773.dir/src.cxx.o
+/usr/bin/c++ -DCXX_COMPILER_SUPPORTS__Wundefined_reinterpret_cast  -Wall -Wextra -Werror    -Wundefined-reinterpret-cast -std=gnu++17 -o CMakeFiles/cmTC_85773.dir/src.cxx.o -c /home/santosh/gspc-res/build_dir/CMakeFiles/CMakeTmp/src.cxx
 c++: error: unrecognized command-line option '-Wundefined-reinterpret-cast'
-gmake[1]: *** [CMakeFiles/cmTC_7cf24.dir/build.make:78: CMakeFiles/cmTC_7cf24.dir/src.cxx.o] Error 1
+gmake[1]: *** [CMakeFiles/cmTC_85773.dir/build.make:78: CMakeFiles/cmTC_85773.dir/src.cxx.o] Error 1
 gmake[1]: Leaving directory '/home/santosh/gspc-res/build_dir/CMakeFiles/CMakeTmp'
-gmake: *** [Makefile:127: cmTC_7cf24/fast] Error 2
+gmake: *** [Makefile:127: cmTC_85773/fast] Error 2
 
 
 Source file was:
@@ -16,14 +16,14 @@ int main() { return 0; }
 Performing C++ SOURCE FILE Test CXX_COMPILER_SUPPORTS__Wextra_semi_stmt failed with the following output:
 Change Dir: /home/santosh/gspc-res/build_dir/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_f0c0d/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_f0c0d.dir/build.make CMakeFiles/cmTC_f0c0d.dir/build
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_a5722/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_a5722.dir/build.make CMakeFiles/cmTC_a5722.dir/build
 gmake[1]: Entering directory '/home/santosh/gspc-res/build_dir/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_f0c0d.dir/src.cxx.o
-/usr/bin/c++ -DCXX_COMPILER_SUPPORTS__Wextra_semi_stmt  -Wall -Wextra -Werror    -Wextra-semi-stmt -std=gnu++17 -o CMakeFiles/cmTC_f0c0d.dir/src.cxx.o -c /home/santosh/gspc-res/build_dir/CMakeFiles/CMakeTmp/src.cxx
+Building CXX object CMakeFiles/cmTC_a5722.dir/src.cxx.o
+/usr/bin/c++ -DCXX_COMPILER_SUPPORTS__Wextra_semi_stmt  -Wall -Wextra -Werror    -Wextra-semi-stmt -std=gnu++17 -o CMakeFiles/cmTC_a5722.dir/src.cxx.o -c /home/santosh/gspc-res/build_dir/CMakeFiles/CMakeTmp/src.cxx
 c++: error: unrecognized command-line option '-Wextra-semi-stmt'; did you mean '-Wextra-semi'?
-gmake[1]: *** [CMakeFiles/cmTC_f0c0d.dir/build.make:78: CMakeFiles/cmTC_f0c0d.dir/src.cxx.o] Error 1
+gmake[1]: *** [CMakeFiles/cmTC_a5722.dir/build.make:78: CMakeFiles/cmTC_a5722.dir/src.cxx.o] Error 1
 gmake[1]: Leaving directory '/home/santosh/gspc-res/build_dir/CMakeFiles/CMakeTmp'
-gmake: *** [Makefile:127: cmTC_f0c0d/fast] Error 2
+gmake: *** [Makefile:127: cmTC_a5722/fast] Error 2
 
 
 Source file was:
