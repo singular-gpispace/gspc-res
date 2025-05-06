@@ -194,7 +194,7 @@ spack load gspc-res
 ## Setup directories and example files
 First, we copy the needed library for the example into `software_ROOT` directory.
 ```bash
-cp $MODULAR_INSTALL_DIR/share/examples/modulargp.lib $software_ROOT
+cp $GSPC-RES_INSTALL_DIR/share/examples/templategp.lib $software_ROOT
 
 ```
 We create a nodefile, which contains the names of the nodes used for computations with our framework. In our example, it just contains the result of hostname.
