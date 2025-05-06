@@ -232,8 +232,14 @@ We start Singular in the directory where it will have direct access to all relev
 ```bash
 cd $software_ROOT
 SINGULARPATH="$MODULAR_INSTALL_DIR"  Singular@4.4.0
-
+## Choose the branch
+Each computation example corresponds to a specific Git branch. Be sure to switch to the right one before running the associated code:
 ## Example for computation of free resolutions
+Ensure you're on the main branch:
+```bash
+git checkout main
+
+```
 
 ```bash
 
@@ -262,4 +268,12 @@ re;
 
 rtimer-t;
 print("timer");
+```
+
+
+## Example for computation of Syzygy
+Ensure you're on the branch:
+```bash
+git checkout 
+
 ```

@@ -1,8 +1,9 @@
-#ifndef _PNETC_OP_singular_template_All_leadsyz
-#define _PNETC_OP_singular_template_All_leadsyz
+#ifndef _PNETC_OP_singular_template_leadsyz
+#define _PNETC_OP_singular_template_leadsyz
 
 #include <list>
 #include <we/type/value.hpp>
+#include <we/type/literal/control.hpp>
 #include <string>
 
 namespace pnetc
@@ -11,12 +12,12 @@ namespace pnetc
   {
     namespace singular_template
     {
-      void All_leadsyz
+      void leadsyz
         ( const std::string& input
         , const std::string& library_name
         , const std::string& base_filename
-        , int& counter
-        , long& runtime
+        , const int& len
+        , we::type::literal::control& s
         , std::list<pnet::type::value::value_type>& OUT
         );
     }

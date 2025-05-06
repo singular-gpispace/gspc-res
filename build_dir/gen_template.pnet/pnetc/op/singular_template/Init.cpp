@@ -1,8 +1,8 @@
 #include <pnetc/op/singular_template/Init.hpp>
+#include <we/type/literal/control.hpp>
 #include <string>
 #include <interface/template_interface.hpp>
 #include <util-generic/dynamic_linking.hpp>
-#include <iostream>
 
 namespace pnetc
 {
@@ -12,16 +12,17 @@ namespace pnetc
     {
       void Init
         ( const std::string& input
+        , std::string& res
+        , we::type::literal::control& c
         , std::string& output
         )
       {
-#line 59 "/home/santosh/gspc-res/template/workflow/template.xpnet"
+#line 116 "/home/santosh/gspc-res/template/workflow/template.xpnet"
 
-                     std::cout <<"Initiate:"<< std::endl;
-						 output = RESOLVE_INTERFACE_FUNCTION(singular_template_Init) (input);
-          
-              
-            		
+        output = RESOLVE_INTERFACE_FUNCTION(singular_template_Init) (input);
+       
+         res=output;
+           
       }
     }
   }
