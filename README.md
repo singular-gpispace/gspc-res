@@ -232,6 +232,7 @@ We start Singular in the directory where it will have direct access to all relev
 ```bash
 cd $software_ROOT
 SINGULARPATH="$MODULAR_INSTALL_DIR"  Singular@4.4.0
+```
 ## Choose the branch
 Each computation example corresponds to a specific Git branch. Be sure to switch to the right one before running the associated code:
 ## Example for computation of free resolutions
