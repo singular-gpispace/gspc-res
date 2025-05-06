@@ -273,8 +273,38 @@ print("timer");
 
 
 ## Example for computation of Syzygy
-Ensure you're on the branch:
+Ensure you're on the Syzygy_Parallel_Sum branch:
 ```bash
-git checkout 
+git checkout Syzygy_Parallel_Sum
 
+```
+
+
+```bash
+
+LIB "templategspc.lib";
+LIB "random.lib";
+LIB "modstd.lib"; 
+// Configure GPI-Space	
+configToken gc = configure_gspc();
+gc.options.tmpdir = "/home/santosh/gspc-res/example_dir/temp";
+// gc.options.tmpdir = "/dev/shm/gnawali/temp";
+
+gc.options.nodefile = "nodefile";
+gc.options.procspernode = 6;
+gc.options.loghost = "schipp";
+gc.options.logport = 9876;
+
+
+ring R= 0, (w,x,y,z), (dp,c);
+ideal J= w2-x*z, w*x- y*z, x2-w*y, x*y- z2, y2- w*z;
+
+rtimer=0;
+system("--ticks-per-sec",1000); // set timer resolution to ms
+int t=rtimer;
+def re =gspc_template_SchRes(J, gc);
+re;
+
+rtimer-t;
+print("timer");
 ```
