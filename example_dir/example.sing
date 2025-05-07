@@ -69,8 +69,8 @@ gc.options.logport = 9876;
 
  //Example 1:
  
-ring R= 0, (w,x,y,z), (dp,c);
-ideal J= w2-x*z, w*x- y*z, x2-w*y, x*y- z2, y2- w*z;
+// ring R= 0, (w,x,y,z), (dp,c);
+// ideal J= w2-x*z, w*x- y*z, x2-w*y, x*y- z2, y2- w*z;
 
 
 //   // Example2:
