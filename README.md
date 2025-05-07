@@ -235,9 +235,9 @@ SINGULARPATH="$GSPC-RES_INSTALL_DIR"  Singular@4.4.0p2
 ```
 
 ## Example for computation of free resolutions
-Ensure you're on the main branch:
+Ensure you're on the Generic_Resolutions branch:
 ```bash
-git checkout main
+git checkout Generic_Resolutions
 
 ```
 
