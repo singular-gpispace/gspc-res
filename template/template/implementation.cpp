@@ -2702,20 +2702,20 @@ std::string singular_template_Generate(const std::string& res,
 	init_singular (config::singularLibrary().string());
 	load_singular_library(needed_library);
 	std::pair<int,lists> Res;
-  std::pair<int,lists> Syz;
+    std::pair<int,lists> Syz;
 	std::pair<int, lists> out;
 	std::string ids;
 	std::string out_filename;
 	ids = worker();
 	//std::cout << ids << " in singular_..._compute" << std::endl;
 	Res = deserialize(res,ids);
-  Syz = deserialize(syz,ids);
+    Syz = deserialize(syz,ids);
   
 	ScopedLeftv args( Res.first, lCopy(Res.second));
-  ScopedLeftv arg(args,Syz.first, lCopy(Syz.second));
-  std::string function_name = "Generate_GPI";
+    ScopedLeftv arg(args,Syz.first, lCopy(Syz.second));
+    std::string function_name = "Generate_GPI";
 	out = call_user_proc(function_name, needed_library, args);
-  out_filename = serialize(out.second, base_filename);
+    out_filename = serialize(out.second, base_filename);
     
 	return out_filename;
 }
