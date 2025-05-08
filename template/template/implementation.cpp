@@ -540,7 +540,8 @@ std::pair<int, lists> LEAD_GPI(leftv args) {
         t->m[1].rtyp = SMATRIX_CMD; 
         t->m[1].data = sM;
         t->m[2].rtyp = INT_CMD; 
-        t->m[2].data = (void*)(long)l_k;
+      
+        t->m[2].data = (void*)(long)(1);  // sign= 1
         t->m[3].rtyp = INT_CMD; 
         t->m[3].data = (void*)(long)(k+1);
 
@@ -1222,7 +1223,7 @@ std::pair<int, lists> LIFT_GPI(leftv args) {
 
     // vector s = TT.data[1]
     poly s = (poly)tmp2->m[0].Data();
-    
+    int cn = (int)(long)tmp2->m[2].Data();
     
     ideal l = nullptr;
     ideal LL = nullptr;
@@ -1333,7 +1334,7 @@ std::pair<int, lists> LIFT_GPI(leftv args) {
         t->m[1].rtyp = SMATRIX_CMD; 
         t->m[1].data = sM;
         t->m[2].rtyp = INT_CMD; 
-        t->m[2].data = (void*)(long)l_k;
+        t->m[2].data = (void*)(long)(-cn);
         t->m[3].rtyp = INT_CMD; 
         t->m[3].data = (void*)(long)colmn;
 
@@ -1690,7 +1691,7 @@ std::pair<int, lists> SubLIFT_GPI(leftv args) {
 
     // vector s = TT.data[1]
     poly s = (poly)tmp2->m[0].Data();
-    
+    int cn = (int)(long)tmp2->m[2].Data();//sign
     ideal l = nullptr;
     ideal LL = nullptr;
    int r0 = 0, c = 0, l_size = 0;
@@ -1811,7 +1812,7 @@ std::pair<int, lists> SubLIFT_GPI(leftv args) {
         poly Ci = p_Vec2Poly(C, l_k, currRing);
         C = p_Sub(C, Ci, currRing);
 
-        poly C1 = pCopy(p_Mult_q(pISet(-1), pCopy(lm), currRing));
+        poly C1 = pCopy(p_Mult_q(pISet(cn), pCopy(lm), currRing));
         p_SetComp(C1, l_k, currRing);
         p_SetmComp(C1, currRing);
 
@@ -1822,11 +1823,11 @@ std::pair<int, lists> SubLIFT_GPI(leftv args) {
         t = (lists)omAlloc0Bin(slists_bin);
         t->Init(7);
         t->m[0].rtyp = VECTOR_CMD; 
-        t->m[0].data = pCopy(p_Mult_q(pISet(-1), s_lift, currRing));
+        t->m[0].data = s_lift;
         t->m[1].rtyp = SMATRIX_CMD; 
         t->m[1].data = sM;
         t->m[2].rtyp = INT_CMD; 
-        t->m[2].data = (void*)(long)l_k;
+        t->m[2].data = (void*)(long)(-cn);
         t->m[3].rtyp = INT_CMD; 
         t->m[3].data = (void*)(long)colmn;
 
@@ -2155,7 +2156,7 @@ std::pair<std::string, long> singular_template_reduce(const std::string& Red,
     }
     
  
-    
+    r=r;//to use r
     lists output = (lists)omAlloc0Bin(slists_bin);
     output->Init(4);
 
@@ -2172,7 +2173,7 @@ std::pair<std::string, long> singular_template_reduce(const std::string& Red,
     t->Init(7);
     t->m[0].rtyp = VECTOR_CMD; t->m[0].data = vec;
     t->m[1].rtyp = SMATRIX_CMD; t->m[1].data = C;
-    t->m[2].rtyp = INT_CMD; t->m[2].data = (void*)(long)r;
+    t->m[2].rtyp = INT_CMD; t->m[2].data = (void*)(long)(1);  // sign= 1
     t->m[3].rtyp = INT_CMD; t->m[3].data = (void*)(long)c;
 
     if (tmpL1->m[0].Typ() == IDEAL_CMD || tmpL1->m[0].Typ() == VECTOR_CMD) {
@@ -2311,7 +2312,7 @@ std::pair<std::string, long> singular_template_ADD_Seq(const std::string& Red,
    
    
   
-  
+   r=r;//to use r
 
     lists output = (lists)omAlloc0Bin(slists_bin);
     output->Init(4);
@@ -2329,7 +2330,7 @@ std::pair<std::string, long> singular_template_ADD_Seq(const std::string& Red,
     t->Init(7);
     t->m[0].rtyp = VECTOR_CMD; t->m[0].data = vec;
     t->m[1].rtyp = SMATRIX_CMD; t->m[1].data = C;
-    t->m[2].rtyp = INT_CMD; t->m[2].data = (void*)(long)r;
+    t->m[2].rtyp = INT_CMD; t->m[2].data = (void*)(long)(1);  // sign= 1
     t->m[3].rtyp = INT_CMD; t->m[3].data = (void*)(long)c;
 
     if (tmpL1->m[0].Typ() == IDEAL_CMD) {
