@@ -160,12 +160,51 @@ static proc gspc_template(list l, configToken gc, configToken pc)
     return(sm_result);
 }
 
-proc gspc_template_SchRes(module I, configToken gc)
+
+proc ext_elimination_(module m, module syz_mod)
+{
+  //note m is NOT lifted.
+  int r = size(m);
+  int n = nvars(basering);
+  module ans_mod, temp_I;
+  
+  matrix needed_mat = submat(matrix(syz_mod), 1..r, 1..size(syz_mod));
+  ans_mod = module(needed_mat);
+  int i,j,k;
+
+  for(i=1;i<=size(ans_mod);i++){
+    for(j=1;j<=nrows(matrix(ans_mod[i]));j++){
+      for(k=1;k<=n;k++){
+        temp_I = var(k)^2;
+        attrib(temp_I, "isSB", 1);
+        if ((NF(ans_mod[i][j], temp_I) == 0) && ans_mod[i][j] != 0){
+          ans_mod[i] = ans_mod[i] - ans_mod[i][j]*gen(j);
+          break;
+        }
+      }
+    }
+    if(ans_mod[i] == 0){
+        ans_mod = delete(ans_mod, i);
+        i = i-1;
+    }
+  }
+  return(ans_mod);
+}
+
+
+
+
+proc gspc_template_SchRes( module I, int Row,int Col, configToken gc)
 {
     configToken ct = configure_template();
     ct.options.neededLibrary = "templategp.lib";
-    ct.options.functionName = "stdBasis";
+    ct.options.functionName = "schreyerSyzExt";
+  
     int r= size(I);
+    // print("Row=");
+    // print(Row);
+    // print("Col");
+    // print(Col);
     //intvec primeiv = primeList(I, nb_prime);
     list inputlists;
     token t;
@@ -176,12 +215,13 @@ proc gspc_template_SchRes(module I, configToken gc)
         t.data[2] = r;
         inputlists[i] = t;
     }
-    rtimer=0;
+      rtimer=0;
  system("--ticks-per-sec",1000); // set timer resolution to ms
- int t0=rtimer;
+//  int t0=rtimer;
+  int t1=rtimer;
     def re = gspc_template(inputlists, gc, ct);
-    rtimer-t0;
-print("timer");
+//        rtimer-t0;
+// print("timer");
     def inputRing = basering;
     // Access the first element in the list
     def resultToken = re[1];
@@ -192,14 +232,40 @@ print("timer");
        setring resultRing;
     // Extract the data from resultToken
     def Result = resultToken.data;
-   print("beforeReturn");
-//   print(Result);
-    
+
+ 
+ matrix Mr=matrix(Result[2]);
+
+ setring inputRing;
+ matrix Mr=fetch(resultRing,Mr);
+//  print("Mr=");
+//  print(transpose(Mr));
+matrix Ir=matrix(I);
+//   print(I);
+//   print("Final product");
+
+//   print(Ir*Mr);
+  matrix subM=submat(Ir,1..Row,1..Col);// should know generators of std of given module, here 6 generators
+//   print("input=");
+//   print(subM);
+//   print("final");
+  matrix extM=ext_elimination_(subM,Mr);
+    rtimer-t1;
+    print("timer including");
+  matrix extM_t=transpose(extM);
+   print("Syzygy");
+  print(extM);
+  matrix subM_t=transpose(subM);
+
+//  print(subM*extM);
+ print("Final produt");
+ print(extM_t*subM_t);
+// def Re=ext_elimination_(I,Result[2]);
 
 
-    setring inputRing;
- def Result=fetch(resultRing,Result);
+    // setring inputRing;
+//  def Result=fetch(resultRing,Result);
 //  print("After fetch");
 //   print(Result);
-    return(Result);
+    return("Result");
 }

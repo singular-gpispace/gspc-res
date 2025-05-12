@@ -7,7 +7,7 @@ LIB "random.lib";
   LIB "modstd.lib"; //testing if it is necessary
   //following from Leadsyz;LIB "general.lib";LIB "monomialideal.lib"; LIB "homolog.lib";
    	LIB "nctools.lib";
-
+     LIB "Sch_Ext.lib";
 
     
 // Configure GPI-Space	
@@ -15,8 +15,8 @@ configToken gc = configure_gspc();
 // gc.options.tmpdir = "/scratch/gnawali/Try/gspc-res/example_dir/temp";
 gc.options.tmpdir = "/dev/shm/gnawali/temp";
 gc.options.nodefile = "nodefile";
-gc.options.procspernode = 48;
-gc.options.loghost = "schipp";
+gc.options.procspernode =48;
+gc.options.loghost = "cipserv05";
 // gc.options.logport = 9876;
 
 // mkdir -p /dev/shm/gnawali/temp
@@ -25,57 +25,100 @@ gc.options.loghost = "schipp";
 //ls -1 /dev/shm/gnawali/temp | wc -l
 //find /dev/shm/gnawali/temp -type f -delete
 
-// ring R= 0, (w,x,y,z), (dp,c);
-// // ideal J= w2-x*z, w*x- y*z, x2-w*y, x*y- z2, y2- w*z;
-// module m;
-// vector s1=[-x,w,-z,0,0];
-// vector s2=[y,-x,w,0,0];
-// vector s3=[0,-y,0,w,-z];
-// vector s4=[-z,0,-y,x,-w];
-// vector s5=[-y^2+w*z, z^2,0,-yz,w^2];
-// vector s6=[0,z,0,-y,x];
-// module J=s1,s2,s3,s4,s5,s6;
-// J=std(J);
 
 
 
-// ring R=(0,q),(x,y,z,u,v,w),dp;
-//  def e = Exterior(); setring e;
+
+//Example 1
+ring r = (0,q),(x,y,z),dp;
+def e = Exterior(); setring e;
+// print("Exterior ring");
+// print(e);
+vector f1 = [x,y,0,z,0,0];
+vector f2 = [0,x,y,0,z,0];
+vector f3 = [0,0,0,x,y,z];
+vector f4 = [x,0,0,x,y,z];
+module J = f1,f2,f3,f4;
+J= std(J);
+
+
+//Example 2
+// ring r=(0,q),(x,y,z,u,v,w),dp;
+// def e = Exterior(); setring e;
+
 // resolution T1=mres(maxideal(1),0);
 // module J=T1[8];
 // J=std(J);
 
-//  ring r = (0,q),(x,y,z),dp;
-//   def e = Exterior(); setring e;
-//   print("Exterior ring");
-//   print(e);
-//   vector f1 = [x,y,0,z,0,0];
-//   vector f2 = [0,x,y,0,z,0];
-//   vector f3 = [0,0,0,x,y,z];
-//    vector f4 = [x,0,0,x,y,z];
-//   module J = f1,f2,f3,f4;
-//   J= std(J);
-// print("size of m=");
-// size(J);
-// Call gspc_template_mod with proper arguments
-
-ring R=(0,q),(x,y,z,u,v,w,a),dp;
-def e = Exterior(); setring e;
-resolution T1=mres(maxideal(1),0);
-module J=T1[9];
-J=std(J);
 
 
+  int Row=nrows(J);
+  int Col=ncols(J);
 
+print(basering);
+int N = nvars(basering);
+ring R = create_ring(ring_list(basering)[1], ringlist(basering)[2], "("+ordstr(basering)+")", "no_minpoly");
+matrix E = UpOneMatrix(N);
+E = -1*(E);
+def RR = nc_algebra(E,0); setring RR;
+
+// //imap m to new ring
+module M = imap(e, J);
+module lift_m = add_ideal_gens_(M);
 rtimer=0;
  system("--ticks-per-sec",1000); // set timer resolution to ms
  int t=rtimer;
-def re =gspc_template_SchRes(J, gc);
-re;
-
+def re =gspc_template_SchRes(lift_m, Row,Col,gc);
 rtimer-t;
 print("timer");
 
+
+// // lift_m ;
+// // print("lift_m");
+// // Call gspc_template_mod with proper arguments
+
+// // rtimer=0;
+// //  system("--ticks-per-sec",1000); // set timer resolution to ms
+// //  int t=rtimer;
+// def re =gspc_template_SchRes(lift_m , gc);
+
+
+
+
+// LIB "nctools.lib";
+// ring r = (0,q),(x,y,z),dp;
+// def e = Exterior(); setring e;
+// // print("Exterior ring");
+// // print(e);
+// vector f1 = [x,y,0,z,0,0];
+// vector f2 = [0,x,y,0,z,0];
+// vector f3 = [0,0,0,x,y,z];
+// vector f4 = [x,0,0,x,y,z];
+// module J = f1,f2,f3;
+// J= std(J);
+// rtimer=0;
+// system("--ticks-per-sec",1000); // set timer resolution to ms
+// int t=rtimer;
+// module m=schreyerSyzExt(J);
+
+// rtimer-t;
+// print("timer");
+
+
+// LIB "nctools.lib";
+// ring R=(0,q),(x,y,z,u,v,w),dp;
+// def e = Exterior(); setring e;
+
+// resolution T1=mres(maxideal(1),0);
+// module J=T1[8];
+// J=std(J);
+// rtimer=0;
+// system("--ticks-per-sec",1000); // set timer resolution to ms
+// int t=rtimer;
+// module m=schreyerSyzExt(J);
+
+// rtimer-t;
+// print("timer");
 
 
 

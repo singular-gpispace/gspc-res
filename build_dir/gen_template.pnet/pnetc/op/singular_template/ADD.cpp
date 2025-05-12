@@ -20,7 +20,7 @@ namespace pnetc
         , const int& N
         )
       {
-#line 951 "/scratch/gnawali/Try/gspc-res/template/workflow/template.xpnet"
+#line 953 "/scratch/gnawali/Try/gspc-res/template/workflow/template.xpnet"
 
              
                 auto computation_time = std::chrono::high_resolution_clock::now();
@@ -49,7 +49,7 @@ namespace pnetc
               // std::cout << "Parsed range: {" << start << ", " << end << "}" << "for s="<<s<<std::endl;
              
 
-// std::cout << "Reduce Duration: " <<computation_duration << "nanosecond" << std::endl;
+// std::cout << "pool_add_N:=" <<N << "" << std::endl;
 
               
       }

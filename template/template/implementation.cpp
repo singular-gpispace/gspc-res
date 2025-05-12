@@ -100,6 +100,13 @@ matrix lcm_mod(ideal G) {
               // std::cout << "poly t10:" << pString(t10)<< "j:="<<j<<std::endl;
               // std::cout << "poly s10:" << pString(s10)<< "i:="<<i<<std::endl;
                 MATELEM(l, a, b) = pp_Divide(lcm_poly, t10, currRing);
+                poly s0=MATELEM(l, a, b) ;
+                for(int ii=1;ii<=rVar(currRing);ii++)
+                {
+                    if(p_GetExp(s0,ii,currRing)==2) { pLmDelete(&s0); break;}
+                }
+                MATELEM(l, a, b) = s0;
+                
             } else {
                 MATELEM(l, a, b) = NULL;
             }
@@ -124,8 +131,7 @@ ideal leadSyz_ext(ideal f0) {
   int cc = 0;
   ideal L = idInit(0, 1);
   ideal f_copy = idCopy(f0);
-  matrix M = mpNew(r, r);
- M= lcm_mod(f_copy);
+  matrix M= lcm_mod(f_copy);
 
   for (int i = 2; i < r+1; i++) {
    
@@ -1039,7 +1045,14 @@ lists  liftTree(ideal f, poly s) { //poly s is singular vector
                 p_SetCoeff0(tmp,nDiv(pGetCoeff(L),pGetCoeff(t)),currRing);
                 //   std::cout << "tmp "<<pString(tmp)<<std::endl;
                   m1=tmp;
-                   m = pCopy(m1);//m=m1;
+                    if(p_Mult_q(pCopy(m1),L,currRing)==t){
+                    m=pCopy(m1);
+                
+                 } else{
+                    m=pCopy(p_Mult_q(pISet(-1), pCopy(m1), currRing));
+                  
+                
+                 }
                    p_SetComp(m,q+1,currRing);
                    p_SetmComp(m,currRing);
                    s_v=pCopy(m);
@@ -1351,14 +1364,12 @@ std::tuple<std::vector<std::string>, int, long> singular_template_LIFT(const std
     
     // Measure Computation Time
     auto start_computation = std::chrono::high_resolution_clock::now();
-     // Direct call to LIFT_GPI 
-  // std::string function_name = "LIFT_Ext_GPI";
-  //   //  std::cout<<"function_name_LIFT:"<<function_name<< std:: endl;
-  //   out = call_user_proc(function_name, needed_library, args);
+       std::string function_name = "LIFT_Ext_GPI";
+	out = call_user_proc(function_name, needed_library, args);
    
   
       // Direct call to LIFT_GPI 
-      out = LIFT_Ext_GPI(args.leftV());  
+    //   out = LIFT_Ext_GPI(args.leftV());  
 
     // Extract the result list from the output
     lists u = (lists)out.second->m[3].Data();
@@ -1517,7 +1528,14 @@ lists oneSublift(ideal f, poly s)
                   // std::cout << "tmp "<<pString(tmp)<<std::endl;
                   m1=tmp;
                  
-            m = pCopy(m1); //m=m1;
+             if(p_Mult_q(pCopy(m1),L,currRing)==t){
+                    m=pCopy(m1);
+                
+                 } else{
+                    m=pCopy(p_Mult_q(pISet(-1), pCopy(m1), currRing));
+                  
+                
+                 }
             p_SetComp(m,q+1,currRing);
             p_SetmComp(m,currRing);
             s_v=pCopy(m);
@@ -1837,11 +1855,10 @@ std::tuple<std::vector<std::string>, int, long> singular_template_SUBLIFT(const 
      // Measure Computation Time
     auto start_computation = std::chrono::high_resolution_clock::now();
      
-    // std::string function_name = "SubLIFT_Ext_GPI";
-    //  //std::cout<<"function_name_LIFT:"<<function_name<< std:: endl;
-    // out = call_user_proc(function_name, needed_library, args);// Call  SubLIFT_GPI with the raw pointer
+     std::string function_name = "SubLIFT_Ext_GPI";
+	out = call_user_proc(function_name, needed_library, args);
   
-    out = SubLIFT_Ext_GPI(args.leftV());  
+    // out = SubLIFT_Ext_GPI(args.leftV());  
 
 
 
@@ -2088,7 +2105,7 @@ std::pair<std::string, long> singular_template_reduce(const std::string& Red,
 
     
    
-    t->m[4].rtyp = INT_CMD; t->m[4].data = (void*)(long)(counter + 1);
+    t->m[4].rtyp = INT_CMD; t->m[4].data = (void*)(long)(counter);
    
 
     output->m[3].rtyp = LIST_CMD; output->m[3].data = t;
@@ -2108,7 +2125,7 @@ std::pair<std::string, long> singular_template_reduce(const std::string& Red,
 
 NO_NAME_MANGLING
 std::pair<std::string, long> singular_template_ADD_Seq(const std::string& Red, 
-    int N,
+    int N,int Nplus,
     const std::string& needed_library,
     const std::string& base_filename) 
 {
@@ -2141,7 +2158,7 @@ std::pair<std::string, long> singular_template_ADD_Seq(const std::string& Red,
     }
 
 
-    for (int i = 1; i <= N; ++i) { // Iterate from 1 to N to match "1.ssi", "2.ssi", etc.
+    for (int i = Nplus+1; i <= N+Nplus; i++) { // Iterate from 1 to N to match "1.ssi", "2.ssi", etc.
         // Construct the full path for i.ssi files within the same folder as Red
         std::string filename = (basePath / (std::to_string(i) + ".ssi")).string();
             // std::cout << filename<< "" << std::endl;

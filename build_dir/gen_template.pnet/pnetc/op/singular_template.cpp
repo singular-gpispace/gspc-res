@@ -142,14 +142,13 @@ namespace pnetc
         , std::map<std::string, void*> const&
         )
       {
-        const unsigned long & N (::boost::get< unsigned long > (_pnetc_input.value (std::list<std::string> (1, "N"))));
         const we::type::literal::control & IN (::boost::get< we::type::literal::control > (_pnetc_input.value (std::list<std::string> (1, "IN"))));
         const int & r (::boost::get< int > (_pnetc_input.value (std::list<std::string> (1, "r"))));
+        unsigned long N (::boost::get< unsigned long > (_pnetc_input.value (std::list<std::string> (1, "N"))));
         std::list<pnet::type::value::value_type> out;
-        we::type::literal::control c;
-        ::pnetc::op::singular_template::Enable (N, IN, r, out, c);
+        ::pnetc::op::singular_template::Enable (IN, r, N, out);
+        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "N"), N);
         _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "out"), out);
-        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "c"), c);
       }
     }
   }
@@ -255,9 +254,12 @@ namespace pnetc
       {
         const int & N (::boost::get< int > (_pnetc_input.value (std::list<std::string> (1, "N"))));
         const we::type::literal::control & k1 (::boost::get< we::type::literal::control > (_pnetc_input.value (std::list<std::string> (1, "k1"))));
+        const unsigned long & n (::boost::get< unsigned long > (_pnetc_input.value (std::list<std::string> (1, "n"))));
         std::list<pnet::type::value::value_type> outgoing;
-        ::pnetc::op::singular_template::Fill_IN_Add (N, k1, outgoing);
+        we::type::literal::control c;
+        ::pnetc::op::singular_template::Fill_IN_Add (N, k1, n, outgoing, c);
         _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "outgoing"), outgoing);
+        _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "c"), c);
       }
     }
   }
@@ -315,8 +317,9 @@ namespace pnetc
         const int & N (::boost::get< int > (_pnetc_input.value (std::list<std::string> (1, "N"))));
         const unsigned long & k2 (::boost::get< unsigned long > (_pnetc_input.value (std::list<std::string> (1, "k2"))));
         const we::type::literal::control & c (::boost::get< we::type::literal::control > (_pnetc_input.value (std::list<std::string> (1, "c"))));
+        const unsigned long & Nplus (::boost::get< unsigned long > (_pnetc_input.value (std::list<std::string> (1, "Nplus"))));
         std::string s;
-        ::pnetc::op::singular_template::ADD_Seq (library_name, base_filename, input, N, k2, c, s);
+        ::pnetc::op::singular_template::ADD_Seq (library_name, base_filename, input, N, k2, c, Nplus, s);
         _pnetc_output.bind_and_discard_ref (std::list<std::string> (1, "s"), s);
       }
     }

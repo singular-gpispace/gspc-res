@@ -1,0 +1,32 @@
+   
+  // LIB "nctools.lib";
+  LIB "Sch_Ext.lib";
+
+  // ring r = (0,q),(x,y,z),dp;
+  // def e = Exterior(); setring e;
+  // print("Exterior ring");
+  // print(e);
+  // vector f1 = [x,y,0,z,0,0];
+  // vector f2 = [0,x,y,0,z,0];
+  // vector f3 = [0,0,0,x,y,z];
+  //  vector f4 = [x,0,0,x,y,z];
+  // module M = f1,f2,f3,f4;
+  // M= std(M);
+
+  ring R=(0,q),(x,y,z,u,v,w),dp;
+  def e = Exterior(); setring e;
+ resolution T1=mres(maxideal(1),0);
+module M=T1[8];
+M=std(M);
+// print("leadSYz");
+// module J=lead_syz_(M);
+// print(J);
+// print("sres");
+
+
+rtimer=0;
+system("--ticks-per-sec",1000); // set timer resolution to ms
+int t=rtimer;
+module m=schreyerSyzExt(M);
+
+rtimer-t;

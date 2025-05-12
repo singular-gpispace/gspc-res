@@ -28,6 +28,48 @@ OVERVIEW:
 
 
 
+  proc add_ideal_gens_(module m)
+  {
+    int n = nvars(basering);
+    int i,j;
+    for (i = 1; i<= n; i++){
+      for (j = 1; j<= rank(m); j++){
+        m[size(m)+1] = var(i)^2 * gen(j);
+      }
+    }
+    return(m);
+  }
+  ///////////////////////////////////////////////////////////////////////////////
+  
+  //THIS IS THE MAIN USER CALLABLE PROCEDURE. 
+  proc schreyerSyzExt(token input )
+  "USAGE:   schreyerSyzExt(m); m a module over the exterior algebra.
+  RETURN:   module
+  PURPOSE:  computes the syzygy module of a m over the exterior algebra.
+  THEORY:   
+  SEE ALSO: sresExt, mresExt
+  EXAMPLE: example schreyerSyzExt; shows an example
+  "
+  {
+   
+    module m=input.data[1];
+    //create ring
+    ring r = basering;
+    int N = nvars(r);
+    ring R = create_ring(ring_list(basering)[1], ringlist(basering)[2], "("+ordstr(basering)+")", "no_minpoly");
+    matrix E = UpOneMatrix(N);
+    E = -1*(E);
+    def RR = nc_algebra(E,0); setring RR;
+    
+    //imap m to new ring
+    module M = imap(r, m);
+  
+    module lift_m = add_ideal_gens_(M);
+   
+  
+  
+    return(lift_m);
+  }
 
 
 
@@ -306,12 +348,6 @@ worker process (that is, the "inner" instances of SINGULAR).
    LT = lead_syz_(f);
    int ro=size(f);
    counter=1;
- 
-   
-
-
-
- 
 
   int r = size(LT);
   for (k = 1; k <=r; k++) {
@@ -545,10 +581,10 @@ proc LIFT_Ext_GPI(token Token, token vec) {
     
     int l_k = leadexp(s_lift)[nvars(basering) + 1];
 
-     sM[l_k, colmn] =leadterm(s_lift);
+     sM[l_k, colmn] =(-1)*leadterm(s_lift);
     
     //print(sM);
-    Ld.data[1]= s_lift;
+    Ld.data[1]=(-1)*s_lift;
     //print(s_lift);
     Ld.data[2]= sM;
      //print("matrix");
@@ -564,7 +600,7 @@ proc LIFT_Ext_GPI(token Token, token vec) {
 
     Ld.data[4]=LT;
     Ld.data[5]=counter;
-    
+     Ld.data[6]=1;
     LLT.fieldnames[k] = "generator";  
     LLT.data[k] = Ld; 
 
@@ -591,11 +627,7 @@ proc LIFT_Ext_GPI(token Token, token vec) {
 proc lift_subtree_(vector s, module M)
 {
 
-//       string path = "/home/santosh/gspc-syz-ext/example_dir/temp/";  // Ensure the path ends with a "/"
-// string filename = "SubLift_syz_extr.ssi";
-// link l = "ssi:w " + path + filename;
-  //  write(l,M,"module");
-  //  close(l);
+
   vector h = phi_(s, M);
  
  vector g = h - lead(h);
@@ -670,10 +702,10 @@ proc SubLIFT_Ext_GPI(token Token, token vec) {
     
     int l_k = leadexp(s_lift)[nvars(basering) + 1];
 
-     sM[l_k, colmn] =leadterm(s_lift);
+     sM[l_k, colmn] =(-1)*leadterm(s_lift);
     
     //print(sM);
-    Ld.data[1]= s_lift;
+    Ld.data[1]= (-1)*s_lift;
     //print(s_lift);
     Ld.data[2]= sM;
      //print("matrix");
@@ -689,7 +721,7 @@ proc SubLIFT_Ext_GPI(token Token, token vec) {
 
     Ld.data[4]=LT;
     Ld.data[5]=counter;
-  
+     Ld.data[6]=1;
     LLT.fieldnames[k] = "generator";  
     LLT.data[k] = Ld; 
 
@@ -704,62 +736,13 @@ proc SubLIFT_Ext_GPI(token Token, token vec) {
 
 
 
-//Summation function for GPI-Space
-
-proc reduce_Ext_GPI(token input, token Tok, token tok)
-"USAGE: reduce_GPI(input, Tok, tok);
-       RETURN: an token output containing a sum  of the two tokens Tok and tok.
-       NOTE  : The types token are defined . This procedure is intended to
-               be called as a transition procedure inside the worker process
-               (that is, the "inner" instances of SINGULAR).
-"          
-
-{
- def f=input.data[1];;
 
 
-int r= size(f);
 
- def L=Tok.data[4];//leadSyz_Ext
- int c=size(L);
-
- 
+//setring original ring
 
 
- int counter= Tok.data[5];
- smatrix A[r][c];
- smatrix B[r][c];
- def v=Tok.data[1];
- A=Tok.data[2];
- 
- B= tok.data[2];
- 
-  
-    // Perform the matrix addition using jjPLUS_MA
-    smatrix C[r][c];
-    C=A+B;
 
-   
- 
-  
-    token output;
-    output.fieldnames = list("generators","Syz_matrix");
-    output.data[1] = v;
-    output.data[2]=C;
-   
-   
-    //print("q:column");
-    output.data[3]=c;
-  
-   
-   
-   output.data[4]=L;
-  
-   
-   output.data[5]=counter;//counter
-   
-    return(output);
-}
 
 
 
