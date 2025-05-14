@@ -253,8 +253,8 @@ matrix Ir=matrix(I);
     rtimer-t1;
     print("timer including");
   matrix extM_t=transpose(extM);
-   print("Syzygy");
-  print(extM);
+//    print("Syzygy");
+// //   print(extM);
   matrix subM_t=transpose(subM);
 
 //  print(subM*extM);

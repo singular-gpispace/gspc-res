@@ -327,7 +327,12 @@ quit;
 quit;
 quit;
 quit;
+ LIB "Sch_Ext.lib";
+<"Sch.Ext.sing";
+<"Sch.Ext.sing";
+<"Sch.Ext.sing";
+<"Sch.Ext.sing";
+<"Sch.Ext.sing";
 quit;
-cd ..
 quit;
 quit;

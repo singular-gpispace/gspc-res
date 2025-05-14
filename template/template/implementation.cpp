@@ -1026,7 +1026,7 @@ lists  liftTree(ideal f, poly s) { //poly s is singular vector
     for ( k = 0; k < t_size; k++) {
         poly t = (poly)T->m[k].Data();// poly t=T[k]
        poly s_v = NULL;//vector s_v
-      //  std::cout << "t in LIFT:"<<pString(t)<< ": given leadsyz:s="<<pString(s)<<std::endl;
+  
         for (q = 0; q < r; q++) {
     
 
@@ -1036,23 +1036,35 @@ lists  liftTree(ideal f, poly s) { //poly s is singular vector
           
 
             if (c == TRUE) {
-               //check sign: 
+            
                poly L=pHead(f->m[q]);
-              //  std::cout << "c="<<c<< "t in LIFT:"<<pString(t)<< "L="<<pString(L)<<std::endl;
+         
               //  m1 =t/lead(L); 
                 poly tmp=p_CopyPowerProduct0(t,NULL,currRing);
                 p_ExpVectorSub(tmp,L, currRing);
                 p_SetCoeff0(tmp,nDiv(pGetCoeff(L),pGetCoeff(t)),currRing);
-                //   std::cout << "tmp "<<pString(tmp)<<std::endl;
+          
                   m1=tmp;
-                    if(p_Mult_q(pCopy(m1),L,currRing)==t){
-                    m=pCopy(m1);
+                //     if(p_Mult_q(pCopy(m1),L,currRing)==t){
+                //     m=pCopy(m1);
                 
-                 } else{
-                    m=pCopy(p_Mult_q(pISet(-1), pCopy(m1), currRing));
+                //  } else{
+                //     m=pCopy(p_Mult_q(pISet(-1), pCopy(m1), currRing));
                   
                 
-                 }
+                //  }
+                   
+                 
+               poly t1=pCopy(p_Mult_q(pCopy(m1),L,currRing));
+               BOOLEAN sign1=p_EqualPolys(t1,t,currRing);
+                    // std::cout << "sign1:"<<sign1<< std::endl;
+                 if(sign1==FALSE){
+                    m=pCopy(p_Mult_q(pISet(-1), pCopy(m1), currRing));
+                   
+                 } 
+                  else{
+                    m=pCopy(m1);
+                 } 
                    p_SetComp(m,q+1,currRing);
                    p_SetmComp(m,currRing);
                    s_v=pCopy(m);
@@ -1232,13 +1244,7 @@ std::pair<int, lists> LIFT_Ext_GPI(leftv args) {
         LLT->m[2].rtyp = RING_CMD; 
         LLT->m[2].data = currRing;
 
-        // // Set data for LLT
-        // lists t0 = (lists)omAlloc0Bin(slists_bin);
-        // t0->Init(r);
-        // for (int s = 0; s < r; s++) {
-        //     t0->m[s].rtyp = LIST_CMD;
-        //     t0->m[s].data = lCopy(Ld);
-        // }
+      
         temp->m[k].rtyp = LIST_CMD;
         temp->m[k].data = lCopy(Ld);
 
@@ -1364,12 +1370,12 @@ std::tuple<std::vector<std::string>, int, long> singular_template_LIFT(const std
     
     // Measure Computation Time
     auto start_computation = std::chrono::high_resolution_clock::now();
-       std::string function_name = "LIFT_Ext_GPI";
-	out = call_user_proc(function_name, needed_library, args);
+    //    std::string function_name = "LIFT_Ext_GPI";
+	// out = call_user_proc(function_name, needed_library, args);
    
   
       // Direct call to LIFT_GPI 
-    //   out = LIFT_Ext_GPI(args.leftV());  
+      out = LIFT_Ext_GPI(args.leftV());  
 
     // Extract the result list from the output
     lists u = (lists)out.second->m[3].Data();
@@ -1528,14 +1534,28 @@ lists oneSublift(ideal f, poly s)
                   // std::cout << "tmp "<<pString(tmp)<<std::endl;
                   m1=tmp;
                  
-             if(p_Mult_q(pCopy(m1),L,currRing)==t){
-                    m=pCopy(m1);
+            //  if(p_Mult_q(pCopy(m1),L,currRing)==t){
+            //         m=pCopy(m1);
                 
-                 } else{
-                    m=pCopy(p_Mult_q(pISet(-1), pCopy(m1), currRing));
+            //      } else{
+            //         m=pCopy(p_Mult_q(pISet(-1), pCopy(m1), currRing));
                   
                 
-                 }
+            //      }
+
+                //    if(m*L!=t){
+                //     m=-m1;
+                //    }    
+                poly t1=pCopy(p_Mult_q(pCopy(m1),L,currRing));
+               BOOLEAN sign1=p_EqualPolys(t1,t,currRing);
+                    // std::cout << "sign1:"<<sign1<< std::endl;
+                 if(sign1==FALSE){
+                    m=pCopy(p_Mult_q(pISet(-1), pCopy(m1), currRing));
+                   
+                 } 
+                  else{
+                    m=pCopy(m1);
+                 } 
             p_SetComp(m,q+1,currRing);
             p_SetmComp(m,currRing);
             s_v=pCopy(m);
@@ -1733,13 +1753,7 @@ std::pair<int, lists> SubLIFT_Ext_GPI(leftv args) {
         LLT->m[2].rtyp = RING_CMD; 
         LLT->m[2].data = currRing;
 
-        // Set data for LLT
-        // lists t0 = (lists)omAlloc0Bin(slists_bin);
-        // t0->Init(r);
-        // for (int s = 0; s < r; s++) {
-        //     t0->m[s].rtyp = LIST_CMD;
-        //     t0->m[s].data = lCopy(Ld);
-        // }
+      
         temp->m[k].rtyp = LIST_CMD;
         temp->m[k].data = lCopy(Ld);
         pDelete(&Ci);
@@ -1855,10 +1869,10 @@ std::tuple<std::vector<std::string>, int, long> singular_template_SUBLIFT(const 
      // Measure Computation Time
     auto start_computation = std::chrono::high_resolution_clock::now();
      
-     std::string function_name = "SubLIFT_Ext_GPI";
-	out = call_user_proc(function_name, needed_library, args);
+    //  std::string function_name = "SubLIFT_Ext_GPI";
+	// out = call_user_proc(function_name, needed_library, args);
   
-    // out = SubLIFT_Ext_GPI(args.leftV());  
+    out = SubLIFT_Ext_GPI(args.leftV());  
 
 
 
